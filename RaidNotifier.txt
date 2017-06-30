@@ -1,0 +1,43 @@
+## Title: |cEFEBBERaidNotifier|r
+## Description: Displays on-screen notifications on different events during trials.
+## Author: |c009ad6Kyoma, Woeler, silentgecko|r
+## Version: 1.9.4
+## APIVersion: 100019
+## SavedVariables: RNVars 
+## OptionalDependsOn: LibAddonMenu-2.0 LibUnits LibMapPing LibGPS2 LibGroupSocket
+
+libs/LibStub/LibStub.lua
+libs/LibTitleLocale/LibTitleLocale.lua
+libs/LibCustomTitles/LibCustomTitles.lua
+libs/LibCustomTitles/Titles/Kyoma.lua
+libs/LibCustomTitles/Titles/Woeler.lua
+libs/LibCustomTitles/Titles/Valve.lua
+libs/LibAddonMenu-2.0/LibAddonMenu-2.0.lua
+libs/LibAddonMenu-2.0/controls/panel.lua
+libs/LibAddonMenu-2.0/controls/submenu.lua
+libs/LibAddonMenu-2.0/controls/button.lua
+libs/LibAddonMenu-2.0/controls/checkbox.lua
+libs/LibAddonMenu-2.0/controls/colorpicker.lua
+libs/LibAddonMenu-2.0/controls/custom.lua
+libs/LibAddonMenu-2.0/controls/description.lua
+libs/LibAddonMenu-2.0/controls/dropdown.lua
+libs/LibAddonMenu-2.0/controls/editbox.lua
+libs/LibAddonMenu-2.0/controls/header.lua
+libs/LibAddonMenu-2.0/controls/slider.lua
+libs/LibAddonMenu-2.0/controls/texture.lua
+
+libs/LibMapPing/LibMapPing.lua
+libs/LibGPS/LibGPS.lua
+libs/LibGroupSocket/LibGroupSocket.lua
+libs/LibGroupSocket/handlers/UltimateHandler.lua
+
+libs/LibUnits/LibUnits.lua
+
+RaidNotifier.lua
+BuffsDebuffs.lua
+Settings.lua
+UI.lua
+RaidNotifier.xml
+
+lang/en.lua
+lang/$(language).lua

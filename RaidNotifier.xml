@@ -1,0 +1,135 @@
+<GuiXml>
+	<Controls>
+		<Control name="RaidNotifierGlyphTemplate" virtual="true">
+			<Dimensions x="58" y="58" />
+			<OnInitialized>
+				self.bg = self:GetNamedChild("BG")
+				self.overlay = self:GetNamedChild("Overlay")
+				self.timer = self:GetNamedChild("Timer")
+				self.start = 0
+			</OnInitialized>
+			<Controls> 
+				<Texture name="$(parent)BG" textureFile="RaidNotifier/assets/glyph_background.dds" hidden="false">
+					<AnchorFill />
+				</Texture>
+				<Texture name="$(parent)Overlay" textureFile="RaidNotifier/assets/glyph_glow.dds" hidden="false">
+					<AnchorFill/>
+				</Texture>
+				<Label name="$(parent)Timer" font="ZoFontWinH4" hidden="true" text="15.3s">
+					<Anchor point="CENTER" relativeTo="$(parent)BG" />
+				</Label>
+			</Controls>
+		</Control>
+		
+		<Button name="RaidNotifier_ConfigButton" mouseOverBlendMode="ADD" inherits="ZO_ButtonBehaviorClickSound" virtual="true">
+			<Dimensions x="32" y="32" />
+			<Textures
+				normal="EsoUI/Art/ChatWindow/chat_options_up.dds"
+				pressed="EsoUI/Art/ChatWindow/chat_options_down.dds"
+				mouseOver="EsoUI/Art/ChatWindow/chat_options_over.dds"
+			/>
+			<OnMouseEnter>
+				ZO_Options_OnMouseEnter(self)
+			</OnMouseEnter>
+			
+			<OnMouseExit>
+				ZO_Options_OnMouseExit(self)
+			</OnMouseExit>
+		</Button>
+
+        <TopLevelControl name="RaidNotifier_ConfigDialog" inherits="ZO_CustomDialogBase" hidden="true">
+            <Controls>
+				<Label name="$(parent)Text" inherits="ZO_DialogContentAnchors" color="INTERFACE_COLOR_TYPE_TEXT_COLORS:INTERFACE_TEXT_COLOR_NORMAL" font="ZoFontGame"/>
+
+				<Control name="$(parent)SelectSound">
+					<OnInitialized>
+						self.dropdown = ZO_ComboBox_ObjectFromContainer(self:GetNamedChild("Dropdown"))
+					</OnInitialized>
+					<Anchor point="TOPLEFT" relativeTo="$(parent)Text" relativePoint="BOTTOMLEFT" offsetY="16" />
+					<Controls>
+						<Control name="$(parent)Dropdown" inherits="ZO_ComboBox">
+							<Dimensions x="340"/>
+							<Anchor point="LEFT"/>
+						</Control>
+					</Controls>
+				</Control>
+
+				<Control name="$(parent)Cancel" inherits="ZO_CustomDialogButton">
+					<Anchor point="TOPRIGHT" relativeTo="$(parent)SelectSound" relativePoint="BOTTOMRIGHT" offsetY="23" />
+				</Control>
+				<Control name="$(parent)Confirm" inherits="ZO_CustomDialogButton">
+					<Anchor point="TOPRIGHT" relativeTo="$(parent)Cancel" relativePoint="TOPLEFT" offsetX="-15"/>
+				</Control>
+            </Controls>
+        </TopLevelControl>
+
+		<TopLevelControl name="RaidNotifierUI" hidden="true" mouseEnabled="true">
+			<Anchor point="TOPLEFT" relativeTo="GuiRoot" relativePoint="TOPLEFT" />
+			<Controls>
+				<Label name="$(parent)CenterAnnounce" font="ZoFontCenterScreenAnnounceLarge" hidden="true">
+					<Anchor point="CENTER" relativeTo="GuiRoot" offsetY="-100"/>
+				</Label>
+				
+				
+				<Control name="$(parent)UltimateWindow" movable="true" mouseEnabled="true" resizeToFitDescendents="true" hidden="true" clampedToScreen ="true">
+					<Dimensions x="250" y="200" />
+					<Anchor point="TOPLEFT" relativeTo="$(parent)" offsetX="100" offsetY="600" />
+					<OnInitialized>
+						self.label = self:GetNamedChild("Label")
+						self.category = "ultimate"
+						self.setting  = "ulti_window"
+					</OnInitialized>
+					<Controls>
+						<Label name="$(parent)Label" font="ZoFontWinH3">
+							<Anchor point="TOPLEFT" offsetX="8" offsetY="8" text="TMP42" />
+						</Label>
+					</Controls>
+				</Control>
+
+				<Control name="$(parent)GlyphWindow" movable="true" mouseEnabled="true" hidden="true" clampedToScreen ="true">
+					<Dimensions x="240" y="180" />
+					<Anchor point="TOPLEFT" relativeTo="RaidNotifierUI" offsetX="0" offsetY="80" />
+					<OnInitialized>
+						self.glyphs = {}
+						for i=1, 7 do
+							self.glyphs[i] = self:GetNamedChild("Glyph"..i)
+						end
+						self.glyphs[7].bg:SetTexture("RaidNotifier/assets/white_circle.dds")
+						self.glyphs[7].overlay:SetTexture("RaidNotifier/assets/dummy.dds")
+						self.category = "mawLorkhaj"
+						self.setting  = "zhaj_glyph_window"
+						self.onUpdate = "GlyphUpdateHandler"
+					</OnInitialized>
+
+					<Controls>
+						<Backdrop name="$(parent)BG" inherits="ZO_DefaultBackdrop"/>
+						
+						<Control name="$(parent)Glyph1" inherits="RaidNotifierGlyphTemplate">
+							<Anchor point="CENTER" offsetX="90" offsetY="-60" />
+						</Control>
+						<Control name="$(parent)Glyph2" inherits="RaidNotifierGlyphTemplate">
+							<Anchor point="CENTER" offsetX="78" offsetY="-0" />
+						</Control>
+						<Control name="$(parent)Glyph3" inherits="RaidNotifierGlyphTemplate">
+							<Anchor point="CENTER" offsetX="30" offsetY="50" />
+						</Control>
+						<Control name="$(parent)Glyph4" inherits="RaidNotifierGlyphTemplate">
+							<Anchor point="CENTER" offsetX="-30" offsetY="50" />
+						</Control>
+						<Control name="$(parent)Glyph5" inherits="RaidNotifierGlyphTemplate">
+							<Anchor point="CENTER" offsetX="-78" offsetY="-0" />
+						</Control>
+						<Control name="$(parent)Glyph6" inherits="RaidNotifierGlyphTemplate">
+							<Anchor point="CENTER" offsetX="-90" offsetY="-60" />
+						</Control>
+						<Control name="$(parent)Glyph7" inherits="RaidNotifierGlyphTemplate">
+							<Anchor point="CENTER" offsetX="0" offsetY="-40" />
+						</Control>
+
+					</Controls>
+				</Control>
+
+			</Controls>
+		</TopLevelControl>
+	</Controls>
+</GuiXml>
