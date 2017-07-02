@@ -64,6 +64,7 @@ RaidNotifier.Defaults = {
 		suneater_eclipse = 1, -- "Self"
 		zhaj_gripoflorkhaj = true,
 		zhaj_glyphs = false,
+		zhaj_glyphs_invert = false,
 		zhaj_glyph_window = {100, 400},
 	},
 	maelstrom = {
@@ -158,6 +159,7 @@ function RaidNotifier:CreateSettingsMenu()
     }
 	
 	local Vars = RaidNotifier.Vars
+	local UI = RaidNotifier.UI
 
 	local function getChoiceValue(category, key)
 		return choices[category][key][ Vars[category][key] + 1 ]
@@ -511,6 +513,14 @@ function RaidNotifier:CreateSettingsMenu()
 		setFunc = function(value)   Vars.mawLorkhaj.zhaj_glyphs = value end,
 		noSound = true,
 	}, "mawLorkhaj", "zhaj_glyphs")
+	MakeControlEntry({
+		type = "checkbox",
+		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_INVERT),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_INVERT_TT),
+		getFunc = function() return Vars.mawLorkhaj.zhaj_glyphs_invert end,
+		setFunc = function(value)   Vars.mawLorkhaj.zhaj_glyphs_invert = value; UI.InvertGlyphs() end,
+		noSound = true,
+	}, "mawLorkhaj", "zhaj_glyphs_invert")
 	MakeControlEntry({
 		type = "dropdown",
 		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_TWIN_ASPECTS),

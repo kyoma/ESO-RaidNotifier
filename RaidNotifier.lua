@@ -431,6 +431,11 @@ do ----------------------
 		UI.RegisterElement(RaidNotifierUI:GetNamedChild("GlyphWindow"))
 		UI.RegisterElement(RaidNotifierUI:GetNamedChild("UltimateWindow"), self.Vars.ultimate.hidden)
 
+		-- invert glyph elements if needed
+		if (self.Vars.mawLorkhaj.zhaj_glyphs_invert) then
+			UI.InvertGlyphs()
+		end
+
 		-- These aren't needed anymore since we now start & stop Raid Notifier solely based on being in the raid zone
 	    --EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_RAID_TRIAL_STARTED,  function(...) self:RegisterEvents() end)
 		--EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_RAID_TRIAL_COMPLETE, function(...) self:UnregisterEvents() end)

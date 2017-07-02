@@ -108,16 +108,16 @@
 							<Anchor point="CENTER" offsetX="90" offsetY="-60" />
 						</Control>
 						<Control name="$(parent)Glyph2" inherits="RaidNotifierGlyphTemplate">
-							<Anchor point="CENTER" offsetX="78" offsetY="-0" />
+							<Anchor point="CENTER" offsetX="78" offsetY="5" />
 						</Control>
 						<Control name="$(parent)Glyph3" inherits="RaidNotifierGlyphTemplate">
-							<Anchor point="CENTER" offsetX="30" offsetY="50" />
+							<Anchor point="CENTER" offsetX="30" offsetY="60" />
 						</Control>
 						<Control name="$(parent)Glyph4" inherits="RaidNotifierGlyphTemplate">
-							<Anchor point="CENTER" offsetX="-30" offsetY="50" />
+							<Anchor point="CENTER" offsetX="-30" offsetY="60" />
 						</Control>
 						<Control name="$(parent)Glyph5" inherits="RaidNotifierGlyphTemplate">
-							<Anchor point="CENTER" offsetX="-78" offsetY="-0" />
+							<Anchor point="CENTER" offsetX="-78" offsetY="5" />
 						</Control>
 						<Control name="$(parent)Glyph6" inherits="RaidNotifierGlyphTemplate">
 							<Anchor point="CENTER" offsetX="-90" offsetY="-60" />
