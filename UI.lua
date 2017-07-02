@@ -95,6 +95,15 @@ do -----------------
 		glyph.overlay:SetHidden(false)
 	end
 
+	function UI.InvertGlyphs()
+		window = window or UI.GetElement("mawLorkhaj", "zhaj_glyph_window")
+		if not window then return end
+		for i, glyph in ipairs(window.glyphs) do
+			local _, _, _, _, offsetX, offsetY = glyph:GetAnchor(0)
+			glyph:SetAnchor(CENTER, self, CENTER, -1*offsetX, -1*offsetY)
+		end
+	end
+
 	function UI.GlyphUpdateHandler(window)
 		window = window or UI.GetElement("mawLorkhaj", "zhaj_glyph_window")
 		if not window then return end
