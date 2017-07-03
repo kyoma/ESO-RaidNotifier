@@ -42,9 +42,9 @@ L.Settings_HelRa_Warrior_StoneForm_TT     		= "Предупреждает вас
 L.Settings_HelRa_Warrior_ShieldThrow      		= "Воин: Бросок щита"
 L.Settings_HelRa_Warrior_ShieldThrow_TT   		= "Предупреждает вас, когда Воин готовится бросить свой щит."
 --Alerts
-L.Alerts_HelRa_Warrior_StoneForm        			= "|c595959Каменная форма|r начинает действовать на тебя. Не используй синергии!"
-L.Alerts_HelRa_Warrior_StoneForm_Player 			= "|c595959Каменная форма|r начинает действовать на |cFF0000<<!aC:1>>|r"
-L.Alerts_HelRa_Warrior_ShieldThrow      			= "Начинается |cFF0000Бросок Щита|r. "
+L.Alerts_HelRa_Warrior_StoneForm        		= "|c595959Каменная форма|r начинает действовать на тебя. Не используй синергии!"
+L.Alerts_HelRa_Warrior_StoneForm_Other 			= "|c595959Каменная форма|r начинает действовать на |cFF0000<<!aC:1>>|r"
+L.Alerts_HelRa_Warrior_ShieldThrow      		= "Начинается |cFF0000Бросок Щита|r. "
 
 
 --------------------------------

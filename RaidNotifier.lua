@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "1.9.4"
+RaidNotifier.Version         = "1.9.5"
 RaidNotifier.Author          = "|c009ad6Kyoma, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -23,6 +23,25 @@ local RAID_HALLS_OF_FABRICATION  = 7
 -- Debugging
 local function p() end
 local function dbg() end
+
+-- Fast debug toggle
+SLASH_COMMANDS["/rndebug"] = function(arg) 
+	local self     = RaidNotifier
+	local settings = self.Vars.dbg
+	if (arg == nil or arg == "") then
+		settings.enabled = not settings.enabled
+		p("%s Debugging", settings.enabled and "Enabled" or "Disabled")
+	elseif (arg == "enable" or arg =="1") then
+		p("Enabled debugging")
+		settings.enabled = true
+	elseif (arg == "disable" or arg == "0") then
+		p("Disabled debugging")
+		settings.enabled = false
+	elseif (arg == "track") then
+		settings.tracker = not settings.tracker
+		p("%s Debug Tracker", settings.tracker and "Enabled" or "Disabled")
+	end
+end
 
 ------------------------------------
 -- -- NOTIFICATION SYSTEM & SOUNDS
@@ -127,8 +146,31 @@ do ---------------------------------
 			if soundId ~= nil then PlaySound(soundId) end
 		end
 	end
-end
 
+	local LCSA = LibStub:GetLibrary("LibCSA")
+	function RaidNotifier:StartCountdown(timer, text, category, setting, interval)
+		local soundId = self:GetSoundValue(category, setting)
+
+		if not text or text == "" then
+			p("Invalid text for '%s -> %s'", category, setting)
+			return
+		elseif self.Vars.debug_notify then 
+			dbg("Alert for '%s -> %s', sound '%s' \n\"%s\"", category, setting, soundId, text)
+		end
+		if (interval) then 
+			local currentTime = GetTimeStamp()
+			if (interval > GetDiffBetweenTimeStamps(currentTime, self:GetLastNotify(category, setting))) then
+				return
+			end
+			self:SetLastNotify(category, setting, currentTime)
+		end
+		return LCSA:CreateCountdown(timer, soundId, nil, text, nil)
+	end
+	function RaidNotifier:StopCountdown(countdownIndex)
+		LCSA:EndCountdown(countdownIndex)
+	end
+
+end
 
 -- ----------------------
 -- -- ULTIMATE EXCHANGE
@@ -219,7 +261,11 @@ do ----------------------
 
 		local function OnWeaponPairChanged()
 			--get dynamic ultimate cost, should work with any cost reduction passives & sets
-			ultimateHandler:SetUltimateCost(GetAbilityCost(ultimateAbilityId))
+			if settings.override_cost > 0 then
+				ultimateHandler:SetUltimateCost(settings.override_cost)
+			else
+				ultimateHandler:SetUltimateCost(GetAbilityCost(ultimateAbilityId))
+			end
 		end
 		OnWeaponPairChanged()
 		EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_WEAPON_PAIR_LOCK_CHANGED, OnWeaponPairChanged)
@@ -458,23 +504,13 @@ do ----------------------
 		CALLBACK_MANAGER:RegisterCallback("OnWorldMapChanged", OnZoneChanged) -- might as well listen to this since that code is executed anyways
 
 		-- Change vitality bonus announcement to not conflict with our own
-		-- TODO: Update to new announcement structure in ESO:Morrowind
-		local CSH = ZO_CenterScreenAnnounce_GetHandlers()
-		CSH[EVENT_RAID_REVIVE_COUNTER_UPDATE] = function(currentCount, countDelta)
-			if not IsRaidInProgress() then
-				return
+		local LCSA = LibStub:GetLibrary("LibCSA")
+		LCSA:HookHandler(EVENT_RAID_REVIVE_COUNTER_UPDATE, function(messageParams, currentCount, countDelta)
+			if messageParams then
+				messageParams:SetCategory(CSA_CATEGORY_SMALL_TEXT)
 			end
-			if countDelta < 0 then
-				if CENTER_SCREEN_ANNOUNCE.CreateMessageParams then
-					local messageParams = CENTER_SCREEN_ANNOUNCE:CreateMessageParams(CSA_CATEGORY_SMALL_TEXT, SOUNDS.RAID_TRIAL_COUNTER_UPDATE)
-					messageParams:SetText(zo_strformat(SI_REVIVE_COUNTER_UPDATED_LARGE, "EsoUI/Art/Trials/VitalityDepletion.dds"))
-					messageParams:SetCSAType(CENTER_SCREEN_ANNOUNCE_TYPE_RAID_TRIAL)
-					return messageParams
-				else
-					return SOUNDS.RAID_TRIAL_COUNTER_UPDATE, zo_strformat(SI_REVIVE_COUNTER_UPDATED_LARGE, "EsoUI/Art/Trials/VitalityDepletion.dds")
-				end
-			end
-		end
+			return messageParams
+		end)
 
 	end
 
@@ -487,35 +523,46 @@ do -----------------------------
 
 	local UI = RaidNotifier.UI
 
-	local function GetNumBosses()
-		local count = 0
+	local bossCount = nil
+	function RaidNotifier:GetNumBosses(fresh)
+		if (bossCount and not fresh) then 
+			return bossCount 
+		end
+		bossCount = 0
 		for i = 1, MAX_BOSSES do
 			if DoesUnitExist("boss"..i) then
-				count = count + 1
+				bossCount = bossCount + 1
 			end
 		end
-		return count
+		return bossCount
 	end
 
 	function RaidNotifier.OnBossesChanged()
-	
+		local self   = RaidNotifier
 		local raidId = RaidNotifier.raidId
+
+		local bossCount = self:GetNumBosses(true)
+
 		if (raidId == RAID_MAW_OF_LORKHAJ) then
-			local buffsDebuffs, settings = RaidNotifier.BuffsDebuffs.maw_lorkhaj, RaidNotifier.Vars.mawLorkhaj
+			local buffsDebuffs, settings = self.BuffsDebuffs.maw_lorkhaj, self.Vars.mawLorkhaj
 
 			UI.SetElementHidden("mawLorkhaj", "zhaj_glyph_window", true)
 			local map       = GetMapTileTexture()
-			local bossCount = GetNumBosses()
-			if (bossCount == 1 and map == "Art/maps/reapersmarch/Maw_of_Lorkaj_Base_0.dds") then
-				--d("Zhaj'hassa the Forgotten")
+			
+			if (bossCount == 1 and map == "Art/maps/reapersmarch/Maw_of_Lorkaj_Base_0.dds") then -- Zhaj'hassa the Forgotten
 				buffsDebuffs.zhajBoss_knownGlyphs = {}
 				if (settings.zhaj_glyphs) then
+					UI.SetupGlyphWindow(nil, settings.zhaj_glyphs_invert)
 					UI.SetElementHidden("mawLorkhaj", "zhaj_glyph_window", false)
 				end
-			elseif (bossCount == 2 and map == "Art/maps/reapersmarch/MawLorkajSuthaySanctuary_Base_0.dds") then
-				--d("False Moon Twins, S’Kinrai and Vashai")
+			elseif (bossCount == 2 and map == "Art/maps/reapersmarch/MawLorkajSuthaySanctuary_Base_0.dds") then -- False Moon Twins, S’Kinrai and Vashai
+				
 			elseif (bossCount == 1 and map == "Art/maps/reapersmarch/MawLorkajSevenRiddles_Base_0.dds") then
 			
+			end
+		elseif (raidId == RAID_HALLS_OF_FABRICATION) then
+			if (bossCount == 3) then --Refabrication Committee
+				
 			end
 		end
 	end
@@ -564,7 +611,7 @@ do ---------------------------
 				end
 			end
 
-			if (not debugList[result][abilityId] or not noSpam) then
+			if (not debugList[result][abilityId]) or (not noSpam) then
 				local source = FormatUnit(", [S] ", sType, sName, sUnitId)
 				local target = FormatUnit(", [T] ", tType, tName, tUnitId)
 				local ability = (aName ~= "" and aName ~= nil) and aName or GetAbilityName(abilityId)
@@ -744,7 +791,7 @@ do ---------------------------
 				--		if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
 				--			self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_SERPENT_WORLDSHAPER), 3000, "bla")
 				--		elseif ( tName ~= "" and settings.serpent_worldshaper == 2 ) then
-				--			self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_SERPENT_WORLDSHAPER_PLAYER), tName), 3000, "bla")
+				--			self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_SERPENT_WORLDSHAPER_OTHER), tName), 3000, "bla")
 				--		end
 				--	end
 
@@ -755,7 +802,7 @@ do ---------------------------
 						if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_TROLL_POISON), "sanctumOphidia", "troll_poison")
 						elseif ( tName ~= "" and settings.troll_poison == 2 ) then
-							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_TROLL_POISON_PLAYER), tName), "sanctumOphidia", "troll_poison")
+							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_TROLL_POISON_OTHER), tName), "sanctumOphidia", "troll_poison")
 						end
 					end
 
@@ -766,7 +813,7 @@ do ---------------------------
 						if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_TROLL_BOULDER), "sanctumOphidia", "troll_boulder")
 						elseif ( tName ~= "" and settings.troll_boulder == 2 ) then
-							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_TROLL_BOULDER_PLAYER), tName), "sanctumOphidia", "troll_boulder")
+							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_TROLL_BOULDER_OTHER), tName), "sanctumOphidia", "troll_boulder")
 						end
 					end
 
@@ -777,7 +824,7 @@ do ---------------------------
 						if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_OVERCHARGE), "sanctumOphidia", "overcharge")
 						elseif ( tName ~= "" and settings.overcharge == 2 ) then
-							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_OVERCHARGE_PLAYER), tName), "sanctumOphidia", "overcharge")
+							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_OVERCHARGE_OTHER), tName), "sanctumOphidia", "overcharge")
 						end
 					end
 
@@ -788,7 +835,7 @@ do ---------------------------
 						if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_CALL_LIGHTNING), "sanctumOphidia", "call_lightning")
 						elseif ( tName ~= "" and settings.call_lightning == 2 ) then
-							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_CALL_LIGHTNING_PLAYER), tName), "sanctumOphidia", "call_lightning")
+							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_CALL_LIGHTNING_OTHER), tName), "sanctumOphidia", "call_lightning")
 						end
 					end
 
@@ -816,7 +863,7 @@ do ---------------------------
 				--												5, "sanctumOphidia", "mantikora_spear")
 				--		elseif ( tName ~= "" and settings.mantikora_spear == 2 ) then
 				--			zo_callLater(function()
-				--				self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_MANTIKORA_SPEAR_PLAYER), tName), 3000, SOUNDS.CHAMPION_POINTS_COMMITTED,
+				--				self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_MANTIKORA_SPEAR_OTHER), tName), 3000, SOUNDS.CHAMPION_POINTS_COMMITTED,
 				--													5, "sanctumOphidia", "mantikora_spear")
 				--			end, 100)
 				--		else
@@ -991,6 +1038,9 @@ do ---------------------------
 				if (abilityId == buffsDebuffs.zhajBoss_glyphability) then
 					local findNew = (result == ACTION_RESULT_EFFECT_FADED) --only scan for new glyph when effect/glyph is used by the player, NOT when it respawns
 					local glyphIndex = FindGlyph(tUnitId, buffsDebuffs.zhajBoss_glyphs, buffsDebuffs.zhajBoss_knownGlyphs, findNew) 
+					if settings.zhaj_glyphs_invert then
+						glyphIndex = 7 - glyphIndex
+					end
 					if (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
 						UI.StopGlyphTimer(glyphIndex)
 					elseif (result == ACTION_RESULT_EFFECT_FADED) then
@@ -1173,23 +1223,75 @@ do ---------------------------
 			end
 		end
 
-
+--[[
 		if (raidId == RAID_HALLS_OF_FABRICATION) then
-			local buffsDebuffs, settings = self.BuffsDebuffs.halls_fab, self.Vars.halls_fab
-			
-			if (result == ACTION_RESULT_BEGIN) then
-				--[00:25:21] [2200] Flux Burst (90755), Source: 0/0/, Target:Princess
-				--[23:32:27] [2245] Channeled Lightning (90877), Source: Pinnacle Factotum, Target: Kyoma
+			local buffsDebuffs, settings = self.BuffsDebuffs.halls_fab, self.Vars.hallsFab
 
-			elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
-				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-				
+			if (result == ACTION_RESULT_BEGIN) then
+				if (buffsDebuffs.mobs_taking_aim == abilityId) then
+					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					dbg("Taking Aim on %s", tName)
+					if settings.mobs_taking_aim >= 1 then
+						if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
+							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM), "hallsFab", "mobs_taking_aim")
+						elseif ( tName ~= "" and settings.mobs_taking_aim == 2 ) then
+							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM_OTHER), tName), "hallsFab", "mobs_taking_aim")
+						end
+					end
+				elseif (buffsDebuffs.pinnacleBoss_conduit_spawn == abilityId) then
+					dbg("Conduit Spawning (%d)", tUnitId)
+					if settings.pinnacleBoss_conduit_spawn then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_CONDUIT_SPAWNING), "hallsFab", "pinnacleBoss_conduit_spawn")
+					end
+				elseif (buffsDebuffs.pinnacleBoss_conduit_drain == abilityId) then
+					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					dbg("Conduit Draining %s", tName)
+					if settings.pinnacleBoss_conduit_drain >= 1 then
+						if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
+							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_CONDUIT_DRAIN), "hallsFab", "pinnacleBoss_conduit_drain")
+						elseif ( tName ~= "" and settings.pinnacleBoss_conduit_drain == 2 ) then
+							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_CONDUIT_DRAIN_OTHER), tName), "hallsFab", "pinnacleBoss_conduit_drain")
+						end
+					end
+				elseif (buffsDebuffs.pinnacleBoss_conduit_strike[abilityId] == true) then
+					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					dbg("Conduit Strike (%d) on %s", abilityId, tName)
+					if (settings.pinnacleBoss_conduit_strike >= 1) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_CONDUIT_STRIKE), "hallsFab", "pinnacleBoss_conduit_strike")
+					end
 				end
 
+			elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
+
+				if (abilityId == buffsDebuffs.mobs_draining_ballista) then
+					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					dbg("Draining Ballista on %s", tName)
+					if (settings.draining_ballista >= 1) then
+						if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_DRAINING_BALLISTA), "hallsFab", "mobs_draining_ballista", 4)
+						end
+					end
+				elseif (abilityId == buffsDebuffs.mobs_power_leech) then
+					if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
+						if (settings.mobs_power_leech) then
+							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_POWER_LEECH), "hallsFab", "mobs_power_leech")
+						end
+					end
+				elseif (buffsDebuffs.committee_overheat_aura == abilityId or buffsDebuffs.committee_overload_aura == abilityId) then -- right we dont care that this occurs twice in a row
+					buffsDebuffs.committee_countdown_index = self:StartCountdown(GetAbilityDuration(abilityId), GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_COMMITTEE_OVERPOWER_AURAS), "hallsFab", "committee_overpower_auras")
+				end
+				
+			elseif (result == ACTION_RESULT_EFFECT_FADED) then
+				if (buffsDebuffs.committee_overheat_aura == abilityId or buffsDebuffs.committee_overload_aura == abilityId) then
+					self:StopCountdown(buffsDebuffs.committee_countdown_index)
+					buffsDebuffs.committee_countdown_index = 0 -- don't set it to nil
+				end
 			end
 		end
+--]]
 
 	end
+
 end
 
 

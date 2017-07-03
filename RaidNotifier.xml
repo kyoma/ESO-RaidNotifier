@@ -87,7 +87,7 @@
 				</Control>
 
 				<Control name="$(parent)GlyphWindow" movable="true" mouseEnabled="true" hidden="true" clampedToScreen ="true">
-					<Dimensions x="240" y="180" />
+					<Dimensions x="240" y="170" />
 					<Anchor point="TOPLEFT" relativeTo="RaidNotifierUI" offsetX="0" offsetY="80" />
 					<OnInitialized>
 						self.glyphs = {}
@@ -105,25 +105,25 @@
 						<Backdrop name="$(parent)BG" inherits="ZO_DefaultBackdrop"/>
 						
 						<Control name="$(parent)Glyph1" inherits="RaidNotifierGlyphTemplate">
-							<Anchor point="CENTER" offsetX="90" offsetY="-60" />
+							<Anchor point="TOP" offsetX="90" offsetY="0" />
 						</Control>
 						<Control name="$(parent)Glyph2" inherits="RaidNotifierGlyphTemplate">
-							<Anchor point="CENTER" offsetX="78" offsetY="-0" />
+							<Anchor point="TOP" offsetX="78" offsetY="60" />
 						</Control>
 						<Control name="$(parent)Glyph3" inherits="RaidNotifierGlyphTemplate">
-							<Anchor point="CENTER" offsetX="30" offsetY="50" />
+							<Anchor point="TOP" offsetX="30" offsetY="110" />
 						</Control>
 						<Control name="$(parent)Glyph4" inherits="RaidNotifierGlyphTemplate">
-							<Anchor point="CENTER" offsetX="-30" offsetY="50" />
+							<Anchor point="TOP" offsetX="-30" offsetY="110" />
 						</Control>
 						<Control name="$(parent)Glyph5" inherits="RaidNotifierGlyphTemplate">
-							<Anchor point="CENTER" offsetX="-78" offsetY="-0" />
+							<Anchor point="TOP" offsetX="-78" offsetY="60" />
 						</Control>
 						<Control name="$(parent)Glyph6" inherits="RaidNotifierGlyphTemplate">
-							<Anchor point="CENTER" offsetX="-90" offsetY="-60" />
+							<Anchor point="TOP" offsetX="-90" offsetY="0" />
 						</Control>
 						<Control name="$(parent)Glyph7" inherits="RaidNotifierGlyphTemplate">
-							<Anchor point="CENTER" offsetX="0" offsetY="-40" />
+							<Anchor point="TOP" offsetX="0" offsetY="20" />
 						</Control>
 
 					</Controls>

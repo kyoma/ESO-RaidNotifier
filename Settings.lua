@@ -19,6 +19,7 @@ RaidNotifier.Defaults = {
 		showTanks       = true,
 		showDps         = false,
 		ulti_window     = {100, 600},
+		override_cost   = 0,
 	},
 	sounds = {
 	},
@@ -65,11 +66,24 @@ RaidNotifier.Defaults = {
 		zhaj_gripoflorkhaj = true,
 		zhaj_glyphs = false,
 		zhaj_glyph_window = {100, 400},
+		zhaj_glyphs_invert = false,
 	},
 	maelstrom = {
 		stage7_poison  = true,
 		stage9_synergy = true,
 	},
+	--[[
+	hallsFab = {
+		pinnacleBoss_conduit_spawn = true,
+		pinnacleBoss_conduit_drain = 0, -- "Off"
+		pinnacleBoss_conduit_strike = 0, 
+
+		mobs_taking_aim = 1, -- "Self"
+		mobs_draining_ballista = 1,
+		mobs_power_leech = true,
+	}, 
+	--]]
+
 	dbg = {
 		enable = false,
 		notify = false,
@@ -245,7 +259,7 @@ function RaidNotifier:CreateSettingsMenu()
 		default = true,
 	})
 	
-	--
+
 	MakeControlEntry({
 		type = "header",
 		name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_HEADER),
@@ -340,7 +354,18 @@ function RaidNotifier:CreateSettingsMenu()
 		noSound = true,
 		default = false,
 	})
-	--]]
+	MakeControlEntry({
+		type = "slider",
+		min = 0,
+        max = 250,
+		name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_OVERRIDECOST),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_OVERRIDECOST_TT),
+		getFunc = function() return Vars.ultimate.override_cost end,
+		setFunc = function(value) Vars.ultimate.override_cost = value end,
+		noSound = true,
+		default = 0,
+	})
+
 
 	-- Hel Ra Citadel
 	MakeControlEntry({
@@ -508,9 +533,26 @@ function RaidNotifier:CreateSettingsMenu()
 		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS),
 		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_TT),
 		getFunc = function() return Vars.mawLorkhaj.zhaj_glyphs end,
-		setFunc = function(value)   Vars.mawLorkhaj.zhaj_glyphs = value end,
+		setFunc = function(value)   
+					Vars.mawLorkhaj.zhaj_glyphs = value 
+					self.UI.SetElementHidden("mawLorkhaj", "zhaj_glyph_window", not value)
+				end,
 		noSound = true,
 	}, "mawLorkhaj", "zhaj_glyphs")
+	MakeControlEntry({
+		type = "checkbox",
+		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_INVERT),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_INVERT_TT),
+		getFunc = function() return Vars.mawLorkhaj.zhaj_glyphs_invert end,
+		setFunc = function(value)  
+					Vars.mawLorkhaj.zhaj_glyphs_invert = value 
+					self.UI.SetupGlyphWindow(nil, Vars.mawLorkhaj.zhaj_glyphs_invert)
+				end,
+		disabled = function() return not Vars.mawLorkhaj.zhaj_glyphs end, 
+		noSound = true,
+	}, "mawLorkhaj", "zhaj_glyphs_invert")
+	
+	
 	MakeControlEntry({
 		type = "dropdown",
 		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_TWIN_ASPECTS),

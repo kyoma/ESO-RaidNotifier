@@ -1,5 +1,5 @@
 local MY_MODULE_NAME = "Kyoma"
-local MY_MODULE_VERSION = 4
+local MY_MODULE_VERSION = 5
 
 local LCC = LibStub('LibCustomTitlesRN')
 if not LCC then return end
@@ -17,3 +17,7 @@ MY_MODULE:RegisterTitle("@KisoValley",      nil,        92,     {en = "Decent"  
 MY_MODULE:RegisterTitle("@SloppyChef",      nil,     false,     {en = "Grote Vriendelijke Reus"                                                                                         })
 MY_MODULE:RegisterTitle("@sp_korshun",      nil,      1444,     {en = "Achievement Hunter"                                                                                              })
 MY_MODULE:RegisterTitle("@MMasing",         nil,        92,     {en = "Queen of Healing"                                                                                                },    {color={"#2DCAED", "#EFC509"}})
+MY_MODULE:RegisterTitle("@DerpyShadowz",    nil,      1712,     {en = "The Silly Salmon"                                                                                                },    {color="#CD2727"})
+MY_MODULE:RegisterTitle("@DerpyShadowz",    nil,      1810,     {en = "The Silly Salmon"                                                                                                },    {color="#CD2727"})
+MY_MODULE:RegisterTitle("@iJonno",          nil,      1730,     {en = "Princess",                       de = "Prinzessin",                      fr = "Princesse"                        },    {color="#FAABFF"})
+MY_MODULE:RegisterTitle("@iJonno",          nil,      1810,     {en = "Princess",                       de = "Prinzessin",                      fr = "Princesse"                        },    {color="#FAABFF"})

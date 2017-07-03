@@ -51,6 +51,10 @@ L.Settings_Ultimate_ShowTanks                        = "Show Tank"
 L.Settings_Ultimate_ShowTanks_TT                     = "Show ultimate for group members with the Tank role."
 L.Settings_Ultimate_ShowDps                          = "Show Damage"
 L.Settings_Ultimate_ShowDps_TT                       = "Show ultimate for group members with the Damage role."
+L.Settings_Ultimate_TargetUlti                       = "Ultimate Ability"
+L.Settings_Ultimate_TargetUlti_TT                    = "What ultimate ability to use for the percentage value seen by others."
+L.Settings_Ultimate_OverrideCost                     = "Override Cost"
+L.Settings_Ultimate_OverrideCost_TT                  = "Use this value when sending your ultimate cost to others. Setting it to 0 will disable the override."
 
 
 
@@ -162,6 +166,8 @@ L.Settings_MawLorkhaj_Zhaj_GripOfLorkhaj            = "Zhaj'hassa: Grip of Lorkh
 L.Settings_MawLorkhaj_Zhaj_GripOfLorkhaj_TT         = "Get a warning when the Grip of Lorkhaj debuff starts affecting you."
 L.Settings_MawLorkhaj_Zhaj_Glyphs                   = "Zhaj'hassa: Cleansing Platforms (beta)"
 L.Settings_MawLorkhaj_Zhaj_Glyphs_TT                = "Displays a window with all of the cleansing platforms with their status and time until they respawn."
+L.Settings_MawLorkhaj_Zhaj_Glyphs_Invert            = " - Invert Window"
+L.Settings_MawLorkhaj_Zhaj_Glyphs_Invert_TT         = "Inverts the position of the glyphs in the window"
 L.Settings_MawLorkhaj_Twin_Aspects                  = "False Moon Twins: Aspects"
 L.Settings_MawLorkhaj_Twin_Aspects_TT               = "Alerts when you get the Lunar or Shadow aspect at the False Moon Twins.\n\n    Full alerts you when you get an aspect, when you are starting to convert to an aspect and when the conversion is complete.\n    Normal alerts you when you get an aspect and when you are converting.\n    Minimal only alerts you when you are converting."
 L.Settings_MawLorkhaj_Rakkhat_Unstable_Void         = "Rakkhat: Unstable Void"
@@ -233,6 +239,43 @@ L.Alerts_Dragonstar_Arena8_Ice_Charge               = "Incoming |c6699FFIce Char
 L.Alerts_Dragonstar_Arena8_Ice_Charge_Other         = "|c6699FFIce Charge|r is being cast on |cFF0000<<!aC:1>>|r. Interrupt!"
 L.Alerts_Dragonstar_Arena8_Fire_Charge              = "Incoming |cFF3113Fire Charge|r on you! Interrupt or dodge!"
 L.Alerts_Dragonstar_Arena8_Fire_Charge_Other        = "|c6699FFire Charge|r is being cast on |cFF0000<<!aC:1>>|r. Interrupt!"
+
+
+
+--------------------------------
+---- Halls Of Fabrication   ----
+--------------------------------
+L.Settings_HallsFab_Header                          = "Halls Of Fabrication"
+-- Settings
+L.Settings_HallsFab_General_Taking_Aim              = "Mobs: Taking Aim"
+L.Settings_HallsFab_General_Taking_Aim_TT           = "Alerts you when you are being targeted by the Taking Aim ability."
+L.Settings_HallsFab_Conduit_Spawning                = "Pinnacle: Conduit Spawning"
+L.Settings_HallsFab_Conduit_Spawning                = "Alerts you when a conduit is about to spawn"
+L.Settings_HallsFab_Conduit_Strike                  = "Mobs: Conduit Strike"
+L.Settings_HallsFab_Conduit_Strike_TT               = "Alerts you when Conduit Strike is coming."
+L.Settings_HallsFab_Draining_Ballista               = "Mobs: Draining Ballista"
+L.Settings_HallsFab_Draining_Ballista_TT            = "Alerts you when Sphere need to be bashed."
+L.Settings_HallsFab_Overcharge_Aura                 = "Reclaimer: Overcharging Aura"
+L.Settings_HallsFab_Overcharge_Aura_TT              = "Alerts you when reclaimer start overcharging aura."
+L.Settings_HallsFab_Fabricant_Spawn                 = "Reclaimer: Ruined Fabricant Spawn"
+L.Settings_HallsFab_Fabricant_Spawn_TT              = "Alerts you when Ruined Fabricant is spawning."
+L.Settings_HallsFab_Catastrophic_Discharge          = "Reclaimer: Catastrophic Discharge"
+L.Settings_HallsFab_Catastrophic_Discharge_TT       = "Alerts you when the Ruined Fabricant starts to charge at you."
+L.Settings_HallsFab_Reclaim_Achieve                 = "Reclaimer: Reclaim the Ruined Achieve Failed"
+L.Settings_HallsFab_Reclaim_Achieve_TT              = "Alerts you when the bomber reaches Reclaimer."
+-- Alerts
+L.Alerts_HallsFab_General_Taking_Aim                = "|cFF6600Taking Aim|r targeted at you!"
+L.Alerts_HallsFab_General_Taking_Aim_Other          = "|cFF6600Taking Aim|r targeted at |cFF0000<<!aC:1>>|r!"
+L.Alerts_HallsFab_Conduit_Spawning                  = "A Conduit is about to spawn"
+L.Alerts_HallsFab_Conduit_Drain                     = "A Conduit is draining you!"
+L.Alerts_HallsFab_Conduit_Drain_Other               = "A Conduit is draining |cFF0000<<!aC:1>>|r!"
+L.Alerts_HallsFab_Conduit_Strike                    = "Incoming |cFF0000Conduit Strike|r. Block!"
+L.Alerts_HallsFab_Draining_Ballista                 = "|cFFC000Draining Ballista|r targeted at you! Block or interrupt!"
+L.Alerts_HallsFab_Power_Leech                       = "|c6600FFPower Leech|r! Break Free!"
+L.Alerts_HallsFab_Overcharge_Aura                   = "|c3366EEOvercharging Aura|r at Reclaimer."
+L.Alerts_HallsFab_Catastrophic_Discharge            = "|cFF0000Catastrophic Discharge|r at you! Block!"
+L.Alerts_HallsFab_Fabricant_Spawn                   = "|cFFC000Ruined Fabricant Spawn|r"
+L.Alerts_HallsFab_Reclaim_Achieve                   = "Planned Obsolescence |cFF0000Achievement Failed|r"
 
 
 --------------------------------

@@ -2,6 +2,15 @@
 RaidNotifier = RaidNotifier or {}
 RaidNotifier.BuffsDebuffs = {}
 
+local ultimates = {
+	46609, -- Barrier Rank IV
+	86485, -- Elemental Storm Rank IV
+	29844, -- Negate Magic Rank IV
+	24046, -- Nova Rank IV
+	46529, -- War Horn Rank IV
+}
+RaidNotifier.BuffsDebuffs.ultimates = ultimates
+
 -- ---------------------------------------------------
 -- Sanctum Ophidia -----------------------------------
 -- ---------------------------------------------------
@@ -327,6 +336,51 @@ RaidNotifier.BuffsDebuffs.maw_lorkhaj = maw_lorkhaj
 -- Halls of Fabrication ------------------------------
 -- ---------------------------------------------------
 local halls_fab = {}
+
+-- Pinnacle Factotum (2nd boss)
+halls_fab.pinnacleBoss_fluxburst       = 90755 -- the streak-like attack
+halls_fab.pinnacleBoss_conduit_spawn   = 91781 -- sadly not targeted on somebody
+halls_fab.pinnacleBoss_conduit_drain   = 91792 
+-- Conduit Strike 
+halls_fab.pinnacleBoss_conduit_strike = {}
+halls_fab.pinnacleBoss_conduit_strike[88036] = true
+halls_fab.pinnacleBoss_conduit_strike[94613] = true
+
+-- Refabrication Committee (4th bosses)
+--  Reducer
+halls_fab.committee_overheat             = 94747
+halls_fab.committee_overheat_aura        = 94736
+--  Reactor
+halls_fab.committee_overload             = 94759
+halls_fab.committee_overload_aura        = 94757
+--  Reclaimer
+halls_fab.committee_overcharge_aura      = 90715 --is this the lightning/fire circle around the middle boss?
+--  Ruined Factotum spawns
+halls_fab.committee_fabricant_spawn      = 90499
+halls_fab.committee_fabricant_spawn_old  = 92835
+halls_fab.committee_reclaim_achieve      = 94458 -- achievement "Planned Obsolescence" has failed if this shows up
+halls_fab.committee_catastrophic_discharge = {}
+halls_fab.committee_catastrophic_discharge[90581] = true
+halls_fab.committee_catastrophic_discharge[90632] = true -- the actual channel as it is exploding next to someone (do we want the rest as well?)
+halls_fab.committee_catastrophic_discharge[91358] = true
+halls_fab.committee_catastrophic_discharge[91359] = true
+halls_fab.committee_catastrophic_discharge[94764] = true
+halls_fab.committee_catastrophic_discharge[94765] = true
+halls_fab.committee_catastrophic_discharge[94767] = true
+halls_fab.committee_catastrophic_discharge[94939] = true
+halls_fab.committee_catastrophic_discharge[94941] = true
+halls_fab.committee_catastrophic_discharge[94942] = true
+halls_fab.committee_catastrophic_discharge[94944] = true
+halls_fab.committee_catastrophic_discharge[94949] = true
+halls_fab.committee_catastrophic_discharge[94950] = true
+
+-- Assembly General
+halls_fab.asmGeneral_titanic_smash = 90428 -- only thing that needs to be blocked?
+
+-- Mobs
+halls_fab.mobs_taking_aim          = 91736
+halls_fab.mobs_power_leech         = 88041 -- stun, also used by 4th boss?
+halls_fab.mobs_draining_ballista   = 91077 -- same thing as power leech??
 
 RaidNotifier.BuffsDebuffs.halls_fab = halls_fab
 

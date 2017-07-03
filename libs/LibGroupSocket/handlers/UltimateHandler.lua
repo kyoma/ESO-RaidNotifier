@@ -25,7 +25,7 @@ local defaultData = {
     version = 1,
     enabled = true,
 }
-handler.callbacks = 0
+handler.callbacks = handler.callbacks or 0
 
 local function GetCachedUnitResources(unitTag, skipCreate)
     local unitName = GetUnitName(unitTag)
