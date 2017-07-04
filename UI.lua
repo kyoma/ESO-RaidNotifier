@@ -103,11 +103,13 @@ do -----------------
 			local isValidAnchor, point, relativeTo, relativePoint, offsetX, offsetY = control:GetAnchor()
 			control:ClearAnchors()
 			offsetY = math.abs(offsetY)
+			offsetX = math.abs(offsetX)
 			if inverted then
-				point = BOTTOM
+				point = BOTTOMRIGHT
 				offsetY = offsetY * -1
+				offsetX = offsetX * -1
 			else
-				point = TOP
+				point = TOPLEFT
 			end
 			control:SetAnchor(point, nil, nil, offsetX, offsetY)
 		end
