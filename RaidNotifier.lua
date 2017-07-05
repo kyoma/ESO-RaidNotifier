@@ -401,6 +401,9 @@ do ----------------------
 	function RaidNotifier:IsInRaidZone()
 		return self:GetRaidIdFromCurrentZone() > 0
 	end
+	function RaidNotifier:GetRaidDescription(raidId)
+		return GetZoneDescriptionById(RaidZoneIds[raidId])
+	end
 
 	local listening = false
 	function RaidNotifier:RegisterEvents(raidId)

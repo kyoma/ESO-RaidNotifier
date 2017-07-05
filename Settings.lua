@@ -1,6 +1,15 @@
 local RaidNotifier = RaidNotifier
 local UI = RaidNotifier.UI
 
+-- Constants for easy reading
+local RAID_HEL_RA_CITADEL        = 1
+local RAID_AETHERIAN_ARCHIVE     = 2
+local RAID_SANCTUM_OPHIDIA       = 3
+local RAID_DRAGONSTAR_ARENA      = 4
+local RAID_MAW_OF_LORKHAJ        = 5
+local RAID_MAELSTROM_ARENA       = 6
+local RAID_HALLS_OF_FABRICATION  = 7
+
 RaidNotifier.Defaults = {
 	general = {
 		buffFood_reminder = true,
@@ -73,7 +82,7 @@ RaidNotifier.Defaults = {
 		stage9_synergy = true,
 	},
 	hallsFab = {
-		conduit_strike        = false, 
+		conduit_strike        = true, 
 		taking_aim            = 1, -- "Self"
 		draining_ballista     = 1, --
 		power_leech           = false,
@@ -196,6 +205,7 @@ function RaidNotifier:CreateSettingsMenu()
 
 	local index = 0
 	local optionsTable = {}
+	local subTable     = nil
 	local function MakeControlEntry(data, category, setting)
 		index = index + 1
 		data.reference = "RNSettingCtrl"..index
@@ -203,8 +213,15 @@ function RaidNotifier:CreateSettingsMenu()
 			data.category = category
 			data.setting = setting
 			data.default = (data.type == "dropdown" and getDefaultChoiceValue(category, setting) or RaidNotifier.Defaults[category][setting])
+		elseif data.type == "submenu" then
+			data.controls = subTable
 		end
-		optionsTable[index] = data
+		--optionsTable[index] = data
+		if subTable ~= nil and data.type ~= "submenu" then
+			table.insert(subTable, data)
+		else
+			table.insert(optionsTable, data)
+		end
 	end
 
 	MakeControlEntry({
@@ -267,11 +284,12 @@ function RaidNotifier:CreateSettingsMenu()
 	})
 	
 
-	MakeControlEntry({
-		type = "header",
-		name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_HEADER),
-		noSound = true,
-	})
+	--MakeControlEntry({
+	--	type = "header",
+	--	name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_HEADER),
+	--	noSound = true,
+	--})
+	subTable = {}
 	MakeControlEntry({
 		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_ENABLED),
@@ -373,12 +391,25 @@ function RaidNotifier:CreateSettingsMenu()
 		default = 0,
 	})
 
+	MakeControlEntry({
+		type = "submenu",
+		name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_HEADER),
+		noSound = true
+	})
+	subTable = nil
+		
 
-	-- Hel Ra Citadel
 	MakeControlEntry({
 		type = "header",
-		name = GetString(RAIDNOTIFIER_SETTINGS_HELRA_HEADER),
+		name = "Trials",
 		noSound = true,
+	})
+		
+	-- Hel Ra Citadel
+	subTable = {}
+	MakeControlEntry({
+		type = "description",
+		text = RaidNotifier:GetRaidDescription(RAID_HEL_RA_CITADEL),
 	})
 	MakeControlEntry({
 		type = "dropdown",
@@ -388,13 +419,19 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("helra", "warrior_stoneform") end,
 		setFunc = function(value)   setChoiceValue("helra", "warrior_stoneform", value) end,
 	}, "helra", "warrior_stoneform")
+	
+	MakeControlEntry({
+		type = "submenu",
+		name = GetString(RAIDNOTIFIER_SETTINGS_HELRA_HEADER),
+		noSound = true,
+	})
 
 
 	-- Aetherius Archive
+	subTable = {}
 	MakeControlEntry({
-		type = "header",
-		name = GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_HEADER),
-		noSound = true,
+		type = "description",
+		text = RaidNotifier:GetRaidDescription(RAID_AETHERIAN_ARCHIVE),
 	})
 	MakeControlEntry({
 		type = "checkbox",
@@ -440,15 +477,19 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("archive", "call_lightning") end,
 		setFunc = function(value)   setChoiceValue("archive", "call_lightning", value) end,
 	}, "archive", "call_lightning")
-
-
-	-- Sanctum Ophidia
 	MakeControlEntry({
-		type = "header",
-		name = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_HEADER),
+		type = "submenu",
+		name = GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_HEADER),
 		noSound = true,
 	})
 
+
+	-- Sanctum Ophidia
+	subTable = {}
+	MakeControlEntry({
+		type = "description",
+		text = RaidNotifier:GetRaidDescription(RAID_SANCTUM_OPHIDIA),
+	})
 	MakeControlEntry({
 		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_MANTIKORA_QUAKE),
@@ -521,12 +562,18 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("sanctumOphidia", "call_lightning") end,
 		setFunc = function(value)   setChoiceValue("sanctumOphidia", "call_lightning", value) end,
 	}, "sanctumOphidia", "call_lightning")
+	MakeControlEntry({
+		type = "submenu",
+		name = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_HEADER),
+		noSound = true,
+	})
+
 
 	-- Maw of Lorkhaj
+	subTable = {}
 	MakeControlEntry({
-		type = "header",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_HEADER),
-		noSound = true,
+		type = "description",
+		text = RaidNotifier:GetRaidDescription(RAID_MAW_OF_LORKHAJ),
 	})
 	MakeControlEntry({
 		type = "checkbox",
@@ -633,13 +680,18 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.mawLorkhaj.markedfordeath end,
 		setFunc = function(value)   Vars.mawLorkhaj.markedfordeath = value end,
 	}, "mawLorkhaj", "markedfordeath")
+	MakeControlEntry({
+		type = "submenu",
+		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_HEADER),
+		noSound = true,
+	})
 
 
 	-- Dragonstar Arena
+	subTable = {}
 	MakeControlEntry({
-		type = "header",
-		name = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_HEADER),
-		noSound = true,
+		type = "description",
+		text = RaidNotifier:GetRaidDescription(RAID_DRAGONSTAR_ARENA),
 	})
 	MakeControlEntry({
 		type = "checkbox",
@@ -693,13 +745,17 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("dragonstar", "arena8_ice_charge") end,
 		setFunc = function(value)   setChoiceValue("dragonstar", "arena8_ice_charge", value) end,
 	}, "dragonstar", "arena8_ice_charge")
-
+	MakeControlEntry({
+		type = "submenu",
+		name = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_HEADER),
+		noSound = true,
+	})
 
 	-- Maelstrom Arena
+	subTable = {}
 	MakeControlEntry({
-		type = "header",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAELSTROM_HEADER),
-		noSound = true,
+		type = "description",
+		text = RaidNotifier:GetRaidDescription(RAID_MAELSTROM_ARENA),
 	})
 	MakeControlEntry({
 		type = "checkbox",
@@ -715,13 +771,18 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.maelstrom.stage9_synergy end,
 		setFunc = function(value)   Vars.maelstrom.stage9_synergy = value end,
 	}, "maelstrom", "stage9_synergy")
-
-
-	-- Halls of Fabrication
 	MakeControlEntry({
-		type = "header",
-		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_HEADER),
-		noSound = true
+		type = "submenu",
+		name = GetString(RAIDNOTIFIER_SETTINGS_MAELSTROM_HEADER),
+		noSound = true,
+	})
+
+	
+	-- Halls of Fabrication
+	subTable = {}
+	MakeControlEntry({
+		type = "description",
+		text = RaidNotifier:GetRaidDescription(RAID_HALLS_OF_FABRICATION),
 	})
 	MakeControlEntry({
 		type = "dropdown",
@@ -768,8 +829,7 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("hallsFab", "pinnacleBoss_conduit_drain") end,
 		setFunc = function(value)   setChoiceValue("hallsFab", "pinnacleBoss_conduit_drain", value) end,
 	}, "hallsFab", "pinnacleBoss_conduit_drain")
-   
-   
+  
 	MakeControlEntry({
 		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS),
@@ -791,7 +851,12 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.hallsFab.committee_reclaim_achive end,
 		setFunc = function(value)   Vars.hallsFab.committee_reclaim_achive = value end,
 	}, "hallsFab", "committee_reclaim_achive")
-
+   	MakeControlEntry({
+		type = "submenu",
+		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_HEADER),
+		noSound = true
+	})
+	subTable = nil
 
 
 	MakeControlEntry({
