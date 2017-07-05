@@ -341,10 +341,6 @@ local halls_fab = {}
 halls_fab.pinnacleBoss_fluxburst       = 90755 -- the streak-like attack
 halls_fab.pinnacleBoss_conduit_spawn   = 91781 -- sadly not targeted on somebody
 halls_fab.pinnacleBoss_conduit_drain   = 91792 
--- Conduit Strike 
-halls_fab.pinnacleBoss_conduit_strike = {}
-halls_fab.pinnacleBoss_conduit_strike[88036] = true
-halls_fab.pinnacleBoss_conduit_strike[94613] = true
 
 -- Refabrication Committee (4th bosses)
 --  Reducer
@@ -354,10 +350,10 @@ halls_fab.committee_overheat_aura        = 94736
 halls_fab.committee_overload             = 94759
 halls_fab.committee_overload_aura        = 94757
 --  Reclaimer
-halls_fab.committee_overcharge_aura      = 90715 --is this the lightning/fire circle around the middle boss?
+halls_fab.committee_overcharge_aura      = 90715
 --  Ruined Factotum spawns
 halls_fab.committee_fabricant_spawn      = 90499
-halls_fab.committee_fabricant_spawn_old  = 92835
+halls_fab.committee_fabricant_spawn_old  = 92835 
 halls_fab.committee_reclaim_achieve      = 94458 -- achievement "Planned Obsolescence" has failed if this shows up
 halls_fab.committee_catastrophic_discharge = {}
 halls_fab.committee_catastrophic_discharge[90581] = true
@@ -375,12 +371,15 @@ halls_fab.committee_catastrophic_discharge[94949] = true
 halls_fab.committee_catastrophic_discharge[94950] = true
 
 -- Assembly General
-halls_fab.asmGeneral_titanic_smash = 90428 -- only thing that needs to be blocked?
+halls_fab.assembly_titanic_smash = 90428 -- only thing that needs to be blocked?
 
--- Mobs
-halls_fab.mobs_taking_aim          = 91736
-halls_fab.mobs_power_leech         = 88041 -- stun, also used by 4th boss?
-halls_fab.mobs_draining_ballista   = 91077 -- same thing as power leech??
+-- Other
+halls_fab.conduit_strike = {}
+halls_fab.conduit_strike[88036]   = true
+halls_fab.conduit_strike[94613]   = true  -- from Committee trio
+halls_fab.power_leech             = 88041 -- the actual stun you need to break free from
+halls_fab.taking_aim              = 91736
+halls_fab.draining_ballista       = 91077
 
 RaidNotifier.BuffsDebuffs.halls_fab = halls_fab
 

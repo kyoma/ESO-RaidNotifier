@@ -72,17 +72,19 @@ RaidNotifier.Defaults = {
 		stage7_poison  = true,
 		stage9_synergy = true,
 	},
-	--[[
 	hallsFab = {
+		conduit_strike        = false, 
+		taking_aim            = 1, -- "Self"
+		draining_ballista     = 1, --
+		power_leech           = false,
+
 		pinnacleBoss_conduit_spawn = true,
 		pinnacleBoss_conduit_drain = 0, -- "Off"
-		pinnacleBoss_conduit_strike = 0, 
 
-		mobs_taking_aim = 1, -- "Self"
-		mobs_draining_ballista = 1,
-		mobs_power_leech = true,
+		committee_overpower_auras = false,
+		committee_fabricant_spawn = false,
+		committee_reclaim_achieve = false,
 	}, 
-	--]]
 
 	dbg = {
 		enable = false,
@@ -168,6 +170,11 @@ function RaidNotifier:CreateSettingsMenu()
 			arena6_drain_resource = off_self_all,
 			arena8_ice_charge = off_self_all,
 			arena8_fire_charge = off_self_all,
+		},
+		hallsFab = {
+			pinnacleBoss_conduit_drain = off_self_all,
+			taking_aim = off_self_all,
+			draining_ballista = off_self_all,
 		},
     }
 	
@@ -544,14 +551,10 @@ function RaidNotifier:CreateSettingsMenu()
 		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_INVERT),
 		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_INVERT_TT),
 		getFunc = function() return Vars.mawLorkhaj.zhaj_glyphs_invert end,
-		setFunc = function(value)  
-					Vars.mawLorkhaj.zhaj_glyphs_invert = value 
-					self.UI.SetupGlyphWindow(nil, Vars.mawLorkhaj.zhaj_glyphs_invert)
-				end,
+		setFunc = function(value)   Vars.mawLorkhaj.zhaj_glyphs_invert = value; UI.InvertGlyphs() end,
 		disabled = function() return not Vars.mawLorkhaj.zhaj_glyphs end, 
 		noSound = true,
 	}, "mawLorkhaj", "zhaj_glyphs_invert")
-	
 	
 	MakeControlEntry({
 		type = "dropdown",
@@ -712,6 +715,83 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.maelstrom.stage9_synergy end,
 		setFunc = function(value)   Vars.maelstrom.stage9_synergy = value end,
 	}, "maelstrom", "stage9_synergy")
+
+
+	-- Halls of Fabrication
+	MakeControlEntry({
+		type = "header",
+		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_HEADER),
+		noSound = true
+	})
+	MakeControlEntry({
+		type = "dropdown",
+		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_TAKING_AIM),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_TAKING_AIM_TT),
+		choices = choices.hallsFab.taking_aim,
+		getFunc = function() return getChoiceValue("hallsFab", "taking_aim") end,
+		setFunc = function(value)   setChoiceValue("hallsFab", "taking_aim", value) end,
+	}, "hallsFab", "taking_aim")
+	MakeControlEntry({
+		type = "dropdown",
+		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_DRAINING_BALLISTA),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_DRAINING_BALLISTA_TT),
+		choices = choices.hallsFab.draining_ballista,
+		getFunc = function() return getChoiceValue("hallsFab", "draining_ballista") end,
+		setFunc = function(value)   setChoiceValue("hallsFab", "draining_ballista", value) end,
+	}, "hallsFab", "draining_ballista")
+	MakeControlEntry({
+		type = "checkbox",
+		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_STRIKE),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_STRIKE_TT),
+		getFunc = function() return Vars.hallsFab.conduit_strike end,
+		setFunc = function(value)   Vars.hallsFab.conduit_strike = value end,
+   }, "hallsFab", "conduit_strike")
+   	MakeControlEntry({
+		type = "checkbox",
+		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_POWER_LEECH),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_POWER_LEECH_TT),
+		getFunc = function() return Vars.hallsFab.power_leech end,
+		setFunc = function(value)   Vars.hallsFab.power_leech = value end,
+   }, "hallsFab", "power_leech")
+   	MakeControlEntry({
+		type = "checkbox",
+		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_SPAWN),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_SPAWN_TT),
+		getFunc = function() return Vars.hallsFab.pinnacleBoss_conduit_spawn end,
+		setFunc = function(value)   Vars.hallsFab.pinnacleBoss_conduit_spawn = value end,
+   }, "hallsFab", "pinnacleBoss_conduit_spawn")
+  	MakeControlEntry({
+		type = "dropdown",
+		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_DRAIN),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_DRAIN_TT),
+		choices = choices.hallsFab.pinnacleBoss_conduit_drain,
+		getFunc = function() return getChoiceValue("hallsFab", "pinnacleBoss_conduit_drain") end,
+		setFunc = function(value)   setChoiceValue("hallsFab", "pinnacleBoss_conduit_drain", value) end,
+	}, "hallsFab", "pinnacleBoss_conduit_drain")
+   
+   
+	MakeControlEntry({
+		type = "checkbox",
+		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS_TT),
+		getFunc = function() return Vars.hallsFab.committee_overpower_auras end,
+		setFunc = function(value)   Vars.hallsFab.committee_overpower_auras = value end,
+	}, "hallsFab", "committee_overpower_auras")
+	MakeControlEntry({
+		type = "checkbox",
+		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_FABRICANT_SPAWN),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_FABRICANT_SPAWN_TT),
+		getFunc = function() return Vars.hallsFab.committee_fabricant_spawn end,
+		setFunc = function(value)   Vars.hallsFab.committee_fabricant_spawn = value end,
+	}, "hallsFab", "committee_fabricant_spawn")
+	MakeControlEntry({
+		type = "checkbox",
+		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_RECLAIM_ACHIEVE),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_RECLAIM_ACHIEVE_TT),
+		getFunc = function() return Vars.hallsFab.committee_reclaim_achive end,
+		setFunc = function(value)   Vars.hallsFab.committee_reclaim_achive = value end,
+	}, "hallsFab", "committee_reclaim_achive")
+
 
 
 	MakeControlEntry({

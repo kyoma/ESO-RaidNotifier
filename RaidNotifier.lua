@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "1.9.5"
+RaidNotifier.Version         = "2.0.0"
 RaidNotifier.Author          = "|c009ad6Kyoma, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -171,6 +171,7 @@ do ---------------------------------
 	end
 
 end
+
 
 -- ----------------------
 -- -- ULTIMATE EXCHANGE
@@ -476,6 +477,10 @@ do ----------------------
 		-- UI Elements
 		UI.RegisterElement(RaidNotifierUI:GetNamedChild("GlyphWindow"))
 		UI.RegisterElement(RaidNotifierUI:GetNamedChild("UltimateWindow"), self.Vars.ultimate.hidden)
+		
+		if (self.Vars.mawLorkhaj.zhaj_glyphs_invert) then
+			UI.InvertGlyphs()
+		end
 
 		-- These aren't needed anymore since we now start & stop Raid Notifier solely based on being in the raid zone
 	    --EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_RAID_TRIAL_STARTED,  function(...) self:RegisterEvents() end)
@@ -548,11 +553,9 @@ do -----------------------------
 
 			UI.SetElementHidden("mawLorkhaj", "zhaj_glyph_window", true)
 			local map       = GetMapTileTexture()
-			
 			if (bossCount == 1 and map == "Art/maps/reapersmarch/Maw_of_Lorkaj_Base_0.dds") then -- Zhaj'hassa the Forgotten
 				buffsDebuffs.zhajBoss_knownGlyphs = {}
 				if (settings.zhaj_glyphs) then
-					UI.SetupGlyphWindow(nil, settings.zhaj_glyphs_invert)
 					UI.SetElementHidden("mawLorkhaj", "zhaj_glyph_window", false)
 				end
 			elseif (bossCount == 2 and map == "Art/maps/reapersmarch/MawLorkajSuthaySanctuary_Base_0.dds") then -- False Moon Twins, S’Kinrai and Vashai
@@ -646,9 +649,9 @@ do ---------------------------
 						self:SetLastNotify("helra", "warrior_stoneform", lastIndex)
 						zo_callLater(function()
 							if (lastIndex == self:GetLastNotify("helra", "warrior_stoneform")) then
-								if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
+								if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 									self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HELRA_WARRIOR_STONEFORM), "helra", "warrior_stoneform")
-								elseif ( tName ~= "" and settings.warrior_stoneform == 2 ) then
+								elseif (tName ~= "" and settings.warrior_stoneform == 2) then
 									self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_HELRA_WARRIOR_STONEFORM_OTHER), tName), "helra", "warrior_stoneform")
 								end
 							end
@@ -663,10 +666,8 @@ do ---------------------------
 				end
 
 			end
-		end
 
-
-		if (raidId == RAID_AETHERIAN_ARCHIVE) then
+		elseif (raidId == RAID_AETHERIAN_ARCHIVE) then
 			local buffsDebuffs, settings = self.BuffsDebuffs.archive, self.Vars.archive
 
 			if (result == ACTION_RESULT_BEGIN) then
@@ -710,9 +711,9 @@ do ---------------------------
 				elseif (buffsDebuffs.overcharged == abilityId) then
 					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 					if settings.overcharge >= 1 then
-						if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
+						if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ARCHIVE_OVERCHARGE), "archive", "overcharge")
-						elseif ( tName ~= "" and settings.overcharge == 2 ) then
+						elseif (tName ~= "" and settings.overcharge == 2) then
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ARCHIVE_OVERCHARGE_OTHER), tName), "archive", "overcharge")
 						end
 					end
@@ -721,9 +722,9 @@ do ---------------------------
 				elseif (buffsDebuffs.call_lightning == abilityId) then
 					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 					if settings.call_lightning >= 1 then
-						if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
+						if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ARCHIVE_CALL_LIGHTNING), "archive", "call_lightning")
-						elseif ( tName ~= "" and settings.call_lightning == 2 ) then
+						elseif (tName ~= "" and settings.call_lightning == 2) then
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ARCHIVE_CALL_LIGHTNING_OTHER), tName), "archive", "call_lightning")
 						end
 					end
@@ -762,10 +763,8 @@ do ---------------------------
 ]]--
 			end
 
-		end
 
-
-		if (raidId == RAID_SANCTUM_OPHIDIA) then
+		elseif (raidId == RAID_SANCTUM_OPHIDIA) then
 			local buffsDebuffs, settings = self.BuffsDebuffs.sanctum_ophidia, self.Vars.sanctumOphidia
 
 			--We're lucky that alot of things can be detected slightly before they hit the player
@@ -788,9 +787,9 @@ do ---------------------------
 				--	df("WORLDSHAPER, %d, %d/%d/%s", result, tType, tUnitId, tName)
 				--	dbg(string.format("World-Shaper (%d) on %s", abilityId, tName))
 				--	if settings.serpent_worldshaper then
-				--		if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
+				--		if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 				--			self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_SERPENT_WORLDSHAPER), 3000, "bla")
-				--		elseif ( tName ~= "" and settings.serpent_worldshaper == 2 ) then
+				--		elseif (tName ~= "" and settings.serpent_worldshaper == 2) then
 				--			self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_SERPENT_WORLDSHAPER_OTHER), tName), 3000, "bla")
 				--		end
 				--	end
@@ -799,9 +798,9 @@ do ---------------------------
 				elseif (buffsDebuffs.spreading_poison[abilityId]) then
 					if settings.troll_poison >= 1 then
 						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-						if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
+						if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_TROLL_POISON), "sanctumOphidia", "troll_poison")
-						elseif ( tName ~= "" and settings.troll_poison == 2 ) then
+						elseif (tName ~= "" and settings.troll_poison == 2) then
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_TROLL_POISON_OTHER), tName), "sanctumOphidia", "troll_poison")
 						end
 					end
@@ -810,9 +809,9 @@ do ---------------------------
 				elseif (buffsDebuffs.boulder_toss == abilityId) then
 					if settings.troll_boulder >= 1 then
 						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-						if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
+						if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_TROLL_BOULDER), "sanctumOphidia", "troll_boulder")
-						elseif ( tName ~= "" and settings.troll_boulder == 2 ) then
+						elseif (tName ~= "" and settings.troll_boulder == 2) then
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_TROLL_BOULDER_OTHER), tName), "sanctumOphidia", "troll_boulder")
 						end
 					end
@@ -821,9 +820,9 @@ do ---------------------------
 				elseif (buffsDebuffs.overcharged == abilityId) then
 					if settings.overcharge >= 1 then
 						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-						if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
+						if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_OVERCHARGE), "sanctumOphidia", "overcharge")
-						elseif ( tName ~= "" and settings.overcharge == 2 ) then
+						elseif (tName ~= "" and settings.overcharge == 2) then
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_OVERCHARGE_OTHER), tName), "sanctumOphidia", "overcharge")
 						end
 					end
@@ -832,9 +831,9 @@ do ---------------------------
 				elseif (buffsDebuffs.call_lightning == abilityId) then
 					if settings.call_lightning >= 1 then
 						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-						if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
+						if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_CALL_LIGHTNING), "sanctumOphidia", "call_lightning")
-						elseif ( tName ~= "" and settings.call_lightning == 2 ) then
+						elseif (tName ~= "" and settings.call_lightning == 2) then
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_CALL_LIGHTNING_OTHER), tName), "sanctumOphidia", "call_lightning")
 						end
 					end
@@ -858,10 +857,10 @@ do ---------------------------
 				--	if settings.mantikora_spear >= 1 then
 				--		tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 				--		df("Manti SpearThrow - %d/%d/%s", tType, tUnitId, tName)
-				--		if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
+				--		if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 				--			self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_MANTIKORA_SPEAR), 3000, SOUNDS.CHAMPION_POINTS_COMMITTED,
 				--												5, "sanctumOphidia", "mantikora_spear")
-				--		elseif ( tName ~= "" and settings.mantikora_spear == 2 ) then
+				--		elseif (tName ~= "" and settings.mantikora_spear == 2) then
 				--			zo_callLater(function()
 				--				self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_MANTIKORA_SPEAR_OTHER), tName), 3000, SOUNDS.CHAMPION_POINTS_COMMITTED,
 				--													5, "sanctumOphidia", "mantikora_spear")
@@ -896,10 +895,8 @@ do ---------------------------
 				end
 
 			end
-		end
 
-
-		if (raidId == RAID_DRAGONSTAR_ARENA) then
+		elseif (raidId == RAID_DRAGONSTAR_ARENA) then
 			local buffsDebuffs, settings = self.BuffsDebuffs.dragonstar, self.Vars.dragonstar
 
 			if (result == ACTION_RESULT_BEGIN) then
@@ -985,14 +982,13 @@ do ---------------------------
 
 			end
 
-		end
 
-
-		if (raidId == RAID_MAW_OF_LORKHAJ) then
+		elseif (raidId == RAID_MAW_OF_LORKHAJ) then
 			local buffsDebuffs, settings = self.BuffsDebuffs.maw_lorkhaj, self.Vars.mawLorkhaj
 
 			local function GetDistanceToUnit(unit)
-				local pX, pY, uX, uY = GetMapPlayerPosition("player"), GetMapPlayerPosition(unit)
+				local pX, pY = GetMapPlayerPosition("player")
+				local uX, uY = GetMapPlayerPosition(unit)
 				return math.sqrt((pX-uX)*(pX-uX)+(pY-uY)*(pY-uY)) * 1000
 			end
 
@@ -1038,9 +1034,6 @@ do ---------------------------
 				if (abilityId == buffsDebuffs.zhajBoss_glyphability) then
 					local findNew = (result == ACTION_RESULT_EFFECT_FADED) --only scan for new glyph when effect/glyph is used by the player, NOT when it respawns
 					local glyphIndex = FindGlyph(tUnitId, buffsDebuffs.zhajBoss_glyphs, buffsDebuffs.zhajBoss_knownGlyphs, findNew) 
-					if settings.zhaj_glyphs_invert then
-						glyphIndex = 7 - glyphIndex
-					end
 					if (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
 						UI.StopGlyphTimer(glyphIndex)
 					elseif (result == ACTION_RESULT_EFFECT_FADED) then
@@ -1063,9 +1056,8 @@ do ---------------------------
 						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_SUNEATER_ECLIPSE), "mawLorkhaj", "suneater_eclipse")
-						elseif ( tName ~= "" and (settings.suneater_eclipse == 2 or (settings.suneater_eclipse == 3 and GetDistanceToUnit(LUNIT:GetUnitTagForUnitId(tUnitId)) < 2000)) ) then
+						elseif (tName ~= "" and (settings.suneater_eclipse == 2 or (settings.suneater_eclipse == 3 and GetDistanceToUnit(LUNIT:GetUnitTagForUnitId(tUnitId)) < 2000))) then
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_SUNEATER_ECLIPSE_OTHER), tName), "mawLorkhaj", "suneater_eclipse")
-						else
 						end
 					end
 
@@ -1139,9 +1131,9 @@ do ---------------------------
 				if (abilityId == buffsDebuffs.rakkhat_unstablevoid) then
 					if settings.rakkhat_unstablevoid >= 1 then
 						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-						if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
+						if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_RAKKHAT_UNSTABLE_VOID), "mawLorkhaj", "rakkhat_unstablevoid")
-						elseif ( tName ~= "" and (settings.rakkhat_unstablevoid == 2) ) then
+						elseif (tName ~= "" and (settings.rakkhat_unstablevoid == 2)) then
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_RAKKHAT_UNSTABLE_VOID_OTHER), tName), "mawLorkhaj", "rakkhat_unstablevoid")
 						end
 					end
@@ -1196,10 +1188,8 @@ do ---------------------------
 					end
 				end
 			end
-		end
 
-
-		if (raidId == RAID_MAELSTROM_ARENA) then
+		elseif (raidId == RAID_MAELSTROM_ARENA) then
 			local buffsDebuffs, settings = self.BuffsDebuffs.maelstrom, self.Vars.maelstrom
 
 			if (result == ACTION_RESULT_BEGIN) then
@@ -1221,74 +1211,82 @@ do ---------------------------
 
 				end
 			end
-		end
 
---[[
-		if (raidId == RAID_HALLS_OF_FABRICATION) then
+		elseif (raidId == RAID_HALLS_OF_FABRICATION) then
 			local buffsDebuffs, settings = self.BuffsDebuffs.halls_fab, self.Vars.hallsFab
 
 			if (result == ACTION_RESULT_BEGIN) then
-				if (buffsDebuffs.mobs_taking_aim == abilityId) then
+				if (abilityId == buffsDebuffs.taking_aim) then
 					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 					dbg("Taking Aim on %s", tName)
-					if settings.mobs_taking_aim >= 1 then
-						if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
-							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM), "hallsFab", "mobs_taking_aim")
-						elseif ( tName ~= "" and settings.mobs_taking_aim == 2 ) then
-							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM_OTHER), tName), "hallsFab", "mobs_taking_aim")
+					if (settings.taking_aim >= 1) then
+						if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
+							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM), "hallsFab", "taking_aim")
+						elseif (tName ~= "" and settings.taking_aim == 2) then
+							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM_OTHER), tName), "hallsFab", "taking_aim")
 						end
 					end
-				elseif (buffsDebuffs.pinnacleBoss_conduit_spawn == abilityId) then
-					dbg("Conduit Spawning (%d)", tUnitId)
-					if settings.pinnacleBoss_conduit_spawn then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_CONDUIT_SPAWNING), "hallsFab", "pinnacleBoss_conduit_spawn")
+				elseif (buffsDebuffs.conduit_strike[abilityId] == true) then
+					dbg("Incoming Conduit Strike (%d)", abilityId)
+					if (settings.conduit_strike == true) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_CONDUIT_STRIKE), "hallsFab", "conduit_strike")
 					end
-				elseif (buffsDebuffs.pinnacleBoss_conduit_drain == abilityId) then
+				elseif (abilityId == buffsDebuffs.pinnacleBoss_conduit_spawn) then
+					dbg("Conduit Spawning (%d)", tUnitId)
+					if (settings.pinnacleBoss_conduit_spawn == true) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_CONDUIT_SPAWN), "hallsFab", "pinnacleBoss_conduit_spawn")
+					end
+				elseif (abilityId == buffsDebuffs.pinnacleBoss_conduit_drain) then
 					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-					dbg("Conduit Draining %s", tName)
+					dbg("Incoming Conduit Draining %s", tName)
 					if settings.pinnacleBoss_conduit_drain >= 1 then
-						if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
+						if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_CONDUIT_DRAIN), "hallsFab", "pinnacleBoss_conduit_drain")
-						elseif ( tName ~= "" and settings.pinnacleBoss_conduit_drain == 2 ) then
+						elseif (tName ~= "" and settings.pinnacleBoss_conduit_drain == 2) then
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_CONDUIT_DRAIN_OTHER), tName), "hallsFab", "pinnacleBoss_conduit_drain")
 						end
 					end
-				elseif (buffsDebuffs.pinnacleBoss_conduit_strike[abilityId] == true) then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-					dbg("Conduit Strike (%d) on %s", abilityId, tName)
-					if (settings.pinnacleBoss_conduit_strike >= 1) then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_CONDUIT_STRIKE), "hallsFab", "pinnacleBoss_conduit_strike")
+				elseif (abilityId == buffsDebuffs.committee_fabricant_spawn) then --is this per spawn or a one-time thing when the wave begins?
+					dbg("Ruined Fabricant Spawn (%d)", abilityId)
+					if (settings.committee_fabricant_spawn == true) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_FABRICANT_SPAWN), "hallsFab", "committee_fabricant_spawn", 4) -- rewrite it to use CountDown method like auras
 					end
 				end
 
 			elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
 
-				if (abilityId == buffsDebuffs.mobs_draining_ballista) then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-					dbg("Draining Ballista on %s", tName)
+				if (abilityId == buffsDebuffs.draining_ballista) then
+					--dbg("Draining Ballista on %s", tName)
 					if (settings.draining_ballista >= 1) then
+						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_DRAINING_BALLISTA), "hallsFab", "mobs_draining_ballista", 4)
+							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_DRAINING_BALLISTA), "hallsFab", "draining_ballista", 4)
 						end
 					end
-				elseif (abilityId == buffsDebuffs.mobs_power_leech) then
-					if ( tType == COMBAT_UNIT_TYPE_PLAYER ) then 
-						if (settings.mobs_power_leech) then
-							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_POWER_LEECH), "hallsFab", "mobs_power_leech")
+				elseif (abilityId == buffsDebuffs.power_leech) then
+					if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
+						--dbg("Stunned by Power Leech")
+						if (settings.power_leech == true) then
+							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_POWER_LEECH), "hallsFab", "power_leech")
 						end
 					end
-				elseif (buffsDebuffs.committee_overheat_aura == abilityId or buffsDebuffs.committee_overload_aura == abilityId) then -- right we dont care that this occurs twice in a row
-					buffsDebuffs.committee_countdown_index = self:StartCountdown(GetAbilityDuration(abilityId), GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_COMMITTEE_OVERPOWER_AURAS), "hallsFab", "committee_overpower_auras")
+				elseif (abilityId == buffsDebuffs.committee_overheat_aura or abilityId == buffsDebuffs.committee_overload_aura or abilityId == buffsDebuffs.committee_overcharge_aura) then 
+					-- right we dont care that this occurs multiple times in a row
+					if (settings.committee_overpower_auras == true) then
+						buffsDebuffs.committee_countdown_index = self:StartCountdown(9000, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_OVERPOWER_AURAS), "hallsFab", "committee_overpower_auras")
+					end
 				end
+				--TODO: track last person that had each aura to determine when they swapped??
 				
 			elseif (result == ACTION_RESULT_EFFECT_FADED) then
-				if (buffsDebuffs.committee_overheat_aura == abilityId or buffsDebuffs.committee_overload_aura == abilityId) then
-					self:StopCountdown(buffsDebuffs.committee_countdown_index)
-					buffsDebuffs.committee_countdown_index = 0 -- don't set it to nil
+				if (abilityId == buffsDebuffs.committee_overheat_aura or abilityId == buffsDebuffs.committee_overload_aura or abilityId == buffsDebuffs.committee_overcharge_aura) then 
+					if (settings.committee_overpower_auras == true) then
+						self:StopCountdown(buffsDebuffs.committee_countdown_index)
+						buffsDebuffs.committee_countdown_index = 0 -- don't set it to nil
+					end
 				end
 			end
 		end
---]]
 
 	end
 
