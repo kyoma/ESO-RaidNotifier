@@ -95,12 +95,23 @@ do -----------------
 		glyph.overlay:SetHidden(false)
 	end
 
-	function UI.InvertGlyphs()
+	function UI.SetupGlyphWindow(window, inverted)
 		window = window or UI.GetElement("mawLorkhaj", "zhaj_glyph_window")
 		if not window then return end
-		for i, glyph in ipairs(window.glyphs) do
-			local _, _, _, _, offsetX, offsetY = glyph:GetAnchor(0)
+		for _, control in ipairs(window.glyphs) do
+			local isValidAnchor, point, relativeTo, relativePoint, offsetX, offsetY = control:GetAnchor()
 			glyph:SetAnchor(CENTER, self, CENTER, -1*offsetX, -1*offsetY)
+			control:ClearAnchors()
+			offsetY = math.abs(offsetY)
+			offsetX = math.abs(offsetX)
+			if inverted then
+				point = BOTTOMRIGHT
+				offsetY = offsetY * -1
+				offsetX = offsetX * -1
+			else
+				point = TOPLEFT
+			end
+			control:SetAnchor(point, nil, nil, offsetX, offsetY)
 		end
 		local label = window:GetNamedChild("Exit")
 		local _, point = label:GetAnchor(0)

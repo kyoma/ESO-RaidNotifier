@@ -105,25 +105,25 @@
 						<Backdrop name="$(parent)BG" inherits="ZO_DefaultBackdrop"/>
 						
 						<Control name="$(parent)Glyph1" inherits="RaidNotifierGlyphTemplate">
-							<Anchor point="CENTER" offsetX="90" offsetY="-60" />
+							<Anchor point="TOPLEFT" offsetX="180" offsetY="-60" />
 						</Control>
 						<Control name="$(parent)Glyph2" inherits="RaidNotifierGlyphTemplate">
-							<Anchor point="CENTER" offsetX="78" offsetY="5" />
+							<Anchor point="TOPLEFT" offsetX="168" offsetY="5" />
 						</Control>
 						<Control name="$(parent)Glyph3" inherits="RaidNotifierGlyphTemplate">
-							<Anchor point="CENTER" offsetX="30" offsetY="60" />
+							<Anchor point="TOPLEFT" offsetX="120" offsetY="60" />
 						</Control>
 						<Control name="$(parent)Glyph4" inherits="RaidNotifierGlyphTemplate">
-							<Anchor point="CENTER" offsetX="-30" offsetY="60" />
+							<Anchor point="TOPLEFT" offsetX="60" offsetY="60" />
 						</Control>
 						<Control name="$(parent)Glyph5" inherits="RaidNotifierGlyphTemplate">
-							<Anchor point="CENTER" offsetX="-78" offsetY="5" />
+							<Anchor point="TOPLEFT" offsetX="12" offsetY="5" />
 						</Control>
 						<Control name="$(parent)Glyph6" inherits="RaidNotifierGlyphTemplate">
-							<Anchor point="CENTER" offsetX="-90" offsetY="-60" />
+							<Anchor point="TOPLEFT" offsetX="0" offsetY="-60" />
 						</Control>
 						<Control name="$(parent)Glyph7" inherits="RaidNotifierGlyphTemplate">
-							<Anchor point="CENTER" offsetX="0" offsetY="-30" />
+							<Anchor point="TOPLEFT" offsetX="90" offsetY="-30" />
 						</Control>
 						<Label name="$(parent)Exit" font="ZoFontWinH5" text="Exit">
 							<Anchor point="TOP" offsetY="0" />

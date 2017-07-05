@@ -478,10 +478,6 @@ do ----------------------
 		UI.RegisterElement(RaidNotifierUI:GetNamedChild("GlyphWindow"))
 		UI.RegisterElement(RaidNotifierUI:GetNamedChild("UltimateWindow"), self.Vars.ultimate.hidden)
 		
-		if (self.Vars.mawLorkhaj.zhaj_glyphs_invert) then
-			UI.InvertGlyphs()
-		end
-
 		-- These aren't needed anymore since we now start & stop Raid Notifier solely based on being in the raid zone
 	    --EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_RAID_TRIAL_STARTED,  function(...) self:RegisterEvents() end)
 		--EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_RAID_TRIAL_COMPLETE, function(...) self:UnregisterEvents() end)
@@ -556,6 +552,7 @@ do -----------------------------
 			if (bossCount == 1 and map == "Art/maps/reapersmarch/Maw_of_Lorkaj_Base_0.dds") then -- Zhaj'hassa the Forgotten
 				buffsDebuffs.zhajBoss_knownGlyphs = {}
 				if (settings.zhaj_glyphs) then
+					UI.SetupGlyphWindow(nil, settings.zhaj_glyphs_invert)
 					UI.SetElementHidden("mawLorkhaj", "zhaj_glyph_window", false)
 				end
 			elseif (bossCount == 2 and map == "Art/maps/reapersmarch/MawLorkajSuthaySanctuary_Base_0.dds") then -- False Moon Twins, S’Kinrai and Vashai

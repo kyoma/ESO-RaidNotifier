@@ -551,7 +551,10 @@ function RaidNotifier:CreateSettingsMenu()
 		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_INVERT),
 		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_INVERT_TT),
 		getFunc = function() return Vars.mawLorkhaj.zhaj_glyphs_invert end,
-		setFunc = function(value)   Vars.mawLorkhaj.zhaj_glyphs_invert = value; UI.InvertGlyphs() end,
+		setFunc = function(value)   
+				Vars.mawLorkhaj.zhaj_glyphs_invert = value
+				self.UI.SetupGlyphWindow(nil, Vars.mawLorkhaj.zhaj_glyphs_invert)
+			end,
 		disabled = function() return not Vars.mawLorkhaj.zhaj_glyphs end, 
 		noSound = true,
 	}, "mawLorkhaj", "zhaj_glyphs_invert")
