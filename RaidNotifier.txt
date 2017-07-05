@@ -12,6 +12,7 @@ libs/LibCustomTitles/LibCustomTitles.lua
 libs/LibCustomTitles/Titles/Kyoma.lua
 libs/LibCustomTitles/Titles/Woeler.lua
 libs/LibCustomTitles/Titles/Valve.lua
+libs/LibCustomTitles/Titles/Memus.lua
 libs/LibAddonMenu-2.0/LibAddonMenu-2.0.lua
 libs/LibAddonMenu-2.0/controls/panel.lua
 libs/LibAddonMenu-2.0/controls/submenu.lua
