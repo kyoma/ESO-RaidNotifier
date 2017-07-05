@@ -213,10 +213,9 @@ function RaidNotifier:CreateSettingsMenu()
 			data.category = category
 			data.setting = setting
 			data.default = (data.type == "dropdown" and getDefaultChoiceValue(category, setting) or RaidNotifier.Defaults[category][setting])
-		elseif data.type == "submenu" then
-			data.controls = subTable
+		else
+			data.noSound = true
 		end
-		--optionsTable[index] = data
 		if subTable ~= nil and data.type ~= "submenu" then
 			table.insert(subTable, data)
 		else
@@ -224,16 +223,31 @@ function RaidNotifier:CreateSettingsMenu()
 		end
 	end
 
+	local function MakeSubmenu(title, description)
+		subTable = {}
+		MakeControlEntry({
+			type = "submenu",
+			name = title,
+			controls = subTable,
+		})
+		MakeControlEntry({
+			type = "description",
+			text = description,
+		})
+		MakeControlEntry({
+			type = "divider",
+			alpha = 1,
+		})
+	end
+
 	MakeControlEntry({
 		type = "description",
 		text = GetString(RAIDNOTIFIER_DESCRIPTION),
-		noSound = true,
 	})
 
 	MakeControlEntry({
 		type = "header",
 		name = GetString(RAIDNOTIFIER_SETTINGS_GENERAL_HEADER),
-		noSound = true,
 	})
 	MakeControlEntry({
 		type = "checkbox",
@@ -241,7 +255,6 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CENTER_SCREEN_ANNOUNCE_TT),
 		getFunc = function() return Vars.general.use_center_screen_announce end,
 		setFunc = function(value)   Vars.general.use_center_screen_announce = value end,
-		noSound = true,
 		default = true,
 	})
 	MakeControlEntry({
@@ -262,7 +275,6 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.general.buffFood_reminder_interval end,
 		setFunc = function(value)   Vars.general.buffFood_reminder_interval = value end,
 		default = 60,
-		noSound = true,
 	})
 	MakeControlEntry({
 		type = "checkbox",
@@ -270,7 +282,6 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = GetString(RAIDNOTIFIER_SETTINGS_GENERAL_VANITY_PETS_TT),
 		getFunc = function() return Vars.general.vanity_pets end,
 		setFunc = function(value)   Vars.general.vanity_pets = value end,
-		noSound = true,
 		default = true,
 	})
 	MakeControlEntry({
@@ -279,17 +290,11 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = GetString(RAIDNOTIFIER_SETTINGS_GENERAL_NO_ASSISTANTS_TT),
 		getFunc = function() return Vars.general.no_assistants end,
 		setFunc = function(value)   Vars.general.no_assistants = value end,
-		noSound = true,
 		default = true,
 	})
-	
 
-	--MakeControlEntry({
-	--	type = "header",
-	--	name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_HEADER),
-	--	noSound = true,
-	--})
-	subTable = {}
+
+	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_HEADER), GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_DESCRIPTION))
 	MakeControlEntry({
 		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_ENABLED),
@@ -305,7 +310,6 @@ function RaidNotifier:CreateSettingsMenu()
 					end
 				end
 			end,
-		noSound = true,
 		default = true,
 	})
 	MakeControlEntry({
@@ -317,7 +321,6 @@ function RaidNotifier:CreateSettingsMenu()
 				Vars.ultimate.hidden = value 
 				UI.SetElementHidden("ultimate", "ulti_window", value)
 			end,
-		noSound = true,
 		default = false,
 	})
 	MakeControlEntry({
@@ -328,7 +331,6 @@ function RaidNotifier:CreateSettingsMenu()
 		setFunc = function(value)
 				Vars.ultimate.useColor = value 
 			end,
-		noSound = true,
 		default = true,
 	})
 	MakeControlEntry({
@@ -340,7 +342,6 @@ function RaidNotifier:CreateSettingsMenu()
 				Vars.ultimate.useDisplayName = value 
 				self:UpdateUltimates()
 			end,
-		noSound = true,
 		default = false,
 	})
 	MakeControlEntry({
@@ -352,7 +353,6 @@ function RaidNotifier:CreateSettingsMenu()
 				Vars.ultimate.showHealers = value 
 				self:UpdateUltimates()
 			end,
-		noSound = true,
 		default = true,
 	})
 	MakeControlEntry({
@@ -364,7 +364,6 @@ function RaidNotifier:CreateSettingsMenu()
 				Vars.ultimate.showTanks = value 
 				self:UpdateUltimates()
 			end,
-		noSound = true,
 		default = true,
 	})
 	MakeControlEntry({
@@ -376,7 +375,6 @@ function RaidNotifier:CreateSettingsMenu()
 				Vars.ultimate.showDps = value 
 				self:UpdateUltimates()
 			end,
-		noSound = true,
 		default = false,
 	})
 	MakeControlEntry({
@@ -387,30 +385,23 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_OVERRIDECOST_TT),
 		getFunc = function() return Vars.ultimate.override_cost end,
 		setFunc = function(value) Vars.ultimate.override_cost = value end,
-		noSound = true,
 		default = 0,
 	})
-
-	MakeControlEntry({
-		type = "submenu",
-		name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_HEADER),
-		noSound = true
-	})
 	subTable = nil
-		
 
+
+	
 	MakeControlEntry({
 		type = "header",
-		name = "Trials",
-		noSound = true,
+		name = GetString(RAIDNOTIFIER_SETTINGS_TRIALS_HEADER)
 	})
-		
-	-- Hel Ra Citadel
-	subTable = {}
 	MakeControlEntry({
 		type = "description",
-		text = RaidNotifier:GetRaidDescription(RAID_HEL_RA_CITADEL),
+		text = GetString(RAIDNOTIFIER_SETTINGS_TRIALS_DESCRIPTION)
 	})
+
+	-- Hel Ra Citadel
+	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_HELRA_HEADER), RaidNotifier:GetRaidDescription(RAID_HEL_RA_CITADEL))
 	MakeControlEntry({
 		type = "dropdown",
 		name = GetString(RAIDNOTIFIER_SETTINGS_HELRA_WARRIOR_STONEFORM),
@@ -419,20 +410,11 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("helra", "warrior_stoneform") end,
 		setFunc = function(value)   setChoiceValue("helra", "warrior_stoneform", value) end,
 	}, "helra", "warrior_stoneform")
-	
-	MakeControlEntry({
-		type = "submenu",
-		name = GetString(RAIDNOTIFIER_SETTINGS_HELRA_HEADER),
-		noSound = true,
-	})
+	subTable = nil
 
 
 	-- Aetherius Archive
-	subTable = {}
-	MakeControlEntry({
-		type = "description",
-		text = RaidNotifier:GetRaidDescription(RAID_AETHERIAN_ARCHIVE),
-	})
+	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_HEADER), RaidNotifier:GetRaidDescription(RAID_AETHERIAN_ARCHIVE))
 	MakeControlEntry({
 		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_STORMATRO_IMPENDINGSTORM),
@@ -477,19 +459,11 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("archive", "call_lightning") end,
 		setFunc = function(value)   setChoiceValue("archive", "call_lightning", value) end,
 	}, "archive", "call_lightning")
-	MakeControlEntry({
-		type = "submenu",
-		name = GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_HEADER),
-		noSound = true,
-	})
+	subTable = nil
 
 
 	-- Sanctum Ophidia
-	subTable = {}
-	MakeControlEntry({
-		type = "description",
-		text = RaidNotifier:GetRaidDescription(RAID_SANCTUM_OPHIDIA),
-	})
+	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_HEADER), RaidNotifier:GetRaidDescription(RAID_SANCTUM_OPHIDIA))
 	MakeControlEntry({
 		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_MANTIKORA_QUAKE),
@@ -562,19 +536,11 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("sanctumOphidia", "call_lightning") end,
 		setFunc = function(value)   setChoiceValue("sanctumOphidia", "call_lightning", value) end,
 	}, "sanctumOphidia", "call_lightning")
-	MakeControlEntry({
-		type = "submenu",
-		name = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_HEADER),
-		noSound = true,
-	})
+	subTable = nil
 
 
 	-- Maw of Lorkhaj
-	subTable = {}
-	MakeControlEntry({
-		type = "description",
-		text = RaidNotifier:GetRaidDescription(RAID_MAW_OF_LORKHAJ),
-	})
+	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_HEADER), RaidNotifier:GetRaidDescription(RAID_MAW_OF_LORKHAJ))
 	MakeControlEntry({
 		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GRIPOFLORKHAJ),
@@ -602,7 +568,6 @@ function RaidNotifier:CreateSettingsMenu()
 		disabled = function() return not Vars.mawLorkhaj.zhaj_glyphs end, 
 		noSound = true,
 	}, "mawLorkhaj", "zhaj_glyphs_invert")
-	
 	MakeControlEntry({
 		type = "dropdown",
 		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_TWIN_ASPECTS),
@@ -680,19 +645,10 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.mawLorkhaj.markedfordeath end,
 		setFunc = function(value)   Vars.mawLorkhaj.markedfordeath = value end,
 	}, "mawLorkhaj", "markedfordeath")
-	MakeControlEntry({
-		type = "submenu",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_HEADER),
-		noSound = true,
-	})
 
 
 	-- Dragonstar Arena
-	subTable = {}
-	MakeControlEntry({
-		type = "description",
-		text = RaidNotifier:GetRaidDescription(RAID_DRAGONSTAR_ARENA),
-	})
+	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_HEADER), RaidNotifier:GetRaidDescription(RAID_DRAGONSTAR_ARENA))
 	MakeControlEntry({
 		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_GENERAL_TAKING_AIM),
@@ -745,18 +701,11 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("dragonstar", "arena8_ice_charge") end,
 		setFunc = function(value)   setChoiceValue("dragonstar", "arena8_ice_charge", value) end,
 	}, "dragonstar", "arena8_ice_charge")
-	MakeControlEntry({
-		type = "submenu",
-		name = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_HEADER),
-		noSound = true,
-	})
+	subTable = nil
+
 
 	-- Maelstrom Arena
-	subTable = {}
-	MakeControlEntry({
-		type = "description",
-		text = RaidNotifier:GetRaidDescription(RAID_MAELSTROM_ARENA),
-	})
+	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_MAELSTROM_HEADER), RaidNotifier:GetRaidDescription(RAID_MAELSTROM_ARENA))
 	MakeControlEntry({
 		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_MAELSTROM_STAGE7_POISON),
@@ -771,19 +720,11 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.maelstrom.stage9_synergy end,
 		setFunc = function(value)   Vars.maelstrom.stage9_synergy = value end,
 	}, "maelstrom", "stage9_synergy")
-	MakeControlEntry({
-		type = "submenu",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAELSTROM_HEADER),
-		noSound = true,
-	})
+	subTable = nil
 
-	
+
 	-- Halls of Fabrication
-	subTable = {}
-	MakeControlEntry({
-		type = "description",
-		text = RaidNotifier:GetRaidDescription(RAID_HALLS_OF_FABRICATION),
-	})
+	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_HEADER), RaidNotifier:GetRaidDescription(RAID_HALLS_OF_FABRICATION))
 	MakeControlEntry({
 		type = "dropdown",
 		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_TAKING_AIM),
@@ -829,7 +770,6 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("hallsFab", "pinnacleBoss_conduit_drain") end,
 		setFunc = function(value)   setChoiceValue("hallsFab", "pinnacleBoss_conduit_drain", value) end,
 	}, "hallsFab", "pinnacleBoss_conduit_drain")
-  
 	MakeControlEntry({
 		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS),
@@ -851,18 +791,12 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.hallsFab.committee_reclaim_achive end,
 		setFunc = function(value)   Vars.hallsFab.committee_reclaim_achive = value end,
 	}, "hallsFab", "committee_reclaim_achive")
-   	MakeControlEntry({
-		type = "submenu",
-		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_HEADER),
-		noSound = true
-	})
 	subTable = nil
 
 
 	MakeControlEntry({
 		type = "header",
 		name = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_HEADER),
-		noSound = true,
 	})
 	MakeControlEntry({
 		type = "checkbox",
@@ -870,7 +804,6 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_TT),
 		getFunc = function() return Vars.dbg.enabled end,
 		setFunc = function(value)   Vars.dbg.enabled = value end,
-		noSound = true,
 	})
 	MakeControlEntry({
 		type = "checkbox",
@@ -878,7 +811,6 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = GetString(RAIDNOTIFIER_SETTINGS_DEBUGNOTIFY_TT),
 		getFunc = function() return Vars.dbg.notify end,
 		setFunc = function(value)   Vars.dbg.notify = value end,
-		noSound = true,
 	})
 
 	self.optionsData = optionsTable
@@ -944,7 +876,7 @@ function RaidNotifier:CreateSettingsMenu()
 		SetupCustomDialog()
 
 		--loop through controls to add our Sound-Config-Button-Clicky-Thing (tm)
-		for i = 1, #optionsTable do
+		for i = 1, index do
 			local control = GetControl("RNSettingCtrl"..i)
 			if (control and not control.data.noSound) then
 				control.soundBtn = WINDOW_MANAGER:CreateControlFromVirtual(nil, control, "RaidNotifier_ConfigButton")

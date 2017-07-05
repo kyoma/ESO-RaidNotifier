@@ -1,6 +1,6 @@
 local L = {}
 
-L.Description                            = "Displays on-screen notifications on different events during trials. Only for veteran difficulty!"
+L.Description                            = "Displays on-screen notifications on different events during trials."
 
 --------------------------------
 ----     General Stuff      ----
@@ -36,6 +36,7 @@ L.Alerts_General_Bufffood_Minutes                   = "Your '<<1>>' bufffood run
 ----    Ultimate Exchange   ----
 --------------------------------
 L.Settings_Ultimate_Header                           = "Ultimate Exchange (beta)"
+L.Settings_Ultimate_Description                      = "This feature allows you to send your ultimate to your teammates so they can see how close you are to casting it. It uses your cost based on whatever cost reduction you might have from sets or passives."
 -- Settings 
 L.Settings_Ultimate_Enabled                          = "Enabled"
 L.Settings_Ultimate_Enabled_TT                       = "Enable the sharing and receiving of ultimate values. It is always disabled outside of trials."
@@ -56,6 +57,12 @@ L.Settings_Ultimate_TargetUlti_TT                    = "What ultimate ability to
 L.Settings_Ultimate_OverrideCost                     = "Override Cost"
 L.Settings_Ultimate_OverrideCost_TT                  = "Use this value when sending your ultimate cost to others. Setting it to 0 will disable the override."
 
+
+--------------------------------
+----          Trials        ----
+--------------------------------
+L.Settings_Trials_Header                            = "Trials"
+L.Settings_Trials_Description                       = "Here you can configure the notifications for each trial. Ranging from simply toggling one on or off to specifying a unique sound or showing it for your teammates as well."
 
 
 --------------------------------
