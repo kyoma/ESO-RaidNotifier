@@ -69,6 +69,10 @@ do -----------------
 
 	local window  = nil 
 
+	UI.MAP_MOL_BASE = "Art/maps/reapersmarch/Maw_of_Lorkaj_Base_0.dds"
+	UI.MAP_MOL_SUTHAY_SANCTUARY = "Art/maps/reapersmarch/MawLorkajSuthaySanctuary_Base_0.dds"
+	UI.MAP_MOL_SEVEN_RIDDLES = "Art/maps/reapersmarch/MawLorkajSevenRiddles_Base_0.dds"
+
 	function UI.StartGlyphTimer(index, cooldown)
 		window = window or UI.GetElement("mawLorkhaj", "zhaj_glyph_window")
 		if not window then return end
