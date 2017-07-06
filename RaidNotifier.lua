@@ -464,6 +464,9 @@ do ----------------------
 
 	function RaidNotifier:Initialize()
 		self.Vars = ZO_SavedVars:NewAccountWide(self.SV_Name, self.SV_Version, nil, self.Defaults)
+		if (not self.Vars.useAccountWide) then -- not using global settings, generate (or load) character specific settings
+			self.Vars = ZO_SavedVars:New(self.SV_Name, self.SV_Version, nil, self.Defaults)
+		end
 
 		self:CreateSettingsMenu()
 

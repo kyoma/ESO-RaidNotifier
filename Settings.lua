@@ -1,6 +1,10 @@
 local RaidNotifier = RaidNotifier
 local UI = RaidNotifier.UI
 
+local tinsert	 			= table.insert
+local tremove				= table.remove
+local tsort		 			= table.sort
+
 -- Constants for easy reading
 local RAID_HEL_RA_CITADEL        = 1
 local RAID_AETHERIAN_ARCHIVE     = 2
@@ -11,6 +15,8 @@ local RAID_MAELSTROM_ARENA       = 6
 local RAID_HALLS_OF_FABRICATION  = 7
 
 RaidNotifier.Defaults = {
+	useAccountWide = false, 
+	version = 2.0,
 	general = {
 		buffFood_reminder = true,
 		buffFood_reminder_interval = 60,
@@ -105,7 +111,110 @@ RaidNotifier.Defaults = {
 
 }
 
+-- ------------------------
+-- PROFILE FUNCTIONS
+-- ------------------------
+local function CopyTable(src, dest)
+	if (type(dest) ~= 'table') then
+		dest = {}
+	end
+
+	if (type(src) == 'table') then
+		for k, v in pairs(src) do
+			if (type(v) == 'table') then
+				CopyTable(v, dest[k])
+			end
+
+			dest[k] = v
+		end
+	end
+end
+
+local profileGuard			= false
+local profileCopyList		= {}
+local profileDeleteList		= {}
+local profileCopyToCopy, profileDeleteToDelete, profileDeleteDropRef
+local function CopyProfile()
+	local usingGlobal	= RNVars.Default[GetDisplayName()]['$AccountWide'].useAccountWide
+	local destProfile	= (usingGlobal) and '$AccountWide' or GetUnitName('player')
+	local sourceData, destData
+
+	for account, accountData in pairs(RNVars.Default) do
+		for profile, data in pairs(accountData) do
+			if (profile == profileCopyToCopy) then
+				sourceData = data -- get source data to copy
+			end
+
+			if (profile == destProfile) then
+				destData = data -- get destination to copy to
+			end
+		end
+	end
+
+	if (not sourceData or not destData) then -- something went wrong, abort
+		CHAT_SYSTEM:AddMessage(strformat('%s: %s', "[RaidNotifier]", "Cannot copy profile."))
+	else
+		CopyTable(sourceData, destData)
+		ReloadUI()
+	end
+end
+
+local function DeleteProfile()
+	for account, accountData in pairs(RNVars.Default) do
+		for profile, data in pairs(accountData) do
+			if (profile == profileDeleteToDelete) then -- found unwanted profile
+				accountData[profile] = nil
+				break
+			end
+		end
+	end
+
+	for i, profile in ipairs(profileDeleteList) do
+		if (profile == profileDeleteToDelete) then
+			tremove(profileDeleteList, i)
+			break
+		end
+	end
+
+	profileDeleteToDelete = false
+	profileDeleteDropRef:UpdateChoices()
+	profileDeleteDropRef:UpdateValue()
+end
+
+local function PopulateProfileLists()
+	local usingGlobal	= RNVars.Default[GetDisplayName()]["$AccountWide"].useAccountWide
+	local currentPlayer	= GetUnitName("player")
+	local version		= RaidNotifier.SV_Version
+
+	for account, accountData in pairs(RNVars.Default) do
+		for profile, data in pairs(accountData) do
+			if (data.version == version) then -- only populate current DB version
+				if (usingGlobal) then
+					if (profile ~= "$AccountWide") then
+						tinsert(profileCopyList, profile) -- don't add accountwide to copy selection
+						tinsert(profileDeleteList, profile) -- don't add accountwide to delete selection
+					end
+				else
+					if (profile ~= currentPlayer) then
+						tinsert(profileCopyList, profile) -- don't add current player to copy selection
+
+						if (profile ~= "$AccountWide") then
+							tinsert(profileDeleteList, profile) -- don't add accountwide or current player to delete selection
+						end
+					end
+				end
+			end
+		end
+	end
+
+	tsort(profileCopyList)
+	tsort(profileDeleteList)
+end
+
+
 function RaidNotifier:CreateSettingsMenu()
+
+	PopulateProfileLists()
 
 	local LAM = LibStub:GetLibrary("LibAddonMenu-2.0")
     self.panelData = {
@@ -207,8 +316,6 @@ function RaidNotifier:CreateSettingsMenu()
 	local optionsTable = {}
 	local subTable     = nil
 	local function MakeControlEntry(data, category, setting)
-		index = index + 1
-		data.reference = "RNSettingCtrl"..index
 		if (category ~= nil and setting ~= nil) then
 			data.category = category
 			data.setting = setting
@@ -216,10 +323,14 @@ function RaidNotifier:CreateSettingsMenu()
 		else
 			data.noSound = true
 		end
+		if not data.noSound and not data.reference then
+			index = index + 1
+			data.reference = "RNSettingCtrl"..index
+		end
 		if subTable ~= nil and data.type ~= "submenu" then
-			table.insert(subTable, data)
+			tinsert(subTable, data)
 		else
-			table.insert(optionsTable, data)
+			tinsert(optionsTable, data)
 		end
 	end
 
@@ -387,10 +498,87 @@ function RaidNotifier:CreateSettingsMenu()
 		setFunc = function(value) Vars.ultimate.override_cost = value end,
 		default = 0,
 	})
-	subTable = nil
+	subTable = nil --end submenu
 
 
-	
+
+	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_PROFILE_HEADER), GetString(RAIDNOTIFIER_SETTINGS_PROFILE_DESCRIPTION))
+	MakeControlEntry({
+		type = "checkbox",
+		name = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_USEGLOBAL),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_USEGLOBAL_TT),
+		warning = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_USEGLOBAL_WARNING),
+		getFunc = function()
+			return RNVars.Default[GetDisplayName()]["$AccountWide"].useAccountWide 
+		end,
+		setFunc = function(value) 
+			RNVars.Default[GetDisplayName()]["$AccountWide"].useAccountWide = value
+			ReloadUI()
+		end,
+		default = true,
+	})
+	MakeControlEntry({
+		type = "dropdown",
+		name = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_COPY),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_COPY_TT),
+		choices = profileCopyList,
+		getFunc = function()
+			if (#profileCopyList >= 1) then -- there are entries, set first as default
+				profileCopyToCopy = profileCopyList[1]
+				return profileCopyList[1]
+			end
+		end,
+		setFunc = function(value)
+			profileCopyToCopy = value
+		end,
+		disabled = function() return not profileGuard end,
+	})
+	MakeControlEntry({
+		type = "button",
+		name = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_COPYBUTTON),
+		warning = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_COPYBUTTON),
+		func = function(btn)  CopyProfile() end,
+		disabled = function() return not profileGuard end,
+	})
+	MakeControlEntry({
+		type = "dropdown",
+		name = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_DELETE),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_DELETE_TT),
+		choices = profileDeleteList,
+		getFunc = function()
+			if (#profileDeleteList >= 1) then
+				if (not profileDeleteToDelete) then -- nothing selected yet, return first
+					profileDeleteToDelete = profileDeleteList[1]
+					return profileDeleteList[1]
+				else
+					return profileDeleteToDelete
+				end
+			end
+		end,
+		setFunc = function(value)
+			profileDeleteToDelete = value
+		end,
+		disabled = function() return not profileGuard end,
+		reference = "RNSettingDeleteDropRef",
+	})
+	MakeControlEntry({
+		type = "button",
+		name = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_DELETEBUTTON),
+		func = function(btn)  DeleteProfile() end,
+		disabled = function() return not profileGuard end,
+	})
+	--MakeControlEntry({type = "description"})
+	--MakeControlEntry({type = "header"})
+	MakeControlEntry({type = "divider", alpha = 1})
+	MakeControlEntry({
+		type = "checkbox",
+		name = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_GUARD),
+		getFunc = function() return profileGuard end,
+		setFunc = function(value)   profileGuard = value end,
+	})
+	subTable = nil --end submenu
+
+
 	MakeControlEntry({
 		type = "header",
 		name = GetString(RAIDNOTIFIER_SETTINGS_TRIALS_HEADER)
@@ -410,7 +598,7 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("helra", "warrior_stoneform") end,
 		setFunc = function(value)   setChoiceValue("helra", "warrior_stoneform", value) end,
 	}, "helra", "warrior_stoneform")
-	subTable = nil
+	subTable = nil --end submenu
 
 
 	-- Aetherius Archive
@@ -459,7 +647,7 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("archive", "call_lightning") end,
 		setFunc = function(value)   setChoiceValue("archive", "call_lightning", value) end,
 	}, "archive", "call_lightning")
-	subTable = nil
+	subTable = nil --end submenu
 
 
 	-- Sanctum Ophidia
@@ -536,7 +724,7 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("sanctumOphidia", "call_lightning") end,
 		setFunc = function(value)   setChoiceValue("sanctumOphidia", "call_lightning", value) end,
 	}, "sanctumOphidia", "call_lightning")
-	subTable = nil
+	subTable = nil --end submenu
 
 
 	-- Maw of Lorkhaj
@@ -645,6 +833,7 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.mawLorkhaj.markedfordeath end,
 		setFunc = function(value)   Vars.mawLorkhaj.markedfordeath = value end,
 	}, "mawLorkhaj", "markedfordeath")
+	subTable = nil --end submenu
 
 
 	-- Dragonstar Arena
@@ -701,7 +890,7 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("dragonstar", "arena8_ice_charge") end,
 		setFunc = function(value)   setChoiceValue("dragonstar", "arena8_ice_charge", value) end,
 	}, "dragonstar", "arena8_ice_charge")
-	subTable = nil
+	subTable = nil --end submenu
 
 
 	-- Maelstrom Arena
@@ -720,7 +909,7 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.maelstrom.stage9_synergy end,
 		setFunc = function(value)   Vars.maelstrom.stage9_synergy = value end,
 	}, "maelstrom", "stage9_synergy")
-	subTable = nil
+	subTable = nil --end submenu
 
 
 	-- Halls of Fabrication
@@ -791,7 +980,7 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.hallsFab.committee_reclaim_achive end,
 		setFunc = function(value)   Vars.hallsFab.committee_reclaim_achive = value end,
 	}, "hallsFab", "committee_reclaim_achive")
-	subTable = nil
+	subTable = nil --end submenu
 
 
 	MakeControlEntry({
@@ -874,6 +1063,9 @@ function RaidNotifier:CreateSettingsMenu()
 		if panel:GetName() ~= "RaidNotifierPanel" then return end
 
 		SetupCustomDialog()
+
+		--store reference
+		profileDeleteDropRef = RNSettingDeleteDropRef
 
 		--loop through controls to add our Sound-Config-Button-Clicky-Thing (tm)
 		for i = 1, index do
