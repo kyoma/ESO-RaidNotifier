@@ -401,6 +401,9 @@ do ----------------------
 	function RaidNotifier:IsInRaidZone()
 		return self:GetRaidIdFromCurrentZone() > 0
 	end
+	function RaidNotifier:GetRaidDescription(raidId)
+		return GetZoneDescriptionById(RaidZoneIds[raidId])
+	end
 
 	local listening = false
 	function RaidNotifier:RegisterEvents(raidId)
@@ -1277,7 +1280,14 @@ do ---------------------------
 					end
 				end
 				--TODO: track last person that had each aura to determine when they swapped??
-				
+		
+			elseif (result == ACTION_RESULT_EFFECT_GAINED) then
+				if (abilityId == buffsDebuffs.committee_reclaim_achieve_failed) then
+					if (settings.committee_reclaim_achieve == true) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_RECLAIM_ACHIEVE), "hallsFab", "committee_reclaim_achieve")
+					end
+				end
+
 			elseif (result == ACTION_RESULT_EFFECT_FADED) then
 				if (abilityId == buffsDebuffs.committee_overheat_aura or abilityId == buffsDebuffs.committee_overload_aura or abilityId == buffsDebuffs.committee_overcharge_aura) then 
 					if (settings.committee_overpower_auras == true) then
