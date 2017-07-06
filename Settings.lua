@@ -1,7 +1,21 @@
 local RaidNotifier = RaidNotifier
 local UI = RaidNotifier.UI
 
+local tinsert	 			= table.insert
+local tremove				= table.remove
+local tsort		 			= table.sort
+
+-- Constants for easy reading
+local RAID_HEL_RA_CITADEL        = 1
+local RAID_AETHERIAN_ARCHIVE     = 2
+local RAID_SANCTUM_OPHIDIA       = 3
+local RAID_DRAGONSTAR_ARENA      = 4
+local RAID_MAW_OF_LORKHAJ        = 5
+local RAID_MAELSTROM_ARENA       = 6
+local RAID_HALLS_OF_FABRICATION  = 7
+
 RaidNotifier.Defaults = {
+	useAccountWide = false, 
 	general = {
 		buffFood_reminder = true,
 		buffFood_reminder_interval = 60,
@@ -73,7 +87,7 @@ RaidNotifier.Defaults = {
 		stage9_synergy = true,
 	},
 	hallsFab = {
-		conduit_strike        = false, 
+		conduit_strike        = true, 
 		taking_aim            = 1, -- "Self"
 		draining_ballista     = 1, --
 		power_leech           = false,
@@ -96,7 +110,110 @@ RaidNotifier.Defaults = {
 
 }
 
+-- ------------------------
+-- PROFILE FUNCTIONS
+-- ------------------------
+local function CopyTable(src, dest)
+	if (type(dest) ~= 'table') then
+		dest = {}
+	end
+
+	if (type(src) == 'table') then
+		for k, v in pairs(src) do
+			if (type(v) == 'table') then
+				CopyTable(v, dest[k])
+			end
+
+			dest[k] = v
+		end
+	end
+end
+
+local profileGuard			= false
+local profileCopyList		= {}
+local profileDeleteList		= {}
+local profileCopyToCopy, profileDeleteToDelete, profileDeleteDropRef
+local function CopyProfile()
+	local usingGlobal	= RNVars.Default[GetDisplayName()]['$AccountWide'].useAccountWide
+	local destProfile	= (usingGlobal) and '$AccountWide' or GetUnitName('player')
+	local sourceData, destData
+
+	for account, accountData in pairs(RNVars.Default) do
+		for profile, data in pairs(accountData) do
+			if (profile == profileCopyToCopy) then
+				sourceData = data -- get source data to copy
+			end
+
+			if (profile == destProfile) then
+				destData = data -- get destination to copy to
+			end
+		end
+	end
+
+	if (not sourceData or not destData) then -- something went wrong, abort
+		CHAT_SYSTEM:AddMessage(strformat('%s: %s', "[RaidNotifier]", "Cannot copy profile."))
+	else
+		CopyTable(sourceData, destData)
+		ReloadUI()
+	end
+end
+
+local function DeleteProfile()
+	for account, accountData in pairs(RNVars.Default) do
+		for profile, data in pairs(accountData) do
+			if (profile == profileDeleteToDelete) then -- found unwanted profile
+				accountData[profile] = nil
+				break
+			end
+		end
+	end
+
+	for i, profile in ipairs(profileDeleteList) do
+		if (profile == profileDeleteToDelete) then
+			tremove(profileDeleteList, i)
+			break
+		end
+	end
+
+	profileDeleteToDelete = false
+	profileDeleteDropRef:UpdateChoices()
+	profileDeleteDropRef:UpdateValue()
+end
+
+local function PopulateProfileLists()
+	local usingGlobal	= RNVars.Default[GetDisplayName()]["$AccountWide"].useAccountWide
+	local currentPlayer	= GetUnitName("player")
+	local version		= RaidNotifier.SV_Version
+
+	for account, accountData in pairs(RNVars.Default) do
+		for profile, data in pairs(accountData) do
+			if (data.version == version) then -- only populate current DB version
+				if (usingGlobal) then
+					if (profile ~= "$AccountWide") then
+						tinsert(profileCopyList, profile) -- don't add accountwide to copy selection
+						tinsert(profileDeleteList, profile) -- don't add accountwide to delete selection
+					end
+				else
+					if (profile ~= currentPlayer) then
+						tinsert(profileCopyList, profile) -- don't add current player to copy selection
+
+						if (profile ~= "$AccountWide") then
+							tinsert(profileDeleteList, profile) -- don't add accountwide or current player to delete selection
+						end
+					end
+				end
+			end
+		end
+	end
+
+	tsort(profileCopyList)
+	tsort(profileDeleteList)
+end
+
+
 function RaidNotifier:CreateSettingsMenu()
+
+	PopulateProfileLists()
 
 	local LAM = LibStub:GetLibrary("LibAddonMenu-2.0")
     self.panelData = {
@@ -196,27 +313,51 @@ function RaidNotifier:CreateSettingsMenu()
 
 	local index = 0
 	local optionsTable = {}
+	local subTable     = nil
 	local function MakeControlEntry(data, category, setting)
-		index = index + 1
-		data.reference = "RNSettingCtrl"..index
 		if (category ~= nil and setting ~= nil) then
 			data.category = category
 			data.setting = setting
 			data.default = (data.type == "dropdown" and getDefaultChoiceValue(category, setting) or RaidNotifier.Defaults[category][setting])
+		else
+			data.noAlert = true
 		end
-		optionsTable[index] = data
+		if not data.noAlert and not data.reference then
+			index = index + 1
+			data.reference = "RNSettingCtrl"..index
+		end
+		if subTable ~= nil and data.type ~= "submenu" then
+			tinsert(subTable, data)
+		else
+			tinsert(optionsTable, data)
+		end
+	end
+
+	local function MakeSubmenu(title, description)
+		subTable = {}
+		MakeControlEntry({
+			type = "submenu",
+			name = title,
+			controls = subTable,
+		})
+		MakeControlEntry({
+			type = "description",
+			text = description,
+		})
+		MakeControlEntry({
+			type = "divider",
+			alpha = 1,
+		})
 	end
 
 	MakeControlEntry({
 		type = "description",
 		text = GetString(RAIDNOTIFIER_DESCRIPTION),
-		noSound = true,
 	})
 
 	MakeControlEntry({
 		type = "header",
 		name = GetString(RAIDNOTIFIER_SETTINGS_GENERAL_HEADER),
-		noSound = true,
 	})
 	MakeControlEntry({
 		type = "checkbox",
@@ -224,7 +365,6 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CENTER_SCREEN_ANNOUNCE_TT),
 		getFunc = function() return Vars.general.use_center_screen_announce end,
 		setFunc = function(value)   Vars.general.use_center_screen_announce = value end,
-		noSound = true,
 		default = true,
 	})
 	MakeControlEntry({
@@ -245,7 +385,6 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.general.buffFood_reminder_interval end,
 		setFunc = function(value)   Vars.general.buffFood_reminder_interval = value end,
 		default = 60,
-		noSound = true,
 	})
 	MakeControlEntry({
 		type = "checkbox",
@@ -253,7 +392,6 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = GetString(RAIDNOTIFIER_SETTINGS_GENERAL_VANITY_PETS_TT),
 		getFunc = function() return Vars.general.vanity_pets end,
 		setFunc = function(value)   Vars.general.vanity_pets = value end,
-		noSound = true,
 		default = true,
 	})
 	MakeControlEntry({
@@ -262,16 +400,11 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = GetString(RAIDNOTIFIER_SETTINGS_GENERAL_NO_ASSISTANTS_TT),
 		getFunc = function() return Vars.general.no_assistants end,
 		setFunc = function(value)   Vars.general.no_assistants = value end,
-		noSound = true,
 		default = true,
 	})
-	
 
-	MakeControlEntry({
-		type = "header",
-		name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_HEADER),
-		noSound = true,
-	})
+
+	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_HEADER), GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_DESCRIPTION))
 	MakeControlEntry({
 		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_ENABLED),
@@ -287,7 +420,6 @@ function RaidNotifier:CreateSettingsMenu()
 					end
 				end
 			end,
-		noSound = true,
 		default = true,
 	})
 	MakeControlEntry({
@@ -299,7 +431,6 @@ function RaidNotifier:CreateSettingsMenu()
 				Vars.ultimate.hidden = value 
 				UI.SetElementHidden("ultimate", "ulti_window", value)
 			end,
-		noSound = true,
 		default = false,
 	})
 	MakeControlEntry({
@@ -310,7 +441,6 @@ function RaidNotifier:CreateSettingsMenu()
 		setFunc = function(value)
 				Vars.ultimate.useColor = value 
 			end,
-		noSound = true,
 		default = true,
 	})
 	MakeControlEntry({
@@ -322,7 +452,6 @@ function RaidNotifier:CreateSettingsMenu()
 				Vars.ultimate.useDisplayName = value 
 				self:UpdateUltimates()
 			end,
-		noSound = true,
 		default = false,
 	})
 	MakeControlEntry({
@@ -334,7 +463,6 @@ function RaidNotifier:CreateSettingsMenu()
 				Vars.ultimate.showHealers = value 
 				self:UpdateUltimates()
 			end,
-		noSound = true,
 		default = true,
 	})
 	MakeControlEntry({
@@ -346,7 +474,6 @@ function RaidNotifier:CreateSettingsMenu()
 				Vars.ultimate.showTanks = value 
 				self:UpdateUltimates()
 			end,
-		noSound = true,
 		default = true,
 	})
 	MakeControlEntry({
@@ -358,7 +485,6 @@ function RaidNotifier:CreateSettingsMenu()
 				Vars.ultimate.showDps = value 
 				self:UpdateUltimates()
 			end,
-		noSound = true,
 		default = false,
 	})
 	MakeControlEntry({
@@ -369,17 +495,100 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_OVERRIDECOST_TT),
 		getFunc = function() return Vars.ultimate.override_cost end,
 		setFunc = function(value) Vars.ultimate.override_cost = value end,
-		noSound = true,
 		default = 0,
 	})
+	subTable = nil --end submenu
 
 
-	-- Hel Ra Citadel
+
+	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_PROFILE_HEADER), GetString(RAIDNOTIFIER_SETTINGS_PROFILE_DESCRIPTION))
+	MakeControlEntry({
+		type = "checkbox",
+		name = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_USEGLOBAL),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_USEGLOBAL_TT),
+		warning = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_USEGLOBAL_WARNING),
+		getFunc = function()
+			return RNVars.Default[GetDisplayName()]["$AccountWide"].useAccountWide 
+		end,
+		setFunc = function(value) 
+			RNVars.Default[GetDisplayName()]["$AccountWide"].useAccountWide = value
+			ReloadUI()
+		end,
+		default = true,
+	})
+	MakeControlEntry({
+		type = "dropdown",
+		name = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_COPY),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_COPY_TT),
+		choices = profileCopyList,
+		getFunc = function()
+			if (#profileCopyList >= 1) then -- there are entries, set first as default
+				profileCopyToCopy = profileCopyList[1]
+				return profileCopyList[1]
+			end
+		end,
+		setFunc = function(value)
+			profileCopyToCopy = value
+		end,
+		disabled = function() return not profileGuard end,
+	})
+	MakeControlEntry({
+		type = "button",
+		name = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_COPYBUTTON),
+		warning = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_COPYBUTTON),
+		func = function(btn)  CopyProfile() end,
+		disabled = function() return not profileGuard end,
+	})
+	MakeControlEntry({
+		type = "dropdown",
+		name = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_DELETE),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_DELETE_TT),
+		choices = profileDeleteList,
+		getFunc = function()
+			if (#profileDeleteList >= 1) then
+				if (not profileDeleteToDelete) then -- nothing selected yet, return first
+					profileDeleteToDelete = profileDeleteList[1]
+					return profileDeleteList[1]
+				else
+					return profileDeleteToDelete
+				end
+			end
+		end,
+		setFunc = function(value)
+			profileDeleteToDelete = value
+		end,
+		disabled = function() return not profileGuard end,
+		reference = "RNSettingDeleteDropRef",
+	})
+	MakeControlEntry({
+		type = "button",
+		name = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_DELETEBUTTON),
+		func = function(btn)  DeleteProfile() end,
+		disabled = function() return not profileGuard end,
+	})
+	--MakeControlEntry({type = "description"})
+	--MakeControlEntry({type = "header"})
+	MakeControlEntry({type = "divider", alpha = 1})
+	MakeControlEntry({
+		type = "checkbox",
+		name = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_GUARD),
+		getFunc = function() return profileGuard end,
+		setFunc = function(value)   profileGuard = value end,
+	})
+	subTable = nil --end submenu
+
+
 	MakeControlEntry({
 		type = "header",
-		name = GetString(RAIDNOTIFIER_SETTINGS_HELRA_HEADER),
-		noSound = true,
+		name = GetString(RAIDNOTIFIER_SETTINGS_TRIALS_HEADER)
 	})
+	MakeControlEntry({
+		type = "description",
+		text = GetString(RAIDNOTIFIER_SETTINGS_TRIALS_DESCRIPTION)
+	})
+
+	-- Hel Ra Citadel
+	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_HELRA_HEADER), RaidNotifier:GetRaidDescription(RAID_HEL_RA_CITADEL))
 	MakeControlEntry({
 		type = "dropdown",
 		name = GetString(RAIDNOTIFIER_SETTINGS_HELRA_WARRIOR_STONEFORM),
@@ -388,14 +597,11 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("helra", "warrior_stoneform") end,
 		setFunc = function(value)   setChoiceValue("helra", "warrior_stoneform", value) end,
 	}, "helra", "warrior_stoneform")
+	subTable = nil --end submenu
 
 
 	-- Aetherius Archive
-	MakeControlEntry({
-		type = "header",
-		name = GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_HEADER),
-		noSound = true,
-	})
+	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_HEADER), RaidNotifier:GetRaidDescription(RAID_AETHERIAN_ARCHIVE))
 	MakeControlEntry({
 		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_STORMATRO_IMPENDINGSTORM),
@@ -440,15 +646,11 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("archive", "call_lightning") end,
 		setFunc = function(value)   setChoiceValue("archive", "call_lightning", value) end,
 	}, "archive", "call_lightning")
+	subTable = nil --end submenu
 
 
 	-- Sanctum Ophidia
-	MakeControlEntry({
-		type = "header",
-		name = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_HEADER),
-		noSound = true,
-	})
-
+	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_HEADER), RaidNotifier:GetRaidDescription(RAID_SANCTUM_OPHIDIA))
 	MakeControlEntry({
 		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_MANTIKORA_QUAKE),
@@ -521,13 +723,11 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("sanctumOphidia", "call_lightning") end,
 		setFunc = function(value)   setChoiceValue("sanctumOphidia", "call_lightning", value) end,
 	}, "sanctumOphidia", "call_lightning")
+	subTable = nil --end submenu
+
 
 	-- Maw of Lorkhaj
-	MakeControlEntry({
-		type = "header",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_HEADER),
-		noSound = true,
-	})
+	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_HEADER), RaidNotifier:GetRaidDescription(RAID_MAW_OF_LORKHAJ))
 	MakeControlEntry({
 		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GRIPOFLORKHAJ),
@@ -544,7 +744,7 @@ function RaidNotifier:CreateSettingsMenu()
 					Vars.mawLorkhaj.zhaj_glyphs = value 
 					self.UI.SetElementHidden("mawLorkhaj", "zhaj_glyph_window", not value)
 				end,
-		noSound = true,
+		noAlert = true,
 	}, "mawLorkhaj", "zhaj_glyphs")
 	MakeControlEntry({
 		type = "checkbox",
@@ -553,9 +753,8 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.mawLorkhaj.zhaj_glyphs_invert end,
 		setFunc = function(value)   Vars.mawLorkhaj.zhaj_glyphs_invert = value; UI.InvertGlyphs() end,
 		disabled = function() return not Vars.mawLorkhaj.zhaj_glyphs end, 
-		noSound = true,
+		noAlert = true,
 	}, "mawLorkhaj", "zhaj_glyphs_invert")
-	
 	MakeControlEntry({
 		type = "dropdown",
 		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_TWIN_ASPECTS),
@@ -633,14 +832,11 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.mawLorkhaj.markedfordeath end,
 		setFunc = function(value)   Vars.mawLorkhaj.markedfordeath = value end,
 	}, "mawLorkhaj", "markedfordeath")
+	subTable = nil --end submenu
 
 
 	-- Dragonstar Arena
-	MakeControlEntry({
-		type = "header",
-		name = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_HEADER),
-		noSound = true,
-	})
+	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_HEADER), RaidNotifier:GetRaidDescription(RAID_DRAGONSTAR_ARENA))
 	MakeControlEntry({
 		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_GENERAL_TAKING_AIM),
@@ -693,14 +889,11 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("dragonstar", "arena8_ice_charge") end,
 		setFunc = function(value)   setChoiceValue("dragonstar", "arena8_ice_charge", value) end,
 	}, "dragonstar", "arena8_ice_charge")
+	subTable = nil --end submenu
 
 
 	-- Maelstrom Arena
-	MakeControlEntry({
-		type = "header",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAELSTROM_HEADER),
-		noSound = true,
-	})
+	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_MAELSTROM_HEADER), RaidNotifier:GetRaidDescription(RAID_MAELSTROM_ARENA))
 	MakeControlEntry({
 		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_MAELSTROM_STAGE7_POISON),
@@ -715,14 +908,11 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.maelstrom.stage9_synergy end,
 		setFunc = function(value)   Vars.maelstrom.stage9_synergy = value end,
 	}, "maelstrom", "stage9_synergy")
+	subTable = nil --end submenu
 
 
 	-- Halls of Fabrication
-	MakeControlEntry({
-		type = "header",
-		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_HEADER),
-		noSound = true
-	})
+	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_HEADER), RaidNotifier:GetRaidDescription(RAID_HALLS_OF_FABRICATION))
 	MakeControlEntry({
 		type = "dropdown",
 		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_TAKING_AIM),
@@ -768,8 +958,6 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("hallsFab", "pinnacleBoss_conduit_drain") end,
 		setFunc = function(value)   setChoiceValue("hallsFab", "pinnacleBoss_conduit_drain", value) end,
 	}, "hallsFab", "pinnacleBoss_conduit_drain")
-   
-   
 	MakeControlEntry({
 		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS),
@@ -791,13 +979,12 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.hallsFab.committee_reclaim_achive end,
 		setFunc = function(value)   Vars.hallsFab.committee_reclaim_achive = value end,
 	}, "hallsFab", "committee_reclaim_achive")
-
+	subTable = nil --end submenu
 
 
 	MakeControlEntry({
 		type = "header",
 		name = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_HEADER),
-		noSound = true,
 	})
 	MakeControlEntry({
 		type = "checkbox",
@@ -805,7 +992,6 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_TT),
 		getFunc = function() return Vars.dbg.enabled end,
 		setFunc = function(value)   Vars.dbg.enabled = value end,
-		noSound = true,
 	})
 	MakeControlEntry({
 		type = "checkbox",
@@ -813,7 +999,6 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = GetString(RAIDNOTIFIER_SETTINGS_DEBUGNOTIFY_TT),
 		getFunc = function() return Vars.dbg.notify end,
 		setFunc = function(value)   Vars.dbg.notify = value end,
-		noSound = true,
 	})
 
 	self.optionsData = optionsTable
@@ -878,10 +1063,13 @@ function RaidNotifier:CreateSettingsMenu()
 
 		SetupCustomDialog()
 
+		--store reference
+		profileDeleteDropRef = RNSettingDeleteDropRef
+
 		--loop through controls to add our Sound-Config-Button-Clicky-Thing (tm)
-		for i = 1, #optionsTable do
+		for i = 1, index do
 			local control = GetControl("RNSettingCtrl"..i)
-			if (control and not control.data.noSound) then
+			if (control and not control.data.noAlert) then
 				control.soundBtn = WINDOW_MANAGER:CreateControlFromVirtual(nil, control, "RaidNotifier_ConfigButton")
 				control.soundBtn:SetAnchor(RIGHT, control.combobox or control[control.data.type], LEFT, -5, 0)
 				control.soundBtn:SetHandler("OnClicked", function() 

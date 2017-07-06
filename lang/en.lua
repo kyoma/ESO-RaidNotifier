@@ -1,6 +1,6 @@
 local L = {}
 
-L.Description                            = "Displays on-screen notifications on different events during trials. Only for veteran difficulty!"
+L.Description                            = "Displays on-screen notifications on different events during trials."
 
 --------------------------------
 ----     General Stuff      ----
@@ -36,6 +36,7 @@ L.Alerts_General_Bufffood_Minutes                   = "Your '<<1>>' bufffood run
 ----    Ultimate Exchange   ----
 --------------------------------
 L.Settings_Ultimate_Header                           = "Ultimate Exchange (beta)"
+L.Settings_Ultimate_Description                      = "This feature allows you to send your ultimate to your teammates so they can see how close you are to casting it. It uses your cost based on whatever cost reduction you might have from sets or passives."
 -- Settings 
 L.Settings_Ultimate_Enabled                          = "Enabled"
 L.Settings_Ultimate_Enabled_TT                       = "Enable the sharing and receiving of ultimate values. It is always disabled outside of trials."
@@ -56,6 +57,30 @@ L.Settings_Ultimate_TargetUlti_TT                    = "What ultimate ability to
 L.Settings_Ultimate_OverrideCost                     = "Override Cost"
 L.Settings_Ultimate_OverrideCost_TT                  = "Use this value when sending your ultimate cost to others. Setting it to 0 will disable the override."
 
+
+--------------------------------
+----        Profiles        ----
+--------------------------------
+L.Settings_Profile_Header                            = "Profiles"
+L.Settings_Profile_Description                       = "Setting profiles can be managed here including the option to enable an account wide profile that will apply the same settings to ALL character\"s on this account. Due to the permanency of these options, management must first be enabled using the checkbox at the bottom of the panel."
+L.Settings_Profile_UseGlobal                         = "Use Account Wide Profile"
+L.Settings_Profile_UseGlobal_Warning                 = "Switching between local and global profiles will reload the interface."
+L.Settings_Profile_Copy                              = "Select A Profile To Copy"
+L.Settings_Profile_Copy_TT                           = "Select a profile to copy its settings to the currently active profile. The active profile will be for either the logged in character or the account wide profile if enabled. The existing profile settings will be permanently overwritten.\n\nThis cannot be undone!"
+L.Settings_Profile_CopyButton                        = "Copy Profile"
+L.Settings_Profile_CopyButton_Warning                = "Copying a profile will reload the interface."
+L.Settings_Profile_CopyCannotCopy                    = "Unable to copy selected profile. Please try again or select another profile."
+L.Settings_Profile_Delete                            = "Select A Profile To Delete"
+L.Settings_Profile_Delete_TT                         = "Select a profile to delete its settings from the database. If that character is logged in later, and you are not using the account wide profile, new default settings will be created.\n\nDeleting a profile is permanent!"
+L.Settings_Profile_DeleteButton                      = "Delete Profile"
+L.Settings_Profile_Guard                             = "Enable Profile Management"
+
+
+--------------------------------
+----          Trials        ----
+--------------------------------
+L.Settings_Trials_Header                            = "Trials"
+L.Settings_Trials_Description                       = "Here you can configure the notifications for each trial. Ranging from simply toggling one on or off to specifying a unique sound or showing it for your teammates as well."
 
 
 --------------------------------
@@ -283,6 +308,7 @@ L.Alerts_HallsFab_Overpower_Auras                   = "|cFF0000Swap Bosses soon!
 L.Alerts_HallsFab_Catastrophic_Discharge            = "|cFF0000Catastrophic Discharge|r at you! Block!"
 L.Alerts_HallsFab_Fabricant_Spawn                   = "|cFFC000Ruined Fabricant Spawn|r"
 L.Alerts_HallsFab_Reclaim_Achieve                   = "Achievement |cDCD822[Planned Obsolescence]|r |cFF0000Failed|r"
+
 
 
 --------------------------------
