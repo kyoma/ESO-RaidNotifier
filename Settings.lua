@@ -16,7 +16,6 @@ local RAID_HALLS_OF_FABRICATION  = 7
 
 RaidNotifier.Defaults = {
 	useAccountWide = false, 
-	version = 2.0,
 	general = {
 		buffFood_reminder = true,
 		buffFood_reminder_interval = 60,
@@ -321,9 +320,9 @@ function RaidNotifier:CreateSettingsMenu()
 			data.setting = setting
 			data.default = (data.type == "dropdown" and getDefaultChoiceValue(category, setting) or RaidNotifier.Defaults[category][setting])
 		else
-			data.noSound = true
+			data.noAlert = true
 		end
-		if not data.noSound and not data.reference then
+		if not data.noAlert and not data.reference then
 			index = index + 1
 			data.reference = "RNSettingCtrl"..index
 		end
@@ -745,7 +744,7 @@ function RaidNotifier:CreateSettingsMenu()
 					Vars.mawLorkhaj.zhaj_glyphs = value 
 					self.UI.SetElementHidden("mawLorkhaj", "zhaj_glyph_window", not value)
 				end,
-		noSound = true,
+		noAlert = true,
 	}, "mawLorkhaj", "zhaj_glyphs")
 	MakeControlEntry({
 		type = "checkbox",
@@ -754,7 +753,7 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.mawLorkhaj.zhaj_glyphs_invert end,
 		setFunc = function(value)   Vars.mawLorkhaj.zhaj_glyphs_invert = value; UI.InvertGlyphs() end,
 		disabled = function() return not Vars.mawLorkhaj.zhaj_glyphs end, 
-		noSound = true,
+		noAlert = true,
 	}, "mawLorkhaj", "zhaj_glyphs_invert")
 	MakeControlEntry({
 		type = "dropdown",
@@ -1070,7 +1069,7 @@ function RaidNotifier:CreateSettingsMenu()
 		--loop through controls to add our Sound-Config-Button-Clicky-Thing (tm)
 		for i = 1, index do
 			local control = GetControl("RNSettingCtrl"..i)
-			if (control and not control.data.noSound) then
+			if (control and not control.data.noAlert) then
 				control.soundBtn = WINDOW_MANAGER:CreateControlFromVirtual(nil, control, "RaidNotifier_ConfigButton")
 				control.soundBtn:SetAnchor(RIGHT, control.combobox or control[control.data.type], LEFT, -5, 0)
 				control.soundBtn:SetHandler("OnClicked", function() 
