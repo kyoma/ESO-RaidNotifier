@@ -15,7 +15,7 @@ local RAID_MAELSTROM_ARENA       = 6
 local RAID_HALLS_OF_FABRICATION  = 7
 
 RaidNotifier.Defaults = {
-	useAccountWide = false, 
+	useAccountWide = true, 
 	general = {
 		buffFood_reminder = true,
 		buffFood_reminder_interval = 60,

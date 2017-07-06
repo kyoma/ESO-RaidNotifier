@@ -279,7 +279,7 @@ L.Settings_HallsFab_Draining_Ballista_TT            = "Alerts you when Sphere ne
 L.Settings_HallsFab_Conduit_Strike                  = "General: Conduit Strike"
 L.Settings_HallsFab_Conduit_Strike_TT               = "Alerts you when Conduit Strike is coming."
 L.Settings_HallsFab_Power_Leech                     = "General: Power Leech"
-L.Settings_HallsFab_Power_Leech_TT                  = "Alerts you when you are stunned by Conduit Strike."
+L.Settings_HallsFab_Power_Leech_TT                  = "Alerts you when you are stunned by Conduit Strike and need to break free."
 L.Settings_HallsFab_Conduit_Spawn                   = "Pinnacle: Conduit Spawning"
 L.Settings_HallsFab_Conduit_Spawn_TT                = "Alerts you when a conduit is about to spawn at Factotum Pinnacle boss."
 L.Settings_HallsFab_Conduit_Drain                   = "Pinnacle: Conduit Draining"
@@ -304,10 +304,10 @@ L.Alerts_HallsFab_Conduit_Strike                    = "Incoming |cFF0000Conduit 
 L.Alerts_HallsFab_Draining_Ballista                 = "|cFFC000Draining Ballista|r targeted at you! Block or interrupt!"
 L.Alerts_HallsFab_Power_Leech                       = "|c6600FFPower Leech|r! Break Free!"
 L.Alerts_HallsFab_Overcharge_Aura                   = "|c3366EEOvercharging Aura|r at Reclaimer."
-L.Alerts_HallsFab_Overpower_Auras                   = "|cFF0000Swap Bosses soon!|r"
+L.Alerts_HallsFab_Overpower_Auras                   = "|cFF0000Aura Countdown!|r"
 L.Alerts_HallsFab_Catastrophic_Discharge            = "|cFF0000Catastrophic Discharge|r at you! Block!"
 L.Alerts_HallsFab_Fabricant_Spawn                   = "|cFFC000Ruined Fabricant Spawn|r"
-L.Alerts_HallsFab_Reclaim_Achieve                   = "Achievement |cDCD822[Planned Obsolescence]|r |cFF0000Failed|r"
+L.Alerts_HallsFab_Reclaim_Achieve                   = "|cDCD822[Planned Obsolescence]|r Achievement |cFF0000Failed|r"
 
 
 

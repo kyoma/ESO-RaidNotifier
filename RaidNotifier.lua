@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.0.0"
+RaidNotifier.Version         = "2.1.0"
 RaidNotifier.Author          = "|c009ad6Kyoma, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -42,6 +42,13 @@ SLASH_COMMANDS["/rndebug"] = function(arg)
 		p("%s Debug Tracker", settings.tracker and "Enabled" or "Disabled")
 	end
 end
+
+
+local ALERT_PRIORITY_HIGHEST = 5
+local ALERT_PRIORITY_HIGH    = 4
+local ALERT_PRIORITY_NORMAL  = 3
+local ALERT_PRIORITY_LOW     = 2
+local ALERT_PRIORITY_LOWEST  = 1
 
 ------------------------------------
 -- -- NOTIFICATION SYSTEM & SOUNDS
@@ -1276,26 +1283,57 @@ do ---------------------------
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_POWER_LEECH), "hallsFab", "power_leech")
 						end
 					end
-				elseif (abilityId == buffsDebuffs.committee_overheat_aura or abilityId == buffsDebuffs.committee_overload_aura or abilityId == buffsDebuffs.committee_overcharge_aura) then 
+				elseif (abilityId == buffsDebuffs.committee_overheat_aura or abilityId == buffsDebuffs.committee_overcharge_aura) then -- not checking for "committee_overload_aura" since it isn't involved in the swapping
 					-- right we dont care that this occurs multiple times in a row
+					--buffsDebuffs.committee_overpower_auras_total = (buffsDebuffs.committee_overpower_auras_total or 0) + 1
 					if (settings.committee_overpower_auras == true) then
 						buffsDebuffs.committee_countdown_index = self:StartCountdown(9000, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_OVERPOWER_AURAS), "hallsFab", "committee_overpower_auras")
 					end
+
+				elseif (abilityId == buffsDebuffs.committee_overheat) then
+					if (settings.committee_overpower_auras == true) then
+						local lastTarget = buffsDebuffs.last_overheat_target
+						buffsDebuffs.last_overheat_target = tUnitId
+						if (lastTarget ~= nil and lastTarget ~= buffsDebuffs.last_overheat_target) then -- tanks have swapped?
+							dbg("Overheat switched from %s to %s", LUNIT:GetNameForUnitId(lastTarget), LUNIT:GetNameForUnitId(tUnitId))
+							--local index = buffsDebuffs.committee_countdown_index
+							--if (index and index > 0) then
+							--	dbg("Tanks have swapped?? Stopping countdown")
+							--	self:StopCountdown(index)
+							--	buffsDebuffs.committee_countdown_index = 0 -- don't set it to nil
+							--end
+						end
+					end
+				elseif (abilityId == buffsDebuffs.committee_overcharge) then
+					if (settings.committee_overpower_auras == true) then
+						local lastTarget = buffsDebuffs.last_overcharge_target
+						buffsDebuffs.last_overcharge_target = tUnitId
+						if (lastTarget ~= nil and lastTarget ~= buffsDebuffs.last_overcharge_target) then -- tanks have swapped?
+							dbg("Overcharge switched from %s to %s", LUNIT:GetNameForUnitId(lastTarget), LUNIT:GetNameForUnitId(tUnitId))
+							--local index = buffsDebuffs.committee_countdown_index
+							--if (index and index > 0) then
+							--	dbg("Tanks have swapped?? Stopping countdown")
+							--	self:StopCountdown(index)
+							--	buffsDebuffs.committee_countdown_index = 0 -- don't set it to nil
+							--end
+						end
+					end
 				end
-				--TODO: track last person that had each aura to determine when they swapped??
-		
+
 			elseif (result == ACTION_RESULT_EFFECT_GAINED) then
 				if (abilityId == buffsDebuffs.committee_reclaim_achieve_failed) then
 					if (settings.committee_reclaim_achieve == true) then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_RECLAIM_ACHIEVE), "hallsFab", "committee_reclaim_achieve")
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_RECLAIM_ACHIEVE), "hallsFab", "committee_reclaim_achieve", 5)
 					end
 				end
 
 			elseif (result == ACTION_RESULT_EFFECT_FADED) then
-				if (abilityId == buffsDebuffs.committee_overheat_aura or abilityId == buffsDebuffs.committee_overload_aura or abilityId == buffsDebuffs.committee_overcharge_aura) then 
+				if (abilityId == buffsDebuffs.committee_overheat_aura or abilityId == buffsDebuffs.committee_overcharge_aura) then 
 					if (settings.committee_overpower_auras == true) then
 						self:StopCountdown(buffsDebuffs.committee_countdown_index)
 						buffsDebuffs.committee_countdown_index = 0 -- don't set it to nil
+						buffsDebuffs.last_overcharge_target = nil
+						buffsDebuffs.last_overheat_target = nil
 					end
 				end
 			end
