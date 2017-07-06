@@ -1,6 +1,10 @@
 local RaidNotifier = RaidNotifier
 local UI = RaidNotifier.UI
 
+UI.MAP_MOL_BASE = "Art/maps/reapersmarch/Maw_of_Lorkaj_Base_0.dds"
+UI.MAP_MOL_SUTHAY_SANCTUARY = "Art/maps/reapersmarch/MawLorkajSuthaySanctuary_Base_0.dds"
+UI.MAP_MOL_SEVEN_RIDDLES = "Art/maps/reapersmarch/MawLorkajSevenRiddles_Base_0.dds"
+
 do 
 	local UI_FRAGMENT
 

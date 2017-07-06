@@ -542,7 +542,7 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.mawLorkhaj.zhaj_glyphs end,
 		setFunc = function(value)   
 					Vars.mawLorkhaj.zhaj_glyphs = value 
-					self.UI.SetElementHidden("mawLorkhaj", "zhaj_glyph_window", not value)
+					self.OnBossesChanged() -- we need to be sure that we are inside MoL and near first boss
 				end,
 		noSound = true,
 	}, "mawLorkhaj", "zhaj_glyphs")
