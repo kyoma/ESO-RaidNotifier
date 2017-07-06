@@ -24,6 +24,16 @@ local RAID_HALLS_OF_FABRICATION  = 7
 local function p() end
 local function dbg() end
 
+local function split(str)
+	if (str == nil) then return nil end
+	local options = {}
+	local word
+	for word in str:gmatch("[^%s]+") do
+		table.insert(options, word)
+	 end
+	return options
+end
+
 -- Fast debug toggle
 SLASH_COMMANDS["/rndebug"] = function(arg) 
 	local self     = RaidNotifier
@@ -327,12 +337,30 @@ do ----------------------
 	SLASH_COMMANDS["/rnulti"] = function(arg) 
 		local self     = RaidNotifier
 		local settings = self.Vars.ultimate
+		args = split(arg)
 		if (arg == nil or arg == "") then
 			settings.hidden = not settings.hidden
 			p("%s Ultimate Exchange", settings.hidden and "Hide" or "Show")
-		elseif (arg == "show") then
+		elseif (args[1] == "show") then
 			p("Show Ultimate Exchange")
 			settings.hidden = false
+                        if (#args > 1) then
+				settings.showDps = false
+				settings.showHealers = false
+				settings.showTanks = false
+				for i = 2,#args do
+					if (args[i] == "dps" or args[i] == "d") then
+						settings.showDps = true
+						 p("Show DPS ultimate")
+					elseif (args[i] == "heal" or args[i] == "h") then
+						settings.showHealers = true
+						p("Show Healers ultimate")
+					elseif (args[i] == "tank" or args[i] == "t") then
+						settings.showTanks = true
+						p("Show Tanks ultimate")
+					end
+				end
+			end
 		elseif (arg == "hide") then
 			p("Hide Ultimate Exchange")
 			settings.hidden = true
@@ -349,6 +377,15 @@ do ----------------------
 		elseif (arg == "refresh") then
 			ultimates = {}
 			ultimateHandler:Refresh()
+		elseif (args[1] == "cost") then
+			if (#args == 2 and tonumber(args[2]) ~= nil) then
+				settings.override_cost = tonumber(args[2])
+				if (settings.override_cost > 0) then
+					p("Enabled ultimate cost is now " .. settings.override_cost)
+				else
+					p("Disabled ultimate cost override")
+				end
+			end
 		end
 		UI.SetElementHidden("ultimate", "ulti_window", settings.hidden)
 		self:UpdateUltimates()
