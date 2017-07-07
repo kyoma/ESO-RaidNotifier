@@ -566,14 +566,14 @@ do -----------------------------
 
 			UI.SetElementHidden("mawLorkhaj", "zhaj_glyph_window", true)
 			local map       = GetMapTileTexture()
-			if (bossCount == 1 and map == "Art/maps/reapersmarch/Maw_of_Lorkaj_Base_0.dds") then -- Zhaj'hassa the Forgotten
+			if (bossCount == 1 and map == UI.MAP_MOL_BASE) then -- Zhaj'hassa the Forgotten
 				buffsDebuffs.zhajBoss_knownGlyphs = {}
 				if (settings.zhaj_glyphs) then
 					UI.SetElementHidden("mawLorkhaj", "zhaj_glyph_window", false)
 				end
-			elseif (bossCount == 2 and map == "Art/maps/reapersmarch/MawLorkajSuthaySanctuary_Base_0.dds") then -- False Moon Twins, S’Kinrai and Vashai
+			elseif (bossCount == 2 and map == UI.MAP_MOL_SUTHAY_SANCTUARY) then -- False Moon Twins, S’Kinrai and Vashai
 				
-			elseif (bossCount == 1 and map == "Art/maps/reapersmarch/MawLorkajSevenRiddles_Base_0.dds") then
+			elseif (bossCount == 1 and map == UI.MAP_MOL_SEVEN_RIDDLES) then
 			
 			end
 		elseif (raidId == RAID_HALLS_OF_FABRICATION) then

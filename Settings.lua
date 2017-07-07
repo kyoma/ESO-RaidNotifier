@@ -742,7 +742,11 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.mawLorkhaj.zhaj_glyphs end,
 		setFunc = function(value)   
 					Vars.mawLorkhaj.zhaj_glyphs = value 
-					self.UI.SetElementHidden("mawLorkhaj", "zhaj_glyph_window", not value)
+					local map       = GetMapTileTexture()
+					local numBoss = self:GetNumBosses(true)
+					if (value == false or (numBoss == 1 and map == UI.MAP_MOL_BASE)) then
+						self.UI.SetElementHidden("mawLorkhaj", "zhaj_glyph_window", not value)
+					end
 				end,
 		noAlert = true,
 	}, "mawLorkhaj", "zhaj_glyphs")
