@@ -302,6 +302,7 @@ L.Alerts_HallsFab_Conduit_Drain                     = "A Conduit is draining you
 L.Alerts_HallsFab_Conduit_Drain_Other               = "A Conduit is draining |cFF0000<<!aC:1>>|r!"
 L.Alerts_HallsFab_Conduit_Strike                    = "Incoming |cFF0000Conduit Strike|r. Block!"
 L.Alerts_HallsFab_Draining_Ballista                 = "|cFFC000Draining Ballista|r targeted at you! Block or interrupt!"
+L.Alerts_HallsFab_Draining_Ballista_Other           = "|cFFC000Draining Ballista|r targeted at |cFF0000<<!aC:1>>|r! Interrupt!"
 L.Alerts_HallsFab_Power_Leech                       = "|c6600FFPower Leech|r! Break Free!"
 L.Alerts_HallsFab_Overcharge_Aura                   = "|c3366EEOvercharging Aura|r at Reclaimer."
 L.Alerts_HallsFab_Overpower_Auras                   = "|cFF0000Aura Countdown!|r"

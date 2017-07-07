@@ -89,7 +89,7 @@ RaidNotifier.Defaults = {
 	hallsFab = {
 		conduit_strike        = true, 
 		taking_aim            = 1, -- "Self"
-		draining_ballista     = 1, --
+		draining_ballista     = 1, -- "Self"
 		power_leech           = false,
 
 		pinnacleBoss_conduit_spawn = true,
