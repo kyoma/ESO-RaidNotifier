@@ -742,7 +742,8 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.mawLorkhaj.zhaj_glyphs end,
 		setFunc = function(value)   
 					Vars.mawLorkhaj.zhaj_glyphs = value 
-					self.UI.SetElementHidden("mawLorkhaj", "zhaj_glyph_window", not value)
+					--self.UI.SetElementHidden("mawLorkhaj", "zhaj_glyph_window", not value)
+					RaidNotifier.OnBossesChanged()
 				end,
 		noAlert = true,
 	}, "mawLorkhaj", "zhaj_glyphs")
