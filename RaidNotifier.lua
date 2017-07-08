@@ -1285,13 +1285,20 @@ do ---------------------------
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_POWER_LEECH), "hallsFab", "power_leech")
 						end
 					end
-				elseif (abilityId == buffsDebuffs.committee_overheat_aura or abilityId == buffsDebuffs.committee_overcharge_aura) then -- not checking for "committee_overload_aura" since it isn't involved in the swapping
+				elseif (abilityId == buffsDebuffs.committee_overheat_aura or abilityId == buffsDebuffs.committee_overload_aura) then -- not checking for "committee_overcharge_aura" since it isn't involved in the swapping
 					-- right we dont care that this occurs multiple times in a row
 					--buffsDebuffs.committee_overpower_auras_total = (buffsDebuffs.committee_overpower_auras_total or 0) + 1
 					if (settings.committee_overpower_auras == true) then
 						buffsDebuffs.committee_countdown_index = self:StartCountdown(9000, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_OVERPOWER_AURAS), "hallsFab", "committee_overpower_auras")
 					end
 
+				end
+
+			elseif (result == ACTION_RESULT_EFFECT_GAINED) then
+				if (abilityId == buffsDebuffs.committee_reclaim_achieve) then
+					if (settings.committee_reclaim_achieve == true) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_RECLAIM_ACHIEVE), "hallsFab", "committee_reclaim_achieve", 5)
+					end
 				elseif (abilityId == buffsDebuffs.committee_overheat) then
 					if (settings.committee_overpower_auras == true) then
 						local lastTarget = buffsDebuffs.last_overheat_target
@@ -1306,7 +1313,7 @@ do ---------------------------
 							--end
 						end
 					end
-				elseif (abilityId == buffsDebuffs.committee_overcharge) then
+				elseif (abilityId == buffsDebuffs.committee_overload) then
 					if (settings.committee_overpower_auras == true) then
 						local lastTarget = buffsDebuffs.last_overcharge_target
 						buffsDebuffs.last_overcharge_target = tUnitId
@@ -1319,13 +1326,6 @@ do ---------------------------
 							--	buffsDebuffs.committee_countdown_index = 0 -- don't set it to nil
 							--end
 						end
-					end
-				end
-
-			elseif (result == ACTION_RESULT_EFFECT_GAINED) then
-				if (abilityId == buffsDebuffs.committee_reclaim_achieve_failed) then
-					if (settings.committee_reclaim_achieve == true) then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_RECLAIM_ACHIEVE), "hallsFab", "committee_reclaim_achieve", 5)
 					end
 				end
 
