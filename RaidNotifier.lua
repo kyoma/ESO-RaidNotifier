@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.1.0"
+RaidNotifier.Version         = "2.1.1"
 RaidNotifier.Author          = "|c009ad6Kyoma, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -24,7 +24,6 @@ local RAID_HALLS_OF_FABRICATION  = 7
 local function p() end
 local function dbg() end
 
-local function split(str)
 -- Fast debug toggle
 SLASH_COMMANDS["/rndebug"] = function(arg) 
 	local self     = RaidNotifier
