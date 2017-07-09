@@ -1,7 +1,7 @@
 --[[
 Author: Kyoma
 Filename: LibCSA.lua
-Version: 1.0
+Version: 1.1
 
 Description: This library serves to provide a global  enhancement of the center screen announcement system to make it more flexible
              for wider purposes. 
@@ -17,7 +17,7 @@ Description: This library serves to provide a global  enhancement of the center 
 ]]--
 
 local libLoaded
-local LIB_NAME, VERSION = "LibCSA", 1
+local LIB_NAME, VERSION = "LibCSA", 1.1
 local lib, oldminor = LibStub:NewLibrary(LIB_NAME, VERSION)
 if not lib then return end
 
@@ -52,6 +52,14 @@ local function Unload()
 end
 
 local function Load()
+
+	--ZO_CenterScreenMessageParams.SetLineType = function(self, lineType)
+	--	self.lineType = lineType
+	--end
+    --
+	-- ZO_CenterScreenMessageParams.GetLineType = function(self)
+	--	return self.lineType
+	--end
 
 	-- create a global, seperate line because we dont want it to be affected by the countdown animation
 	if not CSA.countdownLineHeader then
@@ -166,6 +174,9 @@ function lib:EndCountdown(index)
 	end
 end
 
+function lib:HasActiveCountdown()
+	return CSA:HasActiveLines(CSA_LINE_TYPE_COUNTDOWN) 
+end
 
 if(lib.Unload) then lib.Unload() end
 Load()

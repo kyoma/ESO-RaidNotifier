@@ -25,15 +25,6 @@ local function p() end
 local function dbg() end
 
 local function split(str)
-	if (str == nil) then return nil end
-	local options = {}
-	local word
-	for word in str:gmatch("[^%s]+") do
-		table.insert(options, word)
-	 end
-	return options
-end
-
 -- Fast debug toggle
 SLASH_COMMANDS["/rndebug"] = function(arg) 
 	local self     = RaidNotifier
@@ -52,7 +43,6 @@ SLASH_COMMANDS["/rndebug"] = function(arg)
 		p("%s Debug Tracker", settings.tracker and "Enabled" or "Disabled")
 	end
 end
-
 
 local ALERT_PRIORITY_HIGHEST = 5
 local ALERT_PRIORITY_HIGH    = 4
@@ -120,8 +110,9 @@ do ---------------------------------
 		local key = GetKey(category, setting)
 		lastNotifyTimes[key] = value
 	end
-	
-	local RN_SMALL_TEXT = CSA_EVENT_SMALL_TEXT or CSA_CATEGORY_SMALL_TEXT
+
+	local CSA  = CENTER_SCREEN_ANNOUNCE
+	local LCSA = LibStub:GetLibrary("LibCSA")
 	-- TODO: Overhaul this completely and make a better alternative, gonna take a while
 	function RaidNotifier:AddAnnouncement(text, category, setting, interval)
 
@@ -143,10 +134,9 @@ do ---------------------------------
 			self:SetLastNotify(category, setting, currentTime)
 		end
 
-		if (self.Vars.general.use_center_screen_announce) then
-			CENTER_SCREEN_ANNOUNCE:AddMessage(EVENT_BROADCAST, RN_SMALL_TEXT, soundId, text, nil, nil, nil, nil, nil, duration)
-			CENTER_SCREEN_ANNOUNCE.m_nextUpdateTimeSeconds = 0 --force it to update right away
-			CENTER_SCREEN_ANNOUNCE.nextUpdateTimeSeconds = 0 --they renamed it in ESO:Morrowind
+		if (self.Vars.general.use_center_screen_announce and not LCSA:HasActiveCountdown()) then
+			CSA:AddMessage(EVENT_BROADCAST, CSA_CATEGORY_SMALL_TEXT, soundId, text, nil, nil, nil, nil, nil, duration)
+			CSA.nextUpdateTimeSeconds = 0 --they renamed it in ESO:Morrowind
 		else
 			lastAnnounceIndex = lastAnnounceIndex + 1
 			RaidNotifierUICenterAnnounce:SetHidden(false)
@@ -164,7 +154,6 @@ do ---------------------------------
 		end
 	end
 
-	local LCSA = LibStub:GetLibrary("LibCSA")
 	function RaidNotifier:StartCountdown(timer, text, category, setting, interval)
 		local soundId = self:GetSoundValue(category, setting)
 
@@ -341,49 +330,57 @@ do ----------------------
 	end
 
 
-	SLASH_COMMANDS["/rnulti"] = function(arg) 
+	SLASH_COMMANDS["/rnulti"] = function(str) 
+		local args = {zo_strsplit(" ", str)}
+
 		local self     = RaidNotifier
 		local settings = self.Vars.ultimate
-		args = split(arg)
-		if (arg == nil or arg == "") then
+		if (args == nil or #args[1] == 0) then
 			settings.hidden = not settings.hidden
 			p("%s Ultimate Exchange", settings.hidden and "Hide" or "Show")
 		elseif (args[1] == "show") then
 			p("Show Ultimate Exchange")
 			settings.hidden = false
-		elseif (arg == "hide") then
+		elseif (args[1] == "hide") then
 			p("Hide Ultimate Exchange")
 			settings.hidden = true
-		elseif (arg == "enable" or arg =="1") then
+		elseif (args[1] == "enable" or args[1] == "on" or args[1] =="1") then
 			p("Enable Ultimate Exchange")
 			settings.enabled = true
 			settings.hidden = false
 			self:RegisterForUltimateChanges()
-		elseif (arg == "disable" or arg == "0") then
+		elseif (args[1] == "disable" or args[1] == "off" or args[1] == "0") then
 			p("Disable Ultimate Exchange")
 			settings.enabled = false
 			settings.hidden = true
 			self:UnregisterForUltimateChanges()
-		elseif (arg == "refresh") then
+		elseif (args[1] == "refresh") then
 			ultimates = {}
 			ultimateHandler:Refresh()
-                elseif (args[1] == "cost") then
-                        if (#args == 2) then
+		elseif (args[1] == "cost") then
+			if (#args == 2) then
 				if (tonumber(args[2]) ~= nil) then
-	                                settings.override_cost = tonumber(args[2])
-				elseif (args[2] == "auto") then
-					settings.override_cost, _ = GetSlotAbilityCost(8) -- <1-2> - weapon, <3-7> skills, 8 - ultimate
+					settings.override_cost = tonumber(args[2])
+				elseif (args[2] == "auto") then -- maybe use GetSlotBoundId to grab slotted ability instead?
+					settings.override_cost = GetSlotAbilityCost(ACTION_BAR_ULTIMATE_SLOT_INDEX + 1)
+				else 
+					p("Trying to set override cost to unsupported value (%s)", args[2])
+					return
 				end
+				-- cost will be sent to others on next bar swap
 				if (settings.override_cost > 0) then
 					p("Enabled ultimate cost is now " .. settings.override_cost)
 				else
 					p("Disabled ultimate cost override")
 				end
 			end
+		else
+			p("Unknown subcommand (%s)", args[1])
 		end
 		UI.SetElementHidden("ultimate", "ulti_window", settings.hidden)
 		self:UpdateUltimates()
 	end
+
 end
 
 
@@ -1254,9 +1251,8 @@ do ---------------------------
 
 			if (result == ACTION_RESULT_BEGIN) then
 				if (abilityId == buffsDebuffs.taking_aim) then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-					dbg("Taking Aim on %s", tName)
 					if (settings.taking_aim >= 1) then
+						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM), "hallsFab", "taking_aim")
 						elseif (tName ~= "" and settings.taking_aim == 2) then
@@ -1264,27 +1260,23 @@ do ---------------------------
 						end
 					end
 				elseif (buffsDebuffs.conduit_strike[abilityId] == true) then
-					dbg("Incoming Conduit Strike (%d)", abilityId)
 					if (settings.conduit_strike == true) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_CONDUIT_STRIKE), "hallsFab", "conduit_strike")
 					end
 				elseif (abilityId == buffsDebuffs.pinnacleBoss_conduit_spawn) then
-					dbg("Conduit Spawning (%d)", tUnitId)
 					if (settings.pinnacleBoss_conduit_spawn == true) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_CONDUIT_SPAWN), "hallsFab", "pinnacleBoss_conduit_spawn")
 					end
 				elseif (abilityId == buffsDebuffs.pinnacleBoss_conduit_drain) then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-					dbg("Incoming Conduit Draining %s", tName)
 					if settings.pinnacleBoss_conduit_drain >= 1 then
+						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_CONDUIT_DRAIN), "hallsFab", "pinnacleBoss_conduit_drain")
 						elseif (tName ~= "" and settings.pinnacleBoss_conduit_drain == 2) then
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_CONDUIT_DRAIN_OTHER), tName), "hallsFab", "pinnacleBoss_conduit_drain")
 						end
 					end
-				elseif (abilityId == buffsDebuffs.committee_fabricant_spawn) then --is this per spawn or a one-time thing when the wave begins?
-					dbg("Ruined Fabricant Spawn (%d)", abilityId)
+				elseif (abilityId == buffsDebuffs.committee_fabricant_spawn) then --start of wave
 					if (settings.committee_fabricant_spawn == true) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_FABRICANT_SPAWN), "hallsFab", "committee_fabricant_spawn", 4) -- rewrite it to use CountDown method like auras
 					end
@@ -1293,7 +1285,6 @@ do ---------------------------
 			elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
 
 				if (abilityId == buffsDebuffs.draining_ballista) then
-					--dbg("Draining Ballista on %s", tName)
 					if (settings.draining_ballista >= 1) then
 						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then
@@ -1304,7 +1295,6 @@ do ---------------------------
 					end
 				elseif (abilityId == buffsDebuffs.power_leech) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
-						--dbg("Stunned by Power Leech")
 						if (settings.power_leech == true) then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_POWER_LEECH), "hallsFab", "power_leech")
 						end
@@ -1339,10 +1329,10 @@ do ---------------------------
 					end
 				elseif (abilityId == buffsDebuffs.committee_overload) then
 					if (settings.committee_overpower_auras == true) then
-						local lastTarget = buffsDebuffs.last_overcharge_target
-						buffsDebuffs.last_overcharge_target = tUnitId
-						if (lastTarget ~= nil and lastTarget ~= buffsDebuffs.last_overcharge_target) then -- tanks have swapped?
-							dbg("Overcharge switched from %s to %s", LUNIT:GetNameForUnitId(lastTarget), LUNIT:GetNameForUnitId(tUnitId))
+						local lastTarget = buffsDebuffs.last_overload_target
+						buffsDebuffs.last_overload_target = tUnitId
+						if (lastTarget ~= nil and lastTarget ~= buffsDebuffs.last_overload_target) then -- tanks have swapped?
+							dbg("Overload switched from %s to %s", LUNIT:GetNameForUnitId(lastTarget), LUNIT:GetNameForUnitId(tUnitId))
 							--local index = buffsDebuffs.committee_countdown_index
 							--if (index and index > 0) then
 							--	dbg("Tanks have swapped?? Stopping countdown")

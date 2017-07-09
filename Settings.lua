@@ -566,8 +566,6 @@ function RaidNotifier:CreateSettingsMenu()
 		func = function(btn)  DeleteProfile() end,
 		disabled = function() return not profileGuard end,
 	})
-	--MakeControlEntry({type = "description"})
-	--MakeControlEntry({type = "header"})
 	MakeControlEntry({type = "divider", alpha = 1})
 	MakeControlEntry({
 		type = "checkbox",
@@ -977,9 +975,9 @@ function RaidNotifier:CreateSettingsMenu()
 		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_RECLAIM_ACHIEVE),
 		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_RECLAIM_ACHIEVE_TT),
-		getFunc = function() return Vars.hallsFab.committee_reclaim_achive end,
-		setFunc = function(value)   Vars.hallsFab.committee_reclaim_achive = value end,
-	}, "hallsFab", "committee_reclaim_achive")
+		getFunc = function() return Vars.hallsFab.committee_reclaim_achieve end,
+		setFunc = function(value)   Vars.hallsFab.committee_reclaim_achieve = value end,
+	}, "hallsFab", "committee_reclaim_achieve")
 	subTable = nil --end submenu
 
 
