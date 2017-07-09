@@ -24,6 +24,16 @@ local RAID_HALLS_OF_FABRICATION  = 7
 local function p() end
 local function dbg() end
 
+local function split(str)
+	if (str == nil) then return nil end
+	local options = {}
+	local word
+	for word in str:gmatch("[^%s]+") do
+		table.insert(options, word)
+	 end
+	return options
+end
+
 -- Fast debug toggle
 SLASH_COMMANDS["/rndebug"] = function(arg) 
 	local self     = RaidNotifier
@@ -334,10 +344,11 @@ do ----------------------
 	SLASH_COMMANDS["/rnulti"] = function(arg) 
 		local self     = RaidNotifier
 		local settings = self.Vars.ultimate
+		args = split(arg)
 		if (arg == nil or arg == "") then
 			settings.hidden = not settings.hidden
 			p("%s Ultimate Exchange", settings.hidden and "Hide" or "Show")
-		elseif (arg == "show") then
+		elseif (args[1] == "show") then
 			p("Show Ultimate Exchange")
 			settings.hidden = false
 		elseif (arg == "hide") then
@@ -356,6 +367,19 @@ do ----------------------
 		elseif (arg == "refresh") then
 			ultimates = {}
 			ultimateHandler:Refresh()
+                elseif (args[1] == "cost") then
+                        if (#args == 2) then
+				if (tonumber(args[2]) ~= nil) then
+	                                settings.override_cost = tonumber(args[2])
+				elseif (args[2] == "auto") then
+					settings.override_cost, _ = GetSlotAbilityCost(8) -- <1-2> - weapon, <3-7> skills, 8 - ultimate
+				end
+				if (settings.override_cost > 0) then
+					p("Enabled ultimate cost is now " .. settings.override_cost)
+				else
+					p("Disabled ultimate cost override")
+				end
+			end
 		end
 		UI.SetElementHidden("ultimate", "ulti_window", settings.hidden)
 		self:UpdateUltimates()
