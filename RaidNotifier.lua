@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.1.1"
+RaidNotifier.Version         = "2.1.2"
 RaidNotifier.Author          = "|c009ad6Kyoma, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -24,23 +24,8 @@ local RAID_HALLS_OF_FABRICATION  = 7
 local function p() end
 local function dbg() end
 
--- Fast debug toggle
-SLASH_COMMANDS["/rndebug"] = function(arg) 
-	local self     = RaidNotifier
-	local settings = self.Vars.dbg
-	if (arg == nil or arg == "") then
-		settings.enabled = not settings.enabled
-		p("%s Debugging", settings.enabled and "Enabled" or "Disabled")
-	elseif (arg == "enable" or arg =="1") then
-		p("Enabled debugging")
-		settings.enabled = true
-	elseif (arg == "disable" or arg == "0") then
-		p("Disabled debugging")
-		settings.enabled = false
-	elseif (arg == "track") then
-		settings.tracker = not settings.tracker
-		p("%s Debug Tracker", settings.tracker and "Enabled" or "Disabled")
-	end
+local function IsDevMode()
+	return RaidNotifier.Vars.dbg.devMode == true
 end
 
 local ALERT_PRIORITY_HIGHEST = 5
@@ -121,8 +106,8 @@ do ---------------------------------
 		if not text or text == "" then
 			p("Invalid text for '%s -> %s'", category, setting)
 			return
-		elseif self.Vars.debug_notify then 
-			dbg("Alert for '%s -> %s', sound '%s' \n\"%s\"", category, setting, soundId, text)
+		--elseif self.Vars.debug_notify then 
+		--	dbg("Alert for '%s -> %s', sound '%s' \n\"%s\"", category, setting, soundId, text)
 		end
 
 		if (interval) then 
@@ -159,8 +144,8 @@ do ---------------------------------
 		if not text or text == "" then
 			p("Invalid text for '%s -> %s'", category, setting)
 			return
-		elseif self.Vars.debug_notify then 
-			dbg("Alert for '%s -> %s', sound '%s' \n\"%s\"", category, setting, soundId, text)
+		--elseif self.Vars.debug_notify then 
+		--	dbg("Alert for '%s -> %s', sound '%s' \n\"%s\"", category, setting, soundId, text)
 		end
 		if (interval) then 
 			local currentTime = GetTimeStamp()
@@ -625,7 +610,51 @@ do ---------------------------
 		debugList[result] = {}
 	end
 	local debugMsg = "[%d] %s (%d)%s%s"
-	local noSpam = true
+
+	-- Fast debug toggle
+	SLASH_COMMANDS["/rndebug"] = function(str) 
+		local args = {zo_strsplit(" ", str)}
+
+		local function GetArgValue(str, value)
+			if (str == "enable" or str == "on" or str =="1") then
+				return true
+			elseif (str == "disable" or str == "off" or str =="0") then
+				return false
+			elseif (str == nil or str == "") then
+				return not value
+			else
+				return value
+			end
+		end
+
+		local self     = RaidNotifier
+		local settings = self.Vars.dbg
+
+		if (args[1] == "track") then
+			settings.tracker = GetArgValue(args[2], settings.tracker)
+			p("%s Debug Tracker", settings.tracker and "Enabled" or "Disabled")
+		elseif (args[1] == "spam") then
+			settings.spamControl = GetArgValue(args[2], settings.spamControl)
+			p("%s Spam Control", settings.spamControl and "Enabled" or "Disabled")
+		elseif (args[1] == "enemy") then
+			settings.myEnemyOnly = GetArgValue(args[2], settings.myEnemyOnly)
+			p("%s My Enemy Only", settings.myEnemyOnly and "Enabled" or "Disabled")
+		elseif (args[1] == "clear") then
+			local result = tonumber(args[2])
+			if result ~= nil then 
+				p("Clearing debug list [%d]", result)
+				debugList[result] = {}
+			else
+				p("Clearing all debug lists")
+				for _, result in ipairs(debugResults) do
+					debugList[result] = {}
+				end
+			end
+		elseif (GetArgValue(args[1]) ~= nil) then
+			settings.enabled = GetArgValue(args[1], settings.enabled)
+			p("%s Debugging", settings.enabled and "Enabled" or "Disabled")
+		end
+	end
 
 	function RaidNotifier.OnCombatEvent(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
 		
@@ -647,13 +676,17 @@ do ---------------------------
 				end
 			end
 
-			if (not debugList[result][abilityId]) or (not noSpam) then
-				local source = FormatUnit(", [S] ", sType, sName, sUnitId)
-				local target = FormatUnit(", [T] ", tType, tName, tUnitId)
-				local ability = (aName ~= "" and aName ~= nil) and aName or GetAbilityName(abilityId)
+			if (not debugList[result][abilityId]) or (not self.Vars.dbg.spamControl) then
+				if (tType == COMBAT_UNIT_TYPE_PLAYER and (sType == COMBAT_UNIT_TYPE_OTHER or sType == COMBAT_UNIT_TYPE_NONE) or (not self.Vars.dbg.myEnemyOnly)) then
+			
+					local source = FormatUnit(", [S] ", sType, sName, sUnitId)
+					local target = FormatUnit(", [T] ", tType, tName, tUnitId)
+					local ability = (aName ~= "" and aName ~= nil) and aName or GetAbilityName(abilityId)
 
-				debugList[result][abilityId] = noSpam
-				d(debugMsg:format(result, ability, abilityId, source, target))
+					debugList[result][abilityId] = self.Vars.dbg.spamControl
+					d(debugMsg:format(result, ability, abilityId, source, target))
+				
+				end
 			end
 		end
 
@@ -804,8 +837,8 @@ do ---------------------------
 			if (result == ACTION_RESULT_BEGIN) then
 
 				-- Serpent, Poison Phase
-				if (buffsDebuffs.poison_teleport[abilityId]) then
-					local phase = buffsDebuffs.poison_teleport[abilityId]
+				if (buffsDebuffs.serpent_poison_teleport[abilityId]) then
+					local phase = buffsDebuffs.serpent_poison_teleport[abilityId]
 					if settings.serpent_poison == 2 or phase == 5 then --"Full" or final poison phase, use detailed text
 						self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_SANCTUM_SERPENT_POISON", phase), "sanctumOphidia", "serpent_poison")
 					elseif settings.serpent_poison == 1 then --"Normal", use plain text
@@ -813,19 +846,14 @@ do ---------------------------
 					end
 
 				-- Serpent (Hardmode), World-Shaper
-				--    No idea why I thought this works but it simply doesn't, I probably mixed things up with 
-				--    simply dying from this ability instead of it being a channel that the Serpent does
-				--elseif (buffsDebuffs.serpent_worldshaper == abilityId) then
-				--	tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-				--	df("WORLDSHAPER, %d, %d/%d/%s", result, tType, tUnitId, tName)
-				--	dbg(string.format("World-Shaper (%d) on %s", abilityId, tName))
-				--	if settings.serpent_worldshaper then
-				--		if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
-				--			self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_SERPENT_WORLDSHAPER), 3000, "bla")
-				--		elseif (tName ~= "" and settings.serpent_worldshaper == 2) then
-				--			self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_SERPENT_WORLDSHAPER_OTHER), tName), 3000, "bla")
-				--		end
-				--	end
+				elseif (abilityId == buffsDebuffs.serpent_world_shaper) then
+					 --per start of eclipse tear, just add countdown and use interval to limit it to the first
+					if IsDevMode() then
+						if (settings.serpent_world_shaper == true) then
+							dbg("World Shaper detected")
+							self:StartCountdown(buffsDebuffs.serpent_world_shaper_delay, GetString(RAIDNOTIFIER_ALERTS_SANCTUM_SERPENT_WORLD_SHAPER), "sanctumOphidia", "serpent_world_shaper", 10)
+						end
+					end
 
 				-- Trolls, Spreading Poison
 				elseif (buffsDebuffs.spreading_poison[abilityId]) then
@@ -907,8 +935,8 @@ do ---------------------------
 				if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 
 					-- Sanctum Serpent Magicka Detonation Alert
-					if (abilityId == buffsDebuffs.magicka_deto) then
-						if settings.magicka_deto then
+					if (abilityId == buffsDebuffs.serpent_magicka_deto) then
+						if (settings.magicka_deto == true) then
 							-- get current magicka percentage (only notify if the current magicka is over 15%)
 							local current, maximum, _ = GetUnitPower("player", POWERTYPE_MAGICKA)
 							local magickaPercentage   = zo_roundToNearest(current/maximum,0.01) * 100
@@ -920,7 +948,7 @@ do ---------------------------
 					
 					-- Mantikora Quake Alert
 					if (abilityId == buffsDebuffs.mantikora_quake) then
-						if settings.mantikora_quake then
+						if (settings.mantikora_quake == true) then
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_MANTIKORA_QUAKE)), "sanctumOphidia", "mantikora_quake", 5)
 						end
 					end
@@ -933,12 +961,12 @@ do ---------------------------
 			local buffsDebuffs, settings = self.BuffsDebuffs.dragonstar, self.Vars.dragonstar
 
 			if (result == ACTION_RESULT_BEGIN) then
-
+				-- TODO: Enable some of these for others too?
+			
 				-- General: Taking Aim
 				if (abilityId == buffsDebuffs.general_taking_aim) then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-					dbg("Taking Aim (%d) on %s", abilityId, tName)
 					if (settings.general_taking_aim) then
+						--tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_DRAGONSTAR_GENERAL_TAKING_AIM), "dragonstar", "general_taking_aim")
 						end
@@ -946,9 +974,8 @@ do ---------------------------
 
 				-- General: Crystal Blast
 				elseif (abilityId == buffsDebuffs.general_crystal_blast) then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-					dbg("Crystal Blast (%d) on %s", abilityId, tName)
 					if (settings.general_crystal_blast) then
+						--tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_DRAGONSTAR_GENERAL_CRYSTAL_BLAST), "dragonstar", "general_crystal_blast")
 						end
@@ -956,9 +983,8 @@ do ---------------------------
 
 				-- Arena 2: Crushing Shock
 				elseif (abilityId == buffsDebuffs.arena2_crushing_shock) then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-					dbg("Crushing Shock (%d) on %s", abilityId, tName)
 					if (settings.arena2_crushing_shock) then
+						--tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_DRAGONSTAR_ARENA2_CRUSHING_SHOCK), "dragonstar", "arena2_crushing_shock")
 						end
@@ -966,9 +992,8 @@ do ---------------------------
 
 				-- Arena 6: Drain Resource
 				elseif (abilityId == buffsDebuffs.arena6_drain_resource) then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-					dbg("Drain Resource (%d) on %s", abilityId, tName)
 					if (settings.arena6_drain_resource >= 1) then
+						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_DRAGONSTAR_ARENA6_DRAIN_RESOURCE), "dragonstar", "arena6_drain_resource")
 						elseif (tName ~= "") then
@@ -978,9 +1003,8 @@ do ---------------------------
 
 				-- Arena 8: Ice Charge
 				elseif (abilityId == buffsDebuffs.arena8_ice_charge) then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-					dbg("Ice Charge (%d) on %s", abilityId, tName)
 					if (settings.arena8_ice_charge >= 1) then
+						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_DRAGONSTAR_ARENA8_ICE_CHARGE), "dragonstar", "arena8_ice_charge")
 						elseif (tName ~= "") then
@@ -989,9 +1013,8 @@ do ---------------------------
 					end
 				-- Arena 8: Fire Charge
 				elseif (abilityId == buffsDebuffs.arena8_fire_charge) then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-					dbg("Fire Charge (%d) on %s", abilityId, tName)
 					if (settings.arena8_fire_charge >= 1) then
+						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_DRAGONSTAR_ARENA8_FIRE_CHARGE), "dragonstar", "arena8_fire_charge")
 						elseif (tName ~= "") then
@@ -1300,9 +1323,11 @@ do ---------------------------
 					end
 				elseif (abilityId == buffsDebuffs.committee_overheat_aura or abilityId == buffsDebuffs.committee_overload_aura) then -- not checking for "committee_overcharge_aura" since it isn't involved in the swapping
 					-- right we dont care that this occurs multiple times in a row
-					--buffsDebuffs.committee_overpower_auras_total = (buffsDebuffs.committee_overpower_auras_total or 0) + 1
 					if (settings.committee_overpower_auras == true) then
 						buffsDebuffs.committee_countdown_index = self:StartCountdown(9000, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_OVERPOWER_AURAS), "hallsFab", "committee_overpower_auras")
+						buffsDebuffs.committee_overpower_auras_total = (buffsDebuffs.committee_overpower_auras_total or 0) + 1
+						buffsDebuffs.committee_overheat_target = nil
+						buffsDebuffs.committee_overload_target = nil
 					end
 
 				end
@@ -1312,43 +1337,46 @@ do ---------------------------
 					if (settings.committee_reclaim_achieve == true) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_RECLAIM_ACHIEVE), "hallsFab", "committee_reclaim_achieve", 5)
 					end
-				elseif (abilityId == buffsDebuffs.committee_overheat) then
+				elseif (abilityId == buffsDebuffs.committee_overheat or abilityId == buffsDebuffs.committee_overload) then
 					if (settings.committee_overpower_auras == true) then
-						local lastTarget = buffsDebuffs.last_overheat_target
-						buffsDebuffs.last_overheat_target = tUnitId
-						if (lastTarget ~= nil and lastTarget ~= buffsDebuffs.last_overheat_target) then -- tanks have swapped?
-							dbg("Overheat switched from %s to %s", LUNIT:GetNameForUnitId(lastTarget), LUNIT:GetNameForUnitId(tUnitId))
-							--local index = buffsDebuffs.committee_countdown_index
-							--if (index and index > 0) then
-							--	dbg("Tanks have swapped?? Stopping countdown")
-							--	self:StopCountdown(index)
-							--	buffsDebuffs.committee_countdown_index = 0 -- don't set it to nil
-							--end
-						end
-					end
-				elseif (abilityId == buffsDebuffs.committee_overload) then
-					if (settings.committee_overpower_auras == true) then
-						local lastTarget = buffsDebuffs.last_overload_target
-						buffsDebuffs.last_overload_target = tUnitId
-						if (lastTarget ~= nil and lastTarget ~= buffsDebuffs.last_overload_target) then -- tanks have swapped?
-							dbg("Overload switched from %s to %s", LUNIT:GetNameForUnitId(lastTarget), LUNIT:GetNameForUnitId(tUnitId))
-							--local index = buffsDebuffs.committee_countdown_index
-							--if (index and index > 0) then
-							--	dbg("Tanks have swapped?? Stopping countdown")
-							--	self:StopCountdown(index)
-							--	buffsDebuffs.committee_countdown_index = 0 -- don't set it to nil
-							--end
+						if IsDevMode() and buffsDebuffs.committee_countdown_index > 0 then
+							local key = (abilityId == buffsDebuffs.committee_overload) and "committee_overload_target" or "committee_overheat_target"
+							local lastTarget = buffsDebuffs[key]
+							buffsDebuffs[key] = tUnitId
+							if (lastTarget ~= nil and lastTarget ~= buffsDebuffs[key]) then -- tanks have swapped?
+								dbg("%s changed from %s to %s", key, LUNIT:GetNameForUnitId(lastTarget), LUNIT:GetNameForUnitId(tUnitId))
+								local stopCountdown = false
+								if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+									-- we are tanking and have just gotten aggro from the other boss, stop the timer??
+									dbg("Stop countdown for us cuz we did our job as tank")
+									stopCountdown = true
+								else
+									-- continue the timer until the other boss is switched too
+									buffsDebuffs.committee_overpower_auras_total = buffsDebuffs.committee_overpower_auras_total - 1
+									if (buffsDebuffs.committee_overpower_auras_total <= 0) then
+										dbg("Both bosses have been switched")
+										stopCountdown = true
+									end
+								end
+
+								if (stopCountdown) then
+									dbg("Stopping countdown")
+									self:StopCountdown(buffsDebuffs.committee_countdown_index)
+									buffsDebuffs.committee_countdown_index = 0 -- don't set it to nil
+								end
+							end
 						end
 					end
 				end
 
 			elseif (result == ACTION_RESULT_EFFECT_FADED) then
-				if (abilityId == buffsDebuffs.committee_overheat_aura or abilityId == buffsDebuffs.committee_overcharge_aura) then 
+				if (abilityId == buffsDebuffs.committee_overheat_aura or abilityId == buffsDebuffs.committee_overload_aura) then 
 					if (settings.committee_overpower_auras == true) then
 						self:StopCountdown(buffsDebuffs.committee_countdown_index)
 						buffsDebuffs.committee_countdown_index = 0 -- don't set it to nil
-						buffsDebuffs.last_overcharge_target = nil
-						buffsDebuffs.last_overheat_target = nil
+						buffsDebuffs.committee_overload_target = nil
+						buffsDebuffs.committee_overheat_target = nil
+						buffsDebuffs.committee_overpower_auras_total = 0
 					end
 				end
 			end

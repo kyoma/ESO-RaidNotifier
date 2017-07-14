@@ -49,9 +49,9 @@ RaidNotifier.Defaults = {
 		call_lightning    = 1, --"Self"
 	},
 	sanctumOphidia = {
-		magicka_deto      = true,
-		serpent_poison    = 1, --"Normal"
-		--serpent_worldshaper = 2, --"Near"
+		magicka_deto          = true,
+		serpent_poison        = 1, --"Normal"
+		serpent_world_shaper  = true,
 		--mantikora_spear   = 1, --"Self"
 		mantikora_quake   = false,
 		troll_boulder     = 0, --"Off"
@@ -106,6 +106,8 @@ RaidNotifier.Defaults = {
 		tracker = false,
 		spamControl = true,
 		verbose = false,
+		myEnemyOnly = false,
+		devMode = false,
 	},
 
 }
@@ -994,14 +996,40 @@ function RaidNotifier:CreateSettingsMenu()
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_DEBUGNOTIFY),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_DEBUGNOTIFY_TT),
-		getFunc = function() return Vars.dbg.notify end,
-		setFunc = function(value)   Vars.dbg.notify = value end,
+		name = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_TT),
+		getFunc = function() return Vars.dbg.devMode end,
+		setFunc = function(value)   Vars.dbg.devMode = value end,
 	})
+	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_HEADER), GetString(RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_DESCRIPTION))
+	MakeControlEntry({
+		type = "checkbox",
+		name = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_ENABLED),
+		--tooltip = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_ENABLED_TT), -- dont need tooltip for this
+		getFunc = function() return Vars.dbg.tracker end,
+		setFunc = function(value)   Vars.dbg.tracker = value end,
+	})
+	MakeControlEntry({
+		type = "checkbox",
+		name = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_SPAMCONTROL),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_SPAMCONTROL_TT),
+		getFunc = function() return Vars.dbg.spamControl end,
+		setFunc = function(value)   Vars.dbg.spamControl = value end,
+		disabled = function() return not Vars.dbg.tracker end,
+	})
+	MakeControlEntry({
+		type = "checkbox",
+		name = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_MYENEMYONLY),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_MYENEMYONLY_TT),
+		getFunc = function() return Vars.dbg.myEnemyOnly end,
+		setFunc = function(value)   Vars.dbg.myEnemyOnly = value end,
+		disabled = function() return not Vars.dbg.tracker end,
+	})
+	subTable = nil --end submenu
+
+
 
 	self.optionsData = optionsTable
-
     LAM:RegisterAddonPanel("RaidNotifierPanel", self.panelData)
     LAM:RegisterOptionControls("RaidNotifierPanel", self.optionsData)
 

@@ -28,15 +28,17 @@ sanctum.mantikora_quake = 54125
 sanctum.ozara_trapping_bolts = 57839
 
 -- Serpent Poison Phase
-sanctum.poison_teleport = {} -- abilities where the Serpent teleports to do the poison phase (specific ids for the various things after the poison ends)
-sanctum.poison_teleport[53681] = 1 -- followed by lamias
-sanctum.poison_teleport[54690] = 2 -- followed by manti from left pool
-sanctum.poison_teleport[53775] = 3 -- followed by manti from right pool
-sanctum.poison_teleport[53796] = 4 -- followed by shield phase
-sanctum.poison_teleport[53812] = 5 -- final
+sanctum.serpent_poison_teleport = {} -- abilities where the Serpent teleports to do the poison phase (specific ids for the various things after the poison ends)
+sanctum.serpent_poison_teleport[53681] = 1 -- followed by lamias
+sanctum.serpent_poison_teleport[54690] = 2 -- followed by manti from left pool
+sanctum.serpent_poison_teleport[53775] = 3 -- followed by manti from right pool
+sanctum.serpent_poison_teleport[53796] = 4 -- followed by shield phase
+sanctum.serpent_poison_teleport[53812] = 5 -- final
 
 -- Serpent Magicka Detonation
-sanctum.magicka_deto = 59036
+sanctum.serpent_magicka_deto           = 59036
+sanctum.serpent_world_shaper           = 56857
+sanctum.serpent_world_shaper_delay     = 4000 --UNTESTED
 
 -- Trolls
 sanctum.spreading_poison = {} --determine which ones we actually need

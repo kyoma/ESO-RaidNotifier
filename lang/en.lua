@@ -135,6 +135,8 @@ L.Settings_Sanctum_Magicka_Detonation               = "Serpent: Magicka Detonati
 L.Settings_Sanctum_Magicka_Detonation_TT            = "Alerts when you got the debuff of the magicka detonation during the serpent fight."
 L.Settings_Sanctum_Serpent_Poison                   = "Serpent: Poison Phase"
 L.Settings_Sanctum_Serpent_Poison_TT                = "Alerts for the poison phase during the Serpent fight."
+L.Settings_Sanctum_Serpent_World_Shaper             = "Serpent: World Shaper (Hard Mode)"
+L.Settings_Sanctum_Serpent_World_Shaper_TT          = "Alerts you when the Serpent starts his World Shaper attack, counting down until it is unleashed."
 L.Settings_Sanctum_Mantikora_Spear                  = "Mantikora: Spear"
 L.Settings_Sanctum_Mantikora_Spear_TT               = "Alerts you when you will get the Mantikora Spear."
 L.Settings_Sanctum_Mantikora_Quake                  = "Mantikora: Quake"
@@ -154,6 +156,7 @@ L.Alerts_Sanctum_Serpent_Poison2                    = "Incoming |c39942ePoison P
 L.Alerts_Sanctum_Serpent_Poison3                    = "Incoming |c39942ePoison Phase|r! Followed by |c009933Mantikora|r." --right
 L.Alerts_Sanctum_Serpent_Poison4                    = "Incoming |c39942ePoison Phase|r! Followed by |cff33ccShields|r."
 L.Alerts_Sanctum_Serpent_Poison5                    = "Final |c39942ePoison Phase|r!"
+L.Alerts_Sanctum_Serpent_World_Shaper               = "|c00c832World Shaper|r in"
 L.Alerts_Sanctum_Magicka_Detonation                 = "|c234afaMagicka Detonation|r! Burn all your Magicka!"
 L.Alerts_Sanctum_Mantikora_Spear                    = "Mantikora |ccde846Spear|r on you! Move out!"
 L.Alerts_Sanctum_Mantikora_Spear_Other              = "Mantikora |ccde846Spear|r on <<!aC:1>>! Move out!"
@@ -318,8 +321,18 @@ L.Alerts_HallsFab_Reclaim_Achieve                   = "|cDCD822[Planned Obsolesc
 L.Settings_Debug_Header                  = "Debug"
 L.Settings_Debug                         = "Turn debug on"
 L.Settings_Debug_TT                      = "Turns on debugging output in chatwindow"
-L.Settings_DebugNotify                   = "Debug Notify"
-L.Settings_DebugNotify_TT                = "Additional debugging for the actual notifications."
+L.Settings_Debug_DevMode                 = "Dev Mode"
+L.Settings_Debug_DevMode_TT              = "When this is turned on it enables certain alerts that might not be fully functioning, have mismatching timing or aren't fully tested yet. In general they should not produce UI errors but some sort of 'error catcher' addon is recommended."
+L.Settings_Debug_DevMode_Warning         = "THIS OPTION REQUIRES DEV MODE AND MIGHT NOT BE FULLY WORKING OR IS NOT 100% ACCURATE YET"
+
+L.Settings_Debug_Tracker_Header          = "Debug Tracker"
+L.Settings_Debug_Tracker_Description     = "This is a debug feature meant to track down and output potential mechanics during the course of a trial by printing out info on combat events and effects. Due to the potentially large amount of output there are a few options to help avoid cluttering your chat window."
+L.Settings_Debug_Tracker_Enabled         = "Enabled"
+L.Settings_Debug_Tracker_SpamControl     = "Spam Control"
+L.Settings_Debug_Tracker_SpamControl_TT  = "With this each ability/effect is only printed once per action type. List of known abilities this session can be cleared with \"/rndebug clear\"."
+L.Settings_Debug_Tracker_MyEnemyOnly     = "My Enemy Only"
+L.Settings_Debug_Tracker_MyEnemyOnly_TT  = "When enabled this will limit ALL output to abilities/effects that are targeted at the player and are NOT coming from the player or the group. Useful for when you are looking for a specific thing and you do not want spam control enabled."
+
 
 
 --INTERNAL--
