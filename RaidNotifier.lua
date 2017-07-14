@@ -28,6 +28,11 @@ local function IsDevMode()
 	return RaidNotifier.Vars.dbg.devMode == true
 end
 
+-- convert value to valid integer for comparison
+function SafeInt(value)
+	return value == true and 1 or (value or 0)
+end
+
 local ALERT_PRIORITY_HIGHEST = 5
 local ALERT_PRIORITY_HIGH    = 4
 local ALERT_PRIORITY_NORMAL  = 3
@@ -1335,34 +1340,36 @@ do ---------------------------
 			elseif (result == ACTION_RESULT_EFFECT_GAINED) then
 				if (abilityId == buffsDebuffs.committee_reclaim_achieve) then
 					if (settings.committee_reclaim_achieve == true) then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_RECLAIM_ACHIEVE), "hallsFab", "committee_reclaim_achieve", 5)
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_RECLAIM_ACHIEVE), "hallsFab", "committee_reclaim_achieve", 10)
 					end
 				elseif (abilityId == buffsDebuffs.committee_overheat or abilityId == buffsDebuffs.committee_overload) then
 					if (settings.committee_overpower_auras == true) then
-						if IsDevMode() and buffsDebuffs.committee_countdown_index > 0 then
-							local key = (abilityId == buffsDebuffs.committee_overload) and "committee_overload_target" or "committee_overheat_target"
-							local lastTarget = buffsDebuffs[key]
-							buffsDebuffs[key] = tUnitId
-							if (lastTarget ~= nil and lastTarget ~= buffsDebuffs[key]) then -- tanks have swapped?
-								dbg("%s changed from %s to %s", key, LUNIT:GetNameForUnitId(lastTarget), LUNIT:GetNameForUnitId(tUnitId))
-								local stopCountdown = false
-								if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-									-- we are tanking and have just gotten aggro from the other boss, stop the timer??
-									dbg("Stop countdown for us cuz we did our job as tank")
-									stopCountdown = true
-								else
-									-- continue the timer until the other boss is switched too
-									buffsDebuffs.committee_overpower_auras_total = buffsDebuffs.committee_overpower_auras_total - 1
-									if (buffsDebuffs.committee_overpower_auras_total <= 0) then
-										dbg("Both bosses have been switched")
+						if IsDevMode() then
+							if (SafeInt(buffsDebuffs.committee_countdown_index) > 0) then --only run while countdown is still happening
+								local key = (abilityId == buffsDebuffs.committee_overload) and "committee_overload_target" or "committee_overheat_target"
+								local lastTarget = buffsDebuffs[key]
+								buffsDebuffs[key] = tUnitId
+								if (lastTarget ~= nil and lastTarget ~= buffsDebuffs[key]) then -- tanks have swapped?
+									dbg("%s changed from %s to %s", key, LUNIT:GetNameForUnitId(lastTarget), LUNIT:GetNameForUnitId(tUnitId))
+									local stopCountdown = false
+									if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+										-- we are tanking and have just gotten aggro from the other boss, stop the timer??
+										dbg("Stop countdown for us cuz we did our job as tank")
 										stopCountdown = true
+									else
+										-- continue the timer until the other boss is switched too
+										buffsDebuffs.committee_overpower_auras_total = buffsDebuffs.committee_overpower_auras_total - 1
+										if (buffsDebuffs.committee_overpower_auras_total <= 0) then
+											dbg("Both bosses have been switched")
+											stopCountdown = true
+										end
 									end
-								end
 
-								if (stopCountdown) then
-									dbg("Stopping countdown")
-									self:StopCountdown(buffsDebuffs.committee_countdown_index)
-									buffsDebuffs.committee_countdown_index = 0 -- don't set it to nil
+									if (stopCountdown) then
+										dbg("Stopping countdown")
+										self:StopCountdown(buffsDebuffs.committee_countdown_index)
+										buffsDebuffs.committee_countdown_index = 0 -- don't set it to nil
+									end
 								end
 							end
 						end
