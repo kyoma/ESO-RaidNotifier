@@ -281,6 +281,7 @@ do ----------------------
 					ultimates[userName] = nil
 				end
 			end
+			ToggleLibGroupSocket(true) -- force LibGroupSocket to send data
 			zo_callLater(function() self:UpdateUltimates() end, 200) -- slight delay
 		end
 		OnGroupUpdate()
@@ -318,6 +319,26 @@ do ----------------------
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_GROUP_MEMBER_ROLES_CHANGED)
 	end
 
+	function RaidNotifier:ShowUltimatesEverywhere(force)
+		if (self.raidId == nil) then
+			self.raidId = self:GetRaidIdFromCurrentZone()
+		end
+
+		if (force) then
+			if (self.raidId > 0) then
+				self:RegisterForUltimateChanges()
+			else
+				self:RegisterEvents(true)
+			end
+		else
+			if (self.raidId > 0) then -- in raid disable only ultimates
+				self:UnregisterForUltimateChanges()
+			else -- outside raid disable all events
+				self:UnregisterEvents()
+			end
+		end
+	end
+
 
 	SLASH_COMMANDS["/rnulti"] = function(str) 
 		local args = {zo_strsplit(" ", str)}
@@ -337,12 +358,12 @@ do ----------------------
 			p("Enable Ultimate Exchange")
 			settings.enabled = true
 			settings.hidden = false
-			self:RegisterForUltimateChanges()
+			self:ShowUltimatesEverywhere(true)
 		elseif (args[1] == "disable" or args[1] == "off" or args[1] == "0") then
 			p("Disable Ultimate Exchange")
 			settings.enabled = false
 			settings.hidden = true
-			self:UnregisterForUltimateChanges()
+			self:ShowUltimatesEverywhere(false)
 		elseif (args[1] == "refresh") then
 			ultimates = {}
 			ultimateHandler:Refresh()
@@ -423,60 +444,63 @@ do ----------------------
 	end
 
 	local listening = false
-	function RaidNotifier:RegisterEvents(raidId)
+	function RaidNotifier:RegisterEvents(forceUltimate, raidId)
 		if listening then return end
 
 		self.raidId = raidId or self:GetRaidIdFromCurrentZone()
 		self.raidDifficulty = GetCurrentZoneDungeonDifficulty()
-		if (self.raidId > 0) then
-			dbg("Register for %s (%s)", GetRaidZoneName(self.raidId), GetString("SI_DUNGEONDIFFICULTY", self.raidDifficulty))
-			-- The main juicy events we want
-			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_COMBAT_EVENT,        self.OnCombatEvent)
-			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_EFFECT_CHANGED,      self.OnEffectChanged) --only used for food buff atm
-			-- Track bosses
-			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_BOSSES_CHANGED,      self.OnBossesChanged)
-			-- Toggle assistants off when combat starts
-			local function OnCombatStateChanged(_, inCombat)
-				local settings = self.Vars.general
-				if (inCombat and settings.no_assistants and GetActiveCollectibleByType(COLLECTIBLE_CATEGORY_TYPE_ASSISTANT) > 0) then
-					UseCollectible(GetActiveCollectibleByType(COLLECTIBLE_CATEGORY_TYPE_ASSISTANT))
+		if (self.raidId > 0 or forceUltimate) then
+			if (self.raidId > 0) then
+				dbg("Register for %s (%s)", GetRaidZoneName(self.raidId), GetString("SI_DUNGEONDIFFICULTY", self.raidDifficulty))
+				-- The main juicy events we want
+				EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_COMBAT_EVENT,        self.OnCombatEvent)
+				EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_EFFECT_CHANGED,      self.OnEffectChanged) --only used for food buff atm
+				-- Track bosses
+				EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_BOSSES_CHANGED,      self.OnBossesChanged)
+				-- Toggle assistants off when combat starts
+				local function OnCombatStateChanged(_, inCombat)
+					local settings = self.Vars.general
+					if (inCombat and settings.no_assistants and GetActiveCollectibleByType(COLLECTIBLE_CATEGORY_TYPE_ASSISTANT) > 0) then
+						UseCollectible(GetActiveCollectibleByType(COLLECTIBLE_CATEGORY_TYPE_ASSISTANT))
+					end
 				end
-			end
-			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_PLAYER_COMBAT_STATE, OnCombatStateChanged)
+				EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_PLAYER_COMBAT_STATE, OnCombatStateChanged)
 
+				-- Disable pets if that setting is set
+				ToggleVanityPets(true)
+
+				-- In case of initializing while already at a boss
+				self.OnBossesChanged()
+			end
 			UI.AddFragment()
 			listening = true
-			
+
 			-- Ultimate exchanging
 			self:RegisterForUltimateChanges()
-
-			-- Disable pets if that setting is set
-			ToggleVanityPets(true)
-
-			-- In case of initializing while already at a boss
-			self.OnBossesChanged()
 		end
 	end
 
 	function RaidNotifier:UnregisterEvents()
 		if not listening then return end
 
-		dbg("Unregister for %s (%s)", GetRaidZoneName(self.raidId), GetString("SI_DUNGEONDIFFICULTY", self.raidDifficulty))
-		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_COMBAT_EVENT)
-		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_EFFECT_CHANGED)
-		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_BOSSES_CHANGED)
-		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_PLAYER_COMBAT_STATE)
+		if (self.raidId > 0) then
+			dbg("Unregister for %s (%s)", GetRaidZoneName(self.raidId), GetString("SI_DUNGEONDIFFICULTY", self.raidDifficulty))
+			EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_COMBAT_EVENT)
+			EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_EFFECT_CHANGED)
+			EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_BOSSES_CHANGED)
+			EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_PLAYER_COMBAT_STATE)
 
+			self.raidId = 0
+			self.raidDifficulty = 0
+
+			-- Re-enable pets
+			ToggleVanityPets(false)
+		end
 		UI.RemoveFragment()
 		listening = false
-		self.raidId = 0
-		self.raidDifficulty = 0
 
 		-- Ultimate exchanging
 		self:UnregisterForUltimateChanges()
-
-		-- Re-enable pets
-		ToggleVanityPets(false)
 	end
 
 	function RaidNotifier:Initialize()
@@ -505,6 +529,10 @@ do ----------------------
 			UI.InvertGlyphs()
 		end
 
+		if (self.Vars.ultimate.force) then
+			self:ShowUltimatesEverywhere(true)
+		end
+
 		-- These aren't needed anymore since we now start & stop Raid Notifier solely based on being in the raid zone
 	    --EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_RAID_TRIAL_STARTED,  function(...) self:RegisterEvents() end)
 		--EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_RAID_TRIAL_COMPLETE, function(...) self:UnregisterEvents() end)
@@ -522,7 +550,7 @@ do ----------------------
 					end
 					self:RegisterEvents()
 				end
-			elseif (self.raidId > 0) then
+			elseif (self.raidId > 0 and forceUltimate == false) then
 				self:UnregisterEvents()
 			end
 		end

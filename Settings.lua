@@ -32,6 +32,7 @@ RaidNotifier.Defaults = {
 		showHealers     = true,
 		showTanks       = true,
 		showDps         = false,
+		force		= false,
 		ulti_window     = {100, 600},
 		override_cost   = 0,
 	},
@@ -423,6 +424,15 @@ function RaidNotifier:CreateSettingsMenu()
 				end
 			end,
 		default = true,
+	})
+	MakeControlEntry({
+		type = "checkbox",
+		name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_FORCE),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_FORCE_TT),
+		getFunc = function() return Vars.ultimate.force end,
+		setFunc = function(value) Vars.ultimate.force = value; self:ShowUltimatesEverywhere(value) end,
+		disabled = function() return not Vars.ultimate.enabled end,
+		default = false,
 	})
 	MakeControlEntry({
 		type = "checkbox",
