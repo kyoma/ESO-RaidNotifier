@@ -248,9 +248,9 @@ do ----------------------
 		if listening then return end
 		listening = true
 		dbg("RegisterForUltimateChanges")
-		
+
 		UI.SetElementHidden("ultimate", "ulti_window", settings.hidden)
-	
+
 		ultimateHandler:RegisterForUltimateChanges(self.OnUltimateReceived)
 		ultimateHandler:Refresh()
 		ToggleLibGroupSocket(true) -- force LibGroupSocket to send data
@@ -499,7 +499,8 @@ do ----------------------
 
 		-- UI Elements
 		UI.RegisterElement(RaidNotifierUI:GetNamedChild("GlyphWindow"))
-		UI.RegisterElement(RaidNotifierUI:GetNamedChild("UltimateWindow"), self.Vars.ultimate.hidden)
+		--UI.RegisterElement(RaidNotifierUI:GetNamedChild("UltimateWindow"), self.Vars.ultimate.hidden)
+		UI.RegisterElement(RaidNotifierUltimateWindow, self.Vars.ultimate.hidden)
 		
 		if (self.Vars.mawLorkhaj.zhaj_glyphs_invert) then
 			UI.InvertGlyphs()
@@ -1310,7 +1311,6 @@ do ---------------------------
 				end
 
 			elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
-
 				if (abilityId == buffsDebuffs.draining_ballista) then
 					if (settings.draining_ballista >= 1) then
 						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
@@ -1334,7 +1334,6 @@ do ---------------------------
 						buffsDebuffs.committee_overheat_target = nil
 						buffsDebuffs.committee_overload_target = nil
 					end
-
 				end
 
 			elseif (result == ACTION_RESULT_EFFECT_GAINED) then

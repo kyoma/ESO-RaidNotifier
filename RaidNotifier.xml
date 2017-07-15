@@ -63,28 +63,28 @@
             </Controls>
         </TopLevelControl>
 
+
+		<TopLevelControl name="RaidNotifierUltimateWindow" movable="true" mouseEnabled="true" resizeToFitDescendents="true" hidden="true" clampedToScreen ="true">
+			<Dimensions x="250" y="200" />
+			<Anchor point="TOPLEFT" relativeTo="GuiRoot" offsetX="100" offsetY="600" />
+			<OnInitialized>
+				self.label = self:GetNamedChild("Label")
+				self.category = "ultimate"
+				self.setting  = "ulti_window"
+			</OnInitialized>
+			<Controls>
+				<Label name="$(parent)Label" font="ZoFontWinH3">
+					<Anchor point="TOPLEFT" offsetX="8" offsetY="8" text="TMP42" />
+				</Label>
+			</Controls>
+		</TopLevelControl>
+		
 		<TopLevelControl name="RaidNotifierUI" hidden="true" mouseEnabled="true">
 			<Anchor point="TOPLEFT" relativeTo="GuiRoot" relativePoint="TOPLEFT" />
 			<Controls>
 				<Label name="$(parent)CenterAnnounce" font="ZoFontCenterScreenAnnounceLarge" hidden="true">
 					<Anchor point="CENTER" relativeTo="GuiRoot" offsetY="-100"/>
 				</Label>
-				
-				
-				<Control name="$(parent)UltimateWindow" movable="true" mouseEnabled="true" resizeToFitDescendents="true" hidden="true" clampedToScreen ="true">
-					<Dimensions x="250" y="200" />
-					<Anchor point="TOPLEFT" relativeTo="$(parent)" offsetX="100" offsetY="600" />
-					<OnInitialized>
-						self.label = self:GetNamedChild("Label")
-						self.category = "ultimate"
-						self.setting  = "ulti_window"
-					</OnInitialized>
-					<Controls>
-						<Label name="$(parent)Label" font="ZoFontWinH3">
-							<Anchor point="TOPLEFT" offsetX="8" offsetY="8" text="TMP42" />
-						</Label>
-					</Controls>
-				</Control>
 
 				<Control name="$(parent)GlyphWindow" movable="true" mouseEnabled="true" hidden="true" clampedToScreen ="true">
 					<Dimensions x="240" y="170" />
