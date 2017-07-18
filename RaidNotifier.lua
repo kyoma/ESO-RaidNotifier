@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.1.2"
+RaidNotifier.Version         = "2.1.3"
 RaidNotifier.Author          = "|c009ad6Kyoma, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -444,7 +444,7 @@ do ----------------------
 			end
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_PLAYER_COMBAT_STATE, OnCombatStateChanged)
 
-			UI.AddFragment()
+			--UI.AddFragment()
 			listening = true
 			
 			-- Ultimate exchanging
@@ -467,7 +467,8 @@ do ----------------------
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_BOSSES_CHANGED)
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_PLAYER_COMBAT_STATE)
 
-		UI.RemoveFragment()
+		--UI.RemoveFragment()
+		UI.HideAllElements()
 		listening = false
 		self.raidId = 0
 		self.raidDifficulty = 0
@@ -498,13 +499,14 @@ do ----------------------
 		end
 
 		-- UI Elements
+		UI.RegisterElement(RaidNotifierUI:GetNamedChild("UltimateWindow"), self.Vars.ultimate.hidden)
 		UI.RegisterElement(RaidNotifierUI:GetNamedChild("GlyphWindow"))
-		--UI.RegisterElement(RaidNotifierUI:GetNamedChild("UltimateWindow"), self.Vars.ultimate.hidden)
-		UI.RegisterElement(RaidNotifierUltimateWindow, self.Vars.ultimate.hidden)
-		
 		if (self.Vars.mawLorkhaj.zhaj_glyphs_invert) then
 			UI.InvertGlyphs()
 		end
+		UI.LoadElements()
+		UI.AddFragment() --always add fragment now
+		
 
 		-- These aren't needed anymore since we now start & stop Raid Notifier solely based on being in the raid zone
 	    --EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_RAID_TRIAL_STARTED,  function(...) self:RegisterEvents() end)

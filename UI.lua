@@ -14,7 +14,6 @@ do
 		end
 		HUD_SCENE:AddFragment(UI_FRAGMENT)
 		HUD_UI_SCENE:AddFragment(UI_FRAGMENT)
-		UI.LoadElements()
 	end
 	function UI.RemoveFragment()
 		if not UI_FRAGMENT then 
@@ -53,6 +52,13 @@ do
 		local control = elements[GetKey(category, setting)]
 		if control then -- and control:IsHidden() ~= hidden then
 			control:SetHidden(hidden)
+		end
+	end
+	
+	function UI.HideAllElements()
+		local parent = RaidNotifierUI
+		for k, elem in pairs(elements) do
+			elem:SetHidden(true)
 		end
 	end
 
