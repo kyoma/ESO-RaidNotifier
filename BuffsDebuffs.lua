@@ -38,7 +38,7 @@ sanctum.serpent_poison_teleport[53812] = 5 -- final
 -- Serpent Magicka Detonation
 sanctum.serpent_magicka_deto           = 59036
 sanctum.serpent_world_shaper           = 56857
-sanctum.serpent_world_shaper_delay     = 4000 --UNTESTED
+sanctum.serpent_world_shaper_delay     = 5000
 
 -- Trolls
 sanctum.spreading_poison = {} --determine which ones we actually need
