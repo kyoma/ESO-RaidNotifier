@@ -2,12 +2,6 @@
 	<Controls>
 		<Control name="RaidNotifierGlyphTemplate" virtual="true">
 			<Dimensions x="58" y="58" />
-			<OnInitialized>
-				self.bg = self:GetNamedChild("BG")
-				self.overlay = self:GetNamedChild("Overlay")
-				self.timer = self:GetNamedChild("Timer")
-				self.start = 0
-			</OnInitialized>
 			<Controls> 
 				<Texture name="$(parent)BG" textureFile="RaidNotifier/assets/glyph_background.dds" hidden="false">
 					<AnchorFill />
@@ -85,20 +79,32 @@
 						</Label>
 					</Controls>
 				</Control>
+				
+				<Texture name="$(parent)ScaldedDisplay" movable="true" mouseEnabled="true" hidden="true" clampedToScreen="true" textureFile="esoui/art/icons/ability_dragonknight_002_b.dds">
+					<Dimensions x="64" y="64" />
+					<Anchor point="TOPLEFT" relativeTo="RaidNotifierUI" offsetX="0" offsetY="80" />
+					<OnInitialized>
+						self.category = "hallsFab"
+						self.setting  = "pinnacleBoss_scalded_display"
+						self.onInitialize = "InitializeScaldedDisplay"
+					</OnInitialized>
+					<Controls>
+						<Label name="$(parent)Debuff" font="ZoFontWinH2" text="10%">
+							<Anchor point="TOP" relativeTo="$(parent)" relativePoint="BOTTOM" offsetY="0"/>
+						</Label>
+						<Label name="$(parent)Timer" font="ZoFontWinH2" text="8.3s">
+							<Anchor point="CENTER" relativeTo="$(parent)" relativePoint="CENTER" offsetY="0"/>
+						</Label>
+					</Controls>
+				</Texture>
 
 				<Control name="$(parent)GlyphWindow" movable="true" mouseEnabled="true" hidden="true" clampedToScreen ="true">
 					<Dimensions x="240" y="170" />
 					<Anchor point="TOPLEFT" relativeTo="RaidNotifierUI" offsetX="0" offsetY="80" />
 					<OnInitialized>
-						self.glyphs = {}
-						for i=1, 7 do
-							self.glyphs[i] = self:GetNamedChild("Glyph"..i)
-						end
-						self.glyphs[7].bg:SetTexture("RaidNotifier/assets/white_circle.dds")
-						self.glyphs[7].overlay:SetTexture("RaidNotifier/assets/dummy.dds")
 						self.category = "mawLorkhaj"
 						self.setting  = "zhaj_glyph_window"
-						self.onUpdate = "GlyphUpdateHandler"
+						self.onInitialize = "InitializeGlyphs"
 					</OnInitialized>
 
 					<Controls>

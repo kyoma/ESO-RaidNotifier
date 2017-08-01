@@ -1,11 +1,12 @@
 RaidNotifier = RaidNotifier or {}
 RaidNotifier.UI = {}
+RaidNotifier.Util = {}
 
 local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.1.3"
+RaidNotifier.Version         = "2.1.4"
 RaidNotifier.Author          = "|c009ad6Kyoma, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -24,14 +25,20 @@ local RAID_HALLS_OF_FABRICATION  = 7
 local function p() end
 local function dbg() end
 
-local function IsDevMode()
-	return RaidNotifier.Vars.dbg.devMode == true
+function RaidNotifier:IsDevMode()
+	return self.Vars.dbg.devMode == true
 end
 
--- convert value to valid integer for comparison
-function SafeInt(value)
-	return value == true and 1 or (value or 0)
-end
+local ActionResults = 
+{
+	ACTION_RESULT_BEGIN,
+	ACTION_RESULT_BEGIN_CHANNEL,
+	ACTION_RESULT_EFFECT_GAINED,
+	ACTION_RESULT_EFFECT_GAINED_DURATION,
+	ACTION_RESULT_EFFECT_FADED,
+	--ACTION_RESULT_INTERRUPT, 
+	--ACTION_RESULT_DIED,
+}
 
 local ALERT_PRIORITY_HIGHEST = 5
 local ALERT_PRIORITY_HIGH    = 4
@@ -377,7 +384,8 @@ end
 -- -- INITIALIZE EVENTS
 do ----------------------
 
-	local UI = RaidNotifier.UI
+	local UI     = RaidNotifier.UI
+	local Utils  = RaidNotifier.Utils
 
 	local function ToggleVanityPets(disable)
 		local settings = RaidNotifier.Vars.general
@@ -395,7 +403,8 @@ do ----------------------
 	end
 
 	-- These should remain the same throughout updates
-	local RaidZoneIds = {
+	local RaidZoneIds = 
+	{
 		[RAID_HEL_RA_CITADEL]        = 636,
 		[RAID_AETHERIAN_ARCHIVE]     = 638,
 		[RAID_SANCTUM_OPHIDIA]       = 639,
@@ -411,15 +420,21 @@ do ----------------------
 	local function GetRaidZoneName(raidId)
 		return GetZoneNameById(RaidZoneIds[raidId])
 	end
-	local currentZoneRaidId
 	function RaidNotifier:GetRaidIdFromCurrentZone()
-		return currentZoneRaidId or 0
+		return self.raidZoneId or 0
 	end
 	function RaidNotifier:IsInRaidZone()
 		return self:GetRaidIdFromCurrentZone() > 0
 	end
 	function RaidNotifier:GetRaidDescription(raidId)
 		return GetZoneDescriptionById(RaidZoneIds[raidId])
+	end
+
+	function RaidNotifier:RegisterForCombatEvent(result)
+		EVENT_MANAGER:RegisterForEvent(self.Name .. tostring(result), EVENT_COMBAT_EVENT, self.OnCombatEvent)
+	end
+	function RaidNotifier:UnregisterForCombatEvent(result)
+		EVENT_MANAGER:UnregisterForEvent(self.Name .. tostring(result), EVENT_COMBAT_EVENT)
 	end
 
 	local listening = false
@@ -432,9 +447,13 @@ do ----------------------
 			dbg("Register for %s (%s)", GetRaidZoneName(self.raidId), GetString("SI_DUNGEONDIFFICULTY", self.raidDifficulty))
 			-- The main juicy events we want
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_COMBAT_EVENT,        self.OnCombatEvent)
-			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_EFFECT_CHANGED,      self.OnEffectChanged) --only used for food buff atm
+			--for _, result in ipairs(ActionResults) do
+			--	EVENT_MANAGER:RegisterForEvent(self.Name .. tostring(result), EVENT_COMBAT_EVENT, self.OnCombatEvent)
+			--end
+			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_EFFECT_CHANGED, self.OnEffectChanged) --only used for food buff atm
 			-- Track bosses
-			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_BOSSES_CHANGED,      self.OnBossesChanged)
+			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_BOSSES_CHANGED, self.OnBossesChanged)
+
 			-- Toggle assistants off when combat starts
 			local function OnCombatStateChanged(_, inCombat)
 				local settings = self.Vars.general
@@ -463,6 +482,9 @@ do ----------------------
 
 		dbg("Unregister for %s (%s)", GetRaidZoneName(self.raidId), GetString("SI_DUNGEONDIFFICULTY", self.raidDifficulty))
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_COMBAT_EVENT)
+		--for _, result in ipairs(ActionResults) do
+		--	self:UnregisterForCombatEvent(result)
+		--end
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_EFFECT_CHANGED)
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_BOSSES_CHANGED)
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_PLAYER_COMBAT_STATE)
@@ -488,15 +510,17 @@ do ----------------------
 
 		self:CreateSettingsMenu()
 
-		-- tiny functors
+		-- tiny functions
 		p = function(msg, ...)
 			d("[RaidNotifier] "..msg:format(...))
 		end
+		self.p = p
 		dbg = function(msg, ...)
 			if self.Vars.debug then
 				p(msg, ...)
 			end
 		end
+		self.dbg = dbg
 
 		-- UI Elements
 		UI.RegisterElement(RaidNotifierUI:GetNamedChild("UltimateWindow"), self.Vars.ultimate.hidden)
@@ -504,9 +528,10 @@ do ----------------------
 		if (self.Vars.mawLorkhaj.zhaj_glyphs_invert) then
 			UI.InvertGlyphs()
 		end
+		UI.RegisterElement(RaidNotifierUI:GetNamedChild("ScaldedDisplay"))
 		UI.LoadElements()
-		UI.AddFragment() --always add fragment now
-		
+		-- Always add fragment now
+		UI.AddFragment() 
 
 		-- These aren't needed anymore since we now start & stop Raid Notifier solely based on being in the raid zone
 	    --EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_RAID_TRIAL_STARTED,  function(...) self:RegisterEvents() end)
@@ -516,7 +541,7 @@ do ----------------------
 		-- Monitor zone changes to account for teleporting out of a trial, also for teleporting back in
 		local function OnZoneChanged()
 			-- Not using GetMapName() because that changes while looking at the map
-			currentZoneRaidId = RaidZones[GetUnitZone("player")]
+			self.raidZoneId = RaidZones[GetUnitZone("player")]
 
 			if self:IsInRaidZone() then
 				if (self.raidId ~= self:GetRaidIdFromCurrentZone()) then
@@ -605,16 +630,11 @@ do ---------------------------
 
 	local LUNIT = LibStub:GetLibrary("LibUnits")
 	local UI    = RaidNotifier.UI
+	local Util  = RaidNotifier.Util
 	
 	-- Debugging 
-	local debugResults = {
-		ACTION_RESULT_BEGIN,
-		ACTION_RESULT_BEGIN_CHANNEL,
-		ACTION_RESULT_EFFECT_GAINED,
-		ACTION_RESULT_EFFECT_GAINED_DURATION,
-	}
 	local debugList    = {}
-	for _, result in ipairs(debugResults) do
+	for _, result in ipairs(ActionResults) do
 		debugList[result] = {}
 	end
 	local debugMsg = "[%d] %s (%d)%s%s"
@@ -623,29 +643,17 @@ do ---------------------------
 	SLASH_COMMANDS["/rndebug"] = function(str) 
 		local args = {zo_strsplit(" ", str)}
 
-		local function GetArgValue(str, value)
-			if (str == "enable" or str == "on" or str =="1") then
-				return true
-			elseif (str == "disable" or str == "off" or str =="0") then
-				return false
-			elseif (str == nil or str == "") then
-				return not value
-			else
-				return value
-			end
-		end
-
 		local self     = RaidNotifier
 		local settings = self.Vars.dbg
 
 		if (args[1] == "track") then
-			settings.tracker = GetArgValue(args[2], settings.tracker)
+			settings.tracker = Util.GetArgValue(args[2], settings.tracker)
 			p("%s Debug Tracker", settings.tracker and "Enabled" or "Disabled")
 		elseif (args[1] == "spam") then
-			settings.spamControl = GetArgValue(args[2], settings.spamControl)
+			settings.spamControl = Util.GetArgValue(args[2], settings.spamControl)
 			p("%s Spam Control", settings.spamControl and "Enabled" or "Disabled")
 		elseif (args[1] == "enemy") then
-			settings.myEnemyOnly = GetArgValue(args[2], settings.myEnemyOnly)
+			settings.myEnemyOnly = Util.GetArgValue(args[2], settings.myEnemyOnly)
 			p("%s My Enemy Only", settings.myEnemyOnly and "Enabled" or "Disabled")
 		elseif (args[1] == "clear") then
 			local result = tonumber(args[2])
@@ -658,14 +666,14 @@ do ---------------------------
 					debugList[result] = {}
 				end
 			end
-		elseif (GetArgValue(args[1]) ~= nil) then
-			settings.enabled = GetArgValue(args[1], settings.enabled)
+		elseif (Util.GetArgValue(args[1]) ~= nil) then
+			settings.enabled = Util.GetArgValue(args[1], settings.enabled)
 			p("%s Debugging", settings.enabled and "Enabled" or "Disabled")
 		end
 	end
 
 	function RaidNotifier.OnCombatEvent(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
-		
+
 		local raidId = RaidNotifier.raidId
 		local self   = RaidNotifier
 
@@ -856,7 +864,7 @@ do ---------------------------
 				-- Serpent (Hardmode), World-Shaper
 				elseif (abilityId == buffsDebuffs.serpent_world_shaper) then
 					 --per start of eclipse tear, just add countdown and use interval to limit it to the first
-					if IsDevMode() then
+					if self:IsDevMode() then
 						if (settings.serpent_world_shaper == true) then
 							dbg("World Shaper detected")
 							self:StartCountdown(buffsDebuffs.serpent_world_shaper_delay, GetString(RAIDNOTIFIER_ALERTS_SANCTUM_SERPENT_WORLD_SHAPER), "sanctumOphidia", "serpent_world_shaper", 10)
@@ -1050,17 +1058,11 @@ do ---------------------------
 		elseif (raidId == RAID_MAW_OF_LORKHAJ) then
 			local buffsDebuffs, settings = self.BuffsDebuffs.maw_lorkhaj, self.Vars.mawLorkhaj
 
-			local function GetDistanceToUnit(unit)
-				local pX, pY = GetMapPlayerPosition("player")
-				local uX, uY = GetMapPlayerPosition(unit)
-				return math.sqrt((pX-uX)*(pX-uX)+(pY-uY)*(pY-uY)) * 1000
-			end
-
 			local function FindGlyph(glyphId, glyphs, knownGlyphs, allowNew)
 				if not knownGlyphs[glyphId] then
 					if not allowNew then return 0 end
 
-					local lowestDistance = 9999
+					local lowestDistance = 99999
 					local lowestIndex = 0
 					local lowestUnit = ""
 					for index, data in ipairs(glyphs) do
@@ -1068,8 +1070,8 @@ do ---------------------------
 							if IsUnitOnline("group"..p) then
 								local pX, pY = GetMapPlayerPosition("group"..p)
 								if (knownGlyphs[index] == nil) then --only check unknown glyphs
-									local x, y = data.x, data.y
-									local distance = math.sqrt((pX-x)*(pX-x)+(pY-y)*(pY-y)) * 1000
+									-- we dont care about scale/factor or how much it is in actual meters
+									local distance = Util.GetRawDistance(pX,pY, data.x,data.y) * 1000 
 									if (distance < lowestDistance) then
 										lowestDistance=distance
 										lowestIndex=index
@@ -1120,7 +1122,7 @@ do ---------------------------
 						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_SUNEATER_ECLIPSE), "mawLorkhaj", "suneater_eclipse")
-						elseif (tName ~= "" and (settings.suneater_eclipse == 2 or (settings.suneater_eclipse == 3 and GetDistanceToUnit(LUNIT:GetUnitTagForUnitId(tUnitId)) < 2000))) then
+						elseif (tName ~= "" and settings.suneater_eclipse >= 2) then -- removed the distance check for now
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_SUNEATER_ECLIPSE_OTHER), tName), "mawLorkhaj", "suneater_eclipse")
 						end
 					end
@@ -1332,9 +1334,11 @@ do ---------------------------
 					-- right we dont care that this occurs multiple times in a row
 					if (settings.committee_overpower_auras == true) then
 						buffsDebuffs.committee_countdown_index = self:StartCountdown(9000, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_OVERPOWER_AURAS), "hallsFab", "committee_overpower_auras")
-						buffsDebuffs.committee_overpower_auras_total = (buffsDebuffs.committee_overpower_auras_total or 0) + 1
-						buffsDebuffs.committee_overheat_target = nil
-						buffsDebuffs.committee_overload_target = nil
+						if (self:IsDevMode() and settings.committee_overpower_auras_dynamic == true) then
+							buffsDebuffs.committee_overpower_auras_total = (buffsDebuffs.committee_overpower_auras_total or 0) + 1
+							buffsDebuffs.committee_overheat_target = nil
+							buffsDebuffs.committee_overload_target = nil
+						end
 					end
 				end
 
@@ -1344,9 +1348,9 @@ do ---------------------------
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_RECLAIM_ACHIEVE), "hallsFab", "committee_reclaim_achieve", 10)
 					end
 				elseif (abilityId == buffsDebuffs.committee_overheat or abilityId == buffsDebuffs.committee_overload) then
-					if (settings.committee_overpower_auras == true) then
-						if IsDevMode() then
-							if (SafeInt(buffsDebuffs.committee_countdown_index) > 0) then --only run while countdown is still happening
+					if self:IsDevMode() then
+						if (settings.committee_overpower_auras_dynamic == true) then
+							if (Util.SafeInt(buffsDebuffs.committee_countdown_index) > 0) then --only run while countdown is still happening
 								local key = (abilityId == buffsDebuffs.committee_overload) and "committee_overload_target" or "committee_overheat_target"
 								local lastTarget = buffsDebuffs[key]
 								buffsDebuffs[key] = tUnitId
@@ -1379,12 +1383,14 @@ do ---------------------------
 
 			elseif (result == ACTION_RESULT_EFFECT_FADED) then
 				if (abilityId == buffsDebuffs.committee_overheat_aura or abilityId == buffsDebuffs.committee_overload_aura) then 
-					if (settings.committee_overpower_auras == true) then
-						self:StopCountdown(buffsDebuffs.committee_countdown_index)
-						buffsDebuffs.committee_countdown_index = 0 -- don't set it to nil
-						buffsDebuffs.committee_overload_target = nil
-						buffsDebuffs.committee_overheat_target = nil
-						buffsDebuffs.committee_overpower_auras_total = 0
+					if self:IsDevMode() then
+						if (settings.committee_overpower_auras_dynamic == true) then
+							self:StopCountdown(buffsDebuffs.committee_countdown_index)
+							buffsDebuffs.committee_countdown_index = 0 -- don't set it to nil
+							buffsDebuffs.committee_overload_target = nil
+							buffsDebuffs.committee_overheat_target = nil
+							buffsDebuffs.committee_overpower_auras_total = 0
+						end
 					end
 				end
 			end
@@ -1399,6 +1405,9 @@ end
 -- EVENT: EVENT_EFFECT_CHANGED
 do -----------------------------
 
+	local UI    = RaidNotifier.UI
+	local Util  = RaidNotifier.Util
+
 	function RaidNotifier.OnEffectChanged(eventCode, changeType, eSlot, eName, uTag, beginTime, endTime, stackCount, iconName, buffType, eType, aType, statusEffectType, uName, uId, abilityId, uType) 
 
 		local raidId = RaidNotifier.raidId
@@ -1408,6 +1417,26 @@ do -----------------------------
 		if self:IsInRaidZone() == false then
 			self:UnregisterEvents()
 			return
+		end
+
+		-- HoF is the first raid to make it here! WHOOHOOW!! (all cuz we needz dem stackcount)
+		if (raidId == RAID_HALLS_OF_FABRICATION) then
+			local buffsDebuffs, settings = self.BuffsDebuffs.halls_fab, self.Vars.hallsFab
+			
+			--if (uType == COMBAT_UNIT_TYPE_PLAYER) then -- doesn't seem to be the case even when it really is the player
+			if (uTag == "player") then
+				if (abilityId == buffsDebuffs.pinnacleBoss_scalded) then
+					if (settings.pinnacleBoss_scalded == true) then
+						if (changeType == EFFECT_RESULT_FADED) then
+							dbg("Scalded debuff faded")
+							UI.UpdateScaldedStacks(0)
+						else
+							dbg("Scalded Debuff: #%d stacks", stackCount)
+							UI.UpdateScaldedStacks(stackCount, beginTime, endTime)
+						end
+					end
+				end
+			end
 		end
 
 		-- Buff Food

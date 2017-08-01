@@ -1,7 +1,7 @@
 ## Title: |cEFEBBERaidNotifier|r
 ## Description: Displays on-screen notifications on different events during trials.
 ## Author: |c009ad6Kyoma, Woeler, silentgecko|r
-## Version: 2.1.3
+## Version: 2.1.4
 ## APIVersion: 100019
 ## SavedVariables: RNVars 
 ## OptionalDependsOn: LibAddonMenu-2.0 LibMapPing LibGPS2 LibGroupSocket
@@ -35,6 +35,7 @@ libs/LibCSA/LibCSA.lua
 libs/LibUnits/LibUnits.lua
 
 RaidNotifier.lua
+Util.lua
 BuffsDebuffs.lua
 Settings.lua
 UI.lua

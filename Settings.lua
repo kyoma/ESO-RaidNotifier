@@ -14,6 +14,7 @@ local RAID_MAW_OF_LORKHAJ        = 5
 local RAID_MAELSTROM_ARENA       = 6
 local RAID_HALLS_OF_FABRICATION  = 7
 
+
 RaidNotifier.Defaults = {
 	useAccountWide = true, 
 	general = {
@@ -92,10 +93,13 @@ RaidNotifier.Defaults = {
 		draining_ballista     = 1, -- "Self"
 		power_leech           = false,
 
-		pinnacleBoss_conduit_spawn = true,
-		pinnacleBoss_conduit_drain = 0, -- "Off"
+		pinnacleBoss_conduit_spawn   = true,
+		pinnacleBoss_conduit_drain   = 0, -- "Off"
+		pinnacleBoss_scalded         = true,
+		pinnacleBoss_scalded_display = {100, 400},
 
 		committee_overpower_auras = false,
+		committee_overpower_auras_dynamic = false,
 		committee_fabricant_spawn = false,
 		committee_reclaim_achieve = false,
 	}, 
@@ -216,6 +220,10 @@ end
 function RaidNotifier:CreateSettingsMenu()
 
 	PopulateProfileLists()
+	
+	
+	local Vars = self.Vars
+	self:TryConvertSettings(Vars, self.Defaults)
 
 	local LAM = LibStub:GetLibrary("LibAddonMenu-2.0")
     self.panelData = {
@@ -267,7 +275,7 @@ function RaidNotifier:CreateSettingsMenu()
                 GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_NORMAL),
                 GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_FULL), 
 			},
-			serpent_worldshaper = {
+			serpent_world_shaper = {
 				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
 				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF), 
 				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_NEAR), 
@@ -296,8 +304,6 @@ function RaidNotifier:CreateSettingsMenu()
 			draining_ballista = off_self_all,
 		},
     }
-	
-	local Vars = RaidNotifier.Vars
 
 	local function getChoiceValue(category, key)
 		return choices[category][key][ Vars[category][key] + 1 ]
@@ -682,15 +688,16 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return getChoiceValue("sanctumOphidia", "serpent_poison") end,
 		setFunc = function(value)   setChoiceValue("sanctumOphidia", "serpent_poison", value) end,
 	}, "sanctumOphidia", "serpent_poison")
-	--MakeControlEntry({
-	--    type = "dropdown",
-	--    name = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_SERPENT_WORLDSHAPER),
-	--    tooltip = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_SERPENT_WORLDSHAPER_TT),
-	--	choices = choices.sanctumOphidia.serpent_worldshaper,
-	--    getFunc = function() return getChoiceValue("sanctumOphidia", "serpent_worldshaper") end,
-	--    setFunc = function(value)   setChoiceValue("sanctumOphidia", "serpent_worldshaper", value) end,
-	--	default = 2,
-	--}, "sanctumOphidia", "serpent_worldshaper")
+	MakeControlEntry({
+	    type = "checkbox",
+	    name = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_SERPENT_WORLD_SHAPER),
+	    tooltip = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_SERPENT_WORLD_SHAPER_TT),
+	    getFunc = function() return Vars.sanctumOphidia.serpent_world_shaper end,
+	    setFunc = function(value)   Vars.sanctumOphidia.serpent_world_shaper = value end,
+		default = true,
+		disabled = function() return not self:IsDevMode() end,
+		warning = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_WARNING),
+	}, "sanctumOphidia", "serpent_world_shaper")
 	MakeControlEntry({
 		type = "dropdown",
 		name = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_TROLL_BOULDER),
@@ -946,6 +953,15 @@ function RaidNotifier:CreateSettingsMenu()
    }, "hallsFab", "power_leech")
    	MakeControlEntry({
 		type = "checkbox",
+		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_SCALDED_DEBUFF),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_SCALDED_DEBUFF_TT),
+		getFunc = function() return Vars.hallsFab.pinnacleBoss_scalded end,
+		setFunc = function(value)   Vars.hallsFab.pinnacleBoss_scalded = value end,
+		--disabled = function() return not self:IsDevMode() end,
+		--warning = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_WARNING),
+   })
+   	MakeControlEntry({
+		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_SPAWN),
 		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_SPAWN_TT),
 		getFunc = function() return Vars.hallsFab.pinnacleBoss_conduit_spawn end,
@@ -966,6 +982,15 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return Vars.hallsFab.committee_overpower_auras end,
 		setFunc = function(value)   Vars.hallsFab.committee_overpower_auras = value end,
 	}, "hallsFab", "committee_overpower_auras")
+	MakeControlEntry({
+		type = "checkbox",
+		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS_DYNAMIC),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS_DYNAMIC_TT),
+		getFunc = function() return Vars.hallsFab.committee_overpower_auras_dynamic end,
+		setFunc = function(value)   Vars.hallsFab.committee_overpower_auras_dynamic = value end,
+		disabled = function() return not self:IsDevMode() or not Vars.hallsFab.committee_overpower_auras end,
+		warning = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_WARNING),
+	})
 	MakeControlEntry({
 		type = "checkbox",
 		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_FABRICANT_SPAWN),
@@ -1098,7 +1123,7 @@ function RaidNotifier:CreateSettingsMenu()
 			local control = GetControl("RNSettingCtrl"..i)
 			if (control and not control.data.noAlert) then
 				control.soundBtn = WINDOW_MANAGER:CreateControlFromVirtual(nil, control, "RaidNotifier_ConfigButton")
-				control.soundBtn:SetAnchor(RIGHT, control.combobox or control[control.data.type], LEFT, -5, 0)
+				control.soundBtn:SetAnchor(RIGHT, control.combobox or control[control.data.type], LEFT, -1, 0)
 				control.soundBtn:SetHandler("OnClicked", function() 
 						ZO_Dialogs_ShowDialog("RAID_NOTIFIER_CONFIG_DIALOG", control.data)
 					end)
@@ -1106,9 +1131,49 @@ function RaidNotifier:CreateSettingsMenu()
 														return zo_strformat("Sound: <<1>>", self:GetSoundName(nil, control.data.category, control.data.setting)) 
 													end}
 				control.soundBtn:SetHidden(false)
+				
+				-- re-anchor the warning control
+				if control.warning then
+					control.warning:ClearAnchors()
+					control.warning:SetAnchor(RIGHT, control.soundBtn, LEFT, 5, 0)
+				end
 			end
 		end
+		
+		
 	end
 	CALLBACK_MANAGER:RegisterCallback("LAM-PanelControlsCreated", OnPanelCreation)
 
 end
+
+function RaidNotifier:TryConvertSettings(settings, defaults)
+
+	for category,content in pairs(defaults) do
+		if (category ~= "useAccountWide") then
+			for key, default in pairs(content) do
+				local value = settings[category][key]
+				if type(value) ~= type(default) then --type mismatch
+					settings[category][key] = default -- store value
+					--if type(default) == "table" then -- advanced structure, try to preserve old value
+					--	if type(default.value) == type(value) then
+					--		self.p("Converted '%s -> %s' and keeping old value: %s", category, key, tostring(value))
+					--		settings[category][key].value = value
+					--	else
+					--		self.p("Converted '%s -> %s' and types mismatch, new value: %s", category, key, tostring(default.value))
+					--	end
+					--	-- try to preserve sound setting
+					--	local soundId = settings.sounds[category.."_"..key]
+					--	if soundId ~= nil then
+					--		self.p("Preserved soundId '%s'", soundId)
+					--		settings[category][key].sound = soundId
+					--	end
+					--else
+					--	self.p("Mismatching type for '%s -> %s', new value: %s", category, key, tostring(default))
+					--end
+				end
+			end
+		end
+	end
+
+end
+

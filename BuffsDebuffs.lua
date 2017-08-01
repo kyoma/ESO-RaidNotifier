@@ -38,7 +38,7 @@ sanctum.serpent_poison_teleport[53812] = 5 -- final
 -- Serpent Magicka Detonation
 sanctum.serpent_magicka_deto           = 59036
 sanctum.serpent_world_shaper           = 56857
-sanctum.serpent_world_shaper_delay     = 4000 --UNTESTED
+sanctum.serpent_world_shaper_delay     = 5000 -- SEMI-TESTED
 
 -- Trolls
 sanctum.spreading_poison = {} --determine which ones we actually need
@@ -343,6 +343,7 @@ local halls_fab = {}
 halls_fab.pinnacleBoss_fluxburst       = 90755 -- the streak-like attack
 halls_fab.pinnacleBoss_conduit_spawn   = 91781 -- sadly not targeted on somebody
 halls_fab.pinnacleBoss_conduit_drain   = 91792 
+halls_fab.pinnacleBoss_scalded         = 90916
 
 -- Refabrication Committee (4th bosses)
 --  Reducer

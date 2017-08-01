@@ -27,6 +27,7 @@ L.Settings_General_Choices_Near                     = "Near"
 L.Settings_General_Choices_All                      = "All"
 L.Settings_General_Choices_Always                   = "Always"
 L.Settings_General_Choices_Other                    = "Other"
+L.Settings_General_Choices_Inverted                 = "Inverted"
 -- Alerts
 L.Alerts_General_No_Bufffood                        = "You have no bufffood!"
 L.Alerts_General_Bufffood_Minutes                   = "Your '<<1>>' bufffood runs out in |cbd0000<<2>>|r minutes!"
@@ -194,7 +195,7 @@ L.Settings_MawLorkhaj_Zhaj_GripOfLorkhaj            = "Zhaj'hassa: Grip of Lorkh
 L.Settings_MawLorkhaj_Zhaj_GripOfLorkhaj_TT         = "Get a warning when the Grip of Lorkhaj debuff starts affecting you."
 L.Settings_MawLorkhaj_Zhaj_Glyphs                   = "Zhaj'hassa: Cleansing Platforms (beta)"
 L.Settings_MawLorkhaj_Zhaj_Glyphs_TT                = "Displays a window with all of the cleansing platforms with their status and time until they respawn."
-L.Settings_MawLorkhaj_Zhaj_Glyphs_Invert            = "Zhaj'hassa: Invert Cleansing Platforms (beta)"
+L.Settings_MawLorkhaj_Zhaj_Glyphs_Invert            = "       - Inverted View"
 L.Settings_MawLorkhaj_Zhaj_Glyphs_Invert_TT         = "Invert cleansing platforms."
 L.Settings_MawLorkhaj_Twin_Aspects                  = "False Moon Twins: Aspects"
 L.Settings_MawLorkhaj_Twin_Aspects_TT               = "Alerts when you get the Lunar or Shadow aspect at the False Moon Twins.\n\n    Full alerts you when you get an aspect, when you are starting to convert to an aspect and when the conversion is complete.\n    Normal alerts you when you get an aspect and when you are converting.\n    Minimal only alerts you when you are converting."
@@ -287,10 +288,14 @@ L.Settings_HallsFab_Conduit_Spawn                   = "Pinnacle: Conduit Spawnin
 L.Settings_HallsFab_Conduit_Spawn_TT                = "Alerts you when a conduit is about to spawn at Factotum Pinnacle boss."
 L.Settings_HallsFab_Conduit_Drain                   = "Pinnacle: Conduit Draining"
 L.Settings_HallsFab_Conduit_Drain_TT                = "Alerts you when a conduit is draining you at Factotum Pinnacle boss."
+L.Settings_HallsFab_Scalded_Debuff                  = "Pinnacle: Scalded Debuff"
+L.Settings_HallsFab_Scalded_Debuff_TT               = "Displays a small status icon showing the time until it disappears and how big its healing debuff is."
 L.Settings_HallsFab_Overcharge_Aura                 = "Committee: Overcharging Aura"
 L.Settings_HallsFab_Overcharge_Aura_TT              = "Alerts you when reclaimer start overcharging aura."
 L.Settings_HallsFab_Overpower_Auras                 = "Committee: Overpowering Auras"
-L.Settings_HallsFab_Overpower_Auras_TT              = "Alerts you when the tanks need to swap the committee bosses" -- TODO: phrase it better?
+L.Settings_HallsFab_Overpower_Auras_TT              = "Alerts you when the tanks need to swap the committee bosses" 
+L.Settings_HallsFab_Overpower_Auras_Dynamic         = "       - Dynamic Countdown"
+L.Settings_HallsFab_Overpower_Auras_Dynamic_TT      = "When enabled it will attempt to stop the countdown once the tanks have swapped bosses."
 L.Settings_HallsFab_Fabricant_Spawn                 = "Committee: Ruined Fabricant Spawn"
 L.Settings_HallsFab_Fabricant_Spawn_TT              = "Alerts you when Ruined Fabricant is spawning."
 L.Settings_HallsFab_Catastrophic_Discharge          = "Committee: Catastrophic Discharge"
@@ -322,8 +327,8 @@ L.Settings_Debug_Header                  = "Debug"
 L.Settings_Debug                         = "Turn debug on"
 L.Settings_Debug_TT                      = "Turns on debugging output in chatwindow"
 L.Settings_Debug_DevMode                 = "Dev Mode"
-L.Settings_Debug_DevMode_TT              = "When this is turned on it enables certain alerts that might not be fully functioning, have mismatching timing or aren't fully tested yet. In general they should not produce UI errors but some sort of 'error catcher' addon is recommended."
-L.Settings_Debug_DevMode_Warning         = "THIS OPTION REQUIRES DEV MODE AND MIGHT NOT BE FULLY WORKING OR IS NOT 100% ACCURATE YET"
+L.Settings_Debug_DevMode_TT              = "When this is turned on it enables certain alerts that might not be fully functioning, have mismatching timing or aren't fully tested yet. In general they should not produce UI errors but some sort of 'error catcher' addon is still recommended."
+L.Settings_Debug_DevMode_Warning         = "Requires DevMode"
 
 L.Settings_Debug_Tracker_Header          = "Debug Tracker"
 L.Settings_Debug_Tracker_Description     = "This is a debug feature meant to track down and output potential mechanics during the course of a trial by printing out info on combat events and effects. Due to the potentially large amount of output there are a few options to help avoid cluttering your chat window."
@@ -339,4 +344,8 @@ L.Settings_Debug_Tracker_MyEnemyOnly_TT  = "When enabled this will limit ALL out
 for k, v in pairs(L) do
     local string = "RAIDNOTIFIER_" .. string.upper(k)
     ZO_CreateStringId(string, v)
+end
+
+function L:Get(string, suffix)
+	return L[string..tostring(suffix)]
 end
