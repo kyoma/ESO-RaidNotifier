@@ -39,6 +39,7 @@ RaidNotifier.Defaults = {
 	sounds = {
 	},
 	helra = {
+		yokeda_meteor 	  = 1, -- "Self"
 		warrior_stoneform = 1, -- "Self"
 	},
 	archive = {
@@ -226,60 +227,60 @@ function RaidNotifier:CreateSettingsMenu()
 	self:TryConvertSettings(Vars, self.Defaults)
 
 	local LAM = LibStub:GetLibrary("LibAddonMenu-2.0")
-    self.panelData = {
-        type = "panel",
-        name = self.DisplayName,
-        author = self.Author,
-        version = self.Version,
-        registerForRefresh = true,
+	self.panelData = {
+		type = "panel",
+		name = self.DisplayName,
+		author = self.Author,
+		version = self.Version,
+		registerForRefresh = true,
 		registerForDefaults = true,
-    }
+	}
 
 	local off_self_all = {
 		GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
 		GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF), 
 		GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL), 
 	}
-    local choices = {
-        mawLorkhaj = {
-            twinBoss_aspects = {
-                GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
-                GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_MINIMAL), 
-                GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_NORMAL),
-                GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_FULL), 
-            },
+	local choices = {
+		mawLorkhaj = {
+			twinBoss_aspects = {
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_MINIMAL),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_NORMAL),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_FULL),
+			},
 			rakkhat_unstablevoid = off_self_all,
 			rakkhat_lunarbastion1 = {
-                GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
-                GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF), 
-                GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OTHER),
-                GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL), 
-            },
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OTHER),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL),
+			},
 			rakkhat_lunarbastion2 = {
-                GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
-                GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF), 
-                GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OTHER),
-                GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL), 
-            },
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OTHER),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL),
+			},
 			suneater_eclipse = {
 				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF), 
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_NEAR), 
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL), 
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_NEAR),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL),
 			},
-        },
+	        },
 		sanctumOphidia = {
 			mantikora_spear = off_self_all,
 			serpent_poison = {
-                GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
-                GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_NORMAL),
-                GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_FULL), 
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_NORMAL),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_FULL),
 			},
 			serpent_world_shaper = {
 				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF), 
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_NEAR), 
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL), 
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_NEAR),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL),
 			},
 			troll_boulder  = off_self_all,
 			troll_poison   = off_self_all,
@@ -287,6 +288,7 @@ function RaidNotifier:CreateSettingsMenu()
 			call_lightning = off_self_all,
 		},
 		helra = {
+			yokeda_meteor = off_self_all,
 			warrior_stoneform = off_self_all,
 		},
 		archive = {
@@ -303,7 +305,7 @@ function RaidNotifier:CreateSettingsMenu()
 			taking_aim = off_self_all,
 			draining_ballista = off_self_all,
 		},
-    }
+	}
 
 	local function getChoiceValue(category, key)
 		return choices[category][key][ Vars[category][key] + 1 ]
@@ -508,7 +510,6 @@ function RaidNotifier:CreateSettingsMenu()
 	subTable = nil --end submenu
 
 
-
 	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_PROFILE_HEADER), GetString(RAIDNOTIFIER_SETTINGS_PROFILE_DESCRIPTION))
 	MakeControlEntry({
 		type = "checkbox",
@@ -595,6 +596,17 @@ function RaidNotifier:CreateSettingsMenu()
 
 	-- Hel Ra Citadel
 	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_HELRA_HEADER), RaidNotifier:GetRaidDescription(RAID_HEL_RA_CITADEL))
+	MakeControlEntry({
+		type = "dropdown",
+		name = GetString(RAIDNOTIFIER_SETTINGS_HELRA_YOKEDA_METEOR),
+		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HELRA_YOKEDA_METEOR_TT),
+		choices = choices.helra.yokeda_meteor,
+		getFunc = function() return getChoiceValue("helra", "yokeda_meteor") end,
+		setFunc = function(value)   setChoiceValue("helra", "yokeda_meteor", value) end,
+		default = true,
+		disabled = function() return not self:IsDevMode() end,
+		warning = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_WARNING),
+	}, "helra", "yokeda_meteor")
 	MakeControlEntry({
 		type = "dropdown",
 		name = GetString(RAIDNOTIFIER_SETTINGS_HELRA_WARRIOR_STONEFORM),
