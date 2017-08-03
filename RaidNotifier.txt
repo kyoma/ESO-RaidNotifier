@@ -42,4 +42,4 @@ UI.lua
 RaidNotifier.xml
 
 lang/en.lua
-##lang/$(language).lua
+lang/$(language).lua

@@ -139,93 +139,10 @@ function LibCustomTitles:RegisterTitle(displayName, charName, override, title, e
 end
 
 local MAX_GRADIENT_STEPS = 10 --after that text just starts to disappear
-
---[[   Sadly we cant make a nice rainbow with a max of only 10 steps
-local function ApplyRainbow(text)
-
-	d("Applying rainbow: " .. text)
-	local len = string.len(text:gsub(" ", ""))
-	local numSteps = zo_min(len, MAX_GRADIENT_STEPS)
-	local stepSize = len / numSteps --we dont round this down directly
-
-	local function FormatRainbow(step)
-		local r, g, b
-		local h, i, f, q
-		h = step / numSteps
-		i = zo_floor(h * 6)
-		f = h * 6.0 - i
-		q = 1 - f
-
-		i = zo_mod(i, 6)
-		if (i == 0) then
-			r = 1
-			g = f
-			b = 0
-		elseif (i == 1) then
-			r = q
-			g = 1
-			b = 0
-		elseif (i == 2) then
-			r = 0
-			g = 1
-			b = f
-		elseif (i == 3) then
-			r = 0
-			g = q
-			b = 1
-		elseif (i == 4) then
-			r = f
-			g = 0
-			b = 1
-		elseif (i == 5) then
-			r = 1
-			g = 0
-			b = q
-		else
-			d("ERROR")
-		end
-
-		local str = ("%02X%02X%02X"):format(zo_floor(r*255), zo_floor(g*255), zo_floor(b*255))
-		df("|c%s#%s|r", str, str)
-		
-		return "|c"..str
-	end
-
-	local step = 0
-	local substep = 0
-	local gradientText = FormatRainbow(step)
-	for c in text:gmatch(".") do
-		if c ~= " " then --ignore spaces
-			substep = substep + 1
-			if substep >= stepSize then
-				substep = substep - stepSize
-				step = step + 1
-				gradientText = gradientText..FormatRainbow(step)
-			end
-		end
-		gradientText = gradientText..c
-	end
-	gradientText = gradientText.."|r"
-	
-	d(gradientText)
-
-	return gradientText
-end
-SLASH_COMMANDS["/testtitle"] = function(text)
-	text = (text ~= "") and text or "Rainbow"
-	ApplyRainbow(text)
-end
---]]
-
-
 function LibCustomTitles:ApplyColor(text, color)
 
 	if type(color) == "string" then 	-- just a simple color
-		--if zo_strlower(color) == "rainbow" then
-		--	return ApplyRainbow(text)
-		--else
-			return "|c"..color:gsub("#","")..text.."|r"
-		--end
+		return "|c"..color:gsub("#","")..text.."|r"
 	elseif type(color) ~= "table" then --wrong format??
 		return text
 	end

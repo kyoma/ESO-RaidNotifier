@@ -36,8 +36,6 @@ local ActionResults =
 	ACTION_RESULT_EFFECT_GAINED,
 	ACTION_RESULT_EFFECT_GAINED_DURATION,
 	ACTION_RESULT_EFFECT_FADED,
-	--ACTION_RESULT_INTERRUPT, 
-	--ACTION_RESULT_DIED,
 }
 
 local ALERT_PRIORITY_HIGHEST = 5
@@ -56,8 +54,11 @@ do ---------------------------------
 		return (r.."_"..s)
 	end
 
-	local Sounds = {
+	local DEFAULT_SOUND = "default_sound"
+	local Sounds = 
+	{
 		{name = "-None-", 					 id = SOUNDS.NONE},
+		--{name = "-Default-", 				 id = DEFAULT_SOUND},
 		{name = "Add Guild Member", 		 id = SOUNDS.GUILD_ROSTER_ADDED},
 		{name = "Book Acquired", 			 id = SOUNDS.BOOK_ACQUIRED},
 		{name = "Book Collection Completed", id = SOUNDS.BOOK_COLLECTION_COMPLETED},
@@ -114,12 +115,13 @@ do ---------------------------------
 
 		local duration = 3000
 		local soundId = self:GetSoundValue(category, setting)
+		if soundId == DEFAULT_SOUND then -- 
+			soundId = self.Vars.general.default_sound
+		end
 
 		if not text or text == "" then
 			p("Invalid text for '%s -> %s'", category, setting)
 			return
-		--elseif self.Vars.debug_notify then 
-		--	dbg("Alert for '%s -> %s', sound '%s' \n\"%s\"", category, setting, soundId, text)
 		end
 
 		if (interval) then 
@@ -508,8 +510,6 @@ do ----------------------
 			self.Vars = ZO_SavedVars:New(self.SV_Name, self.SV_Version, nil, self.Defaults)
 		end
 
-		self:CreateSettingsMenu()
-
 		-- tiny functions
 		p = function(msg, ...)
 			d("[RaidNotifier] "..msg:format(...))
@@ -521,6 +521,11 @@ do ----------------------
 			end
 		end
 		self.dbg = dbg
+		
+		self:CreateSettingsMenu()
+		
+		self.raidId = 0
+		self.raidDifficulty = 0
 
 		-- UI Elements
 		UI.RegisterElement(RaidNotifierUI:GetNamedChild("UltimateWindow"), self.Vars.ultimate.hidden)

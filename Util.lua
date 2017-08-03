@@ -76,6 +76,23 @@ function Util.GetArgValue(str, value)
 	end
 end
 
+function Util.CopyTable(src, dest)
+	if (type(dest) ~= "table") then
+		dest = {}
+	end
+
+	if (type(src) == "table") then
+		for k, v in pairs(src) do
+			if (type(v) == "table") then
+				Util.CopyTable(v, dest[k])
+			end
+
+			dest[k] = v
+		end
+	end
+	return dest
+end
+
 -- convert value to valid integer for comparison
 function Util.SafeInt(value)
 	return value == true and 1 or (value or 0)
