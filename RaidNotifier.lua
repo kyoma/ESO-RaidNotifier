@@ -505,9 +505,9 @@ do ----------------------
 	end
 
 	function RaidNotifier:Initialize()
-		self.Vars = ZO_SavedVars:NewAccountWide(self.SV_Name, self.SV_Version, nil, self.Defaults)
+		self.Vars = ZO_SavedVars:NewAccountWide(self.SV_Name, self.SV_Version, nil, self:GetDefaults())
 		if (not self.Vars.useAccountWide) then -- not using global settings, generate (or load) character specific settings
-			self.Vars = ZO_SavedVars:New(self.SV_Name, self.SV_Version, nil, self.Defaults)
+			self.Vars = ZO_SavedVars:New(self.SV_Name, self.SV_Version, nil, self:GetDefaults())
 		end
 
 		-- tiny functions
@@ -523,9 +523,6 @@ do ----------------------
 		self.dbg = dbg
 		
 		self:CreateSettingsMenu()
-		
-		self.raidId = 0
-		self.raidDifficulty = 0
 
 		-- UI Elements
 		UI.RegisterElement(RaidNotifierUI:GetNamedChild("UltimateWindow"), self.Vars.ultimate.hidden)

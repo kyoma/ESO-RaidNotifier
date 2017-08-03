@@ -1,5 +1,6 @@
 local RaidNotifier = RaidNotifier
-local UI = RaidNotifier.UI
+local UI   = RaidNotifier.UI
+local Util = RaidNotifier.Util
 
 local tinsert	 			= table.insert
 local tremove				= table.remove
@@ -14,128 +15,238 @@ local RAID_MAW_OF_LORKHAJ        = 5
 local RAID_MAELSTROM_ARENA       = 6
 local RAID_HALLS_OF_FABRICATION  = 7
 
+-- ------------------
+-- DEFAULT SETTINGS
+do ------------------
 
-RaidNotifier.Defaults = {
-	useAccountWide = true, 
-	general = {
-		buffFood_reminder = true,
-		buffFood_reminder_interval = 60,
-		use_center_screen_announce = true,
-		vanity_pets = true,
-		no_assistants = true,
-		last_pet = 0,
-	},
-	ultimate = {
-		enabled         = false,
-		hidden          = false,
-		useColor        = true,
-		useDisplayName  = false,
-		showHealers     = true,
-		showTanks       = true,
-		showDps         = false,
-		ulti_window     = {100, 600},
-		override_cost   = 0,
-	},
-	sounds = {
-	},
-	helra = {
-		yokeda_meteor 	  = 1, -- "Self"
-		warrior_stoneform = 1, -- "Self"
-	},
-	archive = {
-		stormatro_impendingstorm = false,
-		stormatro_lightningstorm = false,
-		stoneatro_boulderstorm = false,
-		stoneatro_bigquake     = false,
-		overcharge        = 0, --"Off"
-		call_lightning    = 1, --"Self"
-	},
-	sanctumOphidia = {
-		magicka_deto          = true,
-		serpent_poison        = 1, --"Normal"
-		serpent_world_shaper  = true,
-		--mantikora_spear   = 1, --"Self"
-		mantikora_quake   = false,
-		troll_boulder     = 0, --"Off"
-		troll_poison      = 0, --"Off"
-		overcharge        = 0, --"Off"
-		call_lightning    = 1, --"Self"
-	},
-	dragonstar = {
-		general_taking_aim     = false,
-		general_crystal_blast  = true,
-		arena2_crushing_shock  = true,
-		arena6_drain_resource  = 1, --"Self"
-		arena7_unstable_core   = true,
-		arena8_ice_charge      = 1, --"Self"
-		arena8_fire_charge     = 1, --"Self"
-	},
-	mawLorkhaj = {
-		twinBoss_aspects = 2,     -- "Normal"
-		rakkhat_unstablevoid = 1, -- "Self"
-		rakkhat_threshingwings = true,
-		rakkhat_darknessfalls = false,
-		rakkhat_darkbarrage = false, 
-		rakkhat_lunarbastion1 = 0, -- "Off"
-		rakkhat_lunarbastion2 = 0, -- "Off"
-		suneater_eclipse = 1, -- "Self"
-		zhaj_gripoflorkhaj = true,
-		zhaj_glyphs = false,
-		zhaj_glyph_window = {100, 400},
-		zhaj_glyphs_invert = false,
-	},
-	maelstrom = {
-		stage7_poison  = true,
-		stage9_synergy = true,
-	},
-	hallsFab = {
-		conduit_strike        = true, 
-		taking_aim            = 1, -- "Self"
-		draining_ballista     = 1, -- "Self"
-		power_leech           = false,
+	-- local DEFAULT_SOUND = "default_sound" -- will remain as the actual value
+	-- local DEFAULT_PRIORITY = 3
+	-- local ALL_ROLES =
+	-- {
+		-- [1] = true, -- Damage
+		-- [2] = true, -- Healer
+		-- [3] = true, -- Tank
+	-- }
 
-		pinnacleBoss_conduit_spawn   = true,
-		pinnacleBoss_conduit_drain   = 0, -- "Off"
-		pinnacleBoss_scalded         = true,
-		pinnacleBoss_scalded_display = {100, 400},
+	-- local defaults = 
+	-- {
+		-- useAccountWide = true, --very special setting!!
 
-		committee_overpower_auras = false,
-		committee_overpower_auras_dynamic = false,
-		committee_fabricant_spawn = false,
-		committee_reclaim_achieve = false,
-	}, 
+		-- general = 
+		-- { -- no need for advanced settings
+			-- buffFood_reminder           = true,
+			-- buffFood_reminder_interval  = 60,
+			-- use_center_screen_announce  = true,
+			-- vanity_pets                 = true,
+			-- no_assistants               = true,
+			-- last_pet                    = 0,
+			-- default_sound               = SOUNDS.CHAMPION_POINTS_COMMITTED,
+		-- },
+		-- ultimate = 
+		-- { -- no need for advanced settings
+			-- enabled                     = false,
+			-- hidden                      = false,
+			-- useColor                    = true,
+			-- useDisplayName              = false,
+			-- showHealers                 = true,
+			-- showTanks                   = true,
+			-- showDps                     = false,
+			-- ulti_window                 = {100, 600},
+			-- override_cost               = 0,
+		-- },
 
-	dbg = {
-		enable = false,
-		notify = false,
-		tracker = false,
-		spamControl = true,
-		verbose = false,
-		myEnemyOnly = false,
-		devMode = false,
-	},
+		-- helra = 
+		-- {
+			-- warrior_stoneform           = {value = 1, --[[Self]]       sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY,    roles = ALL_ROLES},
+		-- },
+		-- archive =
+		-- {
+			-- stormatro_impendingstorm    = {value = false,              sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- stormatro_lightningstorm    = {value = false,              sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- stoneatro_boulderstorm      = {value = false,              sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- stoneatro_bigquake          = {value = false,              sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- overcharge                  = {value = 0, --[[Off]]        sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY,    roles = ALL_ROLES},
+			-- call_lightning              = {value = 1, --[[Self]]       sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY,    roles = ALL_ROLES},
+		-- },
+		-- sanctumOphidia =
+		-- {
+			-- magicka_deto                = {value = true,               sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- serpent_poison              = {value = 1, --[[Normal]]     sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- serpent_world_shaper        = {value = true,               sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- mantikora_quake             = {value = false,              sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- troll_boulder               = {value = 0, --[[Off]]        sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- troll_poison                = {value = 0, --[[Off]]        sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- overcharge                  = {value = 0, --[[Off]]        sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- call_lightning              = {value = 1, --[[Self]]       sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+		-- },
+		-- dragonstar = 
+		-- {
+			-- general_taking_aim          = {value = false,              sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- general_crystal_blast       = {value = true,               sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- arena2_crushing_shock       = {value = true,               sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- arena6_drain_resource       = {value = 1, --[[Self]]       sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY,    roles = ALL_ROLES},
+			-- arena7_unstable_core        = {value = true,               sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- arena8_ice_charge           = {value = 1, --[[Self]]       sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY,    roles = ALL_ROLES},
+			-- arena8_fire_charge          = {value = 1, --[[Self]]       sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY,    roles = ALL_ROLES},
+		-- },
+		-- mawLorkhaj =
+		-- {
+			-- twinBoss_aspects            = {value = 2, --[[Normal]]     sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- rakkhat_unstablevoid        = {value = 1, --[[Self]]       sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY,    roles = ALL_ROLES},
+			-- rakkhat_threshingwings      = {value = true,               sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- rakkhat_darknessfalls       = {value = false,              sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- rakkhat_darkbarrage         = {value = false,              sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- rakkhat_lunarbastion1       = {value = 0, --[[Off]]        sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY,    roles = ALL_ROLES},
+			-- rakkhat_lunarbastion2       = {value = 0, --[[Off]]        sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY,    roles = ALL_ROLES},
+			-- suneater_eclipse            = {value = 1, --[[Self]]       sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY,    roles = ALL_ROLES},
+			-- zhaj_gripoflorkhaj          = {value = true,               sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- zhaj_glyphs                 = {value = 1, --[[Normal]]     position = {100, 400}},
+		-- },
+		-- maelstrom =
+		-- {
+			-- stage7_poison               = {value = true,               sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- stage9_synergy              = {value = true,               sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+		-- },
+		-- hallsFab = 
+		-- {
+			-- conduit_strike              = {value = true,               sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- taking_aim                  = {value = 1, --[[Self]]       sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY,    roles = ALL_ROLES},
+			-- draining_ballista           = {value = 1, --[[Self]]       sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY,    roles = ALL_ROLES},
+			-- power_leech                 = {value = false,              sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- pinnacleBoss_conduit_spawn  = {value = true,               sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- pinnacleBoss_conduit_drain  = {value = 0, --[[Off]]        sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY,    roles = ALL_ROLES},
+			-- pinnacleBoss_scalded        = {value = true,               position = {100, 400}},
+			-- committee_auras             = {value = false,              sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- committee_auras_dynamic     = {value = false,              }, -- TODO: combine with "committee_auras" as dropdown once fully tested
+			-- committee_fabricant_spawn   = {value = false,              sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+			-- committee_reclaim_achieve   = {value = false,              sound = DEFAULT_SOUND,    priority = DEFAULT_PRIORITY},
+		-- }, 
 
-}
+		-- dbg = 
+		-- { -- no need for advanced settings
+			-- enable                      = false,
+			-- notify                      = false,
+			-- tracker                     = false,
+			-- spamControl                 = true,
+			-- verbose                     = false,
+			-- myEnemyOnly                 = false,
+			-- devMode                     = false,
+		-- },
+	-- }
+	
+	local defaults = {
+		useAccountWide = true, 
+		general = {
+			buffFood_reminder = true,
+			buffFood_reminder_interval = 60,
+			use_center_screen_announce = true,
+			vanity_pets = true,
+			no_assistants = true,
+			last_pet = 0,
+		},
+		ultimate = {
+			enabled         = false,
+			hidden          = false,
+			useColor        = true,
+			useDisplayName  = false,
+			showHealers     = true,
+			showTanks       = true,
+			showDps         = false,
+			ulti_window     = {100, 600},
+			override_cost   = 0,
+		},
+		sounds = {
+		},
+		helra = {
+			yokeda_meteor 	  = 1, -- "Self"
+			warrior_stoneform = 1, -- "Self"
+		},
+		archive = {
+			stormatro_impendingstorm = false,
+			stormatro_lightningstorm = false,
+			stoneatro_boulderstorm = false,
+			stoneatro_bigquake     = false,
+			overcharge        = 0, --"Off"
+			call_lightning    = 1, --"Self"
+		},
+		sanctumOphidia = {
+			magicka_deto          = true,
+			serpent_poison        = 1, --"Normal"
+			serpent_world_shaper  = true,
+			--mantikora_spear   = 1, --"Self"
+			mantikora_quake   = false,
+			troll_boulder     = 0, --"Off"
+			troll_poison      = 0, --"Off"
+			overcharge        = 0, --"Off"
+			call_lightning    = 1, --"Self"
+		},
+		dragonstar = {
+			general_taking_aim     = false,
+			general_crystal_blast  = true,
+			arena2_crushing_shock  = true,
+			arena6_drain_resource  = 1, --"Self"
+			arena7_unstable_core   = true,
+			arena8_ice_charge      = 1, --"Self"
+			arena8_fire_charge     = 1, --"Self"
+		},
+		mawLorkhaj = {
+			twinBoss_aspects = 2,     -- "Normal"
+			rakkhat_unstablevoid = 1, -- "Self"
+			rakkhat_threshingwings = true,
+			rakkhat_darknessfalls = false,
+			rakkhat_darkbarrage = false, 
+			rakkhat_lunarbastion1 = 0, -- "Off"
+			rakkhat_lunarbastion2 = 0, -- "Off"
+			suneater_eclipse = 1, -- "Self"
+			zhaj_gripoflorkhaj = true,
+			zhaj_glyphs = false,
+			zhaj_glyph_window = {100, 400},
+			zhaj_glyphs_invert = false,
+		},
+		maelstrom = {
+			stage7_poison  = true,
+			stage9_synergy = true,
+		},
+		hallsFab = {
+			conduit_strike        = true, 
+			taking_aim            = 1, -- "Self"
+			draining_ballista     = 1, -- "Self"
+			power_leech           = false,
+
+			pinnacleBoss_conduit_spawn   = true,
+			pinnacleBoss_conduit_drain   = 0, -- "Off"
+			pinnacleBoss_scalded         = true,
+			pinnacleBoss_scalded_display = {100, 400},
+
+			committee_overpower_auras = false,
+			committee_overpower_auras_dynamic = false,
+			committee_fabricant_spawn = false,
+			committee_reclaim_achieve = false,
+		}, 
+
+		dbg = {
+			enable = false,
+			notify = false,
+			tracker = false,
+			spamControl = true,
+			verbose = false,
+			myEnemyOnly = false,
+			devMode = false,
+		},
+	}
+
+	function RaidNotifier:GetSetting(settings, category, key)
+		return settings[category] and settings[category][key]
+	end
+
+	function RaidNotifier:GetDefaults()
+		return defaults
+	end
+end
 
 -- ------------------------
 -- PROFILE FUNCTIONS
 -- ------------------------
-local function CopyTable(src, dest)
-	if (type(dest) ~= 'table') then
-		dest = {}
-	end
-
-	if (type(src) == 'table') then
-		for k, v in pairs(src) do
-			if (type(v) == 'table') then
-				CopyTable(v, dest[k])
-			end
-
-			dest[k] = v
-		end
-	end
-end
-
 local profileGuard			= false
 local profileCopyList		= {}
 local profileDeleteList		= {}
@@ -158,9 +269,9 @@ local function CopyProfile()
 	end
 
 	if (not sourceData or not destData) then -- something went wrong, abort
-		CHAT_SYSTEM:AddMessage(strformat('%s: %s', "[RaidNotifier]", "Cannot copy profile."))
+		--CHAT_SYSTEM:AddMessage(strformat('%s: %s', "[RaidNotifier]", "Cannot copy profile."))
 	else
-		CopyTable(sourceData, destData)
+		Util.CopyTable(sourceData, destData)
 		ReloadUI()
 	end
 end
@@ -221,10 +332,11 @@ end
 function RaidNotifier:CreateSettingsMenu()
 
 	PopulateProfileLists()
-	
-	
-	local Vars = self.Vars
-	self:TryConvertSettings(Vars, self.Defaults)
+
+	local defaults = self:GetDefaults()
+	local savedVars = self.Vars
+
+	self:TryConvertSettings(savedVars, defaults)
 
 	local LAM = LibStub:GetLibrary("LibAddonMenu-2.0")
 	self.panelData = {
@@ -245,42 +357,36 @@ function RaidNotifier:CreateSettingsMenu()
 		mawLorkhaj = {
 			twinBoss_aspects = {
 				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_MINIMAL),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_MINIMAL), 
 				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_NORMAL),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_FULL),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_FULL), 
 			},
 			rakkhat_unstablevoid = off_self_all,
 			rakkhat_lunarbastion1 = {
 				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF), 
 				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OTHER),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL), 
 			},
 			rakkhat_lunarbastion2 = {
 				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF), 
 				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OTHER),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL), 
 			},
 			suneater_eclipse = {
 				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_NEAR),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF), 
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_NEAR), 
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL), 
 			},
-	        },
+        },
 		sanctumOphidia = {
 			mantikora_spear = off_self_all,
 			serpent_poison = {
 				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
 				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_NORMAL),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_FULL),
-			},
-			serpent_world_shaper = {
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_NEAR),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL),
+				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_FULL), 
 			},
 			troll_boulder  = off_self_all,
 			troll_poison   = off_self_all,
@@ -305,37 +411,70 @@ function RaidNotifier:CreateSettingsMenu()
 			taking_aim = off_self_all,
 			draining_ballista = off_self_all,
 		},
-	}
+    }
 
-	local function getChoiceValue(category, key)
-		return choices[category][key][ Vars[category][key] + 1 ]
-	end
-	local function setChoiceValue(category, key, value)
-		for i, str in ipairs(choices[category][key]) do
-			if value == str then
-				Vars[category][key] = i - 1
-			end
+	-- quick get/set value functions
+	local function getValue(category, key)
+		local setting = savedVars[category][key]
+		if type(setting) == "table" then
+			return setting.value
+		else
+			return setting
 		end
 	end
-	local function getDefaultChoiceValue(category, key)
-		return choices[category][key][ RaidNotifier.Defaults[category][key] + 1 ]
+	local function setValue(category, key, value)
+		local setting = savedVars[category][key]
+		if type(setting) == "table" and type(value) ~= "table" then
+			setting.value = value
+		else
+			savedVars[category][key] = value
+		end
 	end
 
 	local index = 0
 	local optionsTable = {}
 	local subTable     = nil
-	local function MakeControlEntry(data, category, setting)
-		if (category ~= nil and setting ~= nil) then
+	local function MakeControlEntry(data, category, key)
+
+		if (category ~= nil and key ~= nil) then
+			-- for the majority of the settings 
 			data.category = category
-			data.setting = setting
-			data.default = (data.type == "dropdown" and getDefaultChoiceValue(category, setting) or RaidNotifier.Defaults[category][setting])
-		else
-			data.noAlert = true
+			data.key      = key
+			
+			-- build simple table with zero-based values for choices
+			if data.choices and not data.choicesValues then
+				data.choicesValues = {}
+				for i=1, #data.choices do
+					tinsert(data.choicesValues, i-1)
+				end
+			end
+
+			-- setup default value
+			local default = self:GetSetting(defaults, category, key)
+			data.default = default
+			if type(default) == "table" then
+				data.default = default.value -- the rest is handled in our dialog
+				-- setup reference if it supports sounds or roles
+				if (default.sound ~= nil or default.roles ~= nil) then
+					index = index + 1
+					data.reference = "RNSettingCtrl"..index
+				end
+			elseif not data.noAlert then
+				index = index + 1
+				data.reference = "RNSettingCtrl"..index
+			end
+			
+			-- add get/set functions if they were not provided
+			if not data.getFunc then
+				data.getFunc = function() return getValue(data.category, data.key) end
+			end
+			if not data.setFunc then
+				data.setFunc = function(value) setValue(data.category, data.key, value) end
+			end
+
 		end
-		if not data.noAlert and not data.reference then
-			index = index + 1
-			data.reference = "RNSettingCtrl"..index
-		end
+
+		-- add to appropriate table
 		if subTable ~= nil and data.type ~= "submenu" then
 			tinsert(subTable, data)
 		else
@@ -362,66 +501,53 @@ function RaidNotifier:CreateSettingsMenu()
 
 	MakeControlEntry({
 		type = "description",
-		text = GetString(RAIDNOTIFIER_DESCRIPTION),
+		text = RAIDNOTIFIER_DESCRIPTION,
 	})
 
 	MakeControlEntry({
 		type = "header",
-		name = GetString(RAIDNOTIFIER_SETTINGS_GENERAL_HEADER),
+		name = RAIDNOTIFIER_SETTINGS_GENERAL_HEADER,
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CENTER_SCREEN_ANNOUNCE),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CENTER_SCREEN_ANNOUNCE_TT),
-		getFunc = function() return Vars.general.use_center_screen_announce end,
-		setFunc = function(value)   Vars.general.use_center_screen_announce = value end,
-		default = true,
-	})
+		name = RAIDNOTIFIER_SETTINGS_GENERAL_CENTER_SCREEN_ANNOUNCE,
+		tooltip = RAIDNOTIFIER_SETTINGS_GENERAL_CENTER_SCREEN_ANNOUNCE_TT,
+		noAlert = true,
+	}, "general", "use_center_screen_announce")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_GENERAL_BUFFFOOD_REMINDER),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_GENERAL_BUFFFOOD_REMINDER_TT),
-		getFunc = function() return Vars.general.buffFood_reminder end,
-		setFunc = function(value)   Vars.general.buffFood_reminder = value end,
-		default = true,
+		name = RAIDNOTIFIER_SETTINGS_GENERAL_BUFFFOOD_REMINDER,
+		tooltip = RAIDNOTIFIER_SETTINGS_GENERAL_BUFFFOOD_REMINDER_TT,
 	}, "general", "buffFood_reminder")
 	MakeControlEntry({
 		type = "slider",
-		name = GetString(RAIDNOTIFIER_SETTINGS_GENERAL_BUFFFOOD_REMINDER_INTERVAL),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_GENERAL_BUFFFOOD_REMINDER_INTERVAL_TT),
-		min = 30,
-		max = 120,
-		step = 5,
-		getFunc = function() return Vars.general.buffFood_reminder_interval end,
-		setFunc = function(value)   Vars.general.buffFood_reminder_interval = value end,
-		default = 60,
-	})
+		name = RAIDNOTIFIER_SETTINGS_GENERAL_BUFFFOOD_REMINDER_INTERVAL,
+		tooltip = RAIDNOTIFIER_SETTINGS_GENERAL_BUFFFOOD_REMINDER_INTERVAL_TT,
+		min = 30, max = 120, step = 5,
+		noAlert = true,
+	}, "general", "buffFood_reminder_interval")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_GENERAL_VANITY_PETS),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_GENERAL_VANITY_PETS_TT),
-		getFunc = function() return Vars.general.vanity_pets end,
-		setFunc = function(value)   Vars.general.vanity_pets = value end,
-		default = true,
-	})
+		name = RAIDNOTIFIER_SETTINGS_GENERAL_VANITY_PETS,
+		tooltip = RAIDNOTIFIER_SETTINGS_GENERAL_VANITY_PETS_TT,
+		noAlert = true,
+	}, "general", "vanity_pets")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_GENERAL_NO_ASSISTANTS),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_GENERAL_NO_ASSISTANTS_TT),
-		getFunc = function() return Vars.general.no_assistants end,
-		setFunc = function(value)   Vars.general.no_assistants = value end,
-		default = true,
-	})
+		name = RAIDNOTIFIER_SETTINGS_GENERAL_NO_ASSISTANTS,
+		tooltip = RAIDNOTIFIER_SETTINGS_GENERAL_NO_ASSISTANTS_TT,
+		noAlert = true,
+	}, "general", "no_assistants")
 
 
-	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_HEADER), GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_DESCRIPTION))
+	MakeSubmenu(RAIDNOTIFIER_SETTINGS_ULTIMATE_HEADER, RAIDNOTIFIER_SETTINGS_ULTIMATE_DESCRIPTION)
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_ENABLED),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_ENABLED_TT),
-		getFunc = function() return Vars.ultimate.enabled end,
+		name = RAIDNOTIFIER_SETTINGS_ULTIMATE_ENABLED,
+		tooltip = RAIDNOTIFIER_SETTINGS_ULTIMATE_ENABLED_TT,
+		getFunc = function() return savedVars.ultimate.enabled end,
 		setFunc = function(value)
-				Vars.ultimate.enabled = value
+				savedVars.ultimate.enabled = value
 				if self.raidId > 0 then 
 					if value then 
 						self:RegisterForUltimateChanges()
@@ -430,69 +556,70 @@ function RaidNotifier:CreateSettingsMenu()
 					end
 				end
 			end,
-		default = true,
+		default = false,
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_HIDDEN),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_HIDDEN_TT),
-		getFunc = function() return Vars.ultimate.hidden end,
+		name = RAIDNOTIFIER_SETTINGS_ULTIMATE_HIDDEN,
+		tooltip = RAIDNOTIFIER_SETTINGS_ULTIMATE_HIDDEN_TT,
+		getFunc = function() return savedVars.ultimate.hidden end,
 		setFunc = function(value)
-				Vars.ultimate.hidden = value 
+				savedVars.ultimate.hidden = value 
 				UI.SetElementHidden("ultimate", "ulti_window", value)
 			end,
 		default = false,
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_USECOLOR),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_USECOLOR_TT),
-		getFunc = function() return Vars.ultimate.useColor end,
+		name = RAIDNOTIFIER_SETTINGS_ULTIMATE_USECOLOR,
+		tooltip = RAIDNOTIFIER_SETTINGS_ULTIMATE_USECOLOR_TT,
+		getFunc = function() return savedVars.ultimate.useColor end,
 		setFunc = function(value)
-				Vars.ultimate.useColor = value 
+				savedVars.ultimate.useColor = value 
+				self:UpdateUltimates()
 			end,
 		default = true,
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_USEDISPLAYNAME),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_USEDISPLAYNAME_TT),
-		getFunc = function() return Vars.ultimate.useDisplayName end,
+		name = RAIDNOTIFIER_SETTINGS_ULTIMATE_USEDISPLAYNAME,
+		tooltip = RAIDNOTIFIER_SETTINGS_ULTIMATE_USEDISPLAYNAME_TT,
+		getFunc = function() return savedVars.ultimate.useDisplayName end,
 		setFunc = function(value)
-				Vars.ultimate.useDisplayName = value 
+				savedVars.ultimate.useDisplayName = value 
 				self:UpdateUltimates()
 			end,
 		default = false,
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_SHOWHEALERS),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_SHOWHEALERS_TT),
-		getFunc = function() return Vars.ultimate.showHealers end,
+		name = RAIDNOTIFIER_SETTINGS_ULTIMATE_SHOWHEALERS,
+		tooltip = RAIDNOTIFIER_SETTINGS_ULTIMATE_SHOWHEALERS_TT,
+		getFunc = function() return savedVars.ultimate.showHealers end,
 		setFunc = function(value)
-				Vars.ultimate.showHealers = value 
+				savedVars.ultimate.showHealers = value 
 				self:UpdateUltimates()
 			end,
 		default = true,
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_SHOWTANKS),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_SHOWTANKS_TT),
-		getFunc = function() return Vars.ultimate.showTanks end,
+		name = RAIDNOTIFIER_SETTINGS_ULTIMATE_SHOWTANKS,
+		tooltip = RAIDNOTIFIER_SETTINGS_ULTIMATE_SHOWTANKS_TT,
+		getFunc = function() return savedVars.ultimate.showTanks end,
 		setFunc = function(value)
-				Vars.ultimate.showTanks = value 
+				savedVars.ultimate.showTanks = value 
 				self:UpdateUltimates()
 			end,
 		default = true,
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_SHOWDPS),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_SHOWDPS_TT),
-		getFunc = function() return Vars.ultimate.showDps end,
+		name = RAIDNOTIFIER_SETTINGS_ULTIMATE_SHOWDPS,
+		tooltip = RAIDNOTIFIER_SETTINGS_ULTIMATE_SHOWDPS_TT,
+		getFunc = function() return savedVars.ultimate.showDps end,
 		setFunc = function(value)
-				Vars.ultimate.showDps = value 
+				savedVars.ultimate.showDps = value 
 				self:UpdateUltimates()
 			end,
 		default = false,
@@ -501,21 +628,22 @@ function RaidNotifier:CreateSettingsMenu()
 		type = "slider",
 		min = 0,
         max = 250,
-		name = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_OVERRIDECOST),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_ULTIMATE_OVERRIDECOST_TT),
-		getFunc = function() return Vars.ultimate.override_cost end,
-		setFunc = function(value) Vars.ultimate.override_cost = value end,
+		name = RAIDNOTIFIER_SETTINGS_ULTIMATE_OVERRIDECOST,
+		tooltip = RAIDNOTIFIER_SETTINGS_ULTIMATE_OVERRIDECOST_TT,
+		getFunc = function() return savedVars.ultimate.override_cost end,
+		setFunc = function(value) savedVars.ultimate.override_cost = value end,
 		default = 0,
 	})
 	subTable = nil --end submenu
 
 
-	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_PROFILE_HEADER), GetString(RAIDNOTIFIER_SETTINGS_PROFILE_DESCRIPTION))
+
+	MakeSubmenu(RAIDNOTIFIER_SETTINGS_PROFILE_HEADER, RAIDNOTIFIER_SETTINGS_PROFILE_DESCRIPTION)
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_USEGLOBAL),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_USEGLOBAL_TT),
-		warning = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_USEGLOBAL_WARNING),
+		name = RAIDNOTIFIER_SETTINGS_PROFILE_USEGLOBAL,
+		tooltip = RAIDNOTIFIER_SETTINGS_PROFILE_USEGLOBAL_TT,
+		warning = RAIDNOTIFIER_SETTINGS_PROFILE_USEGLOBAL_WARNING,
 		getFunc = function()
 			return RNVars.Default[GetDisplayName()]["$AccountWide"].useAccountWide 
 		end,
@@ -527,8 +655,8 @@ function RaidNotifier:CreateSettingsMenu()
 	})
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_COPY),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_COPY_TT),
+		name = RAIDNOTIFIER_SETTINGS_PROFILE_COPY,
+		tooltip = RAIDNOTIFIER_SETTINGS_PROFILE_COPY_TT,
 		choices = profileCopyList,
 		getFunc = function()
 			if (#profileCopyList >= 1) then -- there are entries, set first as default
@@ -543,15 +671,15 @@ function RaidNotifier:CreateSettingsMenu()
 	})
 	MakeControlEntry({
 		type = "button",
-		name = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_COPYBUTTON),
-		warning = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_COPYBUTTON),
+		name = RAIDNOTIFIER_SETTINGS_PROFILE_COPYBUTTON,
+		warning = RAIDNOTIFIER_SETTINGS_PROFILE_COPYBUTTON,
 		func = function(btn)  CopyProfile() end,
 		disabled = function() return not profileGuard end,
 	})
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_DELETE),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_DELETE_TT),
+		name = RAIDNOTIFIER_SETTINGS_PROFILE_DELETE,
+		tooltip = RAIDNOTIFIER_SETTINGS_PROFILE_DELETE_TT,
 		choices = profileDeleteList,
 		getFunc = function()
 			if (#profileDeleteList >= 1) then
@@ -571,14 +699,14 @@ function RaidNotifier:CreateSettingsMenu()
 	})
 	MakeControlEntry({
 		type = "button",
-		name = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_DELETEBUTTON),
+		name = RAIDNOTIFIER_SETTINGS_PROFILE_DELETEBUTTON,
 		func = function(btn)  DeleteProfile() end,
 		disabled = function() return not profileGuard end,
 	})
 	MakeControlEntry({type = "divider", alpha = 1})
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_PROFILE_GUARD),
+		name = RAIDNOTIFIER_SETTINGS_PROFILE_GUARD,
 		getFunc = function() return profileGuard end,
 		setFunc = function(value)   profileGuard = value end,
 	})
@@ -587,491 +715,407 @@ function RaidNotifier:CreateSettingsMenu()
 
 	MakeControlEntry({
 		type = "header",
-		name = GetString(RAIDNOTIFIER_SETTINGS_TRIALS_HEADER)
+		name = RAIDNOTIFIER_SETTINGS_TRIALS_HEADER
 	})
 	MakeControlEntry({
 		type = "description",
-		text = GetString(RAIDNOTIFIER_SETTINGS_TRIALS_DESCRIPTION)
+		text = RAIDNOTIFIER_SETTINGS_TRIALS_DESCRIPTION
 	})
 
 	-- Hel Ra Citadel
-	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_HELRA_HEADER), RaidNotifier:GetRaidDescription(RAID_HEL_RA_CITADEL))
+	MakeSubmenu(RAIDNOTIFIER_SETTINGS_HELRA_HEADER, RaidNotifier:GetRaidDescription(RAID_HEL_RA_CITADEL))
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_HELRA_YOKEDA_METEOR),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HELRA_YOKEDA_METEOR_TT),
+		name = RAIDNOTIFIER_SETTINGS_HELRA_YOKEDA_METEOR,
+		tooltip = RAIDNOTIFIER_SETTINGS_HELRA_YOKEDA_METEOR_TT,
 		choices = choices.helra.yokeda_meteor,
-		getFunc = function() return getChoiceValue("helra", "yokeda_meteor") end,
-		setFunc = function(value)   setChoiceValue("helra", "yokeda_meteor", value) end,
-		default = true,
 		disabled = function() return not self:IsDevMode() end,
-		warning = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_WARNING),
+		warning = RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_WARNING,
 	}, "helra", "yokeda_meteor")
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_HELRA_WARRIOR_STONEFORM),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HELRA_WARRIOR_STONEFORM_TT),
+		name = RAIDNOTIFIER_SETTINGS_HELRA_WARRIOR_STONEFORM,
+		tooltip = RAIDNOTIFIER_SETTINGS_HELRA_WARRIOR_STONEFORM_TT,
 		choices = choices.helra.warrior_stoneform,
-		getFunc = function() return getChoiceValue("helra", "warrior_stoneform") end,
-		setFunc = function(value)   setChoiceValue("helra", "warrior_stoneform", value) end,
 	}, "helra", "warrior_stoneform")
 	subTable = nil --end submenu
 
 
 	-- Aetherius Archive
-	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_HEADER), RaidNotifier:GetRaidDescription(RAID_AETHERIAN_ARCHIVE))
+	MakeSubmenu(RAIDNOTIFIER_SETTINGS_ARCHIVE_HEADER, RaidNotifier:GetRaidDescription(RAID_AETHERIAN_ARCHIVE))
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_STORMATRO_IMPENDINGSTORM),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_STORMATRO_IMPENDINGSTORM_TT),
-		getFunc = function() return Vars.archive.stormatro_impendingstorm end,
-		setFunc = function(value)   Vars.archive.stormatro_impendingstorm = value end,
+		name = RAIDNOTIFIER_SETTINGS_ARCHIVE_STORMATRO_IMPENDINGSTORM,
+		tooltip = RAIDNOTIFIER_SETTINGS_ARCHIVE_STORMATRO_IMPENDINGSTORM_TT,
 	}, "archive", "stormatro_impendingstorm")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_STORMATRO_LIGHTNINGSTORM),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_STORMATRO_LIGHTNINGSTORM_TT),
-		getFunc = function() return Vars.archive.stormatro_lightningstorm end,
-		setFunc = function(value)   Vars.archive.stormatro_lightningstorm = value end,
+		name = RAIDNOTIFIER_SETTINGS_ARCHIVE_STORMATRO_LIGHTNINGSTORM,
+		tooltip = RAIDNOTIFIER_SETTINGS_ARCHIVE_STORMATRO_LIGHTNINGSTORM_TT,
 	}, "archive", "stormatro_lightningstorm")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_STONEATRO_BOULDERSTORM),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_STONEATRO_BOULDERSTORM_TT),
-		getFunc = function() return Vars.archive.stoneatro_boulderstorm end,
-		setFunc = function(value)   Vars.archive.stoneatro_boulderstorm = value end,
+		name = RAIDNOTIFIER_SETTINGS_ARCHIVE_STONEATRO_BOULDERSTORM,
+		tooltip = RAIDNOTIFIER_SETTINGS_ARCHIVE_STONEATRO_BOULDERSTORM_TT,
 	}, "archive", "stoneatro_boulderstorm")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_STONEATRO_BIGQUAKE),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_STONEATRO_BIGQUAKE_TT),
-		getFunc = function() return Vars.archive.stoneatro_bigquake end,
-		setFunc = function(value)   Vars.archive.stoneatro_bigquake = value end,
+		name = RAIDNOTIFIER_SETTINGS_ARCHIVE_STONEATRO_BIGQUAKE,
+		tooltip = RAIDNOTIFIER_SETTINGS_ARCHIVE_STONEATRO_BIGQUAKE_TT,
 	}, "archive", "stoneatro_bigquake")
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_OVERCHARGE),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_OVERCHARGE_TT),
+		name = RAIDNOTIFIER_SETTINGS_ARCHIVE_OVERCHARGE,
+		tooltip = RAIDNOTIFIER_SETTINGS_ARCHIVE_OVERCHARGE_TT,
 		choices = choices.archive.overcharge,
-		getFunc = function() return getChoiceValue("archive", "overcharge") end,
-		setFunc = function(value)   setChoiceValue("archive", "overcharge", value) end,
 	}, "archive", "overcharge")
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_CALL_LIGHTNING),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_ARCHIVE_CALL_LIGHTNING_TT),
+		name = RAIDNOTIFIER_SETTINGS_ARCHIVE_CALL_LIGHTNING,
+		tooltip = RAIDNOTIFIER_SETTINGS_ARCHIVE_CALL_LIGHTNING_TT,
 		choices = choices.archive.call_lightning,
-		getFunc = function() return getChoiceValue("archive", "call_lightning") end,
-		setFunc = function(value)   setChoiceValue("archive", "call_lightning", value) end,
 	}, "archive", "call_lightning")
 	subTable = nil --end submenu
 
 
 	-- Sanctum Ophidia
-	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_HEADER), RaidNotifier:GetRaidDescription(RAID_SANCTUM_OPHIDIA))
+	MakeSubmenu(RAIDNOTIFIER_SETTINGS_SANCTUM_HEADER, RaidNotifier:GetRaidDescription(RAID_SANCTUM_OPHIDIA))
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_MANTIKORA_QUAKE),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_MANTIKORA_QUAKE_TT),
-		getFunc = function() return Vars.sanctumOphidia.mantikora_quake end,
-		setFunc = function(value)   Vars.sanctumOphidia.mantikora_quake = value end,
+		name = RAIDNOTIFIER_SETTINGS_SANCTUM_MANTIKORA_QUAKE,
+		tooltip = RAIDNOTIFIER_SETTINGS_SANCTUM_MANTIKORA_QUAKE_TT,
 	}, "sanctumOphidia", "mantikora_quake")
-	--MakeControlEntry({
-	--    type = "dropdown",
-	--    name = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_MANTIKORA_SPEAR),
-	--    tooltip = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_MANTIKORA_SPEAR_TT),
-	--    choices = choices.sanctumOphidia.mantikora_spear,
-	--    getFunc = function() return getChoiceValue("sanctumOphidia", "mantikora_spear") end,
-	--    setFunc = function(value)   setChoiceValue("sanctumOphidia", "mantikora_spear", value) end,
-	--    default = 1,
-	--}, "sanctumOphidia", "mantikora_spear")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_MAGICKA_DETONATION),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_MAGICKA_DETONATION_TT),
-		getFunc = function() return Vars.sanctumOphidia.magicka_deto end,
-		setFunc = function(value)   Vars.sanctumOphidia.magicka_deto = value end,
+		name = RAIDNOTIFIER_SETTINGS_SANCTUM_MAGICKA_DETONATION,
+		tooltip = RAIDNOTIFIER_SETTINGS_SANCTUM_MAGICKA_DETONATION_TT,
 	}, "sanctumOphidia", "magicka_deto")
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_SERPENT_POISON),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_SERPENT_POISON_TT),
+		name = RAIDNOTIFIER_SETTINGS_SANCTUM_SERPENT_POISON,
+		tooltip = RAIDNOTIFIER_SETTINGS_SANCTUM_SERPENT_POISON_TT,
 		choices = choices.sanctumOphidia.serpent_poison,
-		getFunc = function() return getChoiceValue("sanctumOphidia", "serpent_poison") end,
-		setFunc = function(value)   setChoiceValue("sanctumOphidia", "serpent_poison", value) end,
 	}, "sanctumOphidia", "serpent_poison")
 	MakeControlEntry({
 	    type = "checkbox",
-	    name = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_SERPENT_WORLD_SHAPER),
-	    tooltip = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_SERPENT_WORLD_SHAPER_TT),
-	    getFunc = function() return Vars.sanctumOphidia.serpent_world_shaper end,
-	    setFunc = function(value)   Vars.sanctumOphidia.serpent_world_shaper = value end,
-		default = true,
+	    name = RAIDNOTIFIER_SETTINGS_SANCTUM_SERPENT_WORLD_SHAPER,
+	    tooltip = RAIDNOTIFIER_SETTINGS_SANCTUM_SERPENT_WORLD_SHAPER_TT,
 		disabled = function() return not self:IsDevMode() end,
-		warning = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_WARNING),
+		warning = RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_WARNING,
 	}, "sanctumOphidia", "serpent_world_shaper")
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_TROLL_BOULDER),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_TROLL_BOULDER_TT),
+		name = RAIDNOTIFIER_SETTINGS_SANCTUM_TROLL_BOULDER,
+		tooltip = RAIDNOTIFIER_SETTINGS_SANCTUM_TROLL_BOULDER_TT,
 		choices = choices.sanctumOphidia.troll_boulder,
-		getFunc = function() return getChoiceValue("sanctumOphidia", "troll_boulder") end,
-		setFunc = function(value)   setChoiceValue("sanctumOphidia", "troll_boulder", value) end,
 	}, "sanctumOphidia", "troll_boulder")
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_TROLL_POISON),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_TROLL_POISON_TT),
+		name = RAIDNOTIFIER_SETTINGS_SANCTUM_TROLL_POISON,
+		tooltip = RAIDNOTIFIER_SETTINGS_SANCTUM_TROLL_POISON_TT,
 		choices = choices.sanctumOphidia.troll_poison,
-		getFunc = function() return getChoiceValue("sanctumOphidia", "troll_poison") end,
-		setFunc = function(value)   setChoiceValue("sanctumOphidia", "troll_poison", value) end,
 	}, "sanctumOphidia", "troll_poison")
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_OVERCHARGE),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_OVERCHARGE_TT),
+		name = RAIDNOTIFIER_SETTINGS_SANCTUM_OVERCHARGE,
+		tooltip = RAIDNOTIFIER_SETTINGS_SANCTUM_OVERCHARGE_TT,
 		choices = choices.sanctumOphidia.overcharge,
-		getFunc = function() return getChoiceValue("sanctumOphidia", "overcharge") end,
-		setFunc = function(value)   setChoiceValue("sanctumOphidia", "overcharge", value) end,
 	}, "sanctumOphidia", "overcharge")
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_CALL_LIGHTNING),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_SANCTUM_CALL_LIGHTNING_TT),
+		name = RAIDNOTIFIER_SETTINGS_SANCTUM_CALL_LIGHTNING,
+		tooltip = RAIDNOTIFIER_SETTINGS_SANCTUM_CALL_LIGHTNING_TT,
 		choices = choices.sanctumOphidia.call_lightning,
-		getFunc = function() return getChoiceValue("sanctumOphidia", "call_lightning") end,
-		setFunc = function(value)   setChoiceValue("sanctumOphidia", "call_lightning", value) end,
 	}, "sanctumOphidia", "call_lightning")
 	subTable = nil --end submenu
 
 
 	-- Maw of Lorkhaj
-	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_HEADER), RaidNotifier:GetRaidDescription(RAID_MAW_OF_LORKHAJ))
+	MakeSubmenu(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_HEADER, RaidNotifier:GetRaidDescription(RAID_MAW_OF_LORKHAJ))
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GRIPOFLORKHAJ),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GRIPOFLORKHAJ_TT),
-		getFunc = function() return Vars.mawLorkhaj.zhaj_gripoflorkhaj end,
-		setFunc = function(value)   Vars.mawLorkhaj.zhaj_gripoflorkhaj = value end,
+		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GRIPOFLORKHAJ,
+		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GRIPOFLORKHAJ_TT,
 	}, "mawLorkhaj", "zhaj_gripoflorkhaj")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_TT),
-		getFunc = function() return Vars.mawLorkhaj.zhaj_glyphs end,
+		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS,
+		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_TT,
+		getFunc = function() return savedVars.mawLorkhaj.zhaj_glyphs end,
 		setFunc = function(value)   
-					Vars.mawLorkhaj.zhaj_glyphs = value 
-					--self.UI.SetElementHidden("mawLorkhaj", "zhaj_glyph_window", not value)
+					savedVars.mawLorkhaj.zhaj_glyphs = value 
 					RaidNotifier.OnBossesChanged()
 				end,
 		noAlert = true,
 	}, "mawLorkhaj", "zhaj_glyphs")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_INVERT),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_INVERT_TT),
-		getFunc = function() return Vars.mawLorkhaj.zhaj_glyphs_invert end,
-		setFunc = function(value)   Vars.mawLorkhaj.zhaj_glyphs_invert = value; UI.InvertGlyphs() end,
-		disabled = function() return not Vars.mawLorkhaj.zhaj_glyphs end, 
+		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_INVERT,
+		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_INVERT_TT,
+		getFunc = function() return savedVars.mawLorkhaj.zhaj_glyphs_invert end,
+		setFunc = function(value)   savedVars.mawLorkhaj.zhaj_glyphs_invert = value; UI.InvertGlyphs() end,
+		disabled = function() return not savedVars.mawLorkhaj.zhaj_glyphs end, 
 		noAlert = true,
 	}, "mawLorkhaj", "zhaj_glyphs_invert")
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_TWIN_ASPECTS),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_TWIN_ASPECTS_TT),
+		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_TWIN_ASPECTS,
+		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_TWIN_ASPECTS_TT,
 		choices = choices.mawLorkhaj.twinBoss_aspects,
-		getFunc = function() return getChoiceValue("mawLorkhaj", "twinBoss_aspects") end,
-		setFunc = function(value)   setChoiceValue("mawLorkhaj", "twinBoss_aspects", value) end,
 	}, "mawLorkhaj", "twinBoss_aspects")
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_UNSTABLE_VOID),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_UNSTABLE_VOID_TT),
+		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_UNSTABLE_VOID,
+		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_UNSTABLE_VOID_TT,
 		choices = choices.mawLorkhaj.rakkhat_unstablevoid,
-		getFunc = function() return getChoiceValue("mawLorkhaj", "rakkhat_unstablevoid") end,
-		setFunc = function(value)   setChoiceValue("mawLorkhaj", "rakkhat_unstablevoid", value) end,
 	}, "mawLorkhaj", "rakkhat_unstablevoid")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_THRESHINGWINGS),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_THRESHINGWINGS_TT),
-		getFunc = function() return Vars.mawLorkhaj.rakkhat_threshingwings end,
-		setFunc = function(value)   Vars.mawLorkhaj.rakkhat_threshingwings = value end,
+		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_THRESHINGWINGS,
+		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_THRESHINGWINGS_TT,
 	}, "mawLorkhaj", "rakkhat_threshingwings")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_DARKNESSFALLS),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_DARKNESSFALLS_TT),
-		getFunc = function() return Vars.mawLorkhaj.rakkhat_darknessfalls end,
-		setFunc = function(value)   Vars.mawLorkhaj.rakkhat_darknessfalls = value end,
-		default = false,
+		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_DARKNESSFALLS,
+		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_DARKNESSFALLS_TT,
 	}, "mawLorkhaj", "rakkhat_darknessfalls")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_DARKBARRAGE),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_DARKBARRAGE_TT),
-		getFunc = function() return Vars.mawLorkhaj.rakkhat_darkbarrage end,
-		setFunc = function(value)   Vars.mawLorkhaj.rakkhat_darkbarrage = value end,
-		default = false,
+		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_DARKBARRAGE,
+		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_DARKBARRAGE_TT,
 	}, "mawLorkhaj", "rakkhat_darkbarrage")
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_LUNARBASTION1),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_LUNARBASTION1_TT),
+		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_LUNARBASTION1,
+		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_LUNARBASTION1_TT,
 		choices = choices.mawLorkhaj.rakkhat_lunarbastion1,
-		getFunc = function() return getChoiceValue("mawLorkhaj", "rakkhat_lunarbastion1") end,
-		setFunc = function(value)   setChoiceValue("mawLorkhaj", "rakkhat_lunarbastion1", value) end,
 	}, "mawLorkhaj", "rakkhat_lunarbastion1")
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_LUNARBASTION2),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_LUNARBASTION2_TT),
+		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_LUNARBASTION2,
+		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_LUNARBASTION2_TT,
 		choices = choices.mawLorkhaj.rakkhat_lunarbastion2,
-		getFunc = function() return getChoiceValue("mawLorkhaj", "rakkhat_lunarbastion2") end,
-		setFunc = function(value)   setChoiceValue("mawLorkhaj", "rakkhat_lunarbastion2", value) end,
 	}, "mawLorkhaj", "rakkhat_lunarbastion2")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_SHATTERED),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_SHATTERED_TT),
-		getFunc = function() return Vars.mawLorkhaj.shattered end,
-		setFunc = function(value)   Vars.mawLorkhaj.shattered = value end,
+		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_SHATTERED,
+		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_SHATTERED_TT,
 	}, "mawLorkhaj", "shattered")
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_SUNEATER_ECLIPSE),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_SUNEATER_ECLIPSE_TT),
+		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_SUNEATER_ECLIPSE,
+		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_SUNEATER_ECLIPSE_TT,
 		choices = choices.mawLorkhaj.suneater_eclipse,
-		getFunc = function() return getChoiceValue("mawLorkhaj", "suneater_eclipse") end,
-		setFunc = function(value)   setChoiceValue("mawLorkhaj", "suneater_eclipse", value) end,
 	}, "mawLorkhaj", "suneater_eclipse")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_MARKEDFORDEATH),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_MARKEDFORDEATH_TT),
-		getFunc = function() return Vars.mawLorkhaj.markedfordeath end,
-		setFunc = function(value)   Vars.mawLorkhaj.markedfordeath = value end,
+		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_MARKEDFORDEATH,
+		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_MARKEDFORDEATH_TT,
 	}, "mawLorkhaj", "markedfordeath")
 	subTable = nil --end submenu
 
 
 	-- Dragonstar Arena
-	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_HEADER), RaidNotifier:GetRaidDescription(RAID_DRAGONSTAR_ARENA))
+	MakeSubmenu(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_HEADER, RaidNotifier:GetRaidDescription(RAID_DRAGONSTAR_ARENA))
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_GENERAL_TAKING_AIM),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_GENERAL_TAKING_AIM_TT),
-		getFunc = function() return Vars.dragonstar.general_taking_aim end,
-		setFunc = function(value)   Vars.dragonstar.general_taking_aim = value end,
+		name = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_GENERAL_TAKING_AIM,
+		tooltip = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_GENERAL_TAKING_AIM_TT,
 	}, "dragonstar", "general_taking_aim")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_GENERAL_CRYSTAL_BLAST),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_GENERAL_CRYSTAL_BLAST_TT),
-		getFunc = function() return Vars.dragonstar.general_crystal_blast end,
-		setFunc = function(value)   Vars.dragonstar.general_crystal_blast = value end,
+		name = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_GENERAL_CRYSTAL_BLAST,
+		tooltip = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_GENERAL_CRYSTAL_BLAST_TT,
 	}, "dragonstar", "general_crystal_blast")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA2_CRUSHING_SHOCK),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA2_CRUSHING_SHOCK_TT),
-		getFunc = function() return Vars.dragonstar.arena2_crushing_shock end,
-		setFunc = function(value)   Vars.dragonstar.arena2_crushing_shock = value end,
+		name = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA2_CRUSHING_SHOCK,
+		tooltip = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA2_CRUSHING_SHOCK_TT,
 	}, "dragonstar", "arena2_crushing_shock")
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA6_DRAIN_RESOURCE),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA6_DRAIN_RESOURCE_TT),
+		name = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA6_DRAIN_RESOURCE,
+		tooltip = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA6_DRAIN_RESOURCE_TT,
 		choices = choices.dragonstar.arena6_drain_resource,
-		getFunc = function() return getChoiceValue("dragonstar", "arena6_drain_resource") end,
-		setFunc = function(value)   setChoiceValue("dragonstar", "arena6_drain_resource", value) end,
 	}, "dragonstar", "arena6_drain_resource")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA7_UNSTABLE_CORE),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA7_UNSTABLE_CORE_TT),
-		getFunc = function() return Vars.dragonstar.arena7_unstable_core end,
-		setFunc = function(value)   Vars.dragonstar.arena7_unstable_core = value end,
+		name = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA7_UNSTABLE_CORE,
+		tooltip = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA7_UNSTABLE_CORE_TT,
 	}, "dragonstar", "arena7_unstable_core")
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA8_FIRE_CHARGE),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA8_FIRE_CHARGE_TT),
+		name = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA8_FIRE_CHARGE,
+		tooltip = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA8_FIRE_CHARGE_TT,
 		choices = choices.dragonstar.arena8_fire_charge,
-		getFunc = function() return getChoiceValue("dragonstar", "arena8_fire_charge") end,
-		setFunc = function(value)   setChoiceValue("dragonstar", "arena8_fire_charge", value) end,
 	}, "dragonstar", "arena8_fire_charge")
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA8_ICE_CHARGE),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA8_ICE_CHARGE_TT),
+		name = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA8_ICE_CHARGE,
+		tooltip = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA8_ICE_CHARGE_TT,
 		choices = choices.dragonstar.arena8_ice_charge,
-		getFunc = function() return getChoiceValue("dragonstar", "arena8_ice_charge") end,
-		setFunc = function(value)   setChoiceValue("dragonstar", "arena8_ice_charge", value) end,
 	}, "dragonstar", "arena8_ice_charge")
 	subTable = nil --end submenu
 
 
 	-- Maelstrom Arena
-	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_MAELSTROM_HEADER), RaidNotifier:GetRaidDescription(RAID_MAELSTROM_ARENA))
+	MakeSubmenu(RAIDNOTIFIER_SETTINGS_MAELSTROM_HEADER, RaidNotifier:GetRaidDescription(RAID_MAELSTROM_ARENA))
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAELSTROM_STAGE7_POISON),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAELSTROM_STAGE7_POISON_TT),
-		getFunc = function() return Vars.maelstrom.stage7_poison end,
-		setFunc = function(value)   Vars.maelstrom.stage7_poison = value end,
+		name = RAIDNOTIFIER_SETTINGS_MAELSTROM_STAGE7_POISON,
+		tooltip = RAIDNOTIFIER_SETTINGS_MAELSTROM_STAGE7_POISON_TT,
 	}, "maelstrom", "stage7_poison")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_MAELSTROM_STAGE9_SYNERGY),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_MAELSTROM_STAGE9_SYNERGY_TT),
-		getFunc = function() return Vars.maelstrom.stage9_synergy end,
-		setFunc = function(value)   Vars.maelstrom.stage9_synergy = value end,
+		name = RAIDNOTIFIER_SETTINGS_MAELSTROM_STAGE9_SYNERGY,
+		tooltip = RAIDNOTIFIER_SETTINGS_MAELSTROM_STAGE9_SYNERGY_TT,
 	}, "maelstrom", "stage9_synergy")
 	subTable = nil --end submenu
 
 
 	-- Halls of Fabrication
-	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_HEADER), RaidNotifier:GetRaidDescription(RAID_HALLS_OF_FABRICATION))
+	MakeSubmenu(RAIDNOTIFIER_SETTINGS_HALLSFAB_HEADER, RaidNotifier:GetRaidDescription(RAID_HALLS_OF_FABRICATION))
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_TAKING_AIM),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_TAKING_AIM_TT),
+		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_TAKING_AIM,
+		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_TAKING_AIM_TT,
 		choices = choices.hallsFab.taking_aim,
-		getFunc = function() return getChoiceValue("hallsFab", "taking_aim") end,
-		setFunc = function(value)   setChoiceValue("hallsFab", "taking_aim", value) end,
 	}, "hallsFab", "taking_aim")
 	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_DRAINING_BALLISTA),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_DRAINING_BALLISTA_TT),
+		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_DRAINING_BALLISTA,
+		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_DRAINING_BALLISTA_TT,
 		choices = choices.hallsFab.draining_ballista,
-		getFunc = function() return getChoiceValue("hallsFab", "draining_ballista") end,
-		setFunc = function(value)   setChoiceValue("hallsFab", "draining_ballista", value) end,
 	}, "hallsFab", "draining_ballista")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_STRIKE),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_STRIKE_TT),
-		getFunc = function() return Vars.hallsFab.conduit_strike end,
-		setFunc = function(value)   Vars.hallsFab.conduit_strike = value end,
-   }, "hallsFab", "conduit_strike")
+		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_STRIKE,
+		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_STRIKE_TT,
+	}, "hallsFab", "conduit_strike")
    	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_POWER_LEECH),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_POWER_LEECH_TT),
-		getFunc = function() return Vars.hallsFab.power_leech end,
-		setFunc = function(value)   Vars.hallsFab.power_leech = value end,
-   }, "hallsFab", "power_leech")
-   	MakeControlEntry({
+		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_POWER_LEECH,
+		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_POWER_LEECH_TT,
+	}, "hallsFab", "power_leech")
+	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_SCALDED_DEBUFF),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_SCALDED_DEBUFF_TT),
-		getFunc = function() return Vars.hallsFab.pinnacleBoss_scalded end,
-		setFunc = function(value)   Vars.hallsFab.pinnacleBoss_scalded = value end,
+		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_SCALDED_DEBUFF,
+		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_SCALDED_DEBUFF_TT,
 		--disabled = function() return not self:IsDevMode() end,
-		--warning = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_WARNING),
-   })
-   	MakeControlEntry({
+		--warning = RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_WARNING,
+		noAlert = true,
+	}, "hallsFab", "pinnacleBoss_scalded")
+	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_SPAWN),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_SPAWN_TT),
-		getFunc = function() return Vars.hallsFab.pinnacleBoss_conduit_spawn end,
-		setFunc = function(value)   Vars.hallsFab.pinnacleBoss_conduit_spawn = value end,
+		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_SPAWN,
+		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_SPAWN_TT,
    }, "hallsFab", "pinnacleBoss_conduit_spawn")
   	MakeControlEntry({
 		type = "dropdown",
-		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_DRAIN),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_DRAIN_TT),
+		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_DRAIN,
+		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_DRAIN_TT,
 		choices = choices.hallsFab.pinnacleBoss_conduit_drain,
-		getFunc = function() return getChoiceValue("hallsFab", "pinnacleBoss_conduit_drain") end,
-		setFunc = function(value)   setChoiceValue("hallsFab", "pinnacleBoss_conduit_drain", value) end,
 	}, "hallsFab", "pinnacleBoss_conduit_drain")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS_TT),
-		getFunc = function() return Vars.hallsFab.committee_overpower_auras end,
-		setFunc = function(value)   Vars.hallsFab.committee_overpower_auras = value end,
+		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS,
+		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS_TT,
 	}, "hallsFab", "committee_overpower_auras")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS_DYNAMIC),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS_DYNAMIC_TT),
-		getFunc = function() return Vars.hallsFab.committee_overpower_auras_dynamic end,
-		setFunc = function(value)   Vars.hallsFab.committee_overpower_auras_dynamic = value end,
-		disabled = function() return not self:IsDevMode() or not Vars.hallsFab.committee_overpower_auras end,
-		warning = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_WARNING),
-	})
+		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS_DYNAMIC,
+		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS_DYNAMIC_TT,
+		disabled = function() return not self:IsDevMode() or not savedVars.hallsFab.committee_overpower_auras end,
+		warning = RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_WARNING,
+		noAlert = true,
+	}, "hallsFab", "committee_overpower_auras_dynamic")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_FABRICANT_SPAWN),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_FABRICANT_SPAWN_TT),
-		getFunc = function() return Vars.hallsFab.committee_fabricant_spawn end,
-		setFunc = function(value)   Vars.hallsFab.committee_fabricant_spawn = value end,
+		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_FABRICANT_SPAWN,
+		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_FABRICANT_SPAWN_TT,
 	}, "hallsFab", "committee_fabricant_spawn")
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_RECLAIM_ACHIEVE),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_HALLSFAB_RECLAIM_ACHIEVE_TT),
-		getFunc = function() return Vars.hallsFab.committee_reclaim_achieve end,
-		setFunc = function(value)   Vars.hallsFab.committee_reclaim_achieve = value end,
+		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_RECLAIM_ACHIEVE,
+		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_RECLAIM_ACHIEVE_TT,
 	}, "hallsFab", "committee_reclaim_achieve")
 	subTable = nil --end submenu
 
 
 	MakeControlEntry({
 		type = "header",
-		name = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_HEADER),
+		name = RAIDNOTIFIER_SETTINGS_DEBUG_HEADER,
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_DEBUG),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_TT),
-		getFunc = function() return Vars.dbg.enabled end,
-		setFunc = function(value)   Vars.dbg.enabled = value end,
+		name = RAIDNOTIFIER_SETTINGS_DEBUG,
+		tooltip = RAIDNOTIFIER_SETTINGS_DEBUG_TT,
+		getFunc = function() return savedVars.dbg.enabled end,
+		setFunc = function(value)   savedVars.dbg.enabled = value end,
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_TT),
-		getFunc = function() return Vars.dbg.devMode end,
-		setFunc = function(value)   Vars.dbg.devMode = value end,
+		name = RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE,
+		tooltip = RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_TT,
+		getFunc = function() return savedVars.dbg.devMode end,
+		setFunc = function(value)   savedVars.dbg.devMode = value end,
 	})
-	MakeSubmenu(GetString(RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_HEADER), GetString(RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_DESCRIPTION))
+	MakeSubmenu(RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_HEADER, RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_DESCRIPTION)
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_ENABLED),
-		--tooltip = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_ENABLED_TT), -- dont need tooltip for this
-		getFunc = function() return Vars.dbg.tracker end,
-		setFunc = function(value)   Vars.dbg.tracker = value end,
-	})
-	MakeControlEntry({
-		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_SPAMCONTROL),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_SPAMCONTROL_TT),
-		getFunc = function() return Vars.dbg.spamControl end,
-		setFunc = function(value)   Vars.dbg.spamControl = value end,
-		disabled = function() return not Vars.dbg.tracker end,
+		name = RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_ENABLED,
+		--tooltip = RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_ENABLED_TT, -- dont need tooltip for this
+		getFunc = function() return savedVars.dbg.tracker end,
+		setFunc = function(value)   savedVars.dbg.tracker = value end,
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_MYENEMYONLY),
-		tooltip = GetString(RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_MYENEMYONLY_TT),
-		getFunc = function() return Vars.dbg.myEnemyOnly end,
-		setFunc = function(value)   Vars.dbg.myEnemyOnly = value end,
-		disabled = function() return not Vars.dbg.tracker end,
+		name = RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_SPAMCONTROL,
+		tooltip = RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_SPAMCONTROL_TT,
+		getFunc = function() return savedVars.dbg.spamControl end,
+		setFunc = function(value)   savedVars.dbg.spamControl = value end,
+		disabled = function() return not savedVars.dbg.tracker end,
+	})
+	MakeControlEntry({
+		type = "checkbox",
+		name = RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_MYENEMYONLY,
+		tooltip = RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_MYENEMYONLY_TT,
+		getFunc = function() return savedVars.dbg.myEnemyOnly end,
+		setFunc = function(value)   savedVars.dbg.myEnemyOnly = value end,
+		disabled = function() return not savedVars.dbg.tracker end,
 	})
 	subTable = nil --end submenu
 
 
 
 	self.optionsData = optionsTable
-    LAM:RegisterAddonPanel("RaidNotifierPanel", self.panelData)
-    LAM:RegisterOptionControls("RaidNotifierPanel", self.optionsData)
+	LAM:RegisterAddonPanel("RaidNotifierPanel", self.panelData)
+	LAM:RegisterOptionControls("RaidNotifierPanel", self.optionsData)
 
-	local function SetupCustomDialog()
+
+	--function RaidNotifier:GetSoundValue(category, key)
+	--	local setting = self:GetSetting(savedVars, category, key)
+	--	return setting.sound 
+	--end
+	--function RaidNotifier:SetSoundValue(category, key, value)
+	--	local setting = self:GetSetting(savedVars, category, key)
+	--	setting.sound = value
+	--end
+
+
+	local function InitializeCustomDialog()
 		local customControl = RaidNotifier_ConfigDialog
+		
+		local function SetupDialog(dialog, data)
+			customControl.selectSound = customControl:GetNamedChild("SelectSound")
+			customControl.selectedSoundID = self:GetSoundValue(data.category, data.key)
+			customControl.selectSound.dropdown:SetSelectedItemText(self:GetSoundName(customControl.selectedSoundID))
+		end
+	
+		local function OnDialogConfirm(dialog)
+			self:SetSoundValue(dialog.data.category, dialog.data.key, dialog.selectedSoundID)
+		end
+
 	    ZO_Dialogs_RegisterCustomDialog("RAID_NOTIFIER_CONFIG_DIALOG",
 		{
 			customControl = customControl,
@@ -1083,19 +1127,13 @@ function RaidNotifier:CreateSettingsMenu()
 			{
 				text = "Chose the sound to use for this alert",
 			},
-			setup = function(dialog, data)
-				customControl.selectSound = customControl:GetNamedChild("SelectSound")
-				customControl.selectedSoundID = self:GetSoundValue(data.category, data.setting)
-				customControl.selectSound.dropdown:SetSelectedItemText(self:GetSoundName(customControl.selectedSoundID))
-			end,
+			setup = SetupDialog,
 			buttons =
 			{
 				{
 					control = customControl:GetNamedChild("Confirm"),
 					text = SI_DIALOG_CONFIRM,
-					callback = function(dialog)
-									self:SetSoundValue(dialog.data.category, dialog.data.setting, dialog.selectedSoundID)
-								end,
+					callback = OnDialogConfirm,
 				},
 				{
 					control = customControl:GetNamedChild("Cancel"),
@@ -1125,38 +1163,44 @@ function RaidNotifier:CreateSettingsMenu()
 	local function OnPanelCreation(panel)
 		if panel:GetName() ~= "RaidNotifierPanel" then return end
 
-		SetupCustomDialog()
+		InitializeCustomDialog()
 
 		--store reference
 		profileDeleteDropRef = RNSettingDeleteDropRef
 
+		local function GetConfigButtonTooltipText(control)
+			return string.format("Sound: %s", self:GetSoundName(nil, control.data.category, control.data.key))
+		end
+
 		--loop through controls to add our Sound-Config-Button-Clicky-Thing (tm)
 		for i = 1, index do
 			local control = GetControl("RNSettingCtrl"..i)
-			if (control and not control.data.noAlert) then
-				control.soundBtn = WINDOW_MANAGER:CreateControlFromVirtual(nil, control, "RaidNotifier_ConfigButton")
-				control.soundBtn:SetAnchor(RIGHT, control.combobox or control[control.data.type], LEFT, -1, 0)
-				control.soundBtn:SetHandler("OnClicked", function() 
-						ZO_Dialogs_ShowDialog("RAID_NOTIFIER_CONFIG_DIALOG", control.data)
-					end)
-				control.soundBtn.data = {tooltipText=function()
-														return zo_strformat("Sound: <<1>>", self:GetSoundName(nil, control.data.category, control.data.setting)) 
-													end}
-				control.soundBtn:SetHidden(false)
-				
-				-- re-anchor the warning control
-				if control.warning then
-					control.warning:ClearAnchors()
-					control.warning:SetAnchor(RIGHT, control.soundBtn, LEFT, 5, 0)
+			if (control) then
+				--local setting = self:GetSetting(savedVars, control.data.category, control.data.key)
+				--if (type(setting) == "table" and setting.sound ~= nil) then
+				if (control and not control.data.noAlert) then
+					control.soundBtn = WINDOW_MANAGER:CreateControlFromVirtual(nil, control, "RaidNotifier_ConfigButton")
+					control.soundBtn:SetAnchor(RIGHT, control.combobox or control[control.data.type], LEFT, -1, 0)
+					control.soundBtn:SetHandler("OnClicked", function() 
+							ZO_Dialogs_ShowDialog("RAID_NOTIFIER_CONFIG_DIALOG", control.data)
+						end)
+					control.soundBtn.data = {tooltipText=function() return GetConfigButtonTooltipText(control) end}
+					control.soundBtn:SetHidden(false)
+					
+					-- re-anchor the warning control
+					if control.warning then
+						control.warning:ClearAnchors()
+						control.warning:SetAnchor(RIGHT, control.soundBtn, LEFT, 5, 0)
+					end
 				end
 			end
 		end
-		
 		
 	end
 	CALLBACK_MANAGER:RegisterCallback("LAM-PanelControlsCreated", OnPanelCreation)
 
 end
+
 
 function RaidNotifier:TryConvertSettings(settings, defaults)
 
@@ -1165,23 +1209,24 @@ function RaidNotifier:TryConvertSettings(settings, defaults)
 			for key, default in pairs(content) do
 				local value = settings[category][key]
 				if type(value) ~= type(default) then --type mismatch
-					settings[category][key] = default -- store value
-					--if type(default) == "table" then -- advanced structure, try to preserve old value
-					--	if type(default.value) == type(value) then
-					--		self.p("Converted '%s -> %s' and keeping old value: %s", category, key, tostring(value))
-					--		settings[category][key].value = value
-					--	else
-					--		self.p("Converted '%s -> %s' and types mismatch, new value: %s", category, key, tostring(default.value))
-					--	end
-					--	-- try to preserve sound setting
-					--	local soundId = settings.sounds[category.."_"..key]
-					--	if soundId ~= nil then
-					--		self.p("Preserved soundId '%s'", soundId)
-					--		settings[category][key].sound = soundId
-					--	end
-					--else
-					--	self.p("Mismatching type for '%s -> %s', new value: %s", category, key, tostring(default))
-					--end
+					if type(default) == "table" then -- advanced structure, try to preserve old value
+						settings[category][key] = Util.CopyTable(default) -- store value
+						if type(default.value) == type(value) then
+							self.p("Converted '%s -> %s' and keeping old value: %s", category, key, tostring(value))
+							settings[category][key].value = value
+						else
+							self.p("Converted '%s -> %s' and types mismatch, new value: %s", category, key, tostring(default.value))
+						end
+						-- try to preserve sound setting
+						local soundId = settings.sounds[category.."_"..key]
+						if soundId ~= nil then
+							self.p("Preserved soundId '%s'", soundId)
+							settings[category][key].sound = soundId
+						end
+					else
+						settings[category][key] = default
+						self.p("Mismatching type for '%s -> %s', new value: %s", category, key, tostring(default))
+					end
 				end
 			end
 		end
