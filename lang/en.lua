@@ -89,11 +89,15 @@ L.Settings_Trials_Description                       = "Here you can configure th
 --------------------------------
 L.Settings_HelRa_Header                             = "Hel Ra Citadel"
 -- Settings
+L.Settings_HelRa_Yokeda_Meteor                      = "Yokeda: Meteor"
+L.Settings_HelRa_Yokeda_Meteor_TT                   = "Alerts you when the yokeda is about to attack with meteor."
 L.Settings_HelRa_Warrior_StoneForm                  = "Warrior: Stone Form"
 L.Settings_HelRa_Warrior_StoneForm_TT               = "Alerts you when you and/or others are about to be turned into stone by the Warrior."
 L.Settings_HelRa_Warrior_ShieldThrow                = "Warrior: Shield Throw"
 L.Settings_HelRa_Warrior_ShieldThrow_TT             = "Alerts you when the warrior is about to throw his shield."
 --Alerts
+L.Alerts_HelRa_Yokeda_Meteor                        = "Incoming |cFF0000Meteor|r on you. Block!"
+L.Alerts_HelRa_Yokeda_Meteor_Other                  = "Incoming |cFF0000Meteor|r on |c595959<<!aC:1>>|r"
 L.Alerts_HelRa_Warrior_StoneForm                    = "Incoming |c595959Stone Form|r on you. Don't use synergies!"
 L.Alerts_HelRa_Warrior_StoneForm_Other              = "Incoming |c595959Stone Form|r on |cFF0000<<!aC:1>>|r"
 L.Alerts_HelRa_Warrior_ShieldThrow                  = "Incoming |cFF0000Shield Throw|r. "

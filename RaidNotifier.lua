@@ -747,11 +747,17 @@ do ---------------------------
 				end
 
 			elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
-
-				if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
-
+				if (self:IsDevMode() and abilityId == buffsDebuffs.yokeda_meteor) then
+					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					dbg("Meteor %s", tName)
+					if (settings.yokeda_meteor > 0) then
+						if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HELRA_YOKEDA_METEOR), "helra", "yokeda_meteor")
+						elseif (tName ~= "" and settings.yokeda_meteor == 2) then
+							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_HELRA_YOKEDA_METEOR_OTHER), tName), "helra", "yokeda_meteor")
+						end
+					end
 				end
-
 			end
 
 		elseif (raidId == RAID_AETHERIAN_ARCHIVE) then

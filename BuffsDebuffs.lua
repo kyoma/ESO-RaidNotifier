@@ -79,6 +79,10 @@ hel_ra.jump[33686] = true
 hel_ra.jump[33686] = true
 hel_ra.jump[33686] = true
 
+hel_ra.yokeda_meteor = 52213
+hel_ra.yokeda_impulse = 52207
+hel_ra.yokeda_shout = 50585
+
 hel_ra.warrior_stoneform    = 56576
 hel_ra.warrior_shieldthrow  = 48267
 
