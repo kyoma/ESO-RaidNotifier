@@ -432,8 +432,11 @@ do ----------------------
 		return GetZoneDescriptionById(RaidZoneIds[raidId])
 	end
 
-	function RaidNotifier:RegisterForCombatEvent(result)
-		EVENT_MANAGER:RegisterForEvent(self.Name .. tostring(result), EVENT_COMBAT_EVENT, self.OnCombatEvent)
+	function RaidNotifier:RegisterForCombatEvent(result, handler)
+		EVENT_MANAGER:RegisterForEvent(self.Name .. tostring(result), EVENT_COMBAT_EVENT, handler)
+		if type(result) == "number" then
+			EVENT_MANAGER:AddFilterForEvent(self.Name .. tostring(result), EVENT_COMBAT_EVENT, REGISTER_FILTER_COMBAT_RESULT, result)
+		end
 	end
 	function RaidNotifier:UnregisterForCombatEvent(result)
 		EVENT_MANAGER:UnregisterForEvent(self.Name .. tostring(result), EVENT_COMBAT_EVENT)
@@ -447,13 +450,11 @@ do ----------------------
 		self.raidDifficulty = GetCurrentZoneDungeonDifficulty()
 		if (self.raidId > 0) then
 			dbg("Register for %s (%s)", GetRaidZoneName(self.raidId), GetString("SI_DUNGEONDIFFICULTY", self.raidDifficulty))
-			-- The main juicy events we want
-			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_COMBAT_EVENT,        self.OnCombatEvent)
-			--for _, result in ipairs(ActionResults) do
-			--	EVENT_MANAGER:RegisterForEvent(self.Name .. tostring(result), EVENT_COMBAT_EVENT, self.OnCombatEvent)
-			--end
-			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_EFFECT_CHANGED, self.OnEffectChanged) --only used for food buff atm
-			-- Track bosses
+			-- The main juicy events we want, registered seperately for better performance
+			for _, result in ipairs(ActionResults) do
+				self:RegisterForCombatEvent(result, self.OnCombatEvent)
+			end
+			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_EFFECT_CHANGED, self.OnEffectChanged)
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_BOSSES_CHANGED, self.OnBossesChanged)
 
 			-- Toggle assistants off when combat starts
@@ -467,7 +468,7 @@ do ----------------------
 
 			--UI.AddFragment()
 			listening = true
-			
+	
 			-- Ultimate exchanging
 			self:RegisterForUltimateChanges()
 
@@ -484,9 +485,9 @@ do ----------------------
 
 		dbg("Unregister for %s (%s)", GetRaidZoneName(self.raidId), GetString("SI_DUNGEONDIFFICULTY", self.raidDifficulty))
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_COMBAT_EVENT)
-		--for _, result in ipairs(ActionResults) do
-		--	self:UnregisterForCombatEvent(result)
-		--end
+		for _, result in ipairs(ActionResults) do
+			self:UnregisterForCombatEvent(result)
+		end
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_EFFECT_CHANGED)
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_BOSSES_CHANGED)
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_PLAYER_COMBAT_STATE)
@@ -633,80 +634,11 @@ do ---------------------------
 	local LUNIT = LibStub:GetLibrary("LibUnits")
 	local UI    = RaidNotifier.UI
 	local Util  = RaidNotifier.Util
-	
-	-- Debugging 
-	local debugList    = {}
-	for _, result in ipairs(ActionResults) do
-		debugList[result] = {}
-	end
-	local debugMsg = "[%d] %s (%d)%s%s"
-
-	-- Fast debug toggle
-	SLASH_COMMANDS["/rndebug"] = function(str) 
-		local args = {zo_strsplit(" ", str)}
-
-		local self     = RaidNotifier
-		local settings = self.Vars.dbg
-
-		if (args[1] == "track") then
-			settings.tracker = Util.GetArgValue(args[2], settings.tracker)
-			p("%s Debug Tracker", settings.tracker and "Enabled" or "Disabled")
-		elseif (args[1] == "spam") then
-			settings.spamControl = Util.GetArgValue(args[2], settings.spamControl)
-			p("%s Spam Control", settings.spamControl and "Enabled" or "Disabled")
-		elseif (args[1] == "enemy") then
-			settings.myEnemyOnly = Util.GetArgValue(args[2], settings.myEnemyOnly)
-			p("%s My Enemy Only", settings.myEnemyOnly and "Enabled" or "Disabled")
-		elseif (args[1] == "clear") then
-			local result = tonumber(args[2])
-			if result ~= nil then 
-				p("Clearing debug list [%d]", result)
-				debugList[result] = {}
-			else
-				p("Clearing all debug lists")
-				for _, result in ipairs(debugResults) do
-					debugList[result] = {}
-				end
-			end
-		elseif (Util.GetArgValue(args[1]) ~= nil) then
-			settings.enabled = Util.GetArgValue(args[1], settings.enabled)
-			p("%s Debugging", settings.enabled and "Enabled" or "Disabled")
-		end
-	end
 
 	function RaidNotifier.OnCombatEvent(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
 
 		local raidId = RaidNotifier.raidId
 		local self   = RaidNotifier
-
-		-- Debugging 
-		if (self.Vars.dbg.tracker and debugList[result] ~= nil) then
-			local function FormatUnit(prefix, uType, uName, uId)
-				if uId == 0 then
-					return ""
-				else
-					uName = uName ~= "" and uName or LUNIT:GetNameForUnitId(uId)
-					if uName ~= "" then
-						return zo_strformat("<<1>><<t:2>>", prefix, uName)
-					else
-						return zo_strformat("<<1>><<2>>/<<3>>", prefix, uType, uId)
-					end
-				end
-			end
-
-			if (not debugList[result][abilityId]) or (not self.Vars.dbg.spamControl) then
-				if (tType == COMBAT_UNIT_TYPE_PLAYER and (sType == COMBAT_UNIT_TYPE_OTHER or sType == COMBAT_UNIT_TYPE_NONE) or (not self.Vars.dbg.myEnemyOnly)) then
-			
-					local source = FormatUnit(", [S] ", sType, sName, sUnitId)
-					local target = FormatUnit(", [T] ", tType, tName, tUnitId)
-					local ability = (aName ~= "" and aName ~= nil) and aName or GetAbilityName(abilityId)
-
-					debugList[result][abilityId] = self.Vars.dbg.spamControl
-					d(debugMsg:format(result, ability, abilityId, source, target))
-				
-				end
-			end
-		end
 
 		-- Unregister if we left the raid instance
 		if self:IsInRaidZone() == false then
@@ -1404,6 +1336,90 @@ do ---------------------------
 			end
 		end
 
+	end
+
+
+	-------------------
+	---- Debugging ----
+	-------------------
+	local debugList    = {}
+	for _, result in ipairs(ActionResults) do
+		debugList[result] = {}
+	end
+	local debugMsg = "[%d] %s (%d)%s%s"
+	
+	local function OnCombatDebugEvent(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
+	
+		local self   = RaidNotifier
+
+		if (self.Vars.dbg.tracker and debugList[result] ~= nil) then
+			local function FormatUnit(prefix, uType, uName, uId)
+				if uId == 0 then
+					return ""
+				else
+					uName = uName ~= "" and uName or LUNIT:GetNameForUnitId(uId)
+					if uName ~= "" then
+						return zo_strformat("<<1>><<t:2>>", prefix, uName)
+					else
+						return zo_strformat("<<1>><<2>>/<<3>>", prefix, uType, uId)
+					end
+				end
+			end
+
+			if (not debugList[result][abilityId]) or (not self.Vars.dbg.spamControl) then
+				if (tType == COMBAT_UNIT_TYPE_PLAYER and (sType == COMBAT_UNIT_TYPE_OTHER or sType == COMBAT_UNIT_TYPE_NONE) or (not self.Vars.dbg.myEnemyOnly)) then
+			
+					local source = FormatUnit(", [S] ", sType, sName, sUnitId)
+					local target = FormatUnit(", [T] ", tType, tName, tUnitId)
+					local ability = (aName ~= "" and aName ~= nil) and aName or GetAbilityName(abilityId)
+
+					debugList[result][abilityId] = self.Vars.dbg.spamControl
+					d(debugMsg:format(result, ability, abilityId, source, target))
+				
+				end
+			end
+		end
+	end
+	
+	function RaidNotifier:ToggleDebugTracker(enabled)
+		self:UnregisterForCombatEvent("debug")
+		if enabled then 
+			self:RegisterForCombatEvent("debug", OnCombatDebugEvent)
+		end
+	end
+	
+	-- Fast debug toggle
+	SLASH_COMMANDS["/rndebug"] = function(str) 
+		local args = {zo_strsplit(" ", str)}
+
+		local self     = RaidNotifier
+		local settings = self.Vars.dbg
+
+		if (args[1] == "track") then
+			settings.tracker = Util.GetArgValue(args[2], settings.tracker)
+			p("%s Debug Tracker", settings.tracker and "Enabled" or "Disabled")
+			self:ToggleDebugTracker(settings.tracker)
+		elseif (args[1] == "spam") then
+			settings.spamControl = Util.GetArgValue(args[2], settings.spamControl)
+			p("%s Spam Control", settings.spamControl and "Enabled" or "Disabled")
+		elseif (args[1] == "enemy") then
+			settings.myEnemyOnly = Util.GetArgValue(args[2], settings.myEnemyOnly)
+			p("%s My Enemy Only", settings.myEnemyOnly and "Enabled" or "Disabled")
+		elseif (args[1] == "clear") then
+			local result = tonumber(args[2])
+			if result ~= nil then 
+				p("Clearing debug list [%d]", result)
+				debugList[result] = {}
+			else
+				p("Clearing all debug lists")
+				for _, result in ipairs(debugResults) do
+					debugList[result] = {}
+				end
+			end
+		elseif (Util.GetArgValue(args[1]) ~= nil) then
+			settings.enabled = Util.GetArgValue(args[1], settings.enabled)
+			p("%s Debugging", settings.enabled and "Enabled" or "Disabled")
+		end
 	end
 
 end

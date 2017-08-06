@@ -236,7 +236,12 @@ do ------------------
 	}
 
 	function RaidNotifier:GetSetting(settings, category, key)
-		return settings[category] and settings[category][key]
+		if key ~= nil then
+			return settings[category] and settings[category][key]
+		else -- we passed the category itself already
+			return settings[category]
+		end
+		
 	end
 
 	function RaidNotifier:GetDefaults()
@@ -1066,7 +1071,10 @@ function RaidNotifier:CreateSettingsMenu()
 		name = RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_ENABLED,
 		--tooltip = RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_ENABLED_TT, -- dont need tooltip for this
 		getFunc = function() return savedVars.dbg.tracker end,
-		setFunc = function(value)   savedVars.dbg.tracker = value end,
+		setFunc = function(value)
+				savedVars.dbg.tracker = value 
+				self:ToggleDebugTracker(savedVars.dbg.tracker)
+			end,
 	})
 	MakeControlEntry({
 		type = "checkbox",
