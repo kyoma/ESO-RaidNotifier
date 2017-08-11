@@ -282,7 +282,13 @@ do ----------------------
 		-- UPDATE: should no longer matter
 		local function OnGroupUpdate()
 			local newMembers = {}
-			for i=1, GetGroupSize() do
+			local groupSize = GetGroupSize()
+			if (groupSize == 0) then
+				UI.SetElementHidden("ultimate", "ulti_window", true)
+			else
+				UI.SetElementHidden("ultimate", "ulti_window", settings.hidden)
+			end
+			for i=1, groupSize do
 				local userName = GetUnitDisplayName("group"..i)
 				if userName and userName ~= "" then 
 					newMembers[userName] = IsUnitOnline("group"..i)
