@@ -676,7 +676,7 @@ do ---------------------------
 				end
 
 			elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
-				if (self:IsDevMode() and abilityId == buffsDebuffs.yokeda_meteor) then
+				if (abilityId == buffsDebuffs.yokeda_meteor) then
 					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 					dbg("Meteor %s", tName)
 					if (settings.yokeda_meteor > 0) then
