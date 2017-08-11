@@ -158,7 +158,7 @@ do ------------------
 		sounds = {
 		},
 		helra = {
-			yokeda_meteor 	  = 1, -- "Self"
+			yokeda_meteor 	  = 0, -- "Off"
 			warrior_stoneform = 1, -- "Self"
 		},
 		archive = {
@@ -734,8 +734,6 @@ function RaidNotifier:CreateSettingsMenu()
 		name = RAIDNOTIFIER_SETTINGS_HELRA_YOKEDA_METEOR,
 		tooltip = RAIDNOTIFIER_SETTINGS_HELRA_YOKEDA_METEOR_TT,
 		choices = choices.helra.yokeda_meteor,
-		disabled = function() return not self:IsDevMode() end,
-		warning = RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_WARNING,
 	}, "helra", "yokeda_meteor")
 	MakeControlEntry({
 		type = "dropdown",
