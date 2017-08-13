@@ -1,5 +1,4 @@
 local RaidNotifier = RaidNotifier
-local UI   = RaidNotifier.UI
 local Util = RaidNotifier.Util
 
 local tinsert	 			= table.insert
@@ -143,6 +142,7 @@ do ------------------
 			vanity_pets = true,
 			no_assistants = true,
 			last_pet = 0,
+			status_display  = {100, 400, CENTER},
 		},
 		ultimate = {
 			enabled         = false,
@@ -158,7 +158,7 @@ do ------------------
 		sounds = {
 		},
 		helra = {
-			yokeda_meteor 	  = 1, -- "Self"
+			yokeda_meteor     = 1, -- "Self"
 			warrior_stoneform = 1, -- "Self"
 		},
 		archive = {
@@ -191,6 +191,7 @@ do ------------------
 		},
 		mawLorkhaj = {
 			twinBoss_aspects = 2,     -- "Normal"
+			twinBoss_aspects_status = false,
 			rakkhat_unstablevoid = 1, -- "Self"
 			rakkhat_threshingwings = true,
 			rakkhat_darknessfalls = false,
@@ -212,6 +213,7 @@ do ------------------
 			taking_aim            = 1, -- "Self"
 			draining_ballista     = 1, -- "Self"
 			power_leech           = false,
+			venom_injection       = false,
 
 			pinnacleBoss_conduit_spawn   = true,
 			pinnacleBoss_conduit_drain   = 0, -- "Off"
@@ -570,7 +572,7 @@ function RaidNotifier:CreateSettingsMenu()
 		getFunc = function() return savedVars.ultimate.hidden end,
 		setFunc = function(value)
 				savedVars.ultimate.hidden = value 
-				UI.SetElementHidden("ultimate", "ulti_window", value)
+				self:SetElementHidden("ultimate", "ulti_window", value)
 			end,
 		default = false,
 	})
@@ -734,8 +736,6 @@ function RaidNotifier:CreateSettingsMenu()
 		name = RAIDNOTIFIER_SETTINGS_HELRA_YOKEDA_METEOR,
 		tooltip = RAIDNOTIFIER_SETTINGS_HELRA_YOKEDA_METEOR_TT,
 		choices = choices.helra.yokeda_meteor,
-		disabled = function() return not self:IsDevMode() end,
-		warning = RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_WARNING,
 	}, "helra", "yokeda_meteor")
 	MakeControlEntry({
 		type = "dropdown",
@@ -858,7 +858,7 @@ function RaidNotifier:CreateSettingsMenu()
 		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_INVERT,
 		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_INVERT_TT,
 		getFunc = function() return savedVars.mawLorkhaj.zhaj_glyphs_invert end,
-		setFunc = function(value)   savedVars.mawLorkhaj.zhaj_glyphs_invert = value; UI.InvertGlyphs() end,
+		setFunc = function(value)   savedVars.mawLorkhaj.zhaj_glyphs_invert = value; self:InvertGlyphs() end,
 		disabled = function() return not savedVars.mawLorkhaj.zhaj_glyphs end, 
 		noAlert = true,
 	}, "mawLorkhaj", "zhaj_glyphs_invert")
@@ -1235,6 +1235,8 @@ function RaidNotifier:TryConvertSettings(settings, defaults)
 						settings[category][key] = default
 						self.p("Mismatching type for '%s -> %s', new value: %s", category, key, tostring(default))
 					end
+				elseif type(default) == "table" then -- check for missing table entries
+					--
 				end
 			end
 		end

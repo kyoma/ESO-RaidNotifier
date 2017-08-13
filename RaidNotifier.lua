@@ -1,5 +1,4 @@
 RaidNotifier = RaidNotifier or {}
-RaidNotifier.UI = {}
 RaidNotifier.Util = {}
 
 local RaidNotifier = RaidNotifier
@@ -181,7 +180,6 @@ end
 -- -- ULTIMATE EXCHANGE
 do ----------------------
 
-	local UI = RaidNotifier.UI
 	local window = nil
 
 	local LGS = LibStub:GetLibrary("LibGroupSocket")
@@ -207,9 +205,6 @@ do ----------------------
 		local settings = self.Vars.ultimate
 		if settings.hidden then return end
 
-		window = window or UI.GetElement("ultimate", "ulti_window")
-		if not window then return end
-
 		local sortedUlti = {}
 		for userName, data in pairs(ultimates) do
 			local r1,r2,r3 = unpack(data.roles)
@@ -218,22 +213,8 @@ do ----------------------
 			end
 		end
 		table.sort(sortedUlti, function(a, b) return a.percent > b.percent end)
-		
-		local text = "Ultimates:" --TODO: grab text from abilityId??
-		for i, data in ipairs(sortedUlti) do
-			local name = data.userName
-			local c1,c2 = "",""
-			if settings.useColor then
-				if data.percent >= 100 then
-					c1,c2 = "|c00ff00","|r"
-				elseif data.percent >= 80 then
-					c1,c2 = "|ccccc00","|r"
-				end
-			end
-			text = string.format("%s\n%s%s %d%%%s", text, c1, name, zo_min(data.percent, 100), c2)
-		end
 
-		window.label:SetText(text)
+		self:UpdateUltimateWindow(sortedUlti) --ignore mode
 	end
 
 	local function ToggleLibGroupSocket(enabled)
@@ -258,7 +239,7 @@ do ----------------------
 		listening = true
 		dbg("RegisterForUltimateChanges")
 
-		UI.SetElementHidden("ultimate", "ulti_window", settings.hidden)
+		self:SetElementHidden("ultimate", "ulti_window", settings.hidden)
 
 		ultimateHandler:RegisterForUltimateChanges(self.OnUltimateReceived)
 		ultimateHandler:Refresh()
@@ -314,7 +295,7 @@ do ----------------------
 		listening = false
 		dbg("UnregisterForUltimateChanges")
 		
-		UI.SetElementHidden("ultimate", "ulti_window", true)
+		self:SetElementHidden("ultimate", "ulti_window", true)
 
 		ultimateHandler:UnregisterForUltimateChanges(self.OnUltimateReceived)
 		ToggleLibGroupSocket(false) -- force LibGroupSocket to send data
@@ -375,7 +356,7 @@ do ----------------------
 		else
 			p("Unknown subcommand (%s)", args[1])
 		end
-		UI.SetElementHidden("ultimate", "ulti_window", settings.hidden)
+		self:SetElementHidden("ultimate", "ulti_window", settings.hidden)
 		self:UpdateUltimates()
 	end
 
@@ -386,7 +367,6 @@ end
 -- -- INITIALIZE EVENTS
 do ----------------------
 
-	local UI     = RaidNotifier.UI
 	local Utils  = RaidNotifier.Utils
 
 	local function ToggleVanityPets(disable)
@@ -466,7 +446,7 @@ do ----------------------
 			end
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_PLAYER_COMBAT_STATE, OnCombatStateChanged)
 
-			--UI.AddFragment()
+			--self:AddFragment()
 			listening = true
 	
 			-- Ultimate exchanging
@@ -492,8 +472,8 @@ do ----------------------
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_BOSSES_CHANGED)
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_PLAYER_COMBAT_STATE)
 
-		--UI.RemoveFragment()
-		UI.HideAllElements()
+		--self:RemoveFragment()
+		self:HideAllElements()
 		listening = false
 		self.raidId = 0
 		self.raidDifficulty = 0
@@ -526,15 +506,12 @@ do ----------------------
 		self:CreateSettingsMenu()
 
 		-- UI Elements
-		UI.RegisterElement(RaidNotifierUI:GetNamedChild("UltimateWindow"), self.Vars.ultimate.hidden)
-		UI.RegisterElement(RaidNotifierUI:GetNamedChild("GlyphWindow"))
-		if (self.Vars.mawLorkhaj.zhaj_glyphs_invert) then
-			UI.InvertGlyphs()
-		end
-		UI.RegisterElement(RaidNotifierUI:GetNamedChild("ScaldedDisplay"))
-		UI.LoadElements()
+		self:InitializeUltimateWindow("UltimateWindow")
+		self:InitializeStatusDisplay("StatusDisplay")
+		self:InitializeGlyphWindow("GlyphWindow", self.Vars.mawLorkhaj.zhaj_glyphs_invert)
+
 		-- Always add fragment now
-		UI.AddFragment() 
+		self:AddFragment() 
 
 		-- These aren't needed anymore since we now start & stop Raid Notifier solely based on being in the raid zone
 	    --EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_RAID_TRIAL_STARTED,  function(...) self:RegisterEvents() end)
@@ -580,8 +557,6 @@ end
 -- EVENT: EVENT_BOSSES_CHANGED
 do -----------------------------
 
-	local UI = RaidNotifier.UI
-
 	local bossCount = nil
 	function RaidNotifier:GetNumBosses(fresh)
 		if (bossCount and not fresh) then 
@@ -605,12 +580,12 @@ do -----------------------------
 		if (raidId == RAID_MAW_OF_LORKHAJ) then
 			local buffsDebuffs, settings = self.BuffsDebuffs.maw_lorkhaj, self.Vars.mawLorkhaj
 
-			UI.SetElementHidden("mawLorkhaj", "zhaj_glyph_window", true)
+			self:SetElementHidden("mawLorkhaj", "zhaj_glyph_window", true)
 			local map       = GetMapTileTexture()
 			if (bossCount == 1 and map == "Art/maps/reapersmarch/Maw_of_Lorkaj_Base_0.dds") then -- Zhaj'hassa the Forgotten
 				buffsDebuffs.zhajBoss_knownGlyphs = {}
 				if (settings.zhaj_glyphs) then
-					UI.SetElementHidden("mawLorkhaj", "zhaj_glyph_window", false)
+					self:SetElementHidden("mawLorkhaj", "zhaj_glyph_window", false)
 				end
 			elseif (bossCount == 2 and map == "Art/maps/reapersmarch/MawLorkajSuthaySanctuary_Base_0.dds") then -- False Moon Twins, S’Kinrai and Vashai
 				
@@ -632,7 +607,6 @@ end
 do ---------------------------
 
 	local LUNIT = LibStub:GetLibrary("LibUnits")
-	local UI    = RaidNotifier.UI
 	local Util  = RaidNotifier.Util
 
 	function RaidNotifier.OnCombatEvent(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
@@ -676,10 +650,9 @@ do ---------------------------
 				end
 
 			elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
-				if (self:IsDevMode() and abilityId == buffsDebuffs.yokeda_meteor) then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-					dbg("Meteor %s", tName)
-					if (settings.yokeda_meteor > 0) then
+				if abilityId == buffsDebuffs.yokeda_meteor then
+					if settings.yokeda_meteor > 0 then
+						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HELRA_YOKEDA_METEOR), "helra", "yokeda_meteor")
 						elseif (tName ~= "" and settings.yokeda_meteor == 2) then
@@ -1041,16 +1014,16 @@ do ---------------------------
 					local findNew = (result == ACTION_RESULT_EFFECT_FADED) --only scan for new glyph when effect/glyph is used by the player, NOT when it respawns
 					local glyphIndex = FindGlyph(tUnitId, buffsDebuffs.zhajBoss_glyphs, buffsDebuffs.zhajBoss_knownGlyphs, findNew) 
 					if (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
-						UI.StopGlyphTimer(glyphIndex)
+						self:StopGlyphTimer(glyphIndex)
 					elseif (result == ACTION_RESULT_EFFECT_FADED) then
-						UI.StartGlyphTimer(glyphIndex, buffsDebuffs.zhajBoss_glyphcooldown)
+						self:StartGlyphTimer(glyphIndex, buffsDebuffs.zhajBoss_glyphcooldown)
 					end
 				elseif (tType == COMBAT_UNIT_TYPE_PLAYER and abilityId == buffsDebuffs.zhajBoss_curseability) then
 					local glyphIndex = 7
 					if (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then 
-						UI.StartGlyphTimer(glyphIndex, buffsDebuffs.zhajBoss_curseduration)
+						self:StartGlyphTimer(glyphIndex, buffsDebuffs.zhajBoss_curseduration)
 					elseif (result == ACTION_RESULT_EFFECT_FADED) then
-						UI.StopGlyphTimer(glyphIndex)
+						self:StopGlyphTimer(glyphIndex)
 					end
 				end
 			end
@@ -1098,10 +1071,16 @@ do ---------------------------
 						if settings.twinBoss_aspects >= 2 then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_LUNAR_ASPECT), "mawLorkhaj", "twinBoss_aspects", 4)
 						end
+						if settings.twinBoss_aspects_status then
+							self:UpdateTwinAspect("lunar")
+						end
 					elseif (buffsDebuffs.twinBoss_shadowaspect[abilityId]) then
 						dbg("[%d] Receiving Shadow Aspect", abilityId)
 						if settings.twinBoss_aspects >= 2 then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_SHADOW_ASPECT), "mawLorkhaj", "twinBoss_aspects", 4)
+						end
+						if settings.twinBoss_aspects_status then
+							self:UpdateTwinAspect("shadow")
 						end
 					elseif (buffsDebuffs.twinBoss_lunarconversion[abilityId]) then
 						dbg("[%d] Converting to Lunar Aspect", abilityId)
@@ -1109,11 +1088,17 @@ do ---------------------------
 						if settings.twinBoss_aspects >= 1 then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_LUNAR_CONVERSION), "mawLorkhaj", "twinBoss_aspects", 4)
 						end
+						if settings.twinBoss_aspects_status then
+							self:UpdateTwinAspect("tolunar")
+						end
 					elseif (buffsDebuffs.twinBoss_shadowconversion[abilityId]) then
 						dbg("[%d] Converting to Shadow Aspect", abilityId)
 						--conversion just started
 						if settings.twinBoss_aspects >= 1 then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_SHADOW_CONVERSION), "mawLorkhaj", "twinBoss_aspects", 4)
+						end
+						if settings.twinBoss_aspects_status then
+							self:UpdateTwinAspect("toshadow")
 						end
 					end
 
@@ -1168,14 +1153,28 @@ do ---------------------------
 						if settings.twinBoss_aspects >= 3 then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_LUNAR_ASPECT), "mawLorkhaj", "twinBoss_aspects", 4)
 						end
+						if settings.twinBoss_aspects_status then
+							self:UpdateTwinAspect("lunar")
+						end
 					elseif (buffsDebuffs.twinBoss_shadowconversion[abilityId]) then
 						--conversion ended
 						dbg("[%d] Conversion Complete", abilityId)
 						if settings.twinBoss_aspects >= 3 then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_SHADOW_ASPECT), "mawLorkhaj", "twinBoss_aspects", 4)
 						end
-					elseif (buffsDebuffs.twinBoss_aspectremoval[abilityId]) then
-						dbg("[%d] Removing Aspect?", abilityId)
+						if settings.twinBoss_aspects_status then
+							self:UpdateTwinAspect("shadow")
+						end
+					elseif (abilityId == buffsDebuffs.twinBoss_shadowaspectremove) then
+						dbg("[%d] Removing Shadow Aspect", abilityId)
+						if settings.twinBoss_aspects_status then
+							self:UpdateTwinAspect("none")
+						end
+					elseif (abilityId == buffsDebuffs.twinBoss_lunaraspectremove) then
+						dbg("[%d] Removing Lunar Aspect", abilityId)
+						if settings.twinBoss_aspects_status then
+							self:UpdateTwinAspect("none")
+						end
 					end
 				end
 
@@ -1429,7 +1428,6 @@ end
 -- EVENT: EVENT_EFFECT_CHANGED
 do -----------------------------
 
-	local UI    = RaidNotifier.UI
 	local Util  = RaidNotifier.Util
 
 	function RaidNotifier.OnEffectChanged(eventCode, changeType, eSlot, eName, uTag, beginTime, endTime, stackCount, iconName, buffType, eType, aType, statusEffectType, uName, uId, abilityId, uType) 
@@ -1449,15 +1447,19 @@ do -----------------------------
 			
 			--if (uType == COMBAT_UNIT_TYPE_PLAYER) then -- doesn't seem to be the case even when it really is the player
 			if (uTag == "player") then
-				if (abilityId == buffsDebuffs.pinnacleBoss_scalded) then
-					if (settings.pinnacleBoss_scalded == true) then
+				if abilityId == buffsDebuffs.pinnacleBoss_scalded_debuff then
+					if settings.pinnacleBoss_scalded == true then
 						if (changeType == EFFECT_RESULT_FADED) then
-							dbg("Scalded debuff faded")
-							UI.UpdateScaldedStacks(0)
+							--dbg("Scalded debuff faded")
+							self:UpdateScaldedStacks(0)
 						else
-							dbg("Scalded Debuff: #%d stacks", stackCount)
-							UI.UpdateScaldedStacks(stackCount, beginTime, endTime)
+							--dbg("Scalded Debuff: #%d stacks", stackCount)
+							self:UpdateScaldedStacks(stackCount, beginTime, endTime)
 						end
+					end
+				elseif abilityId == buffsDebuffs.sphere_venom_injection then
+					if self:IsDevMode() and settings.venom_injection then
+						self:UpdateSphereVenom(changeType ~= EFFECT_RESULT_FADED, beginTime, endTime)
 					end
 				end
 			end
@@ -1505,6 +1507,5 @@ local function OnAddonLoaded(_, addonName)
     if addonName ~= RaidNotifier.Name then return end
     EVENT_MANAGER:UnregisterForEvent(RaidNotifier.Name, EVENT_ADD_ON_LOADED)
 	RaidNotifier:Initialize()
-
 end
 EVENT_MANAGER:RegisterForEvent(RaidNotifier.Name, EVENT_ADD_ON_LOADED, OnAddonLoaded)

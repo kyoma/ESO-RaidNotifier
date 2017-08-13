@@ -38,14 +38,14 @@ sanctum.serpent_poison_teleport[53812] = 5 -- final
 -- Serpent Magicka Detonation
 sanctum.serpent_magicka_deto           = 59036
 sanctum.serpent_world_shaper           = 56857
-sanctum.serpent_world_shaper_delay     = 5000 -- SEMI-TESTED
+sanctum.serpent_world_shaper_delay     = 5000
 
 -- Trolls
 sanctum.spreading_poison = {} --determine which ones we actually need
 --sanctum.spreading_poison.name = GetAbilityName(52036)
 sanctum.spreading_poison[52036] = true --seen in normal
 sanctum.spreading_poison[54419] = true
-sanctum.spreading_poison[54420] = true
+sanctum.spreading_poison[54420] = true --the actual effect on the player?
 sanctum.spreading_poison[58663] = true
 sanctum.spreading_poison[58669] = true
 sanctum.spreading_poison[80794] = true --probably not needed
@@ -261,9 +261,8 @@ maw_lorkhaj.twinBoss_shadowconversion = {}
 maw_lorkhaj.twinBoss_shadowconversion[59698] = true
 maw_lorkhaj.twinBoss_shadowconversion[59699] = true
 --  Removal
-maw_lorkhaj.twinBoss_aspectremoval = {}
-maw_lorkhaj.twinBoss_aspectremoval[59639] = true --shadow
-maw_lorkhaj.twinBoss_aspectremoval[59640] = true --lunar
+maw_lorkhaj.twinBoss_shadowaspectremove = 59639 --shadow
+maw_lorkhaj.twinBoss_lunaraspectremove  = 59640 --lunar
 
 --Rakkhat
 --  Unstable Void
@@ -343,11 +342,13 @@ RaidNotifier.BuffsDebuffs.maw_lorkhaj = maw_lorkhaj
 -- ---------------------------------------------------
 local halls_fab = {}
 
+-- Hunter Pair
+halls_fab.sphere_venom_injection       = 95230
 -- Pinnacle Factotum (2nd boss)
 halls_fab.pinnacleBoss_fluxburst       = 90755 -- the streak-like attack
 halls_fab.pinnacleBoss_conduit_spawn   = 91781 -- sadly not targeted on somebody
 halls_fab.pinnacleBoss_conduit_drain   = 91792 
-halls_fab.pinnacleBoss_scalded         = 90916
+halls_fab.pinnacleBoss_scalded_debuff  = 90916
 
 -- Refabrication Committee (4th bosses)
 --  Reducer

@@ -81,7 +81,7 @@ L.Settings_Profile_Guard                             = "Enable Profile Managemen
 ----          Trials        ----
 --------------------------------
 L.Settings_Trials_Header                            = "Trials"
-L.Settings_Trials_Description                       = "Here you can configure the notifications for each trial. Ranging from simply toggling one on or off to specifying a unique sound or showing it for your teammates as well."
+L.Settings_Trials_Description                       = "Here you can configure the notifications for each trial. They all have a configurable sound and many of them support not only you but also your teammates."
 
 
 --------------------------------

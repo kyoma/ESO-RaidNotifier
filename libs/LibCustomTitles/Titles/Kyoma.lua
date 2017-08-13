@@ -21,3 +21,6 @@ MY_MODULE:RegisterTitle("@DerpyShadowz",    nil,      1712,     {en = "The Silly
 MY_MODULE:RegisterTitle("@DerpyShadowz",    nil,      1810,     {en = "The Silly Salmon"                                                                                                },    {color="#CD2727"})
 MY_MODULE:RegisterTitle("@iJonno",          nil,      1730,     {en = "Princess",                       de = "Prinzessin",                      fr = "Princesse"                        },    {color="#FAABFF"})
 MY_MODULE:RegisterTitle("@iJonno",          nil,      1810,     {en = "Princess",                       de = "Prinzessin",                      fr = "Princesse"                        },    {color="#FAABFF"})
+MY_MODULE:RegisterTitle("@Floliroy",        nil,      1391,     {en = "Leeeeroy Jeeeeekins"                                                                                             },    {color={"#0131B4", "#ED1600"}})
+MY_MODULE:RegisterTitle("@Floliroy",        nil,      1810,     {en = "Leeeeroy Jeeeeekins"                                                                                             },    {color={"#FE2008", "#F9E259"}})
+MY_MODULE:RegisterTitle("@Floliroy",        nil,      1330,     {en = "Leeeeroy Jeeeeekins"                                                                                             },    {color={"#EFC509", "#2DCAED"}})
