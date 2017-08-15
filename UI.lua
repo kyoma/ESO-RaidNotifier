@@ -104,7 +104,9 @@ do --------------------
 
 	function RaidNotifier:UpdateUltimateWindow(sortedUlti, mode)
 		if not window then return end
-	
+
+		local settings = self.Vars.ultimate
+
 		if sortedUlti then
 			local text = "Ultimates:" --TODO: grab text from abilityId??
 			for i, data in ipairs(sortedUlti) do
@@ -464,12 +466,14 @@ do -------------------
 		if status == "scalded" then
 			local stacks = math.random(1, 10)
 			RaidNotifier:UpdateScaldedStacks(stacks, currentTime, currentTime + 15)
-		elseif status == "aspect" then
-			
+		--elseif status == "aspect" then
+		--	RaidNotifier:UpdateTwinAspect("tolunar")
 		elseif status == "venom" then
 			RaidNotifier:UpdateSphereVenom(true, currentTime, currentTime + 8.3)
 		elseif status == "troll" then
 			RaidNotifier:UpdateSpreadingPoison(true, currentTime, currentTime + 10)
+		else
+			RaidNotifier:UpdateTwinAspect(status)
 		end
 		
 	end

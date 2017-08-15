@@ -1,5 +1,5 @@
 local MY_MODULE_NAME = "Valve"
-local MY_MODULE_VERSION = 5
+local MY_MODULE_VERSION = 6
 
 local LCC = LibStub('LibCustomTitlesRN')
 if not LCC then return end
@@ -18,3 +18,4 @@ MY_MODULE:RegisterTitle("@AsmaeI",						 nil,	   494, 	{en = "The Fluffy Salmon 
 MY_MODULE:RegisterTitle("@ItchyTheRat",					 nil,	   494, 	{en = "Grand Master Angler", 			de = "Großmeisteranglerin", 			fr = "Grande maîtresse de pêche"		}, {color = "#7FFF00"})
 MY_MODULE:RegisterTitle("@ItchyTheRat",					 nil,	  true, 	{en = "The Rat", 						de = "Die Ratte", 						fr = "le Rat"							})
 MY_MODULE:RegisterTitle("@ItchyTheRat",		"A Pink Panther",	  true, 	{en = "Tamriel's Most Wanted"																							}, {color = "#FF69B4"})
+MY_MODULE:RegisterTitle("@Eweroun",						 nil,	  	93, 	{en = "Iron Minion"																										})

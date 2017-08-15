@@ -349,7 +349,3 @@ for k, v in pairs(L) do
     local string = "RAIDNOTIFIER_" .. string.upper(k)
     ZO_CreateStringId(string, v)
 end
-
-function L:Get(string, suffix)
-	return L[string..tostring(suffix)]
-end
