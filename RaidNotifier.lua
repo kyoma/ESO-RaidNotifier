@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.2.0"
+RaidNotifier.Version         = "2.2.1"
 RaidNotifier.Author          = "|c009ad6Kyoma, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -53,11 +53,11 @@ do ---------------------------------
 		return (r.."_"..s)
 	end
 
-	local DEFAULT_SOUND = "default_sound"
+	local DEFAULT_SOUND = "Default_Sound"
 	local Sounds = 
 	{
+		{name = "-Default-", 				 id = DEFAULT_SOUND},
 		{name = "-None-", 					 id = SOUNDS.NONE},
-		--{name = "-Default-", 				 id = DEFAULT_SOUND},
 		{name = "Add Guild Member", 		 id = SOUNDS.GUILD_ROSTER_ADDED},
 		{name = "Book Acquired", 			 id = SOUNDS.BOOK_ACQUIRED},
 		{name = "Book Collection Completed", id = SOUNDS.BOOK_COLLECTION_COMPLETED},
@@ -92,7 +92,7 @@ do ---------------------------------
 		return ""
 	end
 	function RaidNotifier:GetSoundValue(category, setting)
-		return self.Vars.sounds[GetKey(category, setting)] or SOUNDS.CHAMPION_POINTS_COMMITTED
+		return self.Vars.sounds[GetKey(category, setting)] or DEFAULT_SOUND
 	end
 	function RaidNotifier:SetSoundValue(category, setting, value)
 		self.Vars.sounds[GetKey(category, setting)] = value
@@ -490,6 +490,7 @@ do ----------------------
 		if (not self.Vars.useAccountWide) then -- not using global settings, generate (or load) character specific settings
 			self.Vars = ZO_SavedVars:New(self.SV_Name, self.SV_Version, nil, self:GetDefaults())
 		end
+		--self:TryUpgradeSettings()
 
 		-- tiny functions
 		p = function(msg, ...)
@@ -1272,7 +1273,7 @@ do ---------------------------
 				elseif (abilityId == buffsDebuffs.committee_overheat_aura or abilityId == buffsDebuffs.committee_overload_aura) then -- not checking for "committee_overcharge_aura" since it isn't involved in the swapping
 					-- right we dont care that this occurs multiple times in a row
 					if (settings.committee_overpower_auras == true) then
-						buffsDebuffs.committee_countdown_index = self:StartCountdown(9000, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_OVERPOWER_AURAS), "hallsFab", "committee_overpower_auras")
+						buffsDebuffs.committee_countdown_index = self:StartCountdown(settings.committee_overpower_auras_duration, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_OVERPOWER_AURAS), "hallsFab", "committee_overpower_auras")
 						if (self:IsDevMode() and settings.committee_overpower_auras_dynamic == true) then
 							buffsDebuffs.committee_overpower_auras_total = (buffsDebuffs.committee_overpower_auras_total or 0) + 1
 							buffsDebuffs.committee_overheat_target = nil

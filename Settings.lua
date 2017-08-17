@@ -18,7 +18,7 @@ local RAID_HALLS_OF_FABRICATION  = 7
 -- DEFAULT SETTINGS
 do ------------------
 
-	-- local DEFAULT_SOUND = "default_sound" -- will remain as the actual value
+	-- local DEFAULT_SOUND = "Default_Sound" -- will remain as the actual value
 	-- local DEFAULT_PRIORITY = 3
 	-- local ALL_ROLES =
 	-- {
@@ -143,6 +143,7 @@ do ------------------
 			no_assistants = true,
 			last_pet = 0,
 			status_display  = {100, 400, CENTER},
+			default_sound   = SOUNDS.CHAMPION_POINTS_COMMITTED,
 		},
 		ultimate = {
 			enabled         = false,
@@ -222,6 +223,7 @@ do ------------------
 
 			committee_overpower_auras = false,
 			committee_overpower_auras_dynamic = false,
+			committee_overpower_auras_duration = 5000,
 			committee_fabricant_spawn = false,
 			committee_reclaim_achieve = false,
 		}, 
@@ -343,7 +345,7 @@ function RaidNotifier:CreateSettingsMenu()
 	local defaults = self:GetDefaults()
 	local savedVars = self.Vars
 
-	self:TryConvertSettings(savedVars, defaults)
+	self:TryUpgradeSettings()
 
 	local LAM = LibStub:GetLibrary("LibAddonMenu-2.0")
 	self.panelData = {
@@ -546,6 +548,16 @@ function RaidNotifier:CreateSettingsMenu()
 		noAlert = true,
 	}, "general", "no_assistants")
 
+	local c, cV = Util.UnboxTable(self:GetSounds(), {"name", "id"})
+	table.remove(c, 1)   table.remove(cV, 1) -- remove "-Default-"
+	MakeControlEntry({
+		type = "dropdown",
+		name = RAIDNOTIFIER_SETTINGS_GENERAL_DEFAULT_SOUND,
+		tooltip = RAIDNOTIFIER_SETTINGS_GENERAL_DEFAULT_SOUND_TT,
+		choices = c, choicesValues = cV,
+		noAlert = true,
+	}, "general", "default_sound")
+
 
 	MakeSubmenu(RAIDNOTIFIER_SETTINGS_ULTIMATE_HEADER, RAIDNOTIFIER_SETTINGS_ULTIMATE_DESCRIPTION)
 	MakeControlEntry({
@@ -633,8 +645,7 @@ function RaidNotifier:CreateSettingsMenu()
 	})
 	MakeControlEntry({
 		type = "slider",
-		min = 0,
-        max = 250,
+		min = 0, max = 250,
 		name = RAIDNOTIFIER_SETTINGS_ULTIMATE_OVERRIDECOST,
 		tooltip = RAIDNOTIFIER_SETTINGS_ULTIMATE_OVERRIDECOST_TT,
 		getFunc = function() return savedVars.ultimate.override_cost end,
@@ -1027,6 +1038,13 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS_TT,
 	}, "hallsFab", "committee_overpower_auras")
 	MakeControlEntry({
+		type = "slider",
+		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS_DURATION,
+		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS_DURATION_TT,
+		min = 3000, max = 10000, step = 100,
+		noAlert = true,
+	}, "hallsFab", "committee_overpower_auras_duration")
+	MakeControlEntry({
 		type = "checkbox",
 		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS_DYNAMIC,
 		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS_DYNAMIC_TT,
@@ -1209,11 +1227,24 @@ function RaidNotifier:CreateSettingsMenu()
 
 end
 
+function RaidNotifier:TryUpgradeSettings()
+	local version, lastVersion = self.Version, self.Vars.addonVersion
+	-- change all alert sounds with CHAMPION_POINT_GAINED to DEFAULT_SOUND
+	if lastVersion == nil or lastVersion < "2.2.1" then 
+		for key, sound in pairs(self.Vars.sounds) do
+			if sound == SOUNDS.CHAMPION_POINTS_COMMITTED then
+				self.Vars.sounds[key] = DEFAULT_SOUND
+			end
+		end
+	end
+	self.Vars.addonVersion = version
 
-function RaidNotifier:TryConvertSettings(settings, defaults)
+	local defaults = self:GetDefaults()
+	local settings = self.Vars
 
+	-- now for generic type checks
 	for category,content in pairs(defaults) do
-		if (category ~= "useAccountWide") then
+		if type(category) == "table" then
 			for key, default in pairs(content) do
 				local value = settings[category][key]
 				if type(value) ~= type(default) then --type mismatch
@@ -1241,6 +1272,5 @@ function RaidNotifier:TryConvertSettings(settings, defaults)
 			end
 		end
 	end
-
 end
 

@@ -93,6 +93,26 @@ function Util.CopyTable(src, dest)
 	return dest
 end
 
+function Util.UnboxTable(tbl, keys)
+
+	local unboxedTables = {}
+	for _,key in ipairs(keys) do
+		unboxedTables[key] = {}
+	end
+
+	for idx,data in pairs(tbl) do
+		for _,key in ipairs(keys) do
+			unboxedTables[key][idx] = data[key]
+		end
+	end
+	local result = {}
+	for idx,key in ipairs(keys) do
+		result[idx] = unboxedTables[key]
+	end
+	
+	return unpack(result)
+end
+
 -- convert value to valid integer for comparison
 function Util.SafeInt(value)
 	return value == true and 1 or (value or 0)

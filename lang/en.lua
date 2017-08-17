@@ -17,6 +17,8 @@ L.Settings_General_No_Assistants                    = "Turn off assistants when 
 L.Settings_General_No_Assistants_TT                 = "Only applies during trials and does NOT prevent them from being summoned."
 L.Settings_General_Center_Screen_Announce           = "Center Screen Announcements"
 L.Settings_General_Center_Screen_Announce_TT        = "Use the game's own center screen announcement system. Alternative is a more simplistic display message from Raid Notifier itself."
+L.Settings_General_Default_Sound                    = "Default Sound"
+L.Settings_General_Default_Sound_TT                 = "The default sound to use for a notification."
 -- Choices
 L.Settings_General_Choices_Off                      = "Off"
 L.Settings_General_Choices_Full                     = "Full"
@@ -298,6 +300,8 @@ L.Settings_HallsFab_Overcharge_Aura                 = "Committee: Overcharging A
 L.Settings_HallsFab_Overcharge_Aura_TT              = "Alerts you when reclaimer start overcharging aura."
 L.Settings_HallsFab_Overpower_Auras                 = "Committee: Overpowering Auras"
 L.Settings_HallsFab_Overpower_Auras_TT              = "Alerts you when the tanks need to swap the committee bosses" 
+L.Settings_HallsFab_Overpower_Auras_Duration        = "       - Countdown Duration"
+L.Settings_HallsFab_Overpower_Auras_Duration_TT     = "The duration of the countdown in milliseconds."
 L.Settings_HallsFab_Overpower_Auras_Dynamic         = "       - Dynamic Countdown"
 L.Settings_HallsFab_Overpower_Auras_Dynamic_TT      = "When enabled it will attempt to stop the countdown once the tanks have swapped bosses."
 L.Settings_HallsFab_Fabricant_Spawn                 = "Committee: Ruined Fabricant Spawn"

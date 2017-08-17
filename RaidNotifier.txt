@@ -1,7 +1,7 @@
 ## Title: |cEFEBBERaidNotifier|r
 ## Description: Displays on-screen notifications on different events during trials.
 ## Author: |c009ad6Kyoma, Woeler, silentgecko|r
-## Version: 2.2.0
+## Version: 2.2.1
 ## APIVersion: 100020
 ## SavedVariables: RNVars 
 ## OptionalDependsOn: LibAddonMenu-2.0 LibMapPing LibGPS2 LibGroupSocket
@@ -21,6 +21,7 @@ libs/LibAddonMenu-2.0/controls/checkbox.lua
 libs/LibAddonMenu-2.0/controls/colorpicker.lua
 libs/LibAddonMenu-2.0/controls/custom.lua
 libs/LibAddonMenu-2.0/controls/description.lua
+libs/LibAddonMenu-2.0/controls/divider.lua
 libs/LibAddonMenu-2.0/controls/dropdown.lua
 libs/LibAddonMenu-2.0/controls/editbox.lua
 libs/LibAddonMenu-2.0/controls/header.lua
