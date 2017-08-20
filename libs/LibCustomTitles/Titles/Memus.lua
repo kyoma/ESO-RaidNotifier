@@ -1,5 +1,5 @@
 local MY_MODULE_NAME = "Memus"
-local MY_MODULE_VERSION = 1
+local MY_MODULE_VERSION = 2
 
 local LCC = LibStub('LibCustomTitlesRN')
 if not LCC then return end
@@ -10,8 +10,9 @@ if not MY_MODULE then return end
 
 MY_MODULE:RegisterTitle("@memus", nil, 92, {en = "Paid Healer"}, {color={"#22E500", "#BF0000"}})
 MY_MODULE:RegisterTitle("@memus", nil, 93, {en = "Vitality Bonus Increaser"}, {color={"#052FCC", "#12CCDE"}})
-MY_MODULE:RegisterTitle("@Panadulek", nil, 1391, {en = "The One Who Can Sing"}, {color={"#00FF00", "#FF0000"}})
-MY_MODULE:RegisterTitle("@Panadulek", nil, 92, {en = "The Biggest magDk Lover"}, {color={"#F5C514", "#D20F08"}})
+MY_MODULE:RegisterTitle("@Panadulek", nil, 93, {en = "The One Who Can Sing"}, {color={"#00FF00", "#FF0000"}})
+MY_MODULE:RegisterTitle("@Panadulek", nil, 92, {en = "The Biggest DK Lover"}, {color={"#F5C514", "#D20F08"}})
+MY_MODULE:RegisterTitle("@Lancast'X', nil, 92, {en = "Toxic Player"}, {color="#00a9e7"})
 MY_MODULE:RegisterTitle("@DrugControl", nil, 92, {en = "AlcastQQ"}, {color={"#E9C23A", "#C11AFF"}})
 MY_MODULE:RegisterTitle("@IWM", nil, 92, {en = "The One And Only"}, {color="#A615C1"})
 MY_MODULE:RegisterTitle("@Hjelmi", nil, 1728, {en = "Supreme Healer"}, {color={"#F29CD3", "#91D3F8"}})
