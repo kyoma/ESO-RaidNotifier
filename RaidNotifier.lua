@@ -284,9 +284,10 @@ do ----------------------
 			local newMembers = {}
 			local groupSize = GetGroupSize()
 			if (groupSize == 0) then
-				UI.SetElementHidden("ultimate", "ulti_window", true)
+				self:SetElementHidden("ultimate", "ulti_window", true)
 			else
-				UI.SetElementHidden("ultimate", "ulti_window", settings.hidden)
+				self:SetElementHidden("ultimate", "ulti_window", settings.hidden)
+				ToggleLibGroupSocket(true)
 			end
 			for i=1, groupSize do
 				local userName = GetUnitDisplayName("group"..i)
