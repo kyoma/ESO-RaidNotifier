@@ -36,7 +36,7 @@ L.Alerts_General_Bufffood_Minutes                   = "Votre '<<1>>' nourriture 
 --------------------------------
 ----    Ultimate Exchange   ----
 --------------------------------
-L.Settings_Ultimate_Header                           = "Échange d'Utlimes (beta)"
+L.Settings_Ultimate_Header                           = "Échange d'Ultimes (beta)"
 L.Settings_Ultimate_Description                      = "Cette fonctionnalité vous permet d'envoyer votre nombre de points d'ultimes à vos coéquipiers afin qu'ils puissent voir quand est ce que vous pourrez l'utiliser. Il utilise votre coût en fonction de toutes les réductions de coûts d'ensembles ou de passifs."
 -- Settings 
 L.Settings_Ultimate_Enabled                          = "Activé"

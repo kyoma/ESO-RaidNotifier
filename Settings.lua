@@ -223,7 +223,7 @@ do ------------------
 
 			committee_overpower_auras = false,
 			committee_overpower_auras_dynamic = false,
-			committee_overpower_auras_duration = 5000,
+			committee_overpower_auras_duration = 9000,
 			committee_fabricant_spawn = false,
 			committee_reclaim_achieve = false,
 		}, 
@@ -345,6 +345,8 @@ function RaidNotifier:CreateSettingsMenu()
 	local defaults = self:GetDefaults()
 	local savedVars = self.Vars
 
+	local L = self:GetLocale()
+
 	self:TryUpgradeSettings()
 
 	local LAM = LibStub:GetLibrary("LibAddonMenu-2.0")
@@ -358,44 +360,44 @@ function RaidNotifier:CreateSettingsMenu()
 	}
 
 	local off_self_all = {
-		GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
-		GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF), 
-		GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL), 
+		L.Settings_General_Choices_Off,
+		L.Settings_General_Choices_Self, 
+		L.Settings_General_Choices_All, 
 	}
 	local choices = {
 		mawLorkhaj = {
 			twinBoss_aspects = {
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_MINIMAL), 
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_NORMAL),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_FULL), 
+				L.Settings_General_Choices_Off,
+				L.Settings_General_Choices_Minimal, 
+				L.Settings_General_Choices_Normal,
+				L.Settings_General_Choices_Full, 
 			},
 			rakkhat_unstablevoid = off_self_all,
 			rakkhat_lunarbastion1 = {
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF), 
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OTHER),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL), 
+				L.Settings_General_Choices_Off,
+				L.Settings_General_Choices_Self, 
+				L.Settings_General_Choices_Other,
+				L.Settings_General_Choices_All, 
 			},
 			rakkhat_lunarbastion2 = {
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF), 
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OTHER),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL), 
+				L.Settings_General_Choices_Off,
+				L.Settings_General_Choices_Self, 
+				L.Settings_General_Choices_Other,
+				L.Settings_General_Choices_All, 
 			},
 			suneater_eclipse = {
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_SELF), 
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_NEAR), 
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_ALL), 
+				L.Settings_General_Choices_Off,
+				L.Settings_General_Choices_Self, 
+				L.Settings_General_Choices_Near, 
+				L.Settings_General_Choices_All, 
 			},
         },
 		sanctumOphidia = {
 			mantikora_spear = off_self_all,
 			serpent_poison = {
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_OFF),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_NORMAL),
-				GetString(RAIDNOTIFIER_SETTINGS_GENERAL_CHOICES_FULL), 
+				L.Settings_General_Choices_Off,
+				L.Settings_General_Choices_Normal,
+				L.Settings_General_Choices_Full, 
 			},
 			troll_boulder  = off_self_all,
 			troll_poison   = off_self_all,
@@ -510,41 +512,41 @@ function RaidNotifier:CreateSettingsMenu()
 
 	MakeControlEntry({
 		type = "description",
-		text = RAIDNOTIFIER_DESCRIPTION,
+		text = L.Description,
 	})
 
 	MakeControlEntry({
 		type = "header",
-		name = RAIDNOTIFIER_SETTINGS_GENERAL_HEADER,
+		name = L.Settings_General_Header,
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_GENERAL_CENTER_SCREEN_ANNOUNCE,
-		tooltip = RAIDNOTIFIER_SETTINGS_GENERAL_CENTER_SCREEN_ANNOUNCE_TT,
+		name = L.Settings_General_Center_Screen_Announce,
+		tooltip = L.Settings_General_Center_Screen_Announce_TT,
 		noAlert = true,
 	}, "general", "use_center_screen_announce")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_GENERAL_BUFFFOOD_REMINDER,
-		tooltip = RAIDNOTIFIER_SETTINGS_GENERAL_BUFFFOOD_REMINDER_TT,
+		name = L.Settings_General_Bufffood_Reminder,
+		tooltip = L.Settings_General_Bufffood_Reminder_TT,
 	}, "general", "buffFood_reminder")
 	MakeControlEntry({
 		type = "slider",
-		name = RAIDNOTIFIER_SETTINGS_GENERAL_BUFFFOOD_REMINDER_INTERVAL,
-		tooltip = RAIDNOTIFIER_SETTINGS_GENERAL_BUFFFOOD_REMINDER_INTERVAL_TT,
+		name = L.Settings_General_Bufffood_Reminder_Interval,
+		tooltip = L.Settings_General_Bufffood_Reminder_Interval_TT,
 		min = 30, max = 120, step = 5,
 		noAlert = true,
 	}, "general", "buffFood_reminder_interval")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_GENERAL_VANITY_PETS,
-		tooltip = RAIDNOTIFIER_SETTINGS_GENERAL_VANITY_PETS_TT,
+		name = L.Settings_General_Vanity_Pets,
+		tooltip = L.Settings_General_Vanity_Pets_TT,
 		noAlert = true,
 	}, "general", "vanity_pets")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_GENERAL_NO_ASSISTANTS,
-		tooltip = RAIDNOTIFIER_SETTINGS_GENERAL_NO_ASSISTANTS_TT,
+		name = L.Settings_General_No_Assistants,
+		tooltip = L.Settings_General_No_Assistants_TT,
 		noAlert = true,
 	}, "general", "no_assistants")
 
@@ -552,18 +554,27 @@ function RaidNotifier:CreateSettingsMenu()
 	table.remove(c, 1)   table.remove(cV, 1) -- remove "-Default-"
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_GENERAL_DEFAULT_SOUND,
-		tooltip = RAIDNOTIFIER_SETTINGS_GENERAL_DEFAULT_SOUND_TT,
+		name = L.Settings_General_Default_Sound,
+		tooltip = L.Settings_General_Default_Sound_TT,
 		choices = c, choicesValues = cV,
 		noAlert = true,
 	}, "general", "default_sound")
-
-
-	MakeSubmenu(RAIDNOTIFIER_SETTINGS_ULTIMATE_HEADER, RAIDNOTIFIER_SETTINGS_ULTIMATE_DESCRIPTION)
+	
+	-- moved here for easier access
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_ULTIMATE_ENABLED,
-		tooltip = RAIDNOTIFIER_SETTINGS_ULTIMATE_ENABLED_TT,
+		name = L.Settings_Debug_DevMode,
+		tooltip = L.Settings_Debug_DevMode_TT,
+		getFunc = function() return savedVars.dbg.devMode end,
+		setFunc = function(value)   savedVars.dbg.devMode = value end,
+	})
+
+
+	MakeSubmenu(L.Settings_Ultimate_Header, L.Settings_Ultimate_Description)
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Ultimate_Enabled,
+		tooltip = L.Settings_Ultimate_Enabled_TT,
 		getFunc = function() return savedVars.ultimate.enabled end,
 		setFunc = function(value)
 				savedVars.ultimate.enabled = value
@@ -579,8 +590,8 @@ function RaidNotifier:CreateSettingsMenu()
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_ULTIMATE_HIDDEN,
-		tooltip = RAIDNOTIFIER_SETTINGS_ULTIMATE_HIDDEN_TT,
+		name = L.Settings_Ultimate_Hidden,
+		tooltip = L.Settings_Ultimate_Hidden_TT,
 		getFunc = function() return savedVars.ultimate.hidden end,
 		setFunc = function(value)
 				savedVars.ultimate.hidden = value 
@@ -590,8 +601,8 @@ function RaidNotifier:CreateSettingsMenu()
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_ULTIMATE_USECOLOR,
-		tooltip = RAIDNOTIFIER_SETTINGS_ULTIMATE_USECOLOR_TT,
+		name = L.Settings_Ultimate_UseColor,
+		tooltip = L.Settings_Ultimate_UseColor_TT,
 		getFunc = function() return savedVars.ultimate.useColor end,
 		setFunc = function(value)
 				savedVars.ultimate.useColor = value 
@@ -601,8 +612,8 @@ function RaidNotifier:CreateSettingsMenu()
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_ULTIMATE_USEDISPLAYNAME,
-		tooltip = RAIDNOTIFIER_SETTINGS_ULTIMATE_USEDISPLAYNAME_TT,
+		name = L.Settings_Ultimate_UseDisplayName,
+		tooltip = L.Settings_Ultimate_UseDisplayName_TT,
 		getFunc = function() return savedVars.ultimate.useDisplayName end,
 		setFunc = function(value)
 				savedVars.ultimate.useDisplayName = value 
@@ -612,8 +623,8 @@ function RaidNotifier:CreateSettingsMenu()
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_ULTIMATE_SHOWHEALERS,
-		tooltip = RAIDNOTIFIER_SETTINGS_ULTIMATE_SHOWHEALERS_TT,
+		name = L.Settings_Ultimate_ShowHealers,
+		tooltip = L.Settings_Ultimate_ShowHealers_TT,
 		getFunc = function() return savedVars.ultimate.showHealers end,
 		setFunc = function(value)
 				savedVars.ultimate.showHealers = value 
@@ -623,8 +634,8 @@ function RaidNotifier:CreateSettingsMenu()
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_ULTIMATE_SHOWTANKS,
-		tooltip = RAIDNOTIFIER_SETTINGS_ULTIMATE_SHOWTANKS_TT,
+		name = L.Settings_Ultimate_ShowTanks,
+		tooltip = L.Settings_Ultimate_ShowTanks_TT,
 		getFunc = function() return savedVars.ultimate.showTanks end,
 		setFunc = function(value)
 				savedVars.ultimate.showTanks = value 
@@ -634,8 +645,8 @@ function RaidNotifier:CreateSettingsMenu()
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_ULTIMATE_SHOWDPS,
-		tooltip = RAIDNOTIFIER_SETTINGS_ULTIMATE_SHOWDPS_TT,
+		name = L.Settings_Ultimate_ShowDps,
+		tooltip = L.Settings_Ultimate_ShowDps_TT,
 		getFunc = function() return savedVars.ultimate.showDps end,
 		setFunc = function(value)
 				savedVars.ultimate.showDps = value 
@@ -646,8 +657,8 @@ function RaidNotifier:CreateSettingsMenu()
 	MakeControlEntry({
 		type = "slider",
 		min = 0, max = 250,
-		name = RAIDNOTIFIER_SETTINGS_ULTIMATE_OVERRIDECOST,
-		tooltip = RAIDNOTIFIER_SETTINGS_ULTIMATE_OVERRIDECOST_TT,
+		name = L.Settings_Ultimate_OverrideCost,
+		tooltip = L.Settings_Ultimate_OverrideCost_TT,
 		getFunc = function() return savedVars.ultimate.override_cost end,
 		setFunc = function(value) savedVars.ultimate.override_cost = value end,
 		default = 0,
@@ -656,12 +667,12 @@ function RaidNotifier:CreateSettingsMenu()
 
 
 
-	MakeSubmenu(RAIDNOTIFIER_SETTINGS_PROFILE_HEADER, RAIDNOTIFIER_SETTINGS_PROFILE_DESCRIPTION)
+	MakeSubmenu(L.Settings_Profile_Header, L.Settings_Profile_Description)
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_PROFILE_USEGLOBAL,
+		name = L.Settings_Profile_UseGlobal,
 		tooltip = RAIDNOTIFIER_SETTINGS_PROFILE_USEGLOBAL_TT,
-		warning = RAIDNOTIFIER_SETTINGS_PROFILE_USEGLOBAL_WARNING,
+		warning = L.Settings_Profile_UseGlobal_Warning,
 		getFunc = function()
 			return RNVars.Default[GetDisplayName()]["$AccountWide"].useAccountWide 
 		end,
@@ -673,8 +684,8 @@ function RaidNotifier:CreateSettingsMenu()
 	})
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_PROFILE_COPY,
-		tooltip = RAIDNOTIFIER_SETTINGS_PROFILE_COPY_TT,
+		name = L.Settings_Profile_Copy,
+		tooltip = L.Settings_Profile_Copy_TT,
 		choices = profileCopyList,
 		getFunc = function()
 			if (#profileCopyList >= 1) then -- there are entries, set first as default
@@ -689,15 +700,15 @@ function RaidNotifier:CreateSettingsMenu()
 	})
 	MakeControlEntry({
 		type = "button",
-		name = RAIDNOTIFIER_SETTINGS_PROFILE_COPYBUTTON,
-		warning = RAIDNOTIFIER_SETTINGS_PROFILE_COPYBUTTON,
+		name = L.Settings_Profile_CopyButton,
+		warning = L.Settings_Profile_CopyButton,
 		func = function(btn)  CopyProfile() end,
 		disabled = function() return not profileGuard end,
 	})
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_PROFILE_DELETE,
-		tooltip = RAIDNOTIFIER_SETTINGS_PROFILE_DELETE_TT,
+		name = L.Settings_Profile_Delete,
+		tooltip = L.Settings_Profile_Delete_TT,
 		choices = profileDeleteList,
 		getFunc = function()
 			if (#profileDeleteList >= 1) then
@@ -717,14 +728,14 @@ function RaidNotifier:CreateSettingsMenu()
 	})
 	MakeControlEntry({
 		type = "button",
-		name = RAIDNOTIFIER_SETTINGS_PROFILE_DELETEBUTTON,
+		name = L.Settings_Profile_DeleteButton,
 		func = function(btn)  DeleteProfile() end,
 		disabled = function() return not profileGuard end,
 	})
 	MakeControlEntry({type = "divider", alpha = 1})
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_PROFILE_GUARD,
+		name = L.Settings_Profile_Guard,
 		getFunc = function() return profileGuard end,
 		setFunc = function(value)   profileGuard = value end,
 	})
@@ -733,130 +744,128 @@ function RaidNotifier:CreateSettingsMenu()
 
 	MakeControlEntry({
 		type = "header",
-		name = RAIDNOTIFIER_SETTINGS_TRIALS_HEADER
+		name = L.Settings_Trials_Header
 	})
 	MakeControlEntry({
 		type = "description",
-		text = RAIDNOTIFIER_SETTINGS_TRIALS_DESCRIPTION
+		text = L.Settings_Trials_Description
 	})
 
 	-- Hel Ra Citadel
-	MakeSubmenu(RAIDNOTIFIER_SETTINGS_HELRA_HEADER, RaidNotifier:GetRaidDescription(RAID_HEL_RA_CITADEL))
+	MakeSubmenu(L.Settings_HelRa_Header, RaidNotifier:GetRaidDescription(RAID_HEL_RA_CITADEL))
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_HELRA_YOKEDA_METEOR,
-		tooltip = RAIDNOTIFIER_SETTINGS_HELRA_YOKEDA_METEOR_TT,
+		name = L.Settings_HelRa_Yokeda_Meteor,
+		tooltip = L.Settings_HelRa_Yokeda_Meteor_TT,
 		choices = choices.helra.yokeda_meteor,
 	}, "helra", "yokeda_meteor")
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_HELRA_WARRIOR_STONEFORM,
-		tooltip = RAIDNOTIFIER_SETTINGS_HELRA_WARRIOR_STONEFORM_TT,
+		name = L.Settings_HelRa_Warrior_StoneForm,
+		tooltip = L.Settings_HelRa_Warrior_StoneForm_TT,
 		choices = choices.helra.warrior_stoneform,
 	}, "helra", "warrior_stoneform")
 	subTable = nil --end submenu
 
 
 	-- Aetherius Archive
-	MakeSubmenu(RAIDNOTIFIER_SETTINGS_ARCHIVE_HEADER, RaidNotifier:GetRaidDescription(RAID_AETHERIAN_ARCHIVE))
+	MakeSubmenu(L.Settings_Archive_Header, RaidNotifier:GetRaidDescription(RAID_AETHERIAN_ARCHIVE))
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_ARCHIVE_STORMATRO_IMPENDINGSTORM,
-		tooltip = RAIDNOTIFIER_SETTINGS_ARCHIVE_STORMATRO_IMPENDINGSTORM_TT,
+		name = L.Settings_Archive_StormAtro_ImpendingStorm,
+		tooltip = L.Settings_Archive_StormAtro_ImpendingStorm_TT,
 	}, "archive", "stormatro_impendingstorm")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_ARCHIVE_STORMATRO_LIGHTNINGSTORM,
-		tooltip = RAIDNOTIFIER_SETTINGS_ARCHIVE_STORMATRO_LIGHTNINGSTORM_TT,
+		name = L.Settings_Archive_StormAtro_LightningStorm,
+		tooltip = L.Settings_Archive_StormAtro_LightningStorm_TT,
 	}, "archive", "stormatro_lightningstorm")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_ARCHIVE_STONEATRO_BOULDERSTORM,
-		tooltip = RAIDNOTIFIER_SETTINGS_ARCHIVE_STONEATRO_BOULDERSTORM_TT,
+		name = L.Settings_Archive_StoneAtro_BoulderStorm,
+		tooltip = L.Settings_Archive_StoneAtro_BoulderStorm_TT,
 	}, "archive", "stoneatro_boulderstorm")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_ARCHIVE_STONEATRO_BIGQUAKE,
-		tooltip = RAIDNOTIFIER_SETTINGS_ARCHIVE_STONEATRO_BIGQUAKE_TT,
+		name = L.Settings_Archive_StoneAtro_BigQuake,
+		tooltip = L.Settings_Archive_StoneAtro_BigQuake_TT,
 	}, "archive", "stoneatro_bigquake")
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_ARCHIVE_OVERCHARGE,
-		tooltip = RAIDNOTIFIER_SETTINGS_ARCHIVE_OVERCHARGE_TT,
+		name = L.Settings_Archive_Overcharge,
+		tooltip = L.Settings_Archive_Overcharge_TT,
 		choices = choices.archive.overcharge,
 	}, "archive", "overcharge")
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_ARCHIVE_CALL_LIGHTNING,
-		tooltip = RAIDNOTIFIER_SETTINGS_ARCHIVE_CALL_LIGHTNING_TT,
+		name = L.Settings_Archive_Call_Lightning,
+		tooltip = L.Settings_Archive_Call_Lightning_TT,
 		choices = choices.archive.call_lightning,
 	}, "archive", "call_lightning")
 	subTable = nil --end submenu
 
 
 	-- Sanctum Ophidia
-	MakeSubmenu(RAIDNOTIFIER_SETTINGS_SANCTUM_HEADER, RaidNotifier:GetRaidDescription(RAID_SANCTUM_OPHIDIA))
+	MakeSubmenu(L.Settings_Sanctum_Header, RaidNotifier:GetRaidDescription(RAID_SANCTUM_OPHIDIA))
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_SANCTUM_MANTIKORA_QUAKE,
-		tooltip = RAIDNOTIFIER_SETTINGS_SANCTUM_MANTIKORA_QUAKE_TT,
+		name = L.Settings_Sanctum_Mantikora_Quake,
+		tooltip = L.Settings_Sanctum_Mantikora_Quake_TT,
 	}, "sanctumOphidia", "mantikora_quake")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_SANCTUM_MAGICKA_DETONATION,
-		tooltip = RAIDNOTIFIER_SETTINGS_SANCTUM_MAGICKA_DETONATION_TT,
+		name = L.Settings_Sanctum_Magicka_Detonation,
+		tooltip = L.Settings_Sanctum_Magicka_Detonation_TT,
 	}, "sanctumOphidia", "magicka_deto")
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_SANCTUM_SERPENT_POISON,
-		tooltip = RAIDNOTIFIER_SETTINGS_SANCTUM_SERPENT_POISON_TT,
+		name = L.Settings_Sanctum_Serpent_Poison,
+		tooltip = L.Settings_Sanctum_Serpent_Poison_TT,
 		choices = choices.sanctumOphidia.serpent_poison,
 	}, "sanctumOphidia", "serpent_poison")
 	MakeControlEntry({
 	    type = "checkbox",
-	    name = RAIDNOTIFIER_SETTINGS_SANCTUM_SERPENT_WORLD_SHAPER,
-	    tooltip = RAIDNOTIFIER_SETTINGS_SANCTUM_SERPENT_WORLD_SHAPER_TT,
-		disabled = function() return not self:IsDevMode() end,
-		warning = RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_WARNING,
+	    name = L.Settings_Sanctum_Serpent_World_Shaper,
+	    tooltip = L.Settings_Sanctum_Serpent_World_Shaper_TT,
 	}, "sanctumOphidia", "serpent_world_shaper")
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_SANCTUM_TROLL_BOULDER,
-		tooltip = RAIDNOTIFIER_SETTINGS_SANCTUM_TROLL_BOULDER_TT,
+		name = L.Settings_Sanctum_Troll_Boulder,
+		tooltip = L.Settings_Sanctum_Troll_Boulder_TT,
 		choices = choices.sanctumOphidia.troll_boulder,
 	}, "sanctumOphidia", "troll_boulder")
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_SANCTUM_TROLL_POISON,
-		tooltip = RAIDNOTIFIER_SETTINGS_SANCTUM_TROLL_POISON_TT,
+		name = L.Settings_Sanctum_Troll_Poison,
+		tooltip = L.Settings_Sanctum_Troll_Poison_TT,
 		choices = choices.sanctumOphidia.troll_poison,
 	}, "sanctumOphidia", "troll_poison")
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_SANCTUM_OVERCHARGE,
-		tooltip = RAIDNOTIFIER_SETTINGS_SANCTUM_OVERCHARGE_TT,
+		name = L.Settings_Sanctum_Overcharge,
+		tooltip = L.Settings_Sanctum_Overcharge_TT,
 		choices = choices.sanctumOphidia.overcharge,
 	}, "sanctumOphidia", "overcharge")
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_SANCTUM_CALL_LIGHTNING,
-		tooltip = RAIDNOTIFIER_SETTINGS_SANCTUM_CALL_LIGHTNING_TT,
+		name = L.Settings_Sanctum_Call_Lightning,
+		tooltip = L.Settings_Sanctum_Call_Lightning_TT,
 		choices = choices.sanctumOphidia.call_lightning,
 	}, "sanctumOphidia", "call_lightning")
 	subTable = nil --end submenu
 
 
 	-- Maw of Lorkhaj
-	MakeSubmenu(RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_HEADER, RaidNotifier:GetRaidDescription(RAID_MAW_OF_LORKHAJ))
+	MakeSubmenu(L.Settings_MawLorkhaj_Header, RaidNotifier:GetRaidDescription(RAID_MAW_OF_LORKHAJ))
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GRIPOFLORKHAJ,
-		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GRIPOFLORKHAJ_TT,
+		name = L.Settings_MawLorkhaj_Zhaj_GripOfLorkhaj,
+		tooltip = L.Settings_MawLorkhaj_Zhaj_GripOfLorkhaj_TT,
 	}, "mawLorkhaj", "zhaj_gripoflorkhaj")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS,
-		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_TT,
+		name = L.Settings_MawLorkhaj_Zhaj_Glyphs,
+		tooltip = L.Settings_MawLorkhaj_Zhaj_Glyphs_TT,
 		getFunc = function() return savedVars.mawLorkhaj.zhaj_glyphs end,
 		setFunc = function(value)   
 					savedVars.mawLorkhaj.zhaj_glyphs = value 
@@ -866,8 +875,8 @@ function RaidNotifier:CreateSettingsMenu()
 	}, "mawLorkhaj", "zhaj_glyphs")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_INVERT,
-		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_ZHAJ_GLYPHS_INVERT_TT,
+		name = L.Settings_MawLorkhaj_Zhaj_Glyphs_Invert,
+		tooltip = L.Settings_MawLorkhaj_Zhaj_Glyphs_Invert_TT,
 		getFunc = function() return savedVars.mawLorkhaj.zhaj_glyphs_invert end,
 		setFunc = function(value)   savedVars.mawLorkhaj.zhaj_glyphs_invert = value; self:InvertGlyphs() end,
 		disabled = function() return not savedVars.mawLorkhaj.zhaj_glyphs end, 
@@ -875,218 +884,215 @@ function RaidNotifier:CreateSettingsMenu()
 	}, "mawLorkhaj", "zhaj_glyphs_invert")
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_TWIN_ASPECTS,
-		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_TWIN_ASPECTS_TT,
+		name = L.Settings_MawLorkhaj_Twin_Aspects,
+		tooltip = L.Settings_MawLorkhaj_Twin_Aspects_TT,
 		choices = choices.mawLorkhaj.twinBoss_aspects,
 	}, "mawLorkhaj", "twinBoss_aspects")
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_UNSTABLE_VOID,
-		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_UNSTABLE_VOID_TT,
+		name = L.Settings_MawLorkhaj_Rakkhat_Unstable_Void,
+		tooltip = L.Settings_MawLorkhaj_Rakkhat_Unstable_Void_TT,
 		choices = choices.mawLorkhaj.rakkhat_unstablevoid,
 	}, "mawLorkhaj", "rakkhat_unstablevoid")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_THRESHINGWINGS,
-		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_THRESHINGWINGS_TT,
+		name = L.Settings_MawLorkhaj_Rakkhat_ThreshingWings,
+		tooltip = L.Settings_MawLorkhaj_Rakkhat_ThreshingWings_TT,
 	}, "mawLorkhaj", "rakkhat_threshingwings")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_DARKNESSFALLS,
-		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_DARKNESSFALLS_TT,
+		name = L.Settings_MawLorkhaj_Rakkhat_DarknessFalls,
+		tooltip = L.Settings_MawLorkhaj_Rakkhat_DarknessFalls_TT,
 	}, "mawLorkhaj", "rakkhat_darknessfalls")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_DARKBARRAGE,
-		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_DARKBARRAGE_TT,
+		name = L.Settings_MawLorkhaj_Rakkhat_DarkBarrage,
+		tooltip = L.Settings_MawLorkhaj_Rakkhat_DarkBarrage_TT,
 	}, "mawLorkhaj", "rakkhat_darkbarrage")
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_LUNARBASTION1,
-		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_LUNARBASTION1_TT,
+		name = L.Settings_MawLorkhaj_Rakkhat_LunarBastion1,
+		tooltip = L.Settings_MawLorkhaj_Rakkhat_LunarBastion1_TT,
 		choices = choices.mawLorkhaj.rakkhat_lunarbastion1,
 	}, "mawLorkhaj", "rakkhat_lunarbastion1")
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_LUNARBASTION2,
-		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_RAKKHAT_LUNARBASTION2_TT,
+		name = L.Settings_MawLorkhaj_Rakkhat_LunarBastion2,
+		tooltip = L.Settings_MawLorkhaj_Rakkhat_LunarBastion2_TT,
 		choices = choices.mawLorkhaj.rakkhat_lunarbastion2,
 	}, "mawLorkhaj", "rakkhat_lunarbastion2")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_SHATTERED,
-		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_SHATTERED_TT,
+		name = L.Settings_MawLorkhaj_Shattered,
+		tooltip = L.Settings_MawLorkhaj_Shattered_TT,
 	}, "mawLorkhaj", "shattered")
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_SUNEATER_ECLIPSE,
-		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_SUNEATER_ECLIPSE_TT,
+		name = L.Settings_MawLorkhaj_Suneater_Eclipse,
+		tooltip = L.Settings_MawLorkhaj_Suneater_Eclipse_TT,
 		choices = choices.mawLorkhaj.suneater_eclipse,
 	}, "mawLorkhaj", "suneater_eclipse")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_MARKEDFORDEATH,
-		tooltip = RAIDNOTIFIER_SETTINGS_MAWLORKHAJ_MARKEDFORDEATH_TT,
+		name = L.Settings_MawLorkhaj_MarkedForDeath,
+		tooltip = L.Settings_MawLorkhaj_MarkedForDeath_TT,
 	}, "mawLorkhaj", "markedfordeath")
 	subTable = nil --end submenu
 
 
 	-- Dragonstar Arena
-	MakeSubmenu(RAIDNOTIFIER_SETTINGS_DRAGONSTAR_HEADER, RaidNotifier:GetRaidDescription(RAID_DRAGONSTAR_ARENA))
+	MakeSubmenu(L.Settings_Dragonstar_Header, RaidNotifier:GetRaidDescription(RAID_DRAGONSTAR_ARENA))
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_GENERAL_TAKING_AIM,
-		tooltip = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_GENERAL_TAKING_AIM_TT,
+		name = L.Settings_Dragonstar_General_Taking_Aim,
+		tooltip = L.Settings_Dragonstar_General_Taking_Aim_TT,
 	}, "dragonstar", "general_taking_aim")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_GENERAL_CRYSTAL_BLAST,
-		tooltip = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_GENERAL_CRYSTAL_BLAST_TT,
+		name = L.Settings_Dragonstar_General_Crystal_Blast,
+		tooltip = L.Settings_Dragonstar_General_Crystal_Blast_TT,
 	}, "dragonstar", "general_crystal_blast")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA2_CRUSHING_SHOCK,
-		tooltip = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA2_CRUSHING_SHOCK_TT,
+		name = L.Settings_Dragonstar_Arena2_Crushing_Shock,
+		tooltip = L.Settings_Dragonstar_Arena2_Crushing_Shock_TT,
 	}, "dragonstar", "arena2_crushing_shock")
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA6_DRAIN_RESOURCE,
-		tooltip = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA6_DRAIN_RESOURCE_TT,
+		name = L.Settings_Dragonstar_Arena6_Drain_Resource,
+		tooltip = L.Settings_Dragonstar_Arena6_Drain_Resource_TT,
 		choices = choices.dragonstar.arena6_drain_resource,
 	}, "dragonstar", "arena6_drain_resource")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA7_UNSTABLE_CORE,
-		tooltip = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA7_UNSTABLE_CORE_TT,
+		name = L.Settings_Dragonstar_Arena7_Unstable_Core,
+		tooltip = L.Settings_Dragonstar_Arena7_Unstable_Core_TT,
 	}, "dragonstar", "arena7_unstable_core")
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA8_FIRE_CHARGE,
-		tooltip = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA8_FIRE_CHARGE_TT,
+		name = L.Settings_Dragonstar_Arena8_Fire_Charge,
+		tooltip = L.Settings_Dragonstar_Arena8_Fire_Charge_TT,
 		choices = choices.dragonstar.arena8_fire_charge,
 	}, "dragonstar", "arena8_fire_charge")
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA8_ICE_CHARGE,
-		tooltip = RAIDNOTIFIER_SETTINGS_DRAGONSTAR_ARENA8_ICE_CHARGE_TT,
+		name = L.Settings_Dragonstar_Arena8_Ice_Charge,
+		tooltip = L.Settings_Dragonstar_Arena8_Ice_Charge_TT,
 		choices = choices.dragonstar.arena8_ice_charge,
 	}, "dragonstar", "arena8_ice_charge")
 	subTable = nil --end submenu
 
 
 	-- Maelstrom Arena
-	MakeSubmenu(RAIDNOTIFIER_SETTINGS_MAELSTROM_HEADER, RaidNotifier:GetRaidDescription(RAID_MAELSTROM_ARENA))
+	MakeSubmenu(L.Settings_Maelstrom_Header, RaidNotifier:GetRaidDescription(RAID_MAELSTROM_ARENA))
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_MAELSTROM_STAGE7_POISON,
-		tooltip = RAIDNOTIFIER_SETTINGS_MAELSTROM_STAGE7_POISON_TT,
+		name = L.Settings_Maelstrom_Stage7_Poison,
+		tooltip = L.Settings_Maelstrom_Stage7_Poison_TT,
 	}, "maelstrom", "stage7_poison")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_MAELSTROM_STAGE9_SYNERGY,
-		tooltip = RAIDNOTIFIER_SETTINGS_MAELSTROM_STAGE9_SYNERGY_TT,
+		name = L.Settings_Maelstrom_Stage9_Synergy,
+		tooltip = L.Settings_Maelstrom_Stage9_Synergy_TT,
 	}, "maelstrom", "stage9_synergy")
 	subTable = nil --end submenu
 
 
 	-- Halls of Fabrication
-	MakeSubmenu(RAIDNOTIFIER_SETTINGS_HALLSFAB_HEADER, RaidNotifier:GetRaidDescription(RAID_HALLS_OF_FABRICATION))
+	MakeSubmenu(L.Settings_HallsFab_Header, RaidNotifier:GetRaidDescription(RAID_HALLS_OF_FABRICATION))
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_TAKING_AIM,
-		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_TAKING_AIM_TT,
+		name = L.Settings_HallsFab_Taking_Aim,
+		tooltip = L.Settings_HallsFab_Taking_Aim_TT,
 		choices = choices.hallsFab.taking_aim,
 	}, "hallsFab", "taking_aim")
 	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_DRAINING_BALLISTA,
-		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_DRAINING_BALLISTA_TT,
+		name = L.Settings_HallsFab_Draining_Ballista,
+		tooltip = L.Settings_HallsFab_Draining_Ballista_TT,
 		choices = choices.hallsFab.draining_ballista,
 	}, "hallsFab", "draining_ballista")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_STRIKE,
-		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_STRIKE_TT,
+		name = L.Settings_HallsFab_Conduit_Strike,
+		tooltip = L.Settings_HallsFab_Conduit_Strike_TT,
 	}, "hallsFab", "conduit_strike")
    	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_POWER_LEECH,
-		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_POWER_LEECH_TT,
+		name = L.Settings_HallsFab_Power_Leech,
+		tooltip = L.Settings_HallsFab_Power_Leech_TT,
 	}, "hallsFab", "power_leech")
+   	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_HallsFab_Venom_Injection,
+		tooltip = L.Settings_HallsFab_Venom_Injection_TT,
+	}, "hallsFab", "venom_injection")
+	
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_SCALDED_DEBUFF,
-		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_SCALDED_DEBUFF_TT,
-		--disabled = function() return not self:IsDevMode() end,
-		--warning = RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_WARNING,
+		name = L.Settings_HallsFab_Scalded_Debuff,
+		tooltip = L.Settings_HallsFab_Scalded_Debuff_TT,
 		noAlert = true,
 	}, "hallsFab", "pinnacleBoss_scalded")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_SPAWN,
-		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_SPAWN_TT,
+		name = L.Settings_HallsFab_Conduit_Spawn,
+		tooltip = L.Settings_HallsFab_Conduit_Spawn_TT,
    }, "hallsFab", "pinnacleBoss_conduit_spawn")
   	MakeControlEntry({
 		type = "dropdown",
-		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_DRAIN,
-		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_CONDUIT_DRAIN_TT,
+		name = L.Settings_HallsFab_Conduit_Drain,
+		tooltip = L.Settings_HallsFab_Conduit_Drain_TT,
 		choices = choices.hallsFab.pinnacleBoss_conduit_drain,
 	}, "hallsFab", "pinnacleBoss_conduit_drain")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS,
-		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS_TT,
+		name = L.Settings_HallsFab_Overpower_Auras,
+		tooltip = L.Settings_HallsFab_Overpower_Auras_TT,
 	}, "hallsFab", "committee_overpower_auras")
 	MakeControlEntry({
 		type = "slider",
-		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS_DURATION,
-		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS_DURATION_TT,
+		name = L.Settings_HallsFab_Overpower_Auras_Duration,
+		tooltip = L.Settings_HallsFab_Overpower_Auras_Duration_TT,
 		min = 3000, max = 10000, step = 100,
 		noAlert = true,
 	}, "hallsFab", "committee_overpower_auras_duration")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS_DYNAMIC,
-		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_OVERPOWER_AURAS_DYNAMIC_TT,
+		name = L.Settings_HallsFab_Overpower_Auras_Dynamic,
+		tooltip = L.Settings_HallsFab_Overpower_Auras_Dynamic_TT,
 		disabled = function() return not self:IsDevMode() or not savedVars.hallsFab.committee_overpower_auras end,
-		warning = RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_WARNING,
+		warning = L.Settings_Debug_DevMode_Warning,
 		noAlert = true,
 	}, "hallsFab", "committee_overpower_auras_dynamic")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_FABRICANT_SPAWN,
-		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_FABRICANT_SPAWN_TT,
+		name = L.Settings_HallsFab_Fabricant_Spawn,
+		tooltip = L.Settings_HallsFab_Fabricant_Spawn_TT,
 	}, "hallsFab", "committee_fabricant_spawn")
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_HALLSFAB_RECLAIM_ACHIEVE,
-		tooltip = RAIDNOTIFIER_SETTINGS_HALLSFAB_RECLAIM_ACHIEVE_TT,
+		name = L.Settings_HallsFab_Reclaim_Achieve,
+		tooltip = L.Settings_HallsFab_Reclaim_Achieve_TT,
 	}, "hallsFab", "committee_reclaim_achieve")
 	subTable = nil --end submenu
 
 
 	MakeControlEntry({
 		type = "header",
-		name = RAIDNOTIFIER_SETTINGS_DEBUG_HEADER,
+		name = L.Settings_Debug_Header,
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_DEBUG,
-		tooltip = RAIDNOTIFIER_SETTINGS_DEBUG_TT,
+		name = L.Settings_Debug,
+		tooltip = L.Settings_Debug_TT,
 		getFunc = function() return savedVars.dbg.enabled end,
 		setFunc = function(value)   savedVars.dbg.enabled = value end,
 	})
+	MakeSubmenu(L.Settings_Debug_Tracker_Header, L.Settings_Debug_Tracker_Description)
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE,
-		tooltip = RAIDNOTIFIER_SETTINGS_DEBUG_DEVMODE_TT,
-		getFunc = function() return savedVars.dbg.devMode end,
-		setFunc = function(value)   savedVars.dbg.devMode = value end,
-	})
-	MakeSubmenu(RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_HEADER, RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_DESCRIPTION)
-	MakeControlEntry({
-		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_ENABLED,
+		name = L.Settings_Debug_Tracker_Enabled,
 		--tooltip = RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_ENABLED_TT, -- dont need tooltip for this
 		getFunc = function() return savedVars.dbg.tracker end,
 		setFunc = function(value)
@@ -1096,16 +1102,16 @@ function RaidNotifier:CreateSettingsMenu()
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_SPAMCONTROL,
-		tooltip = RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_SPAMCONTROL_TT,
+		name = L.Settings_Debug_Tracker_SpamControl,
+		tooltip = L.Settings_Debug_Tracker_SpamControl_TT,
 		getFunc = function() return savedVars.dbg.spamControl end,
 		setFunc = function(value)   savedVars.dbg.spamControl = value end,
 		disabled = function() return not savedVars.dbg.tracker end,
 	})
 	MakeControlEntry({
 		type = "checkbox",
-		name = RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_MYENEMYONLY,
-		tooltip = RAIDNOTIFIER_SETTINGS_DEBUG_TRACKER_MYENEMYONLY_TT,
+		name = L.Settings_Debug_Tracker_MyEnemyOnly,
+		tooltip = L.Settings_Debug_Tracker_MyEnemyOnly_TT,
 		getFunc = function() return savedVars.dbg.myEnemyOnly end,
 		setFunc = function(value)   savedVars.dbg.myEnemyOnly = value end,
 		disabled = function() return not savedVars.dbg.tracker end,
@@ -1228,42 +1234,46 @@ function RaidNotifier:CreateSettingsMenu()
 end
 
 function RaidNotifier:TryUpgradeSettings()
-	local version, lastVersion = self.Version, self.Vars.addonVersion
-	-- change all alert sounds with CHAMPION_POINT_GAINED to DEFAULT_SOUND
-	if lastVersion == nil or lastVersion < "2.2.1" then 
-		for key, sound in pairs(self.Vars.sounds) do
+
+	local defaults  = self:GetDefaults()
+	local savedVars = self.Vars
+
+	local version, lastVersion = self.Version, savedVars.addonVersion or "0"
+	if lastVersion < "2.2.1" then 
+		-- change all alert sounds with CHAMPION_POINT_GAINED to DEFAULT_SOUND
+		for key, sound in pairs(savedVars.sounds) do
 			if sound == SOUNDS.CHAMPION_POINTS_COMMITTED then
-				self.Vars.sounds[key] = DEFAULT_SOUND
+				savedVars.sounds[key] = DEFAULT_SOUND
 			end
 		end
+	elseif lastVersion == "2.2.1" then
+		-- change "committee_overpower_auras_duration" to 9 seconds again since it was fixed in ESO v3.1.6
+		savedVars.hallsFab.committee_overpower_auras_duration = 9000
 	end
-	self.Vars.addonVersion = version
-
-	local defaults = self:GetDefaults()
-	local settings = self.Vars
+	savedVars.addonVersion = version
 
 	-- now for generic type checks
 	for category,content in pairs(defaults) do
 		if type(category) == "table" then
 			for key, default in pairs(content) do
-				local value = settings[category][key]
+				local value = savedVars[category][key]
 				if type(value) ~= type(default) then --type mismatch
 					if type(default) == "table" then -- advanced structure, try to preserve old value
-						settings[category][key] = Util.CopyTable(default) -- store value
+						savedVars[category][key] = Util.CopyTable(default) -- store value
 						if type(default.value) == type(value) then
 							self.p("Converted '%s -> %s' and keeping old value: %s", category, key, tostring(value))
-							settings[category][key].value = value
+							savedVars[category][key].value = value
 						else
 							self.p("Converted '%s -> %s' and types mismatch, new value: %s", category, key, tostring(default.value))
 						end
 						-- try to preserve sound setting
-						local soundId = settings.sounds[category.."_"..key]
+						local soundId = savedVars.sounds[category.."_"..key]
 						if soundId ~= nil then
 							self.p("Preserved soundId '%s'", soundId)
-							settings[category][key].sound = soundId
+							savedVars[category][key].sound = soundId
 						end
 					else
-						settings[category][key] = default
+						savedVars[category][key] = default
 						self.p("Mismatching type for '%s -> %s', new value: %s", category, key, tostring(default))
 					end
 				elseif type(default) == "table" then -- check for missing table entries

@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.2.1"
+RaidNotifier.Version         = "2.2.2"
 RaidNotifier.Author          = "|c009ad6Kyoma, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -256,17 +256,17 @@ do ----------------------
 		OnWeaponPairChanged()
 		EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_WEAPON_PAIR_LOCK_CHANGED, OnWeaponPairChanged)
 
-		-- TODO: check if this always runs AFTER LibGroupSocket's code on group changes
-		-- UPDATE: should no longer matter
+
 		local function OnGroupUpdate()
-			local newMembers = {}
 			local groupSize = GetGroupSize()
 			if (groupSize == 0) then
 				self:SetElementHidden("ultimate", "ulti_window", true)
+				ToggleLibGroupSocket(false)
 			else
 				self:SetElementHidden("ultimate", "ulti_window", settings.hidden)
 				ToggleLibGroupSocket(true)
 			end
+			local newMembers = {}
 			for i=1, groupSize do
 				local userName = GetUnitDisplayName("group"..i)
 				if userName and userName ~= "" then 
@@ -284,7 +284,6 @@ do ----------------------
 		EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_GROUP_MEMBER_JOINED, OnGroupUpdate)
 		EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_GROUP_MEMBER_LEFT,   OnGroupUpdate)
 		EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_GROUP_UPDATE,        OnGroupUpdate)
-		--EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_UNIT_FRAME_UPDATE,   OnGroupUpdate)
 		EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_GROUP_MEMBER_CONNECTED_STATUS , OnGroupUpdate)
 
 		local function OnRolesChanged(_, unitTag, dps, healer, tank)
@@ -315,13 +314,12 @@ do ----------------------
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_GROUP_MEMBER_ROLES_CHANGED)
 	end
 
-
 	SLASH_COMMANDS["/rnulti"] = function(str) 
 		local args = {zo_strsplit(" ", str)}
 
 		local self     = RaidNotifier
 		local settings = self.Vars.ultimate
-		if (args == nil or #args[1] == 0) then
+		if (args == nil or #args == 0) then
 			settings.hidden = not settings.hidden
 			p("%s Ultimate Exchange", settings.hidden and "Hide" or "Show")
 		elseif (args[1] == "show") then
@@ -1449,6 +1447,18 @@ do -----------------------------
 			return
 		end
 
+		-- try debugging poison spread in Sanctum (SHELVED INDEFINITELY)
+		--if (raidId == RAID_SANCTUM_OPHIDIA) then
+		--	local buffsDebuffs, settings = self.BuffsDebuffs.sanctum_ophidia, self.Vars.sanctumOphidia
+        --
+		--	if uTag == "player" then
+		--		local poisonType = buffsDebuffs.spreading_poison[abilityId]
+		--		if poisonType and changeType ~= EFFECT_RESULT_FADED then
+		--			dbg("Spreading Poison Type%d (#%d) time=%d", poisonType, abilityId, endTime - beginTime)
+		--		end
+		--	end
+		--end
+		
 		-- HoF is the first raid to make it here! WHOOHOOW!! (all cuz we needz dem stackcount)
 		if (raidId == RAID_HALLS_OF_FABRICATION) then
 			local buffsDebuffs, settings = self.BuffsDebuffs.halls_fab, self.Vars.hallsFab
@@ -1465,8 +1475,8 @@ do -----------------------------
 							self:UpdateScaldedStacks(stackCount, beginTime, endTime)
 						end
 					end
-				elseif abilityId == buffsDebuffs.sphere_venom_injection then
-					if self:IsDevMode() and settings.venom_injection then
+				elseif abilityId == buffsDebuffs.venom_injection then
+					if settings.venom_injection then
 						self:UpdateSphereVenom(changeType ~= EFFECT_RESULT_FADED, beginTime, endTime)
 					end
 				end

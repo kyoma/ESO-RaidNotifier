@@ -33,7 +33,7 @@ http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 --[[
 
 Author: Kyoma
-Version 18
+Version 19
 Changes: Rewrote how custom titles are added and stored to help reduce conflict between authors
 	- Moved table with custom titles into seperate section with register function
 	- Use achievementId instead of raw title name to make it work with all languages
@@ -45,11 +45,14 @@ Changes: Rewrote how custom titles are added and stored to help reduce conflict 
 	(v18) 
 	- Added support for colors and even a simple gradient
 	- Moved language check to title registration
+	
+	(v19)
+	- Fixed problems with UTF8 characters and color gradients
 ]]--
 
 
 local libLoaded
-local LIB_NAME, VERSION = "LibCustomTitlesRN", 18
+local LIB_NAME, VERSION = "LibCustomTitlesRN", 19
 local LibCustomTitles, oldminor = LibStub:NewLibrary(LIB_NAME, VERSION)
 if not LibCustomTitles then return end
 
@@ -97,7 +100,7 @@ function LibCustomTitles:RegisterTitle(displayName, charName, override, title, e
 	if type(extra) == "table" then
 		hidden = extra["hidden"]
 		if extra["color"] then
-			title = self:ApplyColor(title, extra["color"])
+			title = self:ApplyColor(title, extra["color"], extra["dbg"])
 		end
 	end
 
@@ -139,7 +142,7 @@ function LibCustomTitles:RegisterTitle(displayName, charName, override, title, e
 end
 
 local MAX_GRADIENT_STEPS = 10 --after that text just starts to disappear
-function LibCustomTitles:ApplyColor(text, color)
+function LibCustomTitles:ApplyColor(text, color, dbg)
 
 	if type(color) == "string" then 	-- just a simple color
 		return "|c"..color:gsub("#","")..text.."|r"
@@ -155,7 +158,9 @@ function LibCustomTitles:ApplyColor(text, color)
 	local gStart = {hex2rgb(color[1])}
 	local gEnd   = {hex2rgb(color[2])}
 
-	local len = string.len(text:gsub(" ", ""))
+	local splittedText, len = self:SplitText(text, 1) -- 1 = ignore space for length but still include them
+	if dbg then d(splittedText) end
+
 	local numSteps = zo_min(len, MAX_GRADIENT_STEPS)
 	local stepSize = len / numSteps --we dont round this down directly
 
@@ -170,10 +175,10 @@ function LibCustomTitles:ApplyColor(text, color)
 	end
 
 	local step = 0
-	local substep = 0
+	local substep = math.min(stepSize - 1.01, 0) -- make sure we always use a char for the first color
 	local gradientText = FormatGradient(step)
-	for c in text:gmatch(".") do
-		if c ~= " " then --ignore spaces
+	for _, char in ipairs(splittedText) do
+		if char ~= " " then
 			substep = substep + 1
 			if substep >= stepSize then
 				substep = substep - stepSize
@@ -181,12 +186,63 @@ function LibCustomTitles:ApplyColor(text, color)
 				gradientText = gradientText..FormatGradient(step)
 			end
 		end
-		gradientText = gradientText..c
+		gradientText = gradientText..char
 	end
 	gradientText = gradientText.."|r"
+	if dbg then d(gradientText) end
 
 	return gradientText
 end
+
+function LibCustomTitles:SplitText(text)
+
+	-- Thank you @Ayantir!
+	local splittedText = {}
+	local textLen = string.len(text)
+	local lenOffset = 0
+
+	local splittedString
+	local UTFAditionalBytes = 0
+	
+	local lastByte, byte = 0
+	local splittedStart, splittedEnd = 1, 1
+	while splittedStart <= textLen do
+		splittedString = text:sub(splittedStart, splittedEnd) -- always one byte here
+	
+		byte = string.byte(splittedString)
+		if (byte > 0 and byte < 128) then -- any ansi character (ex : a	97	LATIN SMALL LETTER A)
+			if byte == 32 then -- space, add length offset
+				lenOffset = lenOffset + 1
+			end
+		elseif byte >= 128 and byte < 192 then -- any non ansi character ends with last byte = 128-191 or 2nd byte of a 3 Byte character. We take 1 byte more.
+			if lastByte >= 192 and lastByte < 224 then -- "2 latin characters" ex: 195 169	LATIN SMALL LETTER E WITH ACUTE ; е	208 181	CYRILLIC SMALL LETTER IE
+				--
+			elseif lastByte >= 128 and lastByte < 192 then -- "3 Bytes Cyrillic & Japaneese" ex U+3057	し	227 129 151	HIRAGANA LETTER SI
+				--
+			elseif lastByte >= 224 and lastByte < 240 then -- 2nd byte of a 3 Byte character. We take 1 byte more.
+				UTFAditionalBytes = 1
+			end
+			splittedEnd = splittedEnd + UTFAditionalBytes
+			splittedString = text:sub(splittedStart, splittedEnd)
+		elseif byte >= 192 and byte < 224 then -- last byte = 1st byte of a 2 Byte character. We take 1 byte more.
+			UTFAditionalBytes = 1
+			splittedEnd = splittedEnd + UTFAditionalBytes
+			splittedString = text:sub(splittedStart, splittedEnd)
+		elseif byte >= 224 and byte < 240 then -- last byte = 1st byte of a 3 Byte character. We take 2 byte more.
+			UTFAditionalBytes = 2
+			splittedEnd = splittedEnd + UTFAditionalBytes
+			splittedString = text:sub(splittedStart, splittedEnd)
+		end
+
+		table.insert(splittedText, splittedString)
+
+		splittedStart = splittedEnd + 1
+		splittedEnd   = splittedStart
+		lastByte = byte
+	end
+	return splittedText, #splittedText - lenOffset
+end
+
 
 function LibCustomTitles:Init()
 
@@ -261,73 +317,3 @@ local function OnAddonLoaded()
 end
 
 EVENT_MANAGER:RegisterForEvent(LIB_NAME, EVENT_ADD_ON_LOADED, OnAddonLoaded)
-
-
-
---[[
-public static String Rainbow(Int32 numOfSteps, Int32 step)
-{
-	var r = 0.0;
-	var g = 0.0;
-	var b = 0.0;
-	var h = (Double)step / numOfSteps;
-	var i = (Int32)(h * 6);
-	var f = h * 6.0 - i;
-	var q = 1 - f;
-
-	switch (i % 6)
-	{
-		case 0:
-			r = 1;
-			g = f;
-			b = 0;
-			break;
-		case 1:
-			r = q;
-			g = 1;
-			b = 0;
-			break;
-		case 2:
-			r = 0;
-			g = 1;
-			b = f;
-			break;
-		case 3:
-			r = 0;
-			g = q;
-			b = 1;
-			break;
-		case 4:
-			r = f;
-			g = 0;
-			b = 1;
-			break;
-		case 5:
-			r = 1;
-			g = 0;
-			b = q;
-			break;
-	}
-	return "#" + ((Int32)(r * 255)).ToString("X2") + ((Int32)(g * 255)).ToString("X2") + ((Int32)(b * 255)).ToString("X2");
-}
-
---]]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

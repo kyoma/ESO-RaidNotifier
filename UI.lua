@@ -99,7 +99,7 @@ do --------------------
 	function RaidNotifier:InitializeUltimateWindow(control, mode)
 		window = self:RegisterElement(control)
 		-- do more with mode for initial display?
-		self:UpdateUltimateWindow({}, mode)
+		self:UpdateUltimateWindow(nil, mode)
 	end
 
 	function RaidNotifier:UpdateUltimateWindow(sortedUlti, mode)
@@ -366,22 +366,22 @@ do -------------------
 	end
 
 
-	-- Sanctum Ophidia: Spreading Poison
-	function RaidNotifier:UpdateSpreadingPoison(active, start, finish)
-		if not display then return end
-		if owner ~= "sanctum_spread_poison" then
-			owner = "sanctum_spread_poison"
-			display:SetTexture([[esoui/art/icons/death_recap_poison_aoe.dds]])
-			--display:SetTexture([[esoui/art/icons/ability_healer_018.dds]]) -- actual icon for ability?? 
-			display.label:SetHidden(true)
-			display.timer:SetHidden(false)
-		end
-		if active then
-			iconTimer:Start(start, finish)
-		else
-			iconTimer:Stop() -- let it fade 
-		end
-	end
+	-- Sanctum Ophidia: Spreading Poison  (SHELVED INDEFINITELY)
+	--function RaidNotifier:UpdateSpreadingPoison(active, start, finish)
+	--	if not display then return end
+	--	if owner ~= "sanctum_spread_poison" then
+	--		owner = "sanctum_spread_poison"
+	--		display:SetTexture([[esoui/art/icons/death_recap_poison_aoe.dds]])
+	--		--display:SetTexture([[esoui/art/icons/ability_healer_018.dds]]) -- actual icon for ability?? 
+	--		display.label:SetHidden(true)
+	--		display.timer:SetHidden(false)
+	--	end
+	--	if active then
+	--		iconTimer:Start(start, finish)
+	--	else
+	--		iconTimer:Stop() -- let it fade 
+	--	end
+	--end
 
 	-- Maw of Lorkhaj: False Moon Twins
 	function RaidNotifier:UpdateTwinAspect(aspect) -- "none", "lunar" or "shadow"

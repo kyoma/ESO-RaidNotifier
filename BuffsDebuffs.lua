@@ -40,15 +40,16 @@ sanctum.serpent_magicka_deto           = 59036
 sanctum.serpent_world_shaper           = 56857
 sanctum.serpent_world_shaper_delay     = 5000
 
--- Trolls
+-- Trolls Spreading Poison
 sanctum.spreading_poison = {} --determine which ones we actually need
---sanctum.spreading_poison.name = GetAbilityName(52036)
-sanctum.spreading_poison[52036] = true --seen in normal
-sanctum.spreading_poison[54419] = true
-sanctum.spreading_poison[54420] = true --the actual effect on the player?
-sanctum.spreading_poison[58663] = true
-sanctum.spreading_poison[58669] = true
-sanctum.spreading_poison[80794] = true --probably not needed
+sanctum.spreading_poison[52036] = 1  -- \\                                         (when someone spreads it with you?)
+sanctum.spreading_poison[58663] = 1  --  >>  Cast 1.9s, Enemy, 28m Range
+sanctum.spreading_poison[82591] = 1  -- //
+sanctum.spreading_poison[54419] = 2  -- \\                                         (the actual poison)
+sanctum.spreading_poison[58669] = 2  --  >> Instant Cast, Enemy, 28m Range, 2.5s 
+sanctum.spreading_poison[82597] = 2  -- //
+sanctum.spreading_poison[54420] = 3  -- Instant Cast, Area, 3.5m Radius
+sanctum.spreading_poison[80794] = 4  -- Cast 1.9s, Cone??, 0m Range??, 28m Radius
 
 sanctum.boulder_toss = 52012
 
@@ -343,7 +344,7 @@ RaidNotifier.BuffsDebuffs.maw_lorkhaj = maw_lorkhaj
 local halls_fab = {}
 
 -- Hunter Pair
-halls_fab.sphere_venom_injection       = 95230
+halls_fab.venom_injection              = 95230
 -- Pinnacle Factotum (2nd boss)
 halls_fab.pinnacleBoss_fluxburst       = 90755 -- the streak-like attack
 halls_fab.pinnacleBoss_conduit_spawn   = 91781 -- sadly not targeted on somebody
