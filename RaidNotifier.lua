@@ -1073,39 +1073,31 @@ do ---------------------------
 
 					-- False Moon Twins, S’Kinrai and Vashai 
 					if (buffsDebuffs.twinBoss_lunaraspect[abilityId]) then
-						dbg("[%d] Receiving Lunar Aspect", abilityId)
+						--dbg("[%d] Receiving Lunar Aspect", abilityId)
 						if settings.twinBoss_aspects >= 2 then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_LUNAR_ASPECT), "mawLorkhaj", "twinBoss_aspects", 4)
 						end
-						if settings.twinBoss_aspects_status then
-							self:UpdateTwinAspect("lunar")
-						end
+						self:UpdateTwinAspect("lunar")
 					elseif (buffsDebuffs.twinBoss_shadowaspect[abilityId]) then
-						dbg("[%d] Receiving Shadow Aspect", abilityId)
+						--dbg("[%d] Receiving Shadow Aspect", abilityId)
 						if settings.twinBoss_aspects >= 2 then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_SHADOW_ASPECT), "mawLorkhaj", "twinBoss_aspects", 4)
 						end
-						if settings.twinBoss_aspects_status then
-							self:UpdateTwinAspect("shadow")
-						end
+						self:UpdateTwinAspect("shadow")
 					elseif (buffsDebuffs.twinBoss_lunarconversion[abilityId]) then
-						dbg("[%d] Converting to Lunar Aspect", abilityId)
+						--dbg("[%d] Converting to Lunar Aspect", abilityId)
 						--conversion just started
 						if settings.twinBoss_aspects >= 1 then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_LUNAR_CONVERSION), "mawLorkhaj", "twinBoss_aspects", 4)
 						end
-						if settings.twinBoss_aspects_status then
-							self:UpdateTwinAspect("tolunar")
-						end
+						self:UpdateTwinAspect("tolunar")
 					elseif (buffsDebuffs.twinBoss_shadowconversion[abilityId]) then
-						dbg("[%d] Converting to Shadow Aspect", abilityId)
+						--dbg("[%d] Converting to Shadow Aspect", abilityId)
 						--conversion just started
 						if settings.twinBoss_aspects >= 1 then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_SHADOW_CONVERSION), "mawLorkhaj", "twinBoss_aspects", 4)
 						end
-						if settings.twinBoss_aspects_status then
-							self:UpdateTwinAspect("toshadow")
-						end
+						self:UpdateTwinAspect("toshadow")
 					end
 
 					--Dro'm Athra Savage / Dro'm Athra Hulk: Armor Shatter
@@ -1134,19 +1126,19 @@ do ---------------------------
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_RAKKHAT_UNSTABLE_VOID_OTHER), tName), "mawLorkhaj", "rakkhat_unstablevoid")
 						end
 					end
-				elseif (buffsDebuffs.rakkhat_lunarbastion[abilityId]) then
-					if settings.rakkhat_lunarbastion1 >= 1 then
-						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-						if (tType == COMBAT_UNIT_TYPE_PLAYER)  then
-							if (settings.rakkhat_lunarbastion1 == 1 or settings.rakkhat_lunarbastion1 == 3) then --if "Self" or "All"
-								self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_RAKKHAT_LUNARBASTION1), "mawLorkhaj", "rakkhat_lunarbastion1")
-							end
-						elseif (tName ~= "") then 
-							if (settings.rakkhat_lunarbastion1 == 2 or settings.rakkhat_lunarbastion1 == 3) then --if "Other" or "All"
-								self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_RAKKHAT_LUNARBASTION1_OTHER), tName), "mawLorkhaj", "rakkhat_lunarbastion1")
-							end
-						end
-					end
+				--elseif (buffsDebuffs.rakkhat_lunarbastion[abilityId]) then
+				--	if settings.rakkhat_lunarbastion1 >= 1 then
+				--		tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+				--		if (tType == COMBAT_UNIT_TYPE_PLAYER)  then
+				--			if (settings.rakkhat_lunarbastion1 == 1 or settings.rakkhat_lunarbastion1 == 3) then --if "Self" or "All"
+				--				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_RAKKHAT_LUNARBASTION1), "mawLorkhaj", "rakkhat_lunarbastion1")
+				--			end
+				--		elseif (tName ~= "") then 
+				--			if (settings.rakkhat_lunarbastion1 == 2 or settings.rakkhat_lunarbastion1 == 3) then --if "Other" or "All"
+				--				self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_RAKKHAT_LUNARBASTION1_OTHER), tName), "mawLorkhaj", "rakkhat_lunarbastion1")
+				--			end
+				--		end
+				--	end
 				end
 
 			elseif (result == ACTION_RESULT_EFFECT_FADED) then
@@ -1155,49 +1147,41 @@ do ---------------------------
 					-- End of conversion now properly falls under ACTION_RESULT_EFFECT_FADED
 					if (buffsDebuffs.twinBoss_lunarconversion[abilityId]) then
 						--conversion ended
-						dbg("[%d] Conversion Complete", abilityId)
+						--dbg("[%d] Conversion Complete", abilityId)
 						if settings.twinBoss_aspects >= 3 then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_LUNAR_ASPECT), "mawLorkhaj", "twinBoss_aspects", 4)
 						end
-						if settings.twinBoss_aspects_status then
-							self:UpdateTwinAspect("lunar")
-						end
+						self:UpdateTwinAspect("lunar")
 					elseif (buffsDebuffs.twinBoss_shadowconversion[abilityId]) then
 						--conversion ended
-						dbg("[%d] Conversion Complete", abilityId)
+						--dbg("[%d] Conversion Complete", abilityId)
 						if settings.twinBoss_aspects >= 3 then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_SHADOW_ASPECT), "mawLorkhaj", "twinBoss_aspects", 4)
 						end
-						if settings.twinBoss_aspects_status then
-							self:UpdateTwinAspect("shadow")
-						end
+						self:UpdateTwinAspect("shadow")
 					elseif (abilityId == buffsDebuffs.twinBoss_shadowaspectremove) then
-						dbg("[%d] Removing Shadow Aspect", abilityId)
-						if settings.twinBoss_aspects_status then
-							self:UpdateTwinAspect("none")
-						end
+						--dbg("[%d] Removing Shadow Aspect", abilityId)
+						self:UpdateTwinAspect("none")
 					elseif (abilityId == buffsDebuffs.twinBoss_lunaraspectremove) then
-						dbg("[%d] Removing Lunar Aspect", abilityId)
-						if settings.twinBoss_aspects_status then
-							self:UpdateTwinAspect("none")
-						end
+						--dbg("[%d] Removing Lunar Aspect", abilityId)
+						self:UpdateTwinAspect("none")
 					end
 				end
 
-				if (buffsDebuffs.rakkhat_lunarbastion[abilityId]) then
-					if settings.rakkhat_lunarbastion2 >= 1 then
-						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-						if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-							if (settings.rakkhat_lunarbastion2 == 1 or settings.rakkhat_lunarbastion2 == 3) then --if "Self" or "All"
-								self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_RAKKHAT_LUNARBASTION2), "mawLorkhaj", "rakkhat_lunarbastion2")
-							end
-						elseif (tName ~= "") then 
-							if (settings.rakkhat_lunarbastion2 == 2 or settings.rakkhat_lunarbastion2 == 3) then --if "Other" or "All"
-								self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_RAKKHAT_LUNARBASTION2_OTHER), tName), "mawLorkhaj", "rakkhat_lunarbastion2")
-							end
-						end
-					end
-				end
+				--if (buffsDebuffs.rakkhat_lunarbastion[abilityId]) then
+				--	if settings.rakkhat_lunarbastion2 >= 1 then
+				--		tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+				--		if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+				--			if (settings.rakkhat_lunarbastion2 == 1 or settings.rakkhat_lunarbastion2 == 3) then --if "Self" or "All"
+				--				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_RAKKHAT_LUNARBASTION2), "mawLorkhaj", "rakkhat_lunarbastion2")
+				--			end
+				--		elseif (tName ~= "") then 
+				--			if (settings.rakkhat_lunarbastion2 == 2 or settings.rakkhat_lunarbastion2 == 3) then --if "Other" or "All"
+				--				self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_RAKKHAT_LUNARBASTION2_OTHER), tName), "mawLorkhaj", "rakkhat_lunarbastion2")
+				--			end
+				--		end
+				--	end
+				--end
 			end
 
 		elseif (raidId == RAID_MAELSTROM_ARENA) then

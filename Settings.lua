@@ -889,6 +889,12 @@ function RaidNotifier:CreateSettingsMenu()
 		choices = choices.mawLorkhaj.twinBoss_aspects,
 	}, "mawLorkhaj", "twinBoss_aspects")
 	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_MawLorkhaj_Twin_Aspects_Status,
+		tooltip = L.Settings_MawLorkhaj_Twin_Aspects_Status_TT,
+		noAlert = true,
+	}, "mawLorkhaj", "twinBoss_aspects_status")
+	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_MawLorkhaj_Rakkhat_Unstable_Void,
 		tooltip = L.Settings_MawLorkhaj_Rakkhat_Unstable_Void_TT,
@@ -909,18 +915,18 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_MawLorkhaj_Rakkhat_DarkBarrage,
 		tooltip = L.Settings_MawLorkhaj_Rakkhat_DarkBarrage_TT,
 	}, "mawLorkhaj", "rakkhat_darkbarrage")
-	MakeControlEntry({
-		type = "dropdown",
-		name = L.Settings_MawLorkhaj_Rakkhat_LunarBastion1,
-		tooltip = L.Settings_MawLorkhaj_Rakkhat_LunarBastion1_TT,
-		choices = choices.mawLorkhaj.rakkhat_lunarbastion1,
-	}, "mawLorkhaj", "rakkhat_lunarbastion1")
-	MakeControlEntry({
-		type = "dropdown",
-		name = L.Settings_MawLorkhaj_Rakkhat_LunarBastion2,
-		tooltip = L.Settings_MawLorkhaj_Rakkhat_LunarBastion2_TT,
-		choices = choices.mawLorkhaj.rakkhat_lunarbastion2,
-	}, "mawLorkhaj", "rakkhat_lunarbastion2")
+--	MakeControlEntry({
+--		type = "dropdown",
+--		name = L.Settings_MawLorkhaj_Rakkhat_LunarBastion1,
+--		tooltip = L.Settings_MawLorkhaj_Rakkhat_LunarBastion1_TT,
+--		choices = choices.mawLorkhaj.rakkhat_lunarbastion1,
+--	}, "mawLorkhaj", "rakkhat_lunarbastion1")
+--	MakeControlEntry({
+--		type = "dropdown",
+--		name = L.Settings_MawLorkhaj_Rakkhat_LunarBastion2,
+--		tooltip = L.Settings_MawLorkhaj_Rakkhat_LunarBastion2_TT,
+--		choices = choices.mawLorkhaj.rakkhat_lunarbastion2,
+--	}, "mawLorkhaj", "rakkhat_lunarbastion2")
 	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_MawLorkhaj_Shattered,

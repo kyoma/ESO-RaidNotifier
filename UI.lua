@@ -384,8 +384,9 @@ do -------------------
 	--end
 
 	-- Maw of Lorkhaj: False Moon Twins
-	function RaidNotifier:UpdateTwinAspect(aspect) -- "none", "lunar" or "shadow"
-		if not self:IsDevMode() then return end -- placed here for centralization 
+	function RaidNotifier:UpdateTwinAspect(aspect)
+		local settings = self.Vars.mawLorkhaj
+		if not settings.twinBoss_aspects_status then return end
 
 		if not display then return end
 		if owner ~= "mol_twins_aspect" then

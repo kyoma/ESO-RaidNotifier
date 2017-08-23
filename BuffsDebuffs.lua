@@ -221,10 +221,10 @@ maw_lorkhaj.zhaj_gripoflorkhaj[57470] = true
 maw_lorkhaj.zhaj_gripoflorkhaj[57471] = true
 --   Curse
 maw_lorkhaj.zhajBoss_curseability  = 57517
-maw_lorkhaj.zhajBoss_curseduration = 25000
+maw_lorkhaj.zhajBoss_curseduration = 25
 --   Glyphs
 maw_lorkhaj.zhajBoss_glyphability  = 57525
-maw_lorkhaj.zhajBoss_glyphcooldown = 25000
+maw_lorkhaj.zhajBoss_glyphcooldown = 25
 maw_lorkhaj.zhajBoss_knownGlyphs = {}
 maw_lorkhaj.zhajBoss_glyphs = {
 	{x=0.55496829748154, y=0.29175475239754},
