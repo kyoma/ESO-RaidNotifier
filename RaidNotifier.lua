@@ -783,11 +783,9 @@ do ---------------------------
 				-- Serpent (Hardmode), World-Shaper
 				elseif (abilityId == buffsDebuffs.serpent_world_shaper) then
 					 --per start of eclipse tear, just add countdown and use interval to limit it to the first
-					if self:IsDevMode() then
-						if (settings.serpent_world_shaper == true) then
-							dbg("World Shaper detected")
-							self:StartCountdown(buffsDebuffs.serpent_world_shaper_delay, GetString(RAIDNOTIFIER_ALERTS_SANCTUM_SERPENT_WORLD_SHAPER), "sanctumOphidia", "serpent_world_shaper", 10)
-						end
+					if (settings.serpent_world_shaper == true) then
+						dbg("World Shaper detected")
+						self:StartCountdown(buffsDebuffs.serpent_world_shaper_delay, GetString(RAIDNOTIFIER_ALERTS_SANCTUM_SERPENT_WORLD_SHAPER), "sanctumOphidia", "serpent_world_shaper", 10)
 					end
 
 				-- Trolls, Spreading Poison
