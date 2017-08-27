@@ -212,6 +212,8 @@ do ------------------
 		hallsFab = {
 			conduit_strike        = true, 
 			taking_aim            = 1, -- "Self"
+			taking_aim_dynamic    = false,
+			taking_aim_duration   = 5000,
 			draining_ballista     = 1, -- "Self"
 			power_leech           = false,
 			venom_injection       = false,
@@ -1012,6 +1014,23 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_HallsFab_Taking_Aim_TT,
 		choices = choices.hallsFab.taking_aim,
 	}, "hallsFab", "taking_aim")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_HallsFab_Taking_Aim_Dynamic,
+		tooltip = L.Settings_HallsFab_Taking_Aim_Dynamic_TT,
+		disabled = function() return not self:IsDevMode() or savedVars.hallsFab.taking_aim ~= 1 end,
+		warning =  L.Settings_Debug_DevMode_Warning,
+		noAlert = true,
+	}, "hallsFab", "taking_aim_dynamic")
+	MakeControlEntry({
+		type = "slider",
+		name = L.Settings_HallsFab_Taking_Aim_Duration,
+		tooltip = L.Settings_HallsFab_Taking_Aim_Duration_TT,
+		min = 2000, max = 10000, step = 100,
+		disabled = function() return not self:IsDevMode() or savedVars.hallsFab.taking_aim ~= 1 or savedVars.hallsFab.taking_aim_dynamic == false end,
+		warning = L.Settings_Debug_DevMode_Warning,
+		noAlert = true,
+	}, "hallsFab", "taking_aim_duration")
 	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_HallsFab_Draining_Ballista,

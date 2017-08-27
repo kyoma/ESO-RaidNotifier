@@ -1215,7 +1215,11 @@ do ---------------------------
 					if (settings.taking_aim >= 1) then
 						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
-							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM), "hallsFab", "taking_aim")
+							if (settings.taking_aim_dynamic == true) then
+								self:StartCountdown(settings.taking_aim_duration, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM), "hallsFab", "taking_aim")
+							else
+								self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM), "hallsFab", "taking_aim")
+							end
 						elseif (tName ~= "" and settings.taking_aim == 2) then
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM_OTHER), tName), "hallsFab", "taking_aim")
 						end
