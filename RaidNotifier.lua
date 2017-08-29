@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.2.2"
+RaidNotifier.Version         = "2.2.3"
 RaidNotifier.Author          = "|c009ad6Kyoma, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -35,6 +35,9 @@ local ActionResults =
 	ACTION_RESULT_EFFECT_GAINED,
 	ACTION_RESULT_EFFECT_GAINED_DURATION,
 	ACTION_RESULT_EFFECT_FADED,
+	--ACTION_RESULT_INTERRUPT, 
+	--ACTION_RESULT_DIED,
+	--ACTION_RESULT_DIED_XP, -- only interested in spawns/minions which don't give exp??
 }
 
 local ALERT_PRIORITY_HIGHEST = 5
@@ -1340,9 +1343,8 @@ do ---------------------------
 		debugList[result] = {}
 	end
 	local debugMsg = "[%d] %s (%d)%s%s"
-	
 	local function OnCombatDebugEvent(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
-	
+
 		local self   = RaidNotifier
 
 		if (self.Vars.dbg.tracker and debugList[result] ~= nil) then

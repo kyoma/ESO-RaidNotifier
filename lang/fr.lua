@@ -344,8 +344,26 @@ L.Settings_Debug_Tracker_MyEnemyOnly_TT  = "Lorsque l'option est activée, elle 
 
 
 
---INTERNAL--
+--TODO: get rid of this ugly, bulky localization method
 for k, v in pairs(L) do
     local string = "RAIDNOTIFIER_" .. string.upper(k)
     ZO_CreateStringId(string, v)
+end
+
+if (GetCVar('language.2') == 'fr') then 
+	local MissingL = {}
+	for k, v in pairs(RaidNotifier:GetLocale()) do
+		if (not L[k]) then
+			table.insert(MissingL, k)
+			L[k] = v
+		end
+	end
+	function RaidNotifier:GetLocale() 
+		return L
+	end
+	-- for debugging 
+	function RaidNotifier:MissingLocale()
+		df("Missing strings for '%s'", GetCVar('language.2'))
+		d(MissingL)
+	end
 end
