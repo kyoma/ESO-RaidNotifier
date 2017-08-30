@@ -1255,7 +1255,7 @@ do ---------------------------
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_DRAINING_BALLISTA), "hallsFab", "draining_ballista", 4) -- do we need this 4sec delay?
 						elseif (tName ~= "" and settings.draining_ballista == 2) then
-							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_DRAINING_BALLISTA_OTHER), "hallsFab", "draining_ballista", 4)
+							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_DRAINING_BALLISTA_OTHER), tName), "hallsFab", "draining_ballista", 4)
 						end
 					end
 				elseif (abilityId == buffsDebuffs.power_leech) then
