@@ -1,5 +1,5 @@
 -- The Ultimate Protocol
--- *bitArray* flags, *uint8* ultimate[, *uint8* ultimateCost]
+-- *bitArray* flags, *uint8* ultimate[, *uint8* ultimateCost[, *uint8 ultimateIndex]]
 -- flags:
 --   1: isFullUpdate - the user is sending cost in addition to percentages in this packet
 --   2: requestsFullUpdate - the user does not have all the necessary data and wants to have a full update from everyone (e.g. after reloading the ui)

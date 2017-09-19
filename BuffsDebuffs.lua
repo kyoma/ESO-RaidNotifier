@@ -345,6 +345,7 @@ local halls_fab = {}
 
 -- Hunter Pair
 halls_fab.venom_injection              = 95230
+halls_fab.hunters_spawn_sphere         = 90414
 -- Pinnacle Factotum (2nd boss)
 halls_fab.pinnacleBoss_fluxburst       = 90755 -- the streak-like attack
 halls_fab.pinnacleBoss_conduit_spawn   = 91781 -- sadly not targeted on somebody

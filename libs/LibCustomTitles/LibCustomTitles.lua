@@ -33,7 +33,7 @@ http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 --[[
 
 Author: Kyoma
-Version 19
+Version 20
 Changes: Rewrote how custom titles are added and stored to help reduce conflict between authors
 	- Moved table with custom titles into seperate section with register function
 	- Use achievementId instead of raw title name to make it work with all languages
@@ -48,11 +48,14 @@ Changes: Rewrote how custom titles are added and stored to help reduce conflict 
 	
 	(v19)
 	- Fixed problems with UTF8 characters and color gradients
+	
+	(v20)
+	- Added option to replace a title globally.
 ]]--
 
 
 local libLoaded
-local LIB_NAME, VERSION = "LibCustomTitlesRN", 19
+local LIB_NAME, VERSION = "LibCustomTitlesRN", 20
 local LibCustomTitles, oldminor = LibStub:NewLibrary(LIB_NAME, VERSION)
 if not LibCustomTitles then return end
 
@@ -272,13 +275,17 @@ function LibCustomTitles:Init()
 		end
 	end
 
-	local function GetModifiedTitle(originalTitle, displayName, unitName, registerType)
+	local function GetModifiedTitle(originalTitle, displayName, charName)
+		-- check for global override
+		local returnTitle = GetCustomTitle(originalTitle, customTitles["-GLOBAL-"]) or originalTitle
+		-- check for player override
+		local registerType = GetCustomTitleType(displayName, charName)
 		if registerType == CT_TITLE_CHARACTER then
-			return GetCustomTitle(originalTitle, customTitles[displayName][unitName]) or originalTitle
-		elseif registerType == CT_TITLE_ACCOUNT then
-			return GetCustomTitle(originalTitle, customTitles[displayName]) or originalTitle
+			return GetCustomTitle(originalTitle, customTitles[displayName][unitName]) or returnTitle
+		elseif registerType == CT_TITLE_ACCOUNT then 
+			return GetCustomTitle(originalTitle, customTitles[displayName]) or returnTitle
 		end
-		return originalTitle
+		return returnTitle
 	end
 
 	local GetUnitTitle_original = GetUnitTitle
@@ -286,11 +293,8 @@ function LibCustomTitles:Init()
 		local unitTitleOriginal = GetUnitTitle_original(unitTag)
 		local unitDisplayName = GetUnitDisplayName(unitTag)
 		local unitCharacterName = GetUnitName(unitTag)
-		local registerType = GetCustomTitleType(unitDisplayName, unitCharacterName)
-		if registerType ~= CT_NO_TITLE then
-			return GetModifiedTitle(unitTitleOriginal, unitDisplayName, unitCharacterName, registerType)
-		end
-		return unitTitleOriginal
+		
+		return GetModifiedTitle(unitTitleOriginal, unitDisplayName, unitCharacterName)
 	end
 
 	local GetTitle_original = GetTitle
@@ -298,11 +302,8 @@ function LibCustomTitles:Init()
 		local titleOriginal = GetTitle_original(index)
 		local displayName = GetDisplayName()
 		local characterName = GetUnitName("player")
-		local registerType = GetCustomTitleType(displayName, characterName)
-		if registerType ~= CT_NO_TITLE then
-			return GetModifiedTitle(titleOriginal, displayName, characterName, registerType)
-		end
-		return titleOriginal
+
+		return GetModifiedTitle(titleOriginal, displayName, characterName)
 	end
 
 end

@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.2.3"
+RaidNotifier.Version         = "2.2.4"
 RaidNotifier.Author          = "|c009ad6Kyoma, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -19,6 +19,8 @@ local RAID_DRAGONSTAR_ARENA      = 4
 local RAID_MAW_OF_LORKHAJ        = 5
 local RAID_MAELSTROM_ARENA       = 6
 local RAID_HALLS_OF_FABRICATION  = 7
+local RAID_ASYLUM_SANCTORIUM     = 8
+
 
 -- Debugging
 local function p() end
@@ -35,8 +37,8 @@ local ActionResults =
 	ACTION_RESULT_EFFECT_GAINED,
 	ACTION_RESULT_EFFECT_GAINED_DURATION,
 	ACTION_RESULT_EFFECT_FADED,
-	--ACTION_RESULT_INTERRUPT, 
-	--ACTION_RESULT_DIED,
+	ACTION_RESULT_INTERRUPT, 
+	ACTION_RESULT_DIED,
 	--ACTION_RESULT_DIED_XP, -- only interested in spawns/minions which don't give exp??
 }
 
@@ -402,6 +404,7 @@ do ----------------------
 		[RAID_MAW_OF_LORKHAJ]        = 725,
 		[RAID_MAELSTROM_ARENA]       = 677,
 		[RAID_HALLS_OF_FABRICATION]  = 975,
+		[RAID_ASYLUM_SANCTORIUM]     = 1000,
 	}
 	local RaidZones = {}
 	for raidId, zoneId in pairs(RaidZoneIds) do
@@ -585,6 +588,10 @@ do -----------------------------
 		local raidId = RaidNotifier.raidId
 
 		local bossCount = self:GetNumBosses(true)
+		-- always reset minions for now
+		self.Minions = {}
+		-- remove any countdown that is active
+		self:StopCountdown()
 
 		if (raidId == RAID_MAW_OF_LORKHAJ) then
 			local buffsDebuffs, settings = self.BuffsDebuffs.maw_lorkhaj, self.Vars.mawLorkhaj
@@ -787,7 +794,7 @@ do ---------------------------
 				elseif (abilityId == buffsDebuffs.serpent_world_shaper) then
 					 --per start of eclipse tear, just add countdown and use interval to limit it to the first
 					if (settings.serpent_world_shaper == true) then
-						dbg("World Shaper detected")
+						--dbg("World Shaper detected")
 						self:StartCountdown(buffsDebuffs.serpent_world_shaper_delay, GetString(RAIDNOTIFIER_ALERTS_SANCTUM_SERPENT_WORLD_SHAPER), "sanctumOphidia", "serpent_world_shaper", 10)
 					end
 
@@ -1074,26 +1081,22 @@ do ---------------------------
 
 					-- False Moon Twins, S’Kinrai and Vashai 
 					if (buffsDebuffs.twinBoss_lunaraspect[abilityId]) then
-						--dbg("[%d] Receiving Lunar Aspect", abilityId)
 						if settings.twinBoss_aspects >= 2 then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_LUNAR_ASPECT), "mawLorkhaj", "twinBoss_aspects", 4)
 						end
 						self:UpdateTwinAspect("lunar")
 					elseif (buffsDebuffs.twinBoss_shadowaspect[abilityId]) then
-						--dbg("[%d] Receiving Shadow Aspect", abilityId)
 						if settings.twinBoss_aspects >= 2 then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_SHADOW_ASPECT), "mawLorkhaj", "twinBoss_aspects", 4)
 						end
 						self:UpdateTwinAspect("shadow")
 					elseif (buffsDebuffs.twinBoss_lunarconversion[abilityId]) then
-						--dbg("[%d] Converting to Lunar Aspect", abilityId)
 						--conversion just started
 						if settings.twinBoss_aspects >= 1 then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_LUNAR_CONVERSION), "mawLorkhaj", "twinBoss_aspects", 4)
 						end
 						self:UpdateTwinAspect("tolunar")
 					elseif (buffsDebuffs.twinBoss_shadowconversion[abilityId]) then
-						--dbg("[%d] Converting to Shadow Aspect", abilityId)
 						--conversion just started
 						if settings.twinBoss_aspects >= 1 then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_SHADOW_CONVERSION), "mawLorkhaj", "twinBoss_aspects", 4)
@@ -1148,23 +1151,19 @@ do ---------------------------
 					-- End of conversion now properly falls under ACTION_RESULT_EFFECT_FADED
 					if (buffsDebuffs.twinBoss_lunarconversion[abilityId]) then
 						--conversion ended
-						--dbg("[%d] Conversion Complete", abilityId)
 						if settings.twinBoss_aspects >= 3 then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_LUNAR_ASPECT), "mawLorkhaj", "twinBoss_aspects", 4)
 						end
 						self:UpdateTwinAspect("lunar")
 					elseif (buffsDebuffs.twinBoss_shadowconversion[abilityId]) then
 						--conversion ended
-						--dbg("[%d] Conversion Complete", abilityId)
 						if settings.twinBoss_aspects >= 3 then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_SHADOW_ASPECT), "mawLorkhaj", "twinBoss_aspects", 4)
 						end
 						self:UpdateTwinAspect("shadow")
 					elseif (abilityId == buffsDebuffs.twinBoss_shadowaspectremove) then
-						--dbg("[%d] Removing Shadow Aspect", abilityId)
 						self:UpdateTwinAspect("none")
 					elseif (abilityId == buffsDebuffs.twinBoss_lunaraspectremove) then
-						--dbg("[%d] Removing Lunar Aspect", abilityId)
 						self:UpdateTwinAspect("none")
 					end
 				end
@@ -1217,7 +1216,9 @@ do ---------------------------
 						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 							if (self:IsDevMode() and settings.taking_aim == 1 and settings.taking_aim_dynamic == true) then
-								self:StartCountdown(settings.taking_aim_duration, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM), "hallsFab", "taking_aim")
+								dbg("Taking Aim incoming from Sphere #%d", sUnitId)
+								buffsDebuffs.taking_aim_index = self:StartCountdown(settings.taking_aim_duration, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM), "hallsFab", "taking_aim")
+								self.Minions.incomingSource = sUnitId
 							else
 								self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM), "hallsFab", "taking_aim")
 							end
@@ -1274,6 +1275,9 @@ do ---------------------------
 							buffsDebuffs.committee_overload_target = nil
 						end
 					end
+				--elseif abilityId == buffsDebuffs.hunters_spawn_sphere then
+				--	dbg("Spawn Sphere #%d (%d)", tUnitId, result)
+				--	self.Minions[tUnitId] = abilityId -- to keep track of what spawned this minion
 				end
 
 			elseif (result == ACTION_RESULT_EFFECT_GAINED) then
@@ -1327,6 +1331,26 @@ do ---------------------------
 						end
 					end
 				end
+				
+			elseif (result == ACTION_RESULT_INTERRUPT) then
+				--if self.Minions[tUnitId] == buffsDebuffs.hunters_spawn_sphere then
+					if tUnitId == self.Minions.incomingSource then
+						dbg("Sphere #%d was interrupted", tUnitId)
+						self.Minions.incomingSource = nil
+						self:StopCountdown(buffsDebuffs.taking_aim_index)
+						buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
+					end
+				--end
+			elseif (result == ACTION_RESULT_DIED) then
+				--if self.Minions[tUnitId] == buffsDebuffs.hunters_spawn_sphere then
+					if tUnitId == self.Minions.incomingSource then
+						dbg("Sphere #%d died", tUnitId)
+						self.Minions.incomingSource = nil
+						self:StopCountdown(buffsDebuffs.taking_aim_index)
+						buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
+					end
+					--self.Minions[tUnitId] = nil 
+				--end
 			end
 		end
 
@@ -1341,9 +1365,24 @@ do ---------------------------
 		debugList[result] = {}
 	end
 	local debugMsg = "[%d] %s (%d)%s%s"
+
+	local trackedUnits = {}
 	local function OnCombatDebugEvent(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
 
 		local self   = RaidNotifier
+		
+		--if self.Vars.dbg.units then
+		--	local function CheckUnit(id, name, type)
+		--		if id > 0 and abilityId ~= 90463 and not trackedUnits[id] then
+		--			if LUNIT:GetNameForUnitId(id) == "" then -- not a known unit like group members or bosses
+		--				trackedUnits[id] = true
+		--				df("Found new unit #%d (%d, %s)", id, abilityId, GetAbilityName(abilityId))
+		--			end
+		--		end
+		--	end
+		--	--CheckUnit(sUnitId, sName, sType)
+		--	CheckUnit(tUnitId, tName, tType)
+		--end
 
 		if (self.Vars.dbg.tracker and debugList[result] ~= nil) then
 			local function FormatUnit(prefix, uType, uName, uId)
@@ -1391,7 +1430,11 @@ do ---------------------------
 		if (args[1] == "track") then
 			settings.tracker = Util.GetArgValue(args[2], settings.tracker)
 			p("%s Debug Tracker", settings.tracker and "Enabled" or "Disabled")
-			self:ToggleDebugTracker(settings.tracker)
+			self:ToggleDebugTracker(settings.tracker or settings.units)
+		elseif (args[1] == "units") then
+			settings.units = Util.GetArgValue(args[2], settings.units)
+			p("%s Debug Units", settings.units and "Enabled" or "Disabled")
+			self:ToggleDebugTracker(settings.units or settings.tracker)
 		elseif (args[1] == "spam") then
 			settings.spamControl = Util.GetArgValue(args[2], settings.spamControl)
 			p("%s Spam Control", settings.spamControl and "Enabled" or "Disabled")
