@@ -266,12 +266,14 @@ function LibCustomTitles:Init()
 	end
 
 	local function GetCustomTitle(originalTitle, customTitle)
-		if customTitle[originalTitle] then
-			return customTitle[originalTitle]
-		elseif originalTitle == "" and customTitle["-NONE-"] then
-			return customTitle["-NONE-"]
-		elseif customTitle["-ALL-"] then
-			return customTitle["-ALL-"]
+		if customTitle then 
+			if customTitle[originalTitle] then
+				return customTitle[originalTitle]
+			elseif originalTitle == "" and customTitle["-NONE-"] then
+				return customTitle["-NONE-"]
+			elseif customTitle["-ALL-"] then
+				return customTitle["-ALL-"]
+			end
 		end
 	end
 
