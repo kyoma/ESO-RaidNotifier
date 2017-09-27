@@ -307,6 +307,9 @@ maw_lorkhaj.rakkhat_lunarbastion[74367] = true
 -- Eclipse Field (Sun-Eater)
 maw_lorkhaj.suneater_eclipse = 73700
 
+-- Shattering Strike (Savage - two-hander)
+maw_lorkhaj.shattering_strike = 73249
+
 --  Armor Shattered
 maw_lorkhaj.shattered = {}
 maw_lorkhaj.shattered[73250] = true
