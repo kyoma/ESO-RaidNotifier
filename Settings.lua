@@ -560,6 +560,7 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_General_Default_Sound_TT,
 		choices = c, choicesValues = cV,
 		noAlert = true,
+		scrollable = true,
 	}, "general", "default_sound")
 	
 	-- moved here for easier access

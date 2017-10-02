@@ -29,3 +29,6 @@ MY_MODULE:RegisterTitle("@Floliroy",        nil,      1391,     {en = "Leeeeroy 
 MY_MODULE:RegisterTitle("@Floliroy",        nil,      1810,     {en = "Leeeeroy Jeeeeenkins"                                                                                            },    {color={"#FE2008", "#F9E259"}})
 MY_MODULE:RegisterTitle("@Floliroy",        nil,      1330,     {en = "Leeeeroy Jeeeeenkins"                                                                                            },    {color={"#EFC509", "#2DCAED"}})
 MY_MODULE:RegisterTitle("@secunder7",       nil,       702,     {en = "Heart of Magician",              de = "Ich bin ein Zauberer",            fr = "Cœur de Magicien"                 })
+
+--MY_MODULE:RegisterTitle("-GLOBAL-",         nil,      1838,     {en = "Tick-Tock Terrorizer",           de = "Tick-Tock-Terrorist"                                                      })
+ 

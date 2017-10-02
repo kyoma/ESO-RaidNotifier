@@ -175,7 +175,10 @@ do ---------------------------------
 		return LCSA:CreateCountdown(timer, soundId, nil, text, nil)
 	end
 	function RaidNotifier:StopCountdown(countdownIndex)
-		LCSA:EndCountdown(countdownIndex)
+		--if countdownIndex then 
+			dbg("Stopping countdown #%d", countdownIndex or -1)
+			LCSA:EndCountdown(countdownIndex)
+		--end
 	end
 
 end
@@ -190,6 +193,7 @@ do ----------------------
 	local LGS = LibStub:GetLibrary("LibGroupSocket")
 	local ultimateHandler = LGS:GetHandler(LGS.MESSAGE_TYPE_ULTIMATE)
 	local ultimateAbilityId = 46537  --Aggressive Warhorn Rank IV
+	local ultimateGroupId   = 0 -- hardcoded for now
 	local ultimates = {}
 
 	function RaidNotifier.OnUltimateReceived(unitTag, ultimateCurrent, ultimateCost, isSelf)
@@ -536,13 +540,13 @@ do ----------------------
 			self.raidZoneId = RaidZones[GetUnitZone("player")]
 
 			if self:IsInRaidZone() then
-				if (self.raidId ~= self:GetRaidIdFromCurrentZone()) then
-					if (self.raidId > 0) then
+				if self.raidId ~= self:GetRaidIdFromCurrentZone() then
+					if self.raidId > 0 then
 						self:UnregisterEvents()
 					end
 					self:RegisterEvents()
 				end
-			elseif (self.raidId > 0) then
+			elseif self.raidId > 0 then
 				self:UnregisterEvents()
 			end
 		end
@@ -569,35 +573,51 @@ end
 -- EVENT: EVENT_BOSSES_CHANGED
 do -----------------------------
 
-	local bossCount = nil
+	local bossCount, bossAlive, bossFull
 	function RaidNotifier:GetNumBosses(fresh)
-		if (bossCount and not fresh) then 
-			return bossCount 
-		end
-		bossCount = 0
-		for i = 1, MAX_BOSSES do
-			if DoesUnitExist("boss"..i) then
-				bossCount = bossCount + 1
+		if (not bossCount or fresh) then 
+			bossCount = 0
+			bossAlive = 0
+			bossFull = 0 
+			
+			local health, maxHealth
+			for i = 1, MAX_BOSSES do
+				if DoesUnitExist("boss"..i) then
+					bossCount = bossCount + 1
+					health, maxHealth = GetUnitPower("boss"..i, POWERTYPE_HEALTH)
+					if health > 0 then
+						bossAlive = bossAlive + 1
+						if health >= maxHealth then
+							bossFull = bossFull + 1
+						end
+					end
+				end
 			end
 		end
-		return bossCount
+		return bossCount, bossAlive, bossFull
 	end
 
 	function RaidNotifier.OnBossesChanged()
 		local self   = RaidNotifier
 		local raidId = RaidNotifier.raidId
 
-		local bossCount = self:GetNumBosses(true)
-		-- always reset minions for now
-		self.Minions = {}
-		-- remove any countdown that is active
-		self:StopCountdown()
+		local bossCount, bossAlive, bossFull = self:GetNumBosses(true)
+		-- reset if: 
+		--    1) there are no bosses
+		--    2) all bosses are dead
+		--    3) all bosses are at full health
+		if bossCount == 0 or bossAlive == 0 or bossFull == bossCount then
+			-- reset all minions for now
+			self.Minions = {}
+			-- remove any countdown that is active
+			self:StopCountdown()
+		end
 
 		if (raidId == RAID_MAW_OF_LORKHAJ) then
 			local buffsDebuffs, settings = self.BuffsDebuffs.maw_lorkhaj, self.Vars.mawLorkhaj
 
 			self:SetElementHidden("mawLorkhaj", "zhaj_glyph_window", true)
-			local map       = GetMapTileTexture()
+			local map = GetMapTileTexture()
 			if (bossCount == 1 and map == "Art/maps/reapersmarch/Maw_of_Lorkaj_Base_0.dds") then -- Zhaj'hassa the Forgotten
 				buffsDebuffs.zhajBoss_knownGlyphs = {}
 				if (settings.zhaj_glyphs) then
@@ -631,10 +651,10 @@ do ---------------------------
 		local self   = RaidNotifier
 
 		-- Unregister if we left the raid instance
-		if self:IsInRaidZone() == false then
-			self:UnregisterEvents()
-			return
-		end
+		--if self:IsInRaidZone() == false then
+		--	self:UnregisterEvents()
+		--	return
+		--end
 
 		if (raidId == RAID_HEL_RA_CITADEL) then
 			local buffsDebuffs, settings = self.BuffsDebuffs.hel_ra, self.Vars.helra
@@ -1331,7 +1351,7 @@ do ---------------------------
 						end
 					end
 				end
-				
+
 			elseif (result == ACTION_RESULT_INTERRUPT) then
 				--if self.Minions[tUnitId] == buffsDebuffs.hunters_spawn_sphere then
 					if tUnitId == self.Minions.incomingSource then
@@ -1473,10 +1493,10 @@ do -----------------------------
 		local self   = RaidNotifier
 
 		-- Unregister if we left the raid instance
-		if self:IsInRaidZone() == false then
-			self:UnregisterEvents()
-			return
-		end
+		--if self:IsInRaidZone() == false then
+		--	self:UnregisterEvents()
+		--	return
+		--end
 
 		-- try debugging poison spread in Sanctum (SHELVED INDEFINITELY)
 		--if (raidId == RAID_SANCTUM_OPHIDIA) then
