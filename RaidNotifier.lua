@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.2.4"
+RaidNotifier.Version         = "2.2.5"
 RaidNotifier.Author          = "|c009ad6Kyoma, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -192,11 +192,11 @@ do ----------------------
 
 	local LGS = LibStub:GetLibrary("LibGroupSocket")
 	local ultimateHandler = LGS:GetHandler(LGS.MESSAGE_TYPE_ULTIMATE)
-	local ultimateAbilityId = 46537  --Aggressive Warhorn Rank IV
-	local ultimateGroupId   = 0 -- hardcoded for now
+	local ultimateAbilityId = 46537  -- Aggressive Warhorn Rank IV
+	local ultimateGroupId   = 29     -- hardcoded for now
 	local ultimates = {}
 
-	function RaidNotifier.OnUltimateReceived(unitTag, ultimateCurrent, ultimateCost, isSelf)
+	function RaidNotifier.OnUltimateReceived(unitTag, ultimateCurrent, ultimateCost, ultimateGroupId, isSelf)
 		local self     = RaidNotifier
 		local userName = GetUnitDisplayName(unitTag)
 		ultimates[userName] = 
@@ -254,6 +254,7 @@ do ----------------------
 		ultimateHandler:Refresh()
 		ToggleLibGroupSocket(true) -- force LibGroupSocket to send data
 
+		ultimateHandler:SetUltimateGroupId(ultimateGroupId)
 		local function OnWeaponPairChanged()
 			--get dynamic ultimate cost, should work with any cost reduction passives & sets
 			if settings.override_cost > 0 then
