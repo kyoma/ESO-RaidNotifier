@@ -1073,7 +1073,15 @@ do ---------------------------
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_SUNEATER_ECLIPSE_OTHER), tName), "mawLorkhaj", "suneater_eclipse")
 						end
 					end
-
+				elseif (abilityId == buffsDebuffs.shattering_strike) then
+					if (settings.shattering_strike >= 1) then
+						tName = LUNIT:GetNameForUnitId(tUnitId)
+						if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_SHATTERINGSTRIKE), "mawLorkhaj", "shattering_strike")
+						elseif (tName ~= "" and settings.shattering_strike >= 2) then
+							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_SHATTERINGSTRIKE_OTHER), tName), "mawLorkhaj", "shattering_strike")
+						end
+					end
 				elseif (buffsDebuffs.rakkhat_threshingwings[abilityId]) then
 					if settings.rakkhat_threshingwings then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_RAKKHAT_THRESHINGWINGS), "mawLorkhaj", "rakkhat_threshingwings")

@@ -219,6 +219,8 @@ L.Settings_MawLorkhaj_Rakkhat_LunarBastion1         = "Rakkhat: Lunar Bastion Ga
 L.Settings_MawLorkhaj_Rakkhat_LunarBastion1_TT      = "Shows when a player gains the blessing from the glowing platform."
 L.Settings_MawLorkhaj_Rakkhat_LunarBastion2         = "Rakkhat: Lunar Bastion Lost"
 L.Settings_MawLorkhaj_Rakkhat_LunarBastion2_TT      = "Shows when a player loses the blessing from the glowing platform."
+L.Settings_MawLorkhaj_ShatteringStrike		    = "Mobs: Shattering Strike"
+L.Settings_MawLorkhaj_ShatteringStrike_TT           = "Get a warning when Dro-m'Athra Savage is about to cast shattering strike attack."
 L.Settings_MawLorkhaj_Shattered                     = "Mobs: Armor Shattered"
 L.Settings_MawLorkhaj_Shattered_TT                  = "Get a warning when your armor is shattered."
 L.Settings_MawLorkhaj_MarkedForDeath                = "Mobs: Marked for death (Panthers)"
@@ -242,6 +244,8 @@ L.Alerts_MawLorkhaj_Rakkhat_LunarBastion2           = "You lost |cFEFF7FLunar Ba
 L.Alerts_MawLorkhaj_Rakkhat_LunarBastion2_Other     = "|cFF0000<<!aC:1>>|r lost |cFEFF7FLunar Bastion|r"
 L.Alerts_MawLorkhaj_Suneater_Eclipse                = "Incoming |cFF0000Eclipse Field|r on you."
 L.Alerts_MawLorkhaj_Suneater_Eclipse_Other          = "Incoming |cFF0000Eclipse Field|r on |cFF0000<<!aC:1>>|r!"
+L.Alerts_MawLorkhaj_ShatteringStrike		    = "Incoming |c000055Shattering Strike|r on you."
+L.Alerts_MawLorkhaj_ShatteringStrike_Other          = "Incoming |c000055Shattering Strike|r on |cFF0000<<!aC:1>>|r!"
 L.Alerts_MawLorkhaj_Shattered                       = "Your |c595959Armor|r has been |cff0000Shattered|r."
 L.Alerts_MawLorkhaj_MarkedForDeath                  = "Warning! |c000055Panthers|r are chasing you!"
 

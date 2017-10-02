@@ -200,6 +200,7 @@ do ------------------
 			rakkhat_lunarbastion1 = 0, -- "Off"
 			rakkhat_lunarbastion2 = 0, -- "Off"
 			suneater_eclipse = 1, -- "Self"
+			shattering_strike = 0, -- "Off"
 			zhaj_gripoflorkhaj = true,
 			zhaj_glyphs = false,
 			zhaj_glyph_window = {100, 400},
@@ -374,6 +375,7 @@ function RaidNotifier:CreateSettingsMenu()
 				L.Settings_General_Choices_Normal,
 				L.Settings_General_Choices_Full, 
 			},
+			shattering_strike = off_self_all,
 			rakkhat_unstablevoid = off_self_all,
 			rakkhat_lunarbastion1 = {
 				L.Settings_General_Choices_Off,
@@ -930,6 +932,12 @@ function RaidNotifier:CreateSettingsMenu()
 --		tooltip = L.Settings_MawLorkhaj_Rakkhat_LunarBastion2_TT,
 --		choices = choices.mawLorkhaj.rakkhat_lunarbastion2,
 --	}, "mawLorkhaj", "rakkhat_lunarbastion2")
+        MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_MawLorkhaj_ShatteringStrike,
+		tooltip = L.Settings_MawLorkhaj_ShatteringStrike_TT,
+		choices = choices.mawLorkhaj.shattering_strike
+	}, "mawLorkhaj", "shattering_strike")
 	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_MawLorkhaj_Shattered,
