@@ -1,7 +1,7 @@
 --[[
 Author: Kyoma
 Filename: LibCSA.lua
-Version: 1.1
+Version: 1.2
 
 Description: This library serves to provide a global  enhancement of the center screen announcement system to make it more flexible
              for wider purposes. 
@@ -17,7 +17,7 @@ Description: This library serves to provide a global  enhancement of the center 
 ]]--
 
 local libLoaded
-local LIB_NAME, VERSION = "LibCSA", 1.1
+local LIB_NAME, VERSION = "LibCSA", 1.2
 local lib, oldminor = LibStub:NewLibrary(LIB_NAME, VERSION)
 if not lib then return end
 
