@@ -1,7 +1,7 @@
 --[[
 Author: Kyoma
 Filename: LibCSA.lua
-Version: 1.1
+Version: 1.2
 
 Description: This library serves to provide a global  enhancement of the center screen announcement system to make it more flexible
              for wider purposes. 
@@ -17,7 +17,7 @@ Description: This library serves to provide a global  enhancement of the center 
 ]]--
 
 local libLoaded
-local LIB_NAME, VERSION = "LibCSA", 1.1
+local LIB_NAME, VERSION = "LibCSA", 1.2
 local lib, oldminor = LibStub:NewLibrary(LIB_NAME, VERSION)
 if not lib then return end
 
@@ -29,10 +29,10 @@ local ZO_CenterScreenAnnouncementCountdownLine_Initialize
 local ZO_CenterScreenAnnouncementCountdownLine_Reset
 local ZO_CenterScreenAnnouncementCountdownLine_SetMessageParams
 local ZO_CenterScreenAnnouncementCountdownLine_SetEndImageTexture 
+local ZO_CenterScreenAnnouncementCountdownLine_PlayCountdownLoopAnimation
 local ZO_CenterScreenAnnouncementCountdownLine_OnCountDownAnimationEnd
 
 local function Unload()
-
 	if ZO_CenterScreenAnnouncementCountdownLine_Initialize then
 		ZO_CenterScreenAnnouncementCountdownLine.Initialize = ZO_CenterScreenAnnouncementCountdownLine_Initialize
 	end
@@ -45,10 +45,12 @@ local function Unload()
 	if ZO_CenterScreenAnnouncementCountdownLine_SetEndImageTexture then
 		ZO_CenterScreenAnnouncementCountdownLine.SetEndImageTexture = ZO_CenterScreenAnnouncementCountdownLine_SetEndImageTexture
 	end
+	if ZO_CenterScreenAnnouncementCountdownLine_PlayCountdownLoopAnimation then
+		ZO_CenterScreenAnnouncementCountdownLine.PlayCountdownLoopAnimation = ZO_CenterScreenAnnouncementCountdownLine_PlayCountdownLoopAnimation
+	end
 	if ZO_CenterScreenAnnouncementCountdownLine_OnCountDownAnimationEnd then
 		ZO_CenterScreenAnnouncementCountdownLine.OnCountDownAnimationEnd = ZO_CenterScreenAnnouncementCountdownLine_OnCountDownAnimationEnd
 	end
-
 end
 
 local function Load()
@@ -77,6 +79,8 @@ local function Load()
 		ZO_CenterScreenAnnouncementCountdownLine_Initialize(self, control)
 		self.textControl = CSA.countdownLineHeader
 		self.textControl:SetHidden(true)
+		self.textControl:SetScale(1.4)
+		self.countdownControl:SetScale(1.5)
 		self.skipEndImage = true
 		CSA.countdownLineIndex = CSA.countdownLineIndex + 1
 		self.index = CSA.countdownLineIndex
@@ -115,11 +119,27 @@ local function Load()
 		end
 	end
 
+	ZO_CenterScreenAnnouncementCountdownLine_PlayCountdownLoopAnimation = ZO_CenterScreenAnnouncementCountdownLine.PlayCountdownLoopAnimation
+	ZO_CenterScreenAnnouncementCountdownLine.PlayCountdownLoopAnimation = function(self)
+		self.countdownControl:SetText(self.currentCountdownTimeS)
+		PlaySound(SOUNDS.COUNTDOWN_TICK)
+		self.countdownLoopAnimationTimeline:PlayFromStart()
+	end
+
 	ZO_CenterScreenAnnouncementCountdownLine_OnCountDownAnimationEnd = ZO_CenterScreenAnnouncementCountdownLine.OnCountDownAnimationEnd
 	ZO_CenterScreenAnnouncementCountdownLine.OnCountDownAnimationEnd = function(self, completedPlayback)
 		if not completedPlayback then return end
 
 		self.currentCountdownTimeS = self.currentCountdownTimeS - 1
+
+		-- set color to orange on 2 and red  on 1 and 0
+		if self.currentCountdownTimeS == 2 then
+			self.countdownControl:SetColor(0.9, 0.5, 0, 1)
+		elseif self.currentCountdownTimeS == 1 then
+			self.countdownControl:SetColor(1, 0, 0, 1)
+		elseif self.currentCountdownTimeS < 0 then
+			self.countdownControl:SetColor(1, 1, 1, 1)
+		end
 		
 		if self.currentCountdownTimeS > 0 then
 			self:PlayCountdownLoopAnimation()
@@ -162,6 +182,7 @@ function lib:CreateCountdown(displayTimeMs, soundId, endIcon, mainText, secondar
 	messageParams:SetIconData(endIcon)
 	messageParams:SetCSAType(CENTER_SCREEN_ANNOUNCE_TYPE_COUNTDOWN)
 	CSA:AddMessageWithParams(messageParams)
+	PlaySound(soundId)
 	-- since CENTER_SCREEN_ANNOUNCE_TYPE_COUNTDOWN is displayed immediately we grab it
 	local line = CSA:GetMostRecentLine(CSA_LINE_TYPE_COUNTDOWN)
 	return line and line.index or 0
