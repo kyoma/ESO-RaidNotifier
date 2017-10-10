@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.2.5"
+RaidNotifier.Version         = "2.2.7"
 RaidNotifier.Author          = "|c009ad6Kyoma, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -602,6 +602,7 @@ do -----------------------------
 		local self   = RaidNotifier
 		local raidId = RaidNotifier.raidId
 
+		self.Minions = self.Minions or {}
 		local bossCount, bossAlive, bossFull = self:GetNumBosses(true)
 		-- reset if: 
 		--    1) there are no bosses
@@ -609,9 +610,10 @@ do -----------------------------
 		--    3) all bosses are at full health
 		if bossCount == 0 or bossAlive == 0 or bossFull == bossCount then
 			-- reset all minions for now
-			self.Minions = {}
+			--self.Minions = {}
 			-- remove any countdown that is active
-			self:StopCountdown()
+			dbg("Bosses changed, stop any active countdown")
+			--self:StopCountdown()
 		end
 
 		if (raidId == RAID_MAW_OF_LORKHAJ) then
@@ -1366,8 +1368,8 @@ do ---------------------------
 					if tUnitId == self.Minions.incomingSource then
 						dbg("Sphere #%d was interrupted", tUnitId)
 						self.Minions.incomingSource = nil
-						self:StopCountdown(buffsDebuffs.taking_aim_index)
-						buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
+						--self:StopCountdown(buffsDebuffs.taking_aim_index)
+						--buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
 					end
 				--end
 			elseif (result == ACTION_RESULT_DIED) then
@@ -1375,8 +1377,8 @@ do ---------------------------
 					if tUnitId == self.Minions.incomingSource then
 						dbg("Sphere #%d died", tUnitId)
 						self.Minions.incomingSource = nil
-						self:StopCountdown(buffsDebuffs.taking_aim_index)
-						buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
+						--self:StopCountdown(buffsDebuffs.taking_aim_index)
+						--buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
 					end
 					--self.Minions[tUnitId] = nil 
 				--end

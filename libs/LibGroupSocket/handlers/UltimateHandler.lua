@@ -1,5 +1,5 @@
 -- The Ultimate Protocol
--- *bitArray* flags, *uint8* ultimate[, *uint8* ultimateCost, *uint8* ultimageGroupId]
+-- *bitArray* flags, *uint8* ultimate[, *uint8* ultimateCost[, *uint8* ultimageGroupId]]
 -- flags:
 --   1: isFullUpdate - the user is sending cost in addition to percentages in this packet
 --   2: requestsFullUpdate - the user does not have all the necessary data and wants to have a full update from everyone (e.g. after reloading the ui)
@@ -68,15 +68,15 @@ local function OnData(unitTag, data, isSelf)
         sendFullUpdate = true
     end
 
-    local expectedLength = isFullUpdate and 4 or 2
-    if(#data < expectedLength) then Log("UltimateHandler received only %d of %d byte", #data, expectedLength) return end
+    --local expectedLength = isFullUpdate and 3 or 2
+    --if(#data < expectedLength) then Log("UltimateHandler received only %d of %d byte", #data, expectedLength) return end
 
     local unitResources = GetCachedUnitResources(unitTag)
     local ultimate = unitResources[POWERTYPE_ULTIMATE]
     ultimate.current, index = LGS:ReadUint8(data, index)
     if(isFullUpdate) then
 		ultimate.cost, index = LGS:ReadUint8(data, index)
-        ultimate.groupId, index = LGS:ReadUint8(data, index)
+		ultimate.groupId, index = LGS:ReadUint8(data, index)
 	end
 
     unitResources.lastUpdate = GetTimeStamp()
