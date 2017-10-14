@@ -1,12 +1,12 @@
 -- The Ultimate Protocol
--- *bitArray* flags, *uint8* ultimate[, *uint8* ultimateCost[, *uint8* ultimageGroupId]]
+-- *bitArray* flags, *uint8* ultimate[, *uint8* ultimateCost[, *uint8 ultimateIndex]]
 -- flags:
 --   1: isFullUpdate - the user is sending cost in addition to percentages in this packet
 --   2: requestsFullUpdate - the user does not have all the necessary data and wants to have a full update from everyone (e.g. after reloading the ui)
 
 local LGS = LibStub("LibGroupSocket")
 LGS.MESSAGE_TYPE_ULTIMATE = 21 -- aka, the code for 'u'
-local type, version = LGS.MESSAGE_TYPE_ULTIMATE, 3
+local type, version = LGS.MESSAGE_TYPE_ULTIMATE, 2
 local handler, saveData = LGS:RegisterHandler(type, version)
 if(not handler) then return end
 local SKIP_CREATE = true
@@ -19,8 +19,7 @@ handler.resources = {}
 local resources = handler.resources
 local sendFullUpdate = true
 local needFullUpdate = true
-local ultimateCost = 0
-local ultimateGroupId = 0
+local ultimateCost = 255
 local lastSendTime = 0
 local defaultData = {
     version = 1,
@@ -33,7 +32,7 @@ local function GetCachedUnitResources(unitTag, skipCreate)
     local unitResources = resources[unitName]
     if(not unitResources and not skipCreate) then
         resources[unitName] = {
-            [POWERTYPE_ULTIMATE] = {current=0, cost=0, groupId=0},
+            [POWERTYPE_ULTIMATE] = {current=0, cost=255},
             lastUpdate = 0,
         }
         unitResources = resources[unitName]
@@ -48,11 +47,9 @@ function handler:GetLastUpdateTime(unitTag)
 end
 
 function handler:SetUltimateCost(cost)
-	ultimateCost = cost
-end
-
-function handler:SetUltimateGroupId(groupId)
-    ultimateGroupId = groupId
+	if cost > 0 and cost <= 255 then
+		ultimateCost = cost
+	end
 end
 
 local function OnData(unitTag, data, isSelf)
@@ -68,21 +65,20 @@ local function OnData(unitTag, data, isSelf)
         sendFullUpdate = true
     end
 
-    --local expectedLength = isFullUpdate and 3 or 2
-    --if(#data < expectedLength) then Log("UltimateHandler received only %d of %d byte", #data, expectedLength) return end
+    local expectedLength = isFullUpdate and 3 or 2
+    if(#data < expectedLength) then Log("UltimateHandler received only %d of %d byte", #data, expectedLength) return end
 
     local unitResources = GetCachedUnitResources(unitTag)
     local ultimate = unitResources[POWERTYPE_ULTIMATE]
     ultimate.current, index = LGS:ReadUint8(data, index)
     if(isFullUpdate) then
 		ultimate.cost, index = LGS:ReadUint8(data, index)
-		ultimate.groupId, index = LGS:ReadUint8(data, index)
 	end
 
     unitResources.lastUpdate = GetTimeStamp()
 
     --	Log("ultimate: %d, cost: %d", ultimate.current, ultimate.cost)
-    LGS.cm:FireCallbacks(ON_ULTIMATE_CHANGED, unitTag, ultimate.current, ultimate.cost, ultimate.groupId, isSelf)
+    LGS.cm:FireCallbacks(ON_ULTIMATE_CHANGED, unitTag, ultimate.current, ultimate.cost, isSelf)
 end
 
 local function NumCallbacks()
@@ -103,7 +99,7 @@ end
 local function GetPowerValues(unitResources, powerType)
     local data = unitResources[powerType]
     local current, maximum = GetUnitPower("player", powerType)
-    return data, current, data.cost
+    return data, current, 255 -- use hardcoded value since no ulti has higher cost
 end
 
 function handler:Send()
@@ -116,7 +112,7 @@ function handler:Send()
     local ultimate, ultimateCurrent, ultimateMaximum = GetPowerValues(unitResources, POWERTYPE_ULTIMATE)
 	ultimateCurrent = zo_min(ultimateCurrent, ultimateMaximum)
 
-    sendFullUpdate = sendFullUpdate or ultimate.cost ~= ultimateCost or ultimate.groupId ~= ultimateGroupId
+    sendFullUpdate = sendFullUpdate or ultimate.cost ~= ultimateCost
     if(ultimate.current ~= ultimateCurrent or sendFullUpdate) then
 
         local data = {}
@@ -127,7 +123,6 @@ function handler:Send()
         index = LGS:WriteUint8(data, index, ultimateCurrent)
 		if sendFullUpdate then
 			index = LGS:WriteUint8(data, index, ultimateCost)
-            index = LGS:WriteUint8(data, index, ultimateGroupId)
 		end
 
 		--	Log("Send %d byte: is full: %s, needs full: %s, ultimate: %s, cost: %s", #data, tostring(sendFullUpdate), tostring(needFullUpdate), tostring(ultimateCurrent), tostring(ultimateCost))
@@ -137,7 +132,6 @@ function handler:Send()
             ultimate.current = ultimateCurrent
 			if sendFullUpdate then
 				ultimate.cost = ultimateCost
-                ultimate.groupId = ultimateGroupId
 			end
             sendFullUpdate = false
             needFullUpdate = false
