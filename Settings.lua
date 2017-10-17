@@ -194,6 +194,7 @@ do ------------------
 			twinBoss_aspects = 2,     -- "Normal"
 			twinBoss_aspects_status = false,
 			rakkhat_unstablevoid = 1, -- "Self"
+			rakkhat_unstablevoid_countdown = false,
 			rakkhat_threshingwings = true,
 			rakkhat_darknessfalls = false,
 			rakkhat_darkbarrage = false, 
@@ -905,6 +906,12 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_MawLorkhaj_Rakkhat_Unstable_Void_TT,
 		choices = choices.mawLorkhaj.rakkhat_unstablevoid,
 	}, "mawLorkhaj", "rakkhat_unstablevoid")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_MawLorkhaj_Rakkhat_Unstable_Void_Countdown,
+		tooltip = L.Settings_MawLorkhaj_Rakkhat_Unstable_Void_Countdown_TT,
+		disabled = function() return savedVars.mawLorkhaj.rakkhat_unstablevoid ~= 1 end,
+	}, "mawLorkhaj", "rakkhat_unstablevoid_countdown")
 	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_MawLorkhaj_Rakkhat_ThreshingWings,
