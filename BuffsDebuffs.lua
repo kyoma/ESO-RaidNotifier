@@ -268,6 +268,7 @@ maw_lorkhaj.twinBoss_lunaraspectremove  = 59640 --lunar
 --Rakkhat
 --  Unstable Void
 maw_lorkhaj.rakkhat_unstablevoid = 74488
+maw_lorkhaj.rakkhat_unstablevoid_duration = 4500
 --  Threshing Wings
 maw_lorkhaj.rakkhat_threshingwings = {}
 maw_lorkhaj.rakkhat_threshingwings[73741] = true
