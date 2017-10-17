@@ -5,8 +5,8 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.2.8"
-RaidNotifier.Author          = "|c009ad6Kyoma, Woeler, silentgecko|r"
+RaidNotifier.Version         = "2.2.9"
+RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
 
@@ -964,7 +964,7 @@ do ---------------------------
 						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_DRAGONSTAR_ARENA6_DRAIN_RESOURCE), "dragonstar", "arena6_drain_resource")
-						elseif (tName ~= "") then
+						elseif (tName ~= "" and settings.arena6_drain_resource >= 2) then
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_DRAGONSTAR_ARENA6_DRAIN_RESOURCE_OTHER), tName), "dragonstar", "arena6_drain_resource")
 						end
 					end
@@ -975,7 +975,7 @@ do ---------------------------
 						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_DRAGONSTAR_ARENA8_ICE_CHARGE), "dragonstar", "arena8_ice_charge")
-						elseif (tName ~= "") then
+						elseif (tName ~= "" and settings.arena8_ice_charge >= 2) then
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_DRAGONSTAR_ARENA8_ICE_CHARGE_OTHER), tName), "dragonstar", "arena8_ice_charge")
 						end
 					end
@@ -985,7 +985,7 @@ do ---------------------------
 						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_DRAGONSTAR_ARENA8_FIRE_CHARGE), "dragonstar", "arena8_fire_charge")
-						elseif (tName ~= "") then
+						elseif (tName ~= "" and settings.arena8_fire_charge >= 2) then
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_DRAGONSTAR_ARENA8_FIRE_CHARGE_OTHER), tName), "dragonstar", "arena8_fire_charge")
 						end
 					end
@@ -1158,7 +1158,11 @@ do ---------------------------
 					if settings.rakkhat_unstablevoid >= 1 then
 						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
-							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_RAKKHAT_UNSTABLE_VOID), "mawLorkhaj", "rakkhat_unstablevoid")
+							if (settings.rakkhat_unstablevoid == 1 and settings.rakkhat_unstablevoid_countdown) then
+								self:StartCountdown(buffsDebuffs.rakkhat_unstablevoid_duration, GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_RAKKHAT_UNSTABLE_VOID), "mawLorkhaj", "rakkhat_unstablevoid")
+							else
+								self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_RAKKHAT_UNSTABLE_VOID), "mawLorkhaj", "rakkhat_unstablevoid")
+							end
 						elseif (tName ~= "" and (settings.rakkhat_unstablevoid == 2)) then
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_RAKKHAT_UNSTABLE_VOID_OTHER), tName), "mawLorkhaj", "rakkhat_unstablevoid")
 						end
