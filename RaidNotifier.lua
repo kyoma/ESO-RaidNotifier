@@ -516,7 +516,7 @@ do ----------------------
 		end
 		self.p = p
 		dbg = function(msg, ...)
-			if self.Vars.debug then
+			if self.Vars.dbg.enabled then
 				p(msg, ...)
 			end
 		end

@@ -1079,7 +1079,7 @@ function RaidNotifier:CreateSettingsMenu()
 		type = "checkbox",
 		name = L.Settings_HallsFab_Conduit_Spawn,
 		tooltip = L.Settings_HallsFab_Conduit_Spawn_TT,
-   }, "hallsFab", "pinnacleBoss_conduit_spawn")
+	}, "hallsFab", "pinnacleBoss_conduit_spawn")
   	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_HallsFab_Conduit_Drain,
