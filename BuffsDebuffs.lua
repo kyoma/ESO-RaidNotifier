@@ -341,7 +341,6 @@ maw_lorkhaj.rakkhat_shattered[76031] = true
 RaidNotifier.BuffsDebuffs.maw_lorkhaj = maw_lorkhaj
 
 
-
 -- ---------------------------------------------------
 -- Halls of Fabrication ------------------------------
 -- ---------------------------------------------------
@@ -397,6 +396,21 @@ halls_fab.draining_ballista       = 91077
 
 RaidNotifier.BuffsDebuffs.halls_fab = halls_fab
 
+
+-- ---------------------------------------------------
+-- Asylum Sanctorium ---------------------------------
+-- ---------------------------------------------------
+local asylum = {}
+
+-- Saint Felms
+
+-- Saint Llothis
+asylum.llothis_defiling_blast = 95545
+
+-- Saint Olms
+asylum.olms_storm_the_heavens = 98535
+
+RaidNotifier.BuffsDebuffs.asylum = asylum
 
 
 -- ---------------------------------------------------

@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.2.9"
+RaidNotifier.Version         = "2.3.0"
 RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -30,6 +30,9 @@ function RaidNotifier:IsDevMode()
 	return self.Vars.dbg.devMode == true
 end
 
+-- Locale
+local L
+
 local ActionResults = 
 {
 	ACTION_RESULT_BEGIN,
@@ -39,7 +42,7 @@ local ActionResults =
 	ACTION_RESULT_EFFECT_FADED,
 	ACTION_RESULT_INTERRUPT, 
 	ACTION_RESULT_DIED,
-	--ACTION_RESULT_DIED_XP, -- only interested in spawns/minions which don't give exp??
+	--ACTION_RESULT_DIED_XP, -- only interested in spawns/minions, which don't give exp??
 }
 
 local ALERT_PRIORITY_HIGHEST = 5
@@ -155,6 +158,29 @@ do ---------------------------------
 			if soundId ~= nil then PlaySound(soundId) end
 		end
 	end
+	
+	-- called when messageParams are applied to the line
+	local function SetupCallback(line, messageParams, doReset)
+		if doReset then -- we MUST make sure to reset anything that might have been changed by us
+			line.textControl:SetScale(1)
+			line.countdownControl:SetScale(1)
+			line.countdownControl:SetColor(1, 1, 1, 1)
+		else
+			line.textControl:SetScale(1.4)
+			line.countdownControl:SetScale(1.5)
+			line.countdownControl:SetColor(1, 1, 1, 1)
+		end
+	end
+	local function CountdownCallback(line, countdownS)
+		-- set color to orange on 2 and red  on 1 and 0
+		if line.currentCountdownTimeS == 2 then
+			line.countdownControl:SetColor(0.9, 0.5, 0, 1)
+		elseif line.currentCountdownTimeS == 1 then
+			line.countdownControl:SetColor(1, 0, 0, 1)
+		elseif line.currentCountdownTimeS < 0 then
+			line.countdownControl:SetColor(1, 1, 1, 1)
+		end
+	end
 
 	function RaidNotifier:StartCountdown(timer, text, category, setting, interval)
 		local soundId = self:GetSoundValue(category, setting)
@@ -179,6 +205,10 @@ do ---------------------------------
 			dbg("Stopping countdown #%d", countdownIndex or -1)
 			LCSA:EndCountdown(countdownIndex)
 		--end
+	end
+	
+	function RNTest(timer, text, endText, e1, e2)
+		return LCSA:CreateCountdown(timer, soundId, nil, text, endText, e1 and SetupCallback, e2 and CountdownCallback)
 	end
 
 end
@@ -463,6 +493,42 @@ do ----------------------
 				end
 			end
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_PLAYER_COMBAT_STATE, OnCombatStateChanged)
+			
+			--local raidKeys = {
+			--	[RAID_HEL_RA_CITADEL]        = "hel_ra", 
+			--	[RAID_AETHERIAN_ARCHIVE]     = "archive", 
+			--	[RAID_SANCTUM_OPHIDIA]       = "sanctum_ophidia",
+			--	[RAID_DRAGONSTAR_ARENA]      = "dragonstar",
+			--	[RAID_MAW_OF_LORKHAJ]        = "maw_lorkhaj",
+			--	[RAID_MAELSTROM_ARENA]       = "maelstrom", 
+			--	[RAID_HALLS_OF_FABRICATION]  = "halls_fab",
+			--	[RAID_ASYLUM_SANCTORIUM]     = "asylum",
+			--}
+			--dbg("----------------------------------------------")
+			--dbg(" Gathering Abilities for Raid")
+			--local raidData = self.BuffsDebuffs[raidKeys[self.raidId]]
+			--for k,v in pairs(raidData) do
+			--	if type(v) == "number" then 
+			--		if v > 20000 then
+			--			dbg("Found ability #%d (%s)", v, k)
+			--		else
+			--			dbg("Ignoring %s (%s)", tostring(v), k)
+			--		end
+			--	elseif type(v) == "table" then
+			--		for l,w in pairs(v) do
+			--			if type(l) == "number" and l > 20000 then
+			--				dbg("Found ability #%d (%s)", l, k)
+			--			elseif type(l) == "bool" and l == true then
+			--				dbg("Found ability #%d (%s)", l, k)
+			--			else
+			--				dbg("Ignoring %s (%s)", l, k)
+			--			end
+			--		end
+			--	else
+			--		dbg("Ignoring %s (%s)", tostring(v), k)
+			--	end
+			--end
+			--dbg("----------------------------------------------")
 
 			--self:AddFragment()
 			listening = true
@@ -516,13 +582,15 @@ do ----------------------
 		end
 		self.p = p
 		dbg = function(msg, ...)
-			if self.Vars.debug then
+			if self.Vars.dbg.enabled then
 				p(msg, ...)
 			end
 		end
 		self.dbg = dbg
 		
 		self:CreateSettingsMenu()
+		
+		L = self:GetLocale()
 
 		-- UI Elements
 		self:InitializeUltimateWindow("UltimateWindow")
@@ -612,10 +680,10 @@ do -----------------------------
 		--    3) all bosses are at full health
 		if bossCount == 0 or bossAlive == 0 or bossFull == bossCount then
 			-- reset all minions for now
-			--self.Minions = {}
+			self.Minions = {}
 			-- remove any countdown that is active
 			dbg("Bosses changed, stop any active countdown")
-			--self:StopCountdown()
+			self:StopCountdown()
 		end
 
 		if (raidId == RAID_MAW_OF_LORKHAJ) then
@@ -1389,11 +1457,26 @@ do ---------------------------
 					--self.Minions[tUnitId] = nil 
 				--end
 			end
+			
+		elseif raidId == RAID_ASYLUM_SANCTORIUM then
+			local buffsDebuffs, settings = self.BuffsDebuffs.asylum, self.Vars.asylum
+
+			if result == ACTION_RESULT_BEGIN then
+				if settings.llothis_defiling_blast >= 1 then
+					if abilityId == buffsDebuffs.llothis_defiling_blast then
+						tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+						if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
+							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_DEFILING_BLAST), "asylum", "llothis_defiling_blast", 5)
+						elseif (tName ~= "" and settings.llothis_defiling_blast == 2 ) then
+							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_DEFILING_BLAST_OTHER), tName), "asylum", "llothis_defiling_blast", 5)
+						end
+					end
+				end
+
+			end
 		end
 
 	end
-
-
 	-------------------
 	---- Debugging ----
 	-------------------

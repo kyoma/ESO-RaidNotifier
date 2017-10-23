@@ -209,8 +209,6 @@ L.Settings_MawLorkhaj_Twin_Aspects_Status           = "       - Show Status"
 L.Settings_MawLorkhaj_Twin_Aspects_Status_TT        = "Shows your current aspect in the status display during the boss fight."
 L.Settings_MawLorkhaj_Rakkhat_Unstable_Void         = "Rakkhat: Unstable Void"
 L.Settings_MawLorkhaj_Rakkhat_Unstable_Void_TT      = "Alerts when you have the unstable void effect at Rakkhat."
-L.Settings_MawLorkhaj_Rakkhat_Unstable_Void_Countdown = "       - Countdown"
-L.Settings_MawLorkhaj_Rakkhat_Unstable_Void_Countdown_TT = "When enabled it will show countdown instead of simple notification before Unstable Void."
 L.Settings_MawLorkhaj_Rakkhat_ThreshingWings        = "Rakkhat: Threshing Wings"
 L.Settings_MawLorkhaj_Rakkhat_ThreshingWings_TT     = "Alerts when Rakkhat uses his Threshing Wings ability that knocks you back."
 L.Settings_MawLorkhaj_Rakkhat_DarknessFalls         = "Rakkhat: Darkness Falls"
@@ -339,6 +337,19 @@ L.Alerts_HallsFab_Overpower_Auras                   = "|cFF0000Aura Countdown!|r
 L.Alerts_HallsFab_Catastrophic_Discharge            = "|cFF0000Catastrophic Discharge|r at you! Block!"
 L.Alerts_HallsFab_Fabricant_Spawn                   = "|cFFC000Ruined Fabricant Spawn|r"
 L.Alerts_HallsFab_Reclaim_Achieve                   = "|cDCD822[Planned Obsolescence]|r Achievement |cFF0000Failed|r"
+
+
+
+--------------------------------
+----   Asylum Sanctorium    ----
+--------------------------------
+L.Settings_Asylum_Header                         = "Asylum Sanctorium"
+-- Settings
+L.Settings_Asylum_Defiling_Blast                 = "Saint Llothis: Defiling Dye Blast"
+L.Settings_Asylum_Defiling_Blast_TT              = "Alerts you when Saint Llothis targets you or others with his cone attack."
+-- Alerts
+L.Alerts_Asylum_Defiling_Blast                   = "Warning! |c00cc00Defiling Blast|r on you"
+L.Alerts_Asylum_Defiling_Blast_Other             = "Warning! |c00cc00Defiling Blast|r on |cFF0000<<!aC:1>>|r"
 
 
 

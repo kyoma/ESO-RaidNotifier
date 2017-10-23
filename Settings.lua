@@ -231,6 +231,10 @@ do ------------------
 			committee_fabricant_spawn = false,
 			committee_reclaim_achieve = false,
 		}, 
+		asylum = {
+			llothis_defiling_blast = 1, -- "Self"
+			olms_storm_the_heavens = true,
+		},
 
 		dbg = {
 			enable = false,
@@ -426,6 +430,9 @@ function RaidNotifier:CreateSettingsMenu()
 			pinnacleBoss_conduit_drain = off_self_all,
 			taking_aim = off_self_all,
 			draining_ballista = off_self_all,
+		},
+		asylum = {
+			llothis_defiling_blast = off_self_all, 
 		},
     }
 
@@ -1096,6 +1103,7 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_HallsFab_Overpower_Auras_Duration,
 		tooltip = L.Settings_HallsFab_Overpower_Auras_Duration_TT,
 		min = 3000, max = 10000, step = 100,
+		disabled = function() return not savedVars.hallsFab.committee_overpower_auras end,
 		noAlert = true,
 	}, "hallsFab", "committee_overpower_auras_duration")
 	MakeControlEntry({
@@ -1116,6 +1124,17 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_HallsFab_Reclaim_Achieve,
 		tooltip = L.Settings_HallsFab_Reclaim_Achieve_TT,
 	}, "hallsFab", "committee_reclaim_achieve")
+	subTable = nil --end submenu
+
+
+	-- Asylum Sanctorium
+	MakeSubmenu(L.Settings_Asylum_Header, RaidNotifier:GetRaidDescription(RAID_HALLS_OF_FABRICATION))
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_Asylum_Defiling_Blast,
+		tooltip = L.Settings_Asylum_Defiling_Blast_TT,
+		choices = choices.asylum.llothis_defiling_blast,
+	}, "asylum", "llothis_defiling_blast")
 	subTable = nil --end submenu
 
 
