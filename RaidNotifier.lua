@@ -444,16 +444,17 @@ do ----------------------
 		[RAID_ASYLUM_SANCTORIUM]     = 1000,
 	}
 
-	local CombatEventCallbacks =
+	-- TODO: change BuffsDebuffs to use constants directly and get rid of this
+	local RaidKeys = 
 	{
-		[RAID_HEL_RA_CITADEL]        = RaidNotifier.OnCombatEvent_HRC,
-		[RAID_AETHERIAN_ARCHIVE]     = RaidNotifier.OnCombatEvent_AA,
-		[RAID_SANCTUM_OPHIDIA]       = RaidNotifier.OnCombatEvent_SO,
-		[RAID_DRAGONSTAR_ARENA]      = RaidNotifier.OnCombatEvent_DSA,
-		[RAID_MAW_OF_LORKHAJ]        = RaidNotifier.OnCombatEvent_MOL,
-		[RAID_MAELSTROM_ARENA]       = RaidNotifier.OnCombatEvent_MA,
-		[RAID_HALLS_OF_FABRICATION]  = RaidNotifier.OnCombatEvent_HOF,
-		[RAID_ASYLUM_SANCTORIUM]     = RaidNotifier.OnCombatEvent_AS,
+		[RAID_HEL_RA_CITADEL]        = "hel_ra", 
+		[RAID_AETHERIAN_ARCHIVE]     = "archive", 
+		[RAID_SANCTUM_OPHIDIA]       = "sanctum_ophidia",
+		[RAID_DRAGONSTAR_ARENA]      = "dragonstar",
+		[RAID_MAW_OF_LORKHAJ]        = "maw_lorkhaj",
+		[RAID_MAELSTROM_ARENA]       = "maelstrom", 
+		[RAID_HALLS_OF_FABRICATION]  = "halls_fab",
+		[RAID_ASYLUM_SANCTORIUM]     = "asylum",
 	}
 
 	local RaidZones = {}
@@ -473,14 +474,23 @@ do ----------------------
 		return GetZoneDescriptionById(RaidZoneIds[raidId])
 	end
 
-	function RaidNotifier:RegisterForCombatEvent(result, handler)
-		EVENT_MANAGER:RegisterForEvent(self.Name .. tostring(result), EVENT_COMBAT_EVENT, handler)
-		if type(result) == "number" then
-			EVENT_MANAGER:AddFilterForEvent(self.Name .. tostring(result), EVENT_COMBAT_EVENT, REGISTER_FILTER_COMBAT_RESULT, result)
+	local eventIndex = 0
+	local eventName = RaidNotifier.Name .. "_CombatEvent"
+	function RaidNotifier:RegisterForCombatEvent(handler, filterType, filterData)
+		eventIndex = eventIndex + 1
+		EVENT_MANAGER:RegisterForEvent(eventName..eventIndex, EVENT_COMBAT_EVENT, handler)
+		if filterType and filterData then
+			EVENT_MANAGER:AddFilterForEvent(eventName..eventIndex, EVENT_COMBAT_EVENT, filterType, filterData)
 		end
 	end
-	function RaidNotifier:UnregisterForCombatEvent(result)
-		EVENT_MANAGER:UnregisterForEvent(self.Name .. tostring(result), EVENT_COMBAT_EVENT)
+	function RaidNotifier:UnregisterForCombatEvent(index)
+		EVENT_MANAGER:UnregisterForEvent(eventName..index, EVENT_COMBAT_EVENT)
+	end
+	function RaidNotifier:UnregisterAllCombatEvents()
+		for i=1, eventIndex do
+			self:UnregisterForCombatEvent(i)
+		end
+		eventIndex = 0
 	end
 
 	local listening = false
@@ -491,10 +501,41 @@ do ----------------------
 		self.raidDifficulty = GetCurrentZoneDungeonDifficulty()
 		if (self.raidId > 0) then
 			dbg("Register for %s (%s)", GetRaidZoneName(self.raidId), GetString("SI_DUNGEONDIFFICULTY", self.raidDifficulty))
-			-- The main juicy events we want, registered seperately for better performance
-			for _, action in ipairs(ActionResults) do
-				self:RegisterForCombatEvent(action, CombatEventCallbacks[self.raidId])
+			
+			local combatEventCallback = self.CombatEventCallbacks[self.raidId]
+
+			-- TODO: Remove (some of) this debugging when releasing it
+			-- TODO: Also add filter for action result but will require re-organizing BuffsDebuffs.lua 
+			dbg("----------------------------------------------")
+			dbg(" Gathering Abilities for Raid")
+			local raidData = self.BuffsDebuffs[RaidKeys[self.raidId]]
+			for k,v in pairs(raidData) do
+				if type(v) == "number" then 
+					if v > 20000 then
+						dbg("Found ability #%d (%s)", v, k)
+						self:RegisterForCombatEvent(combatEventCallback, REGISTER_FILTER_ABILITY_ID, v)
+					else
+						dbg("Ignoring %s (%s)", tostring(v), k)
+					end
+				elseif type(v) == "table" then
+					for l,w in pairs(v) do
+						if type(l) == "number" and l > 20000 then
+							dbg("Found ability #%d (%s)", l, k)
+							self:RegisterForCombatEvent(combatEventCallback, REGISTER_FILTER_ABILITY_ID, l)
+						else
+							dbg("Ignoring %s (%s)", l, k)
+						end
+					end
+				else
+					dbg("Ignoring %s (%s)", tostring(v), k)
+				end
 			end
+			dbg("----------------------------------------------")
+	
+			-- The main juicy events we want, registered seperately for better performance
+			--for _, action in ipairs(ActionResults) do
+			--	self:RegisterForCombatEvent(action, CombatEventCallbacks[self.raidId])
+			--end
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_EFFECT_CHANGED, self.OnEffectChanged)
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_BOSSES_CHANGED, self.OnBossesChanged)
 
@@ -506,42 +547,6 @@ do ----------------------
 				end
 			end
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_PLAYER_COMBAT_STATE, OnCombatStateChanged)
-			
-			--local raidKeys = {
-			--	[RAID_HEL_RA_CITADEL]        = "hel_ra", 
-			--	[RAID_AETHERIAN_ARCHIVE]     = "archive", 
-			--	[RAID_SANCTUM_OPHIDIA]       = "sanctum_ophidia",
-			--	[RAID_DRAGONSTAR_ARENA]      = "dragonstar",
-			--	[RAID_MAW_OF_LORKHAJ]        = "maw_lorkhaj",
-			--	[RAID_MAELSTROM_ARENA]       = "maelstrom", 
-			--	[RAID_HALLS_OF_FABRICATION]  = "halls_fab",
-			--	[RAID_ASYLUM_SANCTORIUM]     = "asylum",
-			--}
-			--dbg("----------------------------------------------")
-			--dbg(" Gathering Abilities for Raid")
-			--local raidData = self.BuffsDebuffs[raidKeys[self.raidId]]
-			--for k,v in pairs(raidData) do
-			--	if type(v) == "number" then 
-			--		if v > 20000 then
-			--			dbg("Found ability #%d (%s)", v, k)
-			--		else
-			--			dbg("Ignoring %s (%s)", tostring(v), k)
-			--		end
-			--	elseif type(v) == "table" then
-			--		for l,w in pairs(v) do
-			--			if type(l) == "number" and l > 20000 then
-			--				dbg("Found ability #%d (%s)", l, k)
-			--			elseif type(l) == "bool" and l == true then
-			--				dbg("Found ability #%d (%s)", l, k)
-			--			else
-			--				dbg("Ignoring %s (%s)", l, k)
-			--			end
-			--		end
-			--	else
-			--		dbg("Ignoring %s (%s)", tostring(v), k)
-			--	end
-			--end
-			--dbg("----------------------------------------------")
 
 			--self:AddFragment()
 			listening = true
@@ -561,10 +566,11 @@ do ----------------------
 		if not listening then return end
 
 		dbg("Unregister for %s (%s)", GetRaidZoneName(self.raidId), GetString("SI_DUNGEONDIFFICULTY", self.raidDifficulty))
-		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_COMBAT_EVENT)
-		for _, result in ipairs(ActionResults) do
-			self:UnregisterForCombatEvent(result)
-		end
+		--EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_COMBAT_EVENT)
+		--for _, result in ipairs(ActionResults) do
+		--	self:UnregisterForCombatEvent(result)
+		--end
+		self:UnregisterAllCombatEvents()
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_EFFECT_CHANGED)
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_BOSSES_CHANGED)
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_PLAYER_COMBAT_STATE)
@@ -1493,6 +1499,19 @@ do ---------------------------
 		end
 	end
 
+
+	RaidNotifier.CombatEventCallbacks = 
+	{
+		[RAID_HEL_RA_CITADEL]        = RaidNotifier.OnCombatEvent_HRC,
+		[RAID_AETHERIAN_ARCHIVE]     = RaidNotifier.OnCombatEvent_AA,
+		[RAID_SANCTUM_OPHIDIA]       = RaidNotifier.OnCombatEvent_SO,
+		[RAID_DRAGONSTAR_ARENA]      = RaidNotifier.OnCombatEvent_DSA,
+		[RAID_MAW_OF_LORKHAJ]        = RaidNotifier.OnCombatEvent_MOL,
+		[RAID_MAELSTROM_ARENA]       = RaidNotifier.OnCombatEvent_MA,
+		[RAID_HALLS_OF_FABRICATION]  = RaidNotifier.OnCombatEvent_HOF,
+		[RAID_ASYLUM_SANCTORIUM]     = RaidNotifier.OnCombatEvent_AS,
+	}
+	
 	-------------------
 	---- Debugging ----
 	-------------------
@@ -1550,10 +1569,10 @@ do ---------------------------
 	end
 	
 	function RaidNotifier:ToggleDebugTracker(enabled)
-		self:UnregisterForCombatEvent("debug")
-		if enabled then 
-			self:RegisterForCombatEvent("debug", OnCombatDebugEvent)
-		end
+		--self:UnregisterForCombatEvent("debug")
+		--if enabled then 
+		--	self:RegisterForCombatEvent("debug", OnCombatDebugEvent)
+		--end
 	end
 	
 	-- Fast debug toggle
