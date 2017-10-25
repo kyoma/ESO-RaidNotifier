@@ -214,7 +214,7 @@ do ------------------
 		hallsFab = {
 			conduit_strike        = true, 
 			taking_aim            = 1, -- "Self"
-			taking_aim_dynamic    = false,
+			taking_aim_dynamic    = 0, -- "Off"
 			taking_aim_duration   = 5000,
 			draining_ballista     = 1, -- "Self"
 			power_leech           = false,
@@ -400,7 +400,7 @@ function RaidNotifier:CreateSettingsMenu()
 				L.Settings_General_Choices_Near, 
 				L.Settings_General_Choices_All, 
 			},
-        },
+        	},
 		sanctumOphidia = {
 			mantikora_spear = off_self_all,
 			serpent_poison = {
@@ -430,11 +430,16 @@ function RaidNotifier:CreateSettingsMenu()
 			pinnacleBoss_conduit_drain = off_self_all,
 			taking_aim = off_self_all,
 			draining_ballista = off_self_all,
+			taking_aim_dynamic = {
+				L.Settings_General_Choices_Off,
+				L.Settings_General_Choices_Static,
+				L.Settings_General_Choices_Dynamic
+			},
 		},
 		asylum = {
 			llothis_defiling_blast = off_self_all, 
 		},
-    }
+	}
 
 	-- quick get/set value functions
 	local function getValue(category, key)
@@ -1038,9 +1043,10 @@ function RaidNotifier:CreateSettingsMenu()
 		choices = choices.hallsFab.taking_aim,
 	}, "hallsFab", "taking_aim")
 	MakeControlEntry({
-		type = "checkbox",
+		type = "dropdown",
 		name = L.Settings_HallsFab_Taking_Aim_Dynamic,
 		tooltip = L.Settings_HallsFab_Taking_Aim_Dynamic_TT,
+		choices = choices.hallsFab.taking_aim_dynamic,
 		disabled = function() return not self:IsDevMode() or savedVars.hallsFab.taking_aim ~= 1 end,
 		warning =  L.Settings_Debug_DevMode_Warning,
 		noAlert = true,
@@ -1050,7 +1056,7 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_HallsFab_Taking_Aim_Duration,
 		tooltip = L.Settings_HallsFab_Taking_Aim_Duration_TT,
 		min = 2000, max = 10000, step = 100,
-		disabled = function() return not self:IsDevMode() or savedVars.hallsFab.taking_aim ~= 1 or savedVars.hallsFab.taking_aim_dynamic == false end,
+		disabled = function() return not self:IsDevMode() or savedVars.hallsFab.taking_aim ~= 1 or savedVars.hallsFab.taking_aim_dynamic ~= 1 end,
 		warning = L.Settings_Debug_DevMode_Warning,
 		noAlert = true,
 	}, "hallsFab", "taking_aim_duration")
@@ -1086,7 +1092,7 @@ function RaidNotifier:CreateSettingsMenu()
 		type = "checkbox",
 		name = L.Settings_HallsFab_Conduit_Spawn,
 		tooltip = L.Settings_HallsFab_Conduit_Spawn_TT,
-   }, "hallsFab", "pinnacleBoss_conduit_spawn")
+	}, "hallsFab", "pinnacleBoss_conduit_spawn")
   	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_HallsFab_Conduit_Drain,
@@ -1299,6 +1305,13 @@ function RaidNotifier:TryUpgradeSettings()
 	local savedVars = self.Vars
 
 	local version, lastVersion = self.Version, savedVars.addonVersion or "0"
+--	if type(savedVars.hallsFab.taking_aim_dynamic) == "boolean" then
+--		if savedVars.hallsFab.taking_aim_dynamic == true then
+--			savedVars.hallsFab.taking_aim_dynamic = 1 -- static
+--		else
+--			savedVars.hallsFab.taking_aim_dynamic = 0 -- off
+--		end
+--	end
 	if lastVersion < "2.2.1" then 
 		-- change all alert sounds with CHAMPION_POINT_GAINED to DEFAULT_SOUND
 		for key, sound in pairs(savedVars.sounds) do

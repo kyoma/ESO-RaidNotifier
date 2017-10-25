@@ -351,10 +351,12 @@ halls_fab.assembly_titanic_smash = 90428 -- only thing that needs to be blocked?
 
 -- Other
 halls_fab.conduit_strike = {}
-halls_fab.conduit_strike[88036]   = true
-halls_fab.conduit_strike[94613]   = true  -- from Committee trio
-halls_fab.power_leech             = 88041 -- the actual stun you need to break free from
-halls_fab.taking_aim              = 91736
+halls_fab.conduit_strike[88036]	      = true
+halls_fab.conduit_strike[94613]       = true  -- from Committee trio
+halls_fab.power_leech                 = 88041 -- the actual stun you need to break free from
+halls_fab.taking_aim                  = 91736
++halls_fab.taking_aim_duration        = 4000  -- time duration to roll
++halls_fab.taking_aim_duration_enrage = 3000  -- time duration to roll when enrage
 halls_fab.draining_ballista       = 91077
 
 RaidNotifier.BuffsDebuffs[RAID_HALLS_OF_FABRICATION] = halls_fab

@@ -30,6 +30,8 @@ L.Settings_General_Choices_All                      = "All"
 L.Settings_General_Choices_Always                   = "Always"
 L.Settings_General_Choices_Other                    = "Other"
 L.Settings_General_Choices_Inverted                 = "Inverted"
+L.Settings_General_Choices_Static                   = "Static"
+L.Settings_General_Choices_Dynamic                  = "Dynamic"
 -- Alerts
 L.Alerts_General_No_Bufffood                        = "You have no bufffood!"
 L.Alerts_General_Bufffood_Minutes                   = "Your '<<1>>' bufffood runs out in |cbd0000<<2>>|r minutes!"

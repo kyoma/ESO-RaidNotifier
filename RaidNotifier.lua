@@ -665,6 +665,8 @@ do -----------------------------
 		local raidId = RaidNotifier.raidId
 
 		self.Minions = self.Minions or {}
+		self.Minions.spheres = self.Minions.spheres or {}
+		self.Minions.spheresCount = self.Minions.spheresCount or 0
 		local bossCount, bossAlive, bossFull = self:GetNumBosses(true)
 		-- reset if: 
 		--    1) there are no bosses
@@ -673,6 +675,8 @@ do -----------------------------
 		if bossCount == 0 or bossAlive == 0 or bossFull == bossCount then
 			-- reset all minions for now
 			self.Minions = {}
+			self.Minions.spheres = {}
+			self.Minions.spheresCount = 0
 			-- remove any countdown that is active
 			dbg("Bosses changed, stop any active countdown")
 			self:StopCountdown()
@@ -1318,9 +1322,20 @@ do ---------------------------
 				if (settings.taking_aim >= 1) then
 					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
-						if (self:IsDevMode() and settings.taking_aim == 1 and settings.taking_aim_dynamic == true) then
+						if (self:IsDevMode() and settings.taking_aim == 1 and settings.taking_aim_dynamic > 0) then
 							dbg("Taking Aim incoming from Sphere #%d", sUnitId)
-							buffsDebuffs.taking_aim_index = self:StartCountdown(settings.taking_aim_duration, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM), "hallsFab", "taking_aim")
+							local duration
+							if (settings.taking_aim_dynamic == 2) then
+								local bossCount, _, _ = self:GetNumBosses(true)
+								if (self.Minions.spheresCount < 8 and bossCount == 2) then
+									duration = buffsDebuffs.taking_aim_duration
+								else
+									duration = buffsDebuffs.taking_aim_duration_enrage
+								end
+							else
+								duration = settings.taking_aim_duration
+							end
+							buffsDebuffs.taking_aim_index = self:StartCountdown(duration, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM), "hallsFab", "taking_aim")
 							self.Minions.incomingSource = sUnitId
 						else
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM), "hallsFab", "taking_aim")
@@ -1377,9 +1392,10 @@ do ---------------------------
 						buffsDebuffs.committee_overload_target = nil
 					end
 				end
-			--elseif abilityId == buffsDebuffs.hunters_spawn_sphere then
-			--	dbg("Spawn Sphere #%d (%d)", tUnitId, result)
-			--	self.Minions[tUnitId] = abilityId -- to keep track of what spawned this minion
+			elseif abilityId == buffsDebuffs.hunters_spawn_sphere then
+				self.Minions.spheres[tUnitId] = true
+				self.Minions.spheresCount = self.Minions.spheresCount + 1
+				dbg("Spawn Sphere #%d (%d) count: %d", tUnitId, result, self.Minions.spheresCount)
 			end
 		elseif (result == ACTION_RESULT_EFFECT_GAINED) then
 			if (abilityId == buffsDebuffs.committee_reclaim_achieve) then
@@ -1435,20 +1451,21 @@ do ---------------------------
 				if tUnitId == self.Minions.incomingSource then
 					dbg("Sphere #%d was interrupted", tUnitId)
 					self.Minions.incomingSource = nil
-					--self:StopCountdown(buffsDebuffs.taking_aim_index)
-					--buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
+					self:StopCountdown(buffsDebuffs.taking_aim_index)
+					buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
 				end
 			--end
 		elseif (result == ACTION_RESULT_DIED) then
-			--if self.Minions[tUnitId] == buffsDebuffs.hunters_spawn_sphere then
+			if self.Minions.spheres[tUnitId] == true then
+				self.Minions.spheres[tUnitId] = nil
+				self.Minions.spheresCount = self.Minions.spheresCount - 1
+				dbg("Sphere #%d died (count %d)", tUnitId, self.Minions.spheresCount)
 				if tUnitId == self.Minions.incomingSource then
-					dbg("Sphere #%d died", tUnitId)
 					self.Minions.incomingSource = nil
-					--self:StopCountdown(buffsDebuffs.taking_aim_index)
-					--buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
+					self:StopCountdown(buffsDebuffs.taking_aim_index)
+					buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
 				end
-				--self.Minions[tUnitId] = nil 
-			--end
+			end
 		end	
 
 	end
