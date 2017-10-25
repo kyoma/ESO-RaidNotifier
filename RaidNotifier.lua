@@ -10,17 +10,15 @@ RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
 
-
 -- Constants for easy reading
-local RAID_HEL_RA_CITADEL        = 1
-local RAID_AETHERIAN_ARCHIVE     = 2
-local RAID_SANCTUM_OPHIDIA       = 3
-local RAID_DRAGONSTAR_ARENA      = 4
-local RAID_MAW_OF_LORKHAJ        = 5
-local RAID_MAELSTROM_ARENA       = 6
-local RAID_HALLS_OF_FABRICATION  = 7
-local RAID_ASYLUM_SANCTORIUM     = 8
-
+RAID_HEL_RA_CITADEL        = 1
+RAID_AETHERIAN_ARCHIVE     = 2
+RAID_SANCTUM_OPHIDIA       = 3
+RAID_DRAGONSTAR_ARENA      = 4
+RAID_MAW_OF_LORKHAJ        = 5
+RAID_MAELSTROM_ARENA       = 6
+RAID_HALLS_OF_FABRICATION  = 7
+RAID_ASYLUM_SANCTORIUM     = 8
 
 -- Debugging
 local function p() end
@@ -160,6 +158,7 @@ do ---------------------------------
 	end
 	
 	-- called when messageParams are applied to the line
+	-- TODO: Make this configurable?
 	local function SetupCallback(line, messageParams, doReset)
 		if doReset then -- we MUST make sure to reset anything that might have been changed by us
 			line.textControl:SetScale(1)
@@ -188,8 +187,6 @@ do ---------------------------------
 		if not text or text == "" then
 			p("Invalid text for '%s -> %s'", category, setting)
 			return
-		--elseif self.Vars.debug_notify then 
-		--	dbg("Alert for '%s -> %s', sound '%s' \n\"%s\"", category, setting, soundId, text)
 		end
 		if (interval) then 
 			local currentTime = GetTimeStamp()
@@ -198,17 +195,13 @@ do ---------------------------------
 			end
 			self:SetLastNotify(category, setting, currentTime)
 		end
-		return LCSA:CreateCountdown(timer, soundId, nil, text, nil)
+		return LCSA:CreateCountdown(timer, soundId, nil, text, nil, SetupCallback, CountdownCallback)
 	end
 	function RaidNotifier:StopCountdown(countdownIndex)
 		--if countdownIndex then 
-			dbg("Stopping countdown #%d", countdownIndex or -1)
+			--dbg("Stopping countdown #%d", countdownIndex or -1)
 			LCSA:EndCountdown(countdownIndex)
 		--end
-	end
-	
-	function RNTest(timer, text, endText, e1, e2)
-		return LCSA:CreateCountdown(timer, soundId, nil, text, endText, e1 and SetupCallback, e2 and CountdownCallback)
 	end
 
 end
@@ -297,7 +290,6 @@ do ----------------------
 		end
 		OnWeaponPairChanged()
 		EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_WEAPON_PAIR_LOCK_CHANGED, OnWeaponPairChanged)
-
 
 		local function OnGroupUpdate()
 			local groupSize = GetGroupSize()
@@ -444,19 +436,6 @@ do ----------------------
 		[RAID_ASYLUM_SANCTORIUM]     = 1000,
 	}
 
-	-- TODO: change BuffsDebuffs to use constants directly and get rid of this
-	local RaidKeys = 
-	{
-		[RAID_HEL_RA_CITADEL]        = "hel_ra", 
-		[RAID_AETHERIAN_ARCHIVE]     = "archive", 
-		[RAID_SANCTUM_OPHIDIA]       = "sanctum_ophidia",
-		[RAID_DRAGONSTAR_ARENA]      = "dragonstar",
-		[RAID_MAW_OF_LORKHAJ]        = "maw_lorkhaj",
-		[RAID_MAELSTROM_ARENA]       = "maelstrom", 
-		[RAID_HALLS_OF_FABRICATION]  = "halls_fab",
-		[RAID_ASYLUM_SANCTORIUM]     = "asylum",
-	}
-
 	local RaidZones = {}
 	for raidId, zoneId in pairs(RaidZoneIds) do
 		RaidZones[GetZoneNameById(zoneId)] = raidId
@@ -504,11 +483,12 @@ do ----------------------
 			
 			local combatEventCallback = self.CombatEventCallbacks[self.raidId]
 
+			-- The main juicy events we want, registered seperately for better performance
 			-- TODO: Remove (some of) this debugging when releasing it
 			-- TODO: Also add filter for action result but will require re-organizing BuffsDebuffs.lua 
 			dbg("----------------------------------------------")
 			dbg(" Gathering Abilities for Raid")
-			local raidData = self.BuffsDebuffs[RaidKeys[self.raidId]]
+			local raidData = self.BuffsDebuffs[self.raidId]
 			for k,v in pairs(raidData) do
 				if type(v) == "number" then 
 					if v > 20000 then
@@ -532,10 +512,7 @@ do ----------------------
 			end
 			dbg("----------------------------------------------")
 	
-			-- The main juicy events we want, registered seperately for better performance
-			--for _, action in ipairs(ActionResults) do
-			--	self:RegisterForCombatEvent(action, CombatEventCallbacks[self.raidId])
-			--end
+
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_EFFECT_CHANGED, self.OnEffectChanged)
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_BOSSES_CHANGED, self.OnBossesChanged)
 
@@ -566,10 +543,6 @@ do ----------------------
 		if not listening then return end
 
 		dbg("Unregister for %s (%s)", GetRaidZoneName(self.raidId), GetString("SI_DUNGEONDIFFICULTY", self.raidDifficulty))
-		--EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_COMBAT_EVENT)
-		--for _, result in ipairs(ActionResults) do
-		--	self:UnregisterForCombatEvent(result)
-		--end
 		self:UnregisterAllCombatEvents()
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_EFFECT_CHANGED)
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_BOSSES_CHANGED)
@@ -748,7 +721,7 @@ do ---------------------------
 		--	return
 		--end
 
-		local buffsDebuffs, settings = self.BuffsDebuffs.hel_ra, self.Vars.helra
+		local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.helra
 
 		if (result == ACTION_RESULT_BEGIN) then
 
@@ -795,7 +768,7 @@ do ---------------------------
 		local raidId = RaidNotifier.raidId
 		local self   = RaidNotifier
 
-		local buffsDebuffs, settings = self.BuffsDebuffs.archive, self.Vars.archive
+		local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.archive
 
 		if (result == ACTION_RESULT_BEGIN) then
 
@@ -889,11 +862,12 @@ do ---------------------------
 		end
 	end
 
+
 	function RaidNotifier.OnCombatEvent_SO(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
 
 		local raidId = RaidNotifier.raidId
 		local self   = RaidNotifier
-		local buffsDebuffs, settings = self.BuffsDebuffs.sanctum_ophidia, self.Vars.sanctumOphidia
+		local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.sanctumOphidia
 
 		--We're lucky that alot of things can be detected slightly before they hit the player
 		if (result == ACTION_RESULT_BEGIN) then
@@ -1020,7 +994,7 @@ do ---------------------------
 
 		local raidId = RaidNotifier.raidId
 		local self   = RaidNotifier
-		local buffsDebuffs, settings = self.BuffsDebuffs.dragonstar, self.Vars.dragonstar
+		local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.dragonstar
 
 		if (result == ACTION_RESULT_BEGIN) then
 			-- TODO: Enable some of these for others too?
@@ -1102,7 +1076,7 @@ do ---------------------------
 
 		local raidId = RaidNotifier.raidId
 		local self   = RaidNotifier
-		local buffsDebuffs, settings = self.BuffsDebuffs.maw_lorkhaj, self.Vars.mawLorkhaj
+		local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.mawLorkhaj
 
 		local function FindGlyph(glyphId, glyphs, knownGlyphs, allowNew)
 			if not knownGlyphs[glyphId] then
@@ -1314,7 +1288,7 @@ do ---------------------------
 		local raidId = RaidNotifier.raidId
 		local self   = RaidNotifier
 
-		local buffsDebuffs, settings = self.BuffsDebuffs.maelstrom, self.Vars.maelstrom
+		local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.maelstrom
 
 		if (result == ACTION_RESULT_BEGIN) then
 		elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
@@ -1337,7 +1311,7 @@ do ---------------------------
 
 		local raidId = RaidNotifier.raidId
 		local self   = RaidNotifier
-		local buffsDebuffs, settings = self.BuffsDebuffs.halls_fab, self.Vars.hallsFab
+		local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.hallsFab
 
 		if (result == ACTION_RESULT_BEGIN) then
 			if (abilityId == buffsDebuffs.taking_aim) then
@@ -1483,7 +1457,7 @@ do ---------------------------
 	function RaidNotifier.OnCombatEvent_AS(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
 		local raidId = RaidNotifier.raidId
 		local self   = RaidNotifier
-		local buffsDebuffs, settings = self.BuffsDebuffs.asylum, self.Vars.asylum
+		local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.asylum
 
 		if result == ACTION_RESULT_BEGIN then
 			if settings.llothis_defiling_blast >= 1 then
@@ -1567,12 +1541,13 @@ do ---------------------------
 			end
 		end
 	end
-	
+
+	local debugEventName = RaidNotifier.Name .. "_CombatEventDebug"
 	function RaidNotifier:ToggleDebugTracker(enabled)
-		--self:UnregisterForCombatEvent("debug")
-		--if enabled then 
-		--	self:RegisterForCombatEvent("debug", OnCombatDebugEvent)
-		--end
+		EVENT_MANAGER:UnregisterForEvent(debugEventName, EVENT_COMBAT_EVENT)
+		if enabled then 
+			EVENT_MANAGER:RegisterForEvent(debugEventName, EVENT_COMBAT_EVENT, OnCombatDebugEvent)
+		end
 	end
 	
 	-- Fast debug toggle

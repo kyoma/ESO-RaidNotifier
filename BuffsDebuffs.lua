@@ -1,15 +1,80 @@
-
 RaidNotifier = RaidNotifier or {}
 RaidNotifier.BuffsDebuffs = {}
 
-local ultimates = {
-	46609, -- Barrier Rank IV
-	86485, -- Elemental Storm Rank IV
-	29844, -- Negate Magic Rank IV
-	24046, -- Nova Rank IV
-	46529, -- War Horn Rank IV
-}
-RaidNotifier.BuffsDebuffs.ultimates = ultimates
+-- ---------------------------------------------------
+-- Hel Ra  -------------------------------------------
+-- ---------------------------------------------------
+local hel_ra = {}
+
+hel_ra.jump = {}
+hel_ra.jump[56354] = true
+hel_ra.jump[10583] = true
+hel_ra.jump[33686] = true
+hel_ra.jump[56243] = true
+hel_ra.jump[33686] = true
+hel_ra.jump[33686] = true
+hel_ra.jump[33686] = true
+
+hel_ra.yokeda_meteor = 52213
+hel_ra.yokeda_impulse = 52207
+hel_ra.yokeda_shout = 50585
+
+hel_ra.warrior_stoneform    = 56576
+hel_ra.warrior_shieldthrow  = 48267
+
+hel_ra.warrior_channeled_swipes = 47819
+
+hel_ra.destructive_outbreak = 56667
+
+RaidNotifier.BuffsDebuffs[RAID_HEL_RA_CITADEL] = hel_ra
+
+
+-- ---------------------------------------------------
+-- Aetherian Archive  --------------------------------
+-- ---------------------------------------------------
+local archive = {}
+
+-- Lightning Storm Atronach
+archive.stormatro_impendingstorm = 49583 --the large aoe
+archive.stormatro_lightningstorm = 47898 --the lightning from the sky
+
+-- Foundation Stone Atronach
+archive.stoneatro_boulderstorm = 48240   --induvidual boulders are 49311
+archive.stoneatro_bigquake     = 49098
+
+-- Celestial Mage
+archive.mage_conjure_axe = {}
+archive.mage_conjure_axe[49506] = true
+archive.mage_conjure_axe[49508] = true
+archive.mage_conjure_axe[49669] = true --might not be needed
+
+archive.mage_conjure_reflection = {} --some of these might be irrelevant
+archive.mage_conjure_reflection[49399] = true
+archive.mage_conjure_reflection[49400] = true
+archive.mage_conjure_reflection[49401] = true
+archive.mage_conjure_reflection[49408] = true
+archive.mage_conjure_reflection[49409] = true
+archive.mage_conjure_reflection[49410] = true
+archive.mage_conjure_reflection[49676] = true
+archive.mage_conjure_reflection[49678] = true
+archive.mage_conjure_reflection[49679] = true
+archive.mage_conjure_reflection[49680] = true
+archive.mage_conjure_reflection[49681] = true
+archive.mage_conjure_reflection[49682] = true
+archive.mage_conjure_reflection[49683] = true
+archive.mage_conjure_reflection[49685] = true
+archive.mage_conjure_reflection[49686] = true
+archive.mage_conjure_reflection[49687] = true
+archive.mage_conjure_reflection[49688] = true
+archive.mage_conjure_reflection[49689] = true
+archive.mage_conjure_reflection[56432] = true --seems out of place but has the same (unusual) name
+
+-- Overchargers (same abilities as in Sanctum it seems)
+archive.overcharged    = 58218
+archive.call_lightning = 79390
+
+RaidNotifier.BuffsDebuffs[RAID_AETHERIAN_ARCHIVE] = archive
+
 
 -- ---------------------------------------------------
 -- Sanctum Ophidia -----------------------------------
@@ -57,91 +122,7 @@ sanctum.boulder_toss = 52012
 sanctum.overcharged    = 58218
 sanctum.call_lightning = 79390
 
--- add ids back to global
-RaidNotifier.BuffsDebuffs.sanctum_ophidia = sanctum
-
--- ---------------------------------------------------
--- Hel Ra  -------------------------------------------
--- ---------------------------------------------------
-local hel_ra = {}
---[[
-[20:25:54] 2200, 48024 (Cleave), 0/0/, 0/11661/Bob^Mx
-[20:26:03] 2200, 48024 (Cleave), 0/0/, 0/11661/Bob^Mx
-
-[20:25:07] 2200, 48267 (Shield Mark), 0/71235/The Warrior^M, 1/59663/Bob^Fx
---]]
-
-hel_ra.jump = {}
-hel_ra.jump[56354] = true
-hel_ra.jump[10583] = true
-hel_ra.jump[33686] = true
-hel_ra.jump[56243] = true
-hel_ra.jump[33686] = true
-hel_ra.jump[33686] = true
-hel_ra.jump[33686] = true
-
-hel_ra.yokeda_meteor = 52213
-hel_ra.yokeda_impulse = 52207
-hel_ra.yokeda_shout = 50585
-
-hel_ra.warrior_stoneform    = 56576
-hel_ra.warrior_shieldthrow  = 48267
-
-hel_ra.warrior_channeled_swipes = 47819
-
-hel_ra.destructive_outbreak = 56667
-
--- add ids back to global
-RaidNotifier.BuffsDebuffs.hel_ra = hel_ra
-
-
-
--- ---------------------------------------------------
--- Aetherian Archive  --------------------------------
--- ---------------------------------------------------
-local archive = {}
-
--- Lightning Storm Atronach
-archive.stormatro_impendingstorm = 49583 --the large aoe
-archive.stormatro_lightningstorm = 47898 --the lightning from the sky
-
--- Foundation Stone Atronach
-archive.stoneatro_boulderstorm = 48240   --induvidual boulders are 49311
-archive.stoneatro_bigquake     = 49098
-
--- Celestial Mage
-archive.mage_conjure_axe = {}
-archive.mage_conjure_axe[49506] = true
-archive.mage_conjure_axe[49508] = true
-archive.mage_conjure_axe[49669] = true --might not be needed
-
-archive.mage_conjure_reflection = {} --some of these might be irrelevant
-archive.mage_conjure_reflection[49399] = true
-archive.mage_conjure_reflection[49400] = true
-archive.mage_conjure_reflection[49401] = true
-archive.mage_conjure_reflection[49408] = true
-archive.mage_conjure_reflection[49409] = true
-archive.mage_conjure_reflection[49410] = true
-archive.mage_conjure_reflection[49676] = true
-archive.mage_conjure_reflection[49678] = true
-archive.mage_conjure_reflection[49679] = true
-archive.mage_conjure_reflection[49680] = true
-archive.mage_conjure_reflection[49681] = true
-archive.mage_conjure_reflection[49682] = true
-archive.mage_conjure_reflection[49683] = true
-archive.mage_conjure_reflection[49685] = true
-archive.mage_conjure_reflection[49686] = true
-archive.mage_conjure_reflection[49687] = true
-archive.mage_conjure_reflection[49688] = true
-archive.mage_conjure_reflection[49689] = true
-archive.mage_conjure_reflection[56432] = true --seems out of place but has the same (unusual) name
-
--- Overchargers (same abilities as in Sanctum it seems)
-archive.overcharged    = 58218
-archive.call_lightning = 79390
-
--- add ids back to global
-RaidNotifier.BuffsDebuffs.archive = archive
+RaidNotifier.BuffsDebuffs[RAID_SANCTUM_OPHIDIA] = sanctum
 
 
 -- ---------------------------------------------------
@@ -150,8 +131,6 @@ RaidNotifier.BuffsDebuffs.archive = archive
 local dragonstar = {}
 --[[
 [20:51:33] 2200, 53328 (Warming Aura), 0/0, 0/0/, 0/58425/   DSA Stage 2 fire dying???
-
-
 TODO:
 	Arena 2: Warming Aura (see above)
 	Arena 6: Lethal Arrow (from Boss)
@@ -164,28 +143,7 @@ dragonstar.arena7_unstable_core    = 52920 --also used by hiath in stage 10
 dragonstar.arena8_ice_charge       = 54841
 dragonstar.arena8_fire_charge      = 54838
 
-RaidNotifier.BuffsDebuffs.dragonstar = dragonstar
-
-
-
--- ---------------------------------------------------
--- Maelstrom Arena  ----------------------------------
--- ---------------------------------------------------
-local maelstrom = {}
-
-maelstrom.stage7_poison = {}
-maelstrom.stage7_poison[68871] = true
-maelstrom.stage7_poison[68909] = true
-maelstrom.stage7_poison[68910] = true
-maelstrom.stage7_poison[69855] = true
-maelstrom.stage7_poison[69854] = true -- poison explode
-maelstrom.stage7_poison[73866] = true -- poison explode
-
-maelstrom.stage9_synergy = 67359
-
--- add ids back to global
-RaidNotifier.BuffsDebuffs.maelstrom = maelstrom
-
+RaidNotifier.BuffsDebuffs[RAID_DRAGONSTAR_ARENA] = dragonstar
 
 
 -- ---------------------------------------------------
@@ -193,19 +151,8 @@ RaidNotifier.BuffsDebuffs.maelstrom = maelstrom
 -- ---------------------------------------------------
 local maw_lorkhaj = {}
 --[[
-[21:03:50] 2200, 74603 (Spawn In), 0/0/, 0/60332/
-[21:04:40] 2200, 57620 (Dark Aegis), 0/0/, 0/60332/
-
-[21:10:35] 2200, 74315 (Transform), 0/0/, 0/57350/
-[21:10:35] 2200, 74311 (Transform), 0/0/, 0/43406/
-
-[21:15:18] 2200, 73908 (Lunar Smash), 0/0/, 0/35081/
-[21:15:20] 2200, 74331 (Lunar Smash Casting), 0/0/, 0/5037/
-
 [21:15:27] 2200, 73676 (Crushing Void), 0/0/, 0/28336/
 [21:15:29] 2200, 73679 (Crushing Void), 0/0/, 0/28336/
-
-[21:15:36] 2200, 74035 (Darkness Falls), 0/0/, 0/5037/
 
 [22:00:08] 2200, 75434 (Whirlwind), 0/0, 0/0/, 0/16874/Bob^Mx
 --]]
@@ -337,8 +284,24 @@ maw_lorkhaj.rakkhat_shattered[74672] = true
 maw_lorkhaj.rakkhat_shattered[76030] = true
 maw_lorkhaj.rakkhat_shattered[76031] = true
 
--- add ids back to global
-RaidNotifier.BuffsDebuffs.maw_lorkhaj = maw_lorkhaj
+RaidNotifier.BuffsDebuffs[RAID_MAW_OF_LORKHAJ] = maw_lorkhaj
+
+
+-- ---------------------------------------------------
+-- Maelstrom Arena  ----------------------------------
+-- ---------------------------------------------------
+local maelstrom = {}
+
+maelstrom.stage7_poison = {}
+maelstrom.stage7_poison[68871] = true
+maelstrom.stage7_poison[68909] = true
+maelstrom.stage7_poison[68910] = true
+maelstrom.stage7_poison[69855] = true
+maelstrom.stage7_poison[69854] = true -- poison explode
+maelstrom.stage7_poison[73866] = true -- poison explode
+maelstrom.stage9_synergy = 67359
+
+RaidNotifier.BuffsDebuffs[RAID_MAELSTROM_ARENA] = maelstrom
 
 
 -- ---------------------------------------------------
@@ -394,7 +357,7 @@ halls_fab.power_leech             = 88041 -- the actual stun you need to break f
 halls_fab.taking_aim              = 91736
 halls_fab.draining_ballista       = 91077
 
-RaidNotifier.BuffsDebuffs.halls_fab = halls_fab
+RaidNotifier.BuffsDebuffs[RAID_HALLS_OF_FABRICATION] = halls_fab
 
 
 -- ---------------------------------------------------
@@ -410,7 +373,7 @@ asylum.llothis_defiling_blast = 95545
 -- Saint Olms
 asylum.olms_storm_the_heavens = 98535
 
-RaidNotifier.BuffsDebuffs.asylum = asylum
+RaidNotifier.BuffsDebuffs[RAID_ASYLUM_SANCTORIUM] = asylum
 
 
 -- ---------------------------------------------------
