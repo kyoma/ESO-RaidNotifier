@@ -683,7 +683,7 @@ do -----------------------------
 		end
 
 		if (raidId == RAID_MAW_OF_LORKHAJ) then
-			local buffsDebuffs, settings = self.BuffsDebuffs.maw_lorkhaj, self.Vars.mawLorkhaj
+			local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.mawLorkhaj
 
 			self:SetElementHidden("mawLorkhaj", "zhaj_glyph_window", true)
 			local map = GetMapTileTexture()
@@ -1639,17 +1639,15 @@ do -----------------------------
 		
 		-- HoF is the first raid to make it here! WHOOHOOW!! (all cuz we needz dem stackcount)
 		if (raidId == RAID_HALLS_OF_FABRICATION) then
-			local buffsDebuffs, settings = self.BuffsDebuffs.halls_fab, self.Vars.hallsFab
+			local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.hallsFab
 			
 			--if (uType == COMBAT_UNIT_TYPE_PLAYER) then -- doesn't seem to be the case even when it really is the player
 			if (uTag == "player") then
 				if abilityId == buffsDebuffs.pinnacleBoss_scalded_debuff then
 					if settings.pinnacleBoss_scalded == true then
 						if (changeType == EFFECT_RESULT_FADED) then
-							--dbg("Scalded debuff faded")
 							self:UpdateScaldedStacks(0)
 						else
-							--dbg("Scalded Debuff: #%d stacks", stackCount)
 							self:UpdateScaldedStacks(stackCount, beginTime, endTime)
 						end
 					end
