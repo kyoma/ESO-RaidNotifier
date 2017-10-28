@@ -439,6 +439,9 @@ buffFood[84735] = true
 buffFood[89955] = true
 buffFood[89957] = true
 buffFood[89971] = true
+buffFood[100488] = true
+buffFood[100498] = true
+buffFood[100502] = true
 
 
 -- add ids back to global
