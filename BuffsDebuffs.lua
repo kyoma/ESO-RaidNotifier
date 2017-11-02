@@ -367,11 +367,15 @@ RaidNotifier.BuffsDebuffs[RAID_HALLS_OF_FABRICATION] = halls_fab
 local asylum = {}
 
 -- Saint Felms
+asylum.felms_teleport_strike = 99138
 
 -- Saint Llothis
 asylum.llothis_defiling_blast = 95545
+asylum.llothis_soul_stained_corruption = 95585
 
 -- Saint Olms
+asylum.olms_swipe = 95428
+asylum.olms_scalding_roar = 98683
 asylum.olms_storm_the_heavens  = 98535
 asylum.olms_exhaustive_charges = 95482
 
