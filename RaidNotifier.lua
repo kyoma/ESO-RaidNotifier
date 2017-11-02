@@ -491,7 +491,7 @@ do ----------------------
 			local raidData = self.BuffsDebuffs[self.raidId]
 			for k,v in pairs(raidData) do
 				if type(v) == "number" then 
-					if v > 20000 then
+					if v > 10000 then
 						dbg("Found ability #%d (%s)", v, k)
 						self:RegisterForCombatEvent(combatEventCallback, REGISTER_FILTER_ABILITY_ID, v)
 					else
@@ -499,7 +499,7 @@ do ----------------------
 					end
 				elseif type(v) == "table" then
 					for l,w in pairs(v) do
-						if type(l) == "number" and l > 20000 then
+						if type(l) == "number" and l > 10000 then
 							dbg("Found ability #%d (%s)", l, k)
 							self:RegisterForCombatEvent(combatEventCallback, REGISTER_FILTER_ABILITY_ID, l)
 						else
@@ -1460,8 +1460,8 @@ do ---------------------------
 		local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.asylum
 
 		if result == ACTION_RESULT_BEGIN then
-			if settings.llothis_defiling_blast >= 1 then
-				if abilityId == buffsDebuffs.llothis_defiling_blast then
+			if abilityId == buffsDebuffs.llothis_defiling_blast then
+				if settings.llothis_defiling_blast >= 1 then
 					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_DEFILING_BLAST), "asylum", "llothis_defiling_blast", 5)
@@ -1469,6 +1469,17 @@ do ---------------------------
 						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_DEFILING_BLAST_OTHER), tName), "asylum", "llothis_defiling_blast", 5)
 					end
 				end
+
+			elseif abilityId == buffsDebuffs.olms_exhaustive_charges then
+				if settings.olms_exhaustive_charges then 
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_EXHAUSTIVE_CHARGES), "asylum", "olms_exhaustive_charges", 5)
+				end
+
+			elseif abilityId == buffsDebuffs.olms_storm_the_heavens then
+				if settings.olms_storm_the_heavens then 
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_STORM_THE_HEAVENS), "asylum", "olms_storm_the_heavens", 5)
+				end
+
 			end
 		end
 	end

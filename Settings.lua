@@ -156,6 +156,11 @@ do ------------------
 			ulti_window     = {100, 600},
 			override_cost   = 0,
 		},
+		countdown = {
+			timerScale      = 1.0,
+			textScale       = 1.0,
+			useColor        = false,
+		},
 		sounds = {
 		},
 		helra = {
@@ -234,6 +239,7 @@ do ------------------
 		asylum = {
 			llothis_defiling_blast = 1, -- "Self"
 			olms_storm_the_heavens = true,
+			olms_exhaustive_charges = false,
 		},
 
 		dbg = {
@@ -678,6 +684,29 @@ function RaidNotifier:CreateSettingsMenu()
 	})
 	subTable = nil --end submenu
 
+
+	MakeSubmenu(L.Settings_Countdown_Header, L.Settings_Countdown_Description)
+	MakeControlEntry({
+		type = "slider",
+		name = L.Settings_Countdown_TimerScale,
+		tooltip = L.Settings_Countdown_TimerScale_TT,
+		min = 0.8, max = 1.5, step = 0.05,
+		noAlert = true,
+	}, "countdown", "timerScale")
+	MakeControlEntry({
+		type = "slider",
+		name = L.Settings_Countdown_TextScale,
+		tooltip = L.Settings_Countdown_TextScale_TT,
+		min = 0.8, max = 1.5, step = 0.05,
+		noAlert = true,
+	}, "countdown", "textScale")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Countdown_UseColors,
+		tooltip = L.Settings_Countdown_UseColors_TT,
+		noAlert = true, 
+	}, "countdown", "useColor")
+	subTable = nil --end submenu
 
 
 	MakeSubmenu(L.Settings_Profile_Header, L.Settings_Profile_Description)
@@ -1135,6 +1164,16 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_Asylum_Defiling_Blast_TT,
 		choices = choices.asylum.llothis_defiling_blast,
 	}, "asylum", "llothis_defiling_blast")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Asylum_Exhaustive_Charges,
+		tooltip = L.Settings_Asylum_Exhaustive_Charges_TT,
+	}, "asylum", "olms_exhaustive_charges")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Asylum_Storm_The_Heavens,
+		tooltip = L.Settings_Asylum_Storm_The_Heavens_TT,
+	}, "asylum", "olms_storm_the_heavens")
 	subTable = nil --end submenu
 
 

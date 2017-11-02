@@ -80,6 +80,19 @@ L.Settings_Profile_Guard                             = "Enable Profile Managemen
 
 
 --------------------------------
+----       Countdowns       ----
+--------------------------------
+L.Settings_Countdown_Header                          = "Countdowns"
+L.Settings_Countdown_Description                     = "Change the looks and behaviour of our countdowns."
+L.Settings_Countdown_TimerScale                      = "Timer Scale"
+L.Settings_Countdown_TimerScale_TT                   = "The scale of the timer display"
+L.Settings_Countdown_TextScale                       = "Text Scale"
+L.Settings_Countdown_TextScale_TT                    = "The scale of the text display"
+L.Settings_Countdown_UseColors                       = "Use Colors"
+L.Settings_Countdown_UseColors_TT                    = "When enabled it will use yellow/orange/red colors for the countdown as it reaches zero"
+
+
+--------------------------------
 ----          Trials        ----
 --------------------------------
 L.Settings_Trials_Header                            = "Trials"
@@ -219,7 +232,7 @@ L.Settings_MawLorkhaj_Rakkhat_LunarBastion1         = "Rakkhat: Lunar Bastion Ga
 L.Settings_MawLorkhaj_Rakkhat_LunarBastion1_TT      = "Shows when a player gains the blessing from the glowing platform."
 L.Settings_MawLorkhaj_Rakkhat_LunarBastion2         = "Rakkhat: Lunar Bastion Lost"
 L.Settings_MawLorkhaj_Rakkhat_LunarBastion2_TT      = "Shows when a player loses the blessing from the glowing platform."
-L.Settings_MawLorkhaj_ShatteringStrike		    = "Mobs: Shattering Strike"
+L.Settings_MawLorkhaj_ShatteringStrike              = "Mobs: Shattering Strike"
 L.Settings_MawLorkhaj_ShatteringStrike_TT           = "Get a warning when Dro-m'Athra Savage is about to cast shattering strike attack."
 L.Settings_MawLorkhaj_Shattered                     = "Mobs: Armor Shattered"
 L.Settings_MawLorkhaj_Shattered_TT                  = "Get a warning when your armor is shattered."
@@ -244,7 +257,7 @@ L.Alerts_MawLorkhaj_Rakkhat_LunarBastion2           = "You lost |cFEFF7FLunar Ba
 L.Alerts_MawLorkhaj_Rakkhat_LunarBastion2_Other     = "|cFF0000<<!aC:1>>|r lost |cFEFF7FLunar Bastion|r"
 L.Alerts_MawLorkhaj_Suneater_Eclipse                = "Incoming |cFF0000Eclipse Field|r on you."
 L.Alerts_MawLorkhaj_Suneater_Eclipse_Other          = "Incoming |cFF0000Eclipse Field|r on |cFF0000<<!aC:1>>|r!"
-L.Alerts_MawLorkhaj_ShatteringStrike		    = "Incoming |c000055Shattering Strike|r on you."
+L.Alerts_MawLorkhaj_ShatteringStrike                = "Incoming |c000055Shattering Strike|r on you."
 L.Alerts_MawLorkhaj_ShatteringStrike_Other          = "Incoming |c000055Shattering Strike|r on |cFF0000<<!aC:1>>|r!"
 L.Alerts_MawLorkhaj_Shattered                       = "Your |c595959Armor|r has been |cff0000Shattered|r."
 L.Alerts_MawLorkhaj_MarkedForDeath                  = "Warning! |c000055Panthers|r are chasing you!"
@@ -347,9 +360,15 @@ L.Settings_Asylum_Header                         = "Asylum Sanctorium"
 -- Settings
 L.Settings_Asylum_Defiling_Blast                 = "Saint Llothis: Defiling Dye Blast"
 L.Settings_Asylum_Defiling_Blast_TT              = "Alerts you when Saint Llothis targets you or others with his cone attack."
+L.Settings_Asylum_Exhaustive_Charges             = "Saint Olms: Exhaustive Charges"
+L.Settings_Asylum_Exhaustive_Charges_TT          = "Alerts you when Saint Olms is about to launch his attack that drops three large lightning circles."
+L.Settings_Asylum_Storm_The_Heavens              = "Saint Olms: Storm the Heavens"
+L.Settings_Asylum_Storm_The_Heavens_TT           = "Alerts you when Saint Olms is about to go into the air and spawns a large amount of smaller lightning circles."
 -- Alerts
 L.Alerts_Asylum_Defiling_Blast                   = "Warning! |c00cc00Defiling Blast|r on you"
 L.Alerts_Asylum_Defiling_Blast_Other             = "Warning! |c00cc00Defiling Blast|r on |cFF0000<<!aC:1>>|r"
+L.Alerts_Asylum_Exhaustive_Charges               = "Incoming |cFF0000Exhaustive Charges|r"
+L.Alerts_Asylum_Storm_The_Heavens                = "Incoming |cFF0000Storm The Heavens|r! Kite!"
 
 
 

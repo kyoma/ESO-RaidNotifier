@@ -173,7 +173,8 @@ maw_lorkhaj.zhajBoss_curseduration = 25
 maw_lorkhaj.zhajBoss_glyphability  = 57525
 maw_lorkhaj.zhajBoss_glyphcooldown = 25
 maw_lorkhaj.zhajBoss_knownGlyphs = {}
-maw_lorkhaj.zhajBoss_glyphs = {
+maw_lorkhaj.zhajBoss_glyphs = 
+{
 	{x=0.55496829748154, y=0.29175475239754},
 	{x=0.56342494487762, y=0.25405216217041},
 	{x=0.60077518224716, y=0.24876673519611},
@@ -371,7 +372,8 @@ local asylum = {}
 asylum.llothis_defiling_blast = 95545
 
 -- Saint Olms
-asylum.olms_storm_the_heavens = 98535
+asylum.olms_storm_the_heavens  = 98535
+asylum.olms_exhaustive_charges = 95482
 
 RaidNotifier.BuffsDebuffs[RAID_ASYLUM_SANCTORIUM] = asylum
 
