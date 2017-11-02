@@ -1469,7 +1469,6 @@ do ---------------------------
 						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_DEFILING_BLAST_OTHER), tName), "asylum", "llothis_defiling_blast", 5)
 					end
 				end
-
 			elseif abilityId == buffsDebuffs.olms_exhaustive_charges then
 				if settings.olms_exhaustive_charges then 
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_EXHAUSTIVE_CHARGES), "asylum", "olms_exhaustive_charges", 5)
@@ -1492,6 +1491,7 @@ do ---------------------------
 						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_TELEPORT_STRIKE_OTHER), tName), "asylum", "felms_teleport_strike")
 					end
 				end
+--[[ i don't think we need this. This is obvious for tanks i think
 			elseif abilityId == buffsDebuffs.olms_swipe then
 				if settings.olms_swipe >= 1 then
 					tName = LUNIT:GetNameForUnitId(tUnitId)
@@ -1510,6 +1510,7 @@ do ---------------------------
 						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_SCALDING_ROAR_OTHER), tName), "asylum", "olms_scalding_roar")
 					end
 				end
+--]]
 			end
 		elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
 			if settings.llothis_soul_stained_corruption == true then

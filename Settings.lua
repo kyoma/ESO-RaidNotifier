@@ -1181,7 +1181,7 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_Asylum_Teleport_Strike_TT,
 		choices = choices.asylum.felms_teleport_strike,
 	}, "asylum", "felms_teleport_strike")
-	MakeControlEntry({
+--[[	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_Asylum_Swipe,
 		tooltip = L.Settings_Asylum_Swipe_TT,
@@ -1193,6 +1193,7 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_Asylum_Scalding_Roar_TT,
 		choices = choices.asylum.olms_scalding_roar,
 	}, "asylum", "olms_scalding_roar")
+--]]
 	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_Asylum_Exhaustive_Charges,
