@@ -367,13 +367,25 @@ RaidNotifier.BuffsDebuffs[RAID_HALLS_OF_FABRICATION] = halls_fab
 local asylum = {}
 
 -- Saint Felms
+asylum.felms_teleport_strike = 99138
 
 -- Saint Llothis
 asylum.llothis_defiling_blast = 95545
+asylum.llothis_soul_stained_corruption = 95585
 
 -- Saint Olms
+--asylum.olms_swipe = 95428 -- for tank
+--asylum.olms_scalding_roar = 98683 -- for tank
 asylum.olms_storm_the_heavens  = 98535
 asylum.olms_exhaustive_charges = 95482
+asylum.olms_gusts_of_steam = 98868 -- aoe under everyone's feet (jump starts)
+asylum.olms_eruption = 99974 -- jump
+asylum.olms_trial_by_fire = 98582
+asylum.olms_protector_spawn = 64489 -- aka find turret
+asylum.olms_phase2 = 98615 -- after 90% health
+asylum.olms_phase3 = 98677 -- after 75% health
+asylum.olms_phase4 = 98678 -- after 50% health
+asylum.olms_phase5 = 98679 -- after 25% health
 
 RaidNotifier.BuffsDebuffs[RAID_ASYLUM_SANCTORIUM] = asylum
 
