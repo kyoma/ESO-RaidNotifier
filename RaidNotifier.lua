@@ -1469,17 +1469,55 @@ do ---------------------------
 						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_DEFILING_BLAST_OTHER), tName), "asylum", "llothis_defiling_blast", 5)
 					end
 				end
-
 			elseif abilityId == buffsDebuffs.olms_exhaustive_charges then
 				if settings.olms_exhaustive_charges then 
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_EXHAUSTIVE_CHARGES), "asylum", "olms_exhaustive_charges", 5)
 				end
-
 			elseif abilityId == buffsDebuffs.olms_storm_the_heavens then
 				if settings.olms_storm_the_heavens then 
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_STORM_THE_HEAVENS), "asylum", "olms_storm_the_heavens", 5)
 				end
-
+			elseif abilityId == buffsDebuffs.llothis_soul_stained_corruption then
+				if settings.llothis_soul_stained_corruption == true then
+					dbg("Soul stained corruption 1")
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_SOUL_STAINED_CORRUPTION), "asylum", "llothis_soul_stained_corruption")
+				end
+			elseif abilityId == buffsDebuffs.felms_teleport_strike then
+				if settings.felms_teleport_strike >= 1 then
+					tName = LUNIT:GetNameForUnitId(tUnitId)
+					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_TELEPORT_STRIKE), "asylum", "felms_teleport_strike")
+					elseif (tName ~= "" and settings.felms_teleport_strike == 2) then
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_TELEPORT_STRIKE_OTHER), tName), "asylum", "felms_teleport_strike")
+					end
+				end
+--[[ i don't think we need this. This is obvious for tanks i think
+			elseif abilityId == buffsDebuffs.olms_swipe then
+				if settings.olms_swipe >= 1 then
+					tName = LUNIT:GetNameForUnitId(tUnitId)
+					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_SWIPE), "asylum", "olms_swipe")
+					elseif (tName ~= "" and settings.olms_swipe == 2) then
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_SWIPE_OTHER), tName), "asylum", "olms_swipe")
+					end
+				end
+			elseif abilityId == buffsDebuffs.olms_scalding_roar then
+				if settings.olms_scalding_roar >= 1 then
+					tName = LUNIT:GetNameForUnitId(tUnitId)
+					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_SCALDING_ROAR), "asylum", "olms_scalding_roar")
+					elseif (tName ~= "" and settings.olms_scalding_roar == 2) then
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_SCALDING_ROAR_OTHER), tName), "asylum", "olms_scalding_roar")
+					end
+				end
+--]]
+			end
+		elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
+			if settings.llothis_soul_stained_corruption == true then
+				if abilityId == buffsDebuffs.llothis_soul_stained_corruuption then
+					dbg("Soul stained corruption 2")
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_SOUL_STAINED_CORRUPTION), "asylum", "llothis_soult_stained_corruption")
+				end
 			end
 		end
 	end
