@@ -238,10 +238,12 @@ do ------------------
 		}, 
 		asylum = {
 			llothis_defiling_blast = 1, -- "Self"
+			llothis_soul_stained_corruption = false,
+			felms_teleport_strike = 1, -- "Self"
+			olms_eruption = 0, -- "Off"
 			olms_storm_the_heavens = true,
 			olms_exhaustive_charges = false,
 		},
-
 		dbg = {
 			enable = false,
 			notify = false,
@@ -402,17 +404,17 @@ function RaidNotifier:CreateSettingsMenu()
 			},
 			suneater_eclipse = {
 				L.Settings_General_Choices_Off,
-				L.Settings_General_Choices_Self, 
+				L.Settings_General_Choices_Self,
 				L.Settings_General_Choices_Near, 
-				L.Settings_General_Choices_All, 
+				L.Settings_General_Choices_All,
 			},
-        },
+		},
 		sanctumOphidia = {
 			mantikora_spear = off_self_all,
 			serpent_poison = {
 				L.Settings_General_Choices_Off,
 				L.Settings_General_Choices_Normal,
-				L.Settings_General_Choices_Full, 
+				L.Settings_General_Choices_Full,
 			},
 			troll_boulder  = off_self_all,
 			troll_poison   = off_self_all,
@@ -439,8 +441,10 @@ function RaidNotifier:CreateSettingsMenu()
 		},
 		asylum = {
 			llothis_defiling_blast = off_self_all, 
+			felms_teleport_strike = off_self_all,
+			olms_eruption = off_self_all,
 		},
-    }
+	}
 
 	-- quick get/set value functions
 	local function getValue(category, key)
@@ -1166,6 +1170,17 @@ function RaidNotifier:CreateSettingsMenu()
 	}, "asylum", "llothis_defiling_blast")
 	MakeControlEntry({
 		type = "checkbox",
+		name = L.Settings_Asylum_Soul_Stained_Corruption,
+		tooltip = L.Settings_Asylum_Soul_Stained_Corruption_TT,
+	}, "asylum", "llothis_soul_stained_corruption")
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_Asylum_Teleport_Strike,
+		tooltip = L.Settings_Asylum_Teleport_Strike_TT,
+		choices = choices.asylum.felms_teleport_strike,
+	}, "asylum", "felms_teleport_strike")
+	MakeControlEntry({
+		type = "checkbox",
 		name = L.Settings_Asylum_Exhaustive_Charges,
 		tooltip = L.Settings_Asylum_Exhaustive_Charges_TT,
 	}, "asylum", "olms_exhaustive_charges")
@@ -1174,6 +1189,12 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_Asylum_Storm_The_Heavens,
 		tooltip = L.Settings_Asylum_Storm_The_Heavens_TT,
 	}, "asylum", "olms_storm_the_heavens")
+        MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_Asylum_Eruption,
+		tooltip = L.Settings_Asylum_Eruption_TT,
+		choices = choices.asylum.olms_eruption,
+	}, "asylum", "olms_eruption")
 	subTable = nil --end submenu
 
 
