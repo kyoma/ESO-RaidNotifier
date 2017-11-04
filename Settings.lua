@@ -241,8 +241,11 @@ do ------------------
 			llothis_soul_stained_corruption = false,
 			felms_teleport_strike = 1, -- "Self"
 			olms_eruption = 0, -- "Off"
+			olms_gusts_of_steam = true,
 			olms_storm_the_heavens = true,
 			olms_exhaustive_charges = false,
+			olms_protector_spawn = true,
+			olms_trial_by_fire = true,
 		},
 		dbg = {
 			enable = false,
@@ -1189,12 +1192,27 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_Asylum_Storm_The_Heavens,
 		tooltip = L.Settings_Asylum_Storm_The_Heavens_TT,
 	}, "asylum", "olms_storm_the_heavens")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Asylum_Gusts_Of_Steam,
+		tooltip = L.Settings_Asylum_Gusts_Of_Steam_TT,
+	}, "asylum", "olms_gusts_of_steam")
         MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_Asylum_Eruption,
 		tooltip = L.Settings_Asylum_Eruption_TT,
 		choices = choices.asylum.olms_eruption,
 	}, "asylum", "olms_eruption")
+        MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Asylum_Protector_Spawn,
+		tooltip = L.Settings_Asylum_Protector_Spawn_TT,
+	}, "asylum", "olms_protector_spawn")
+        MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Asylum_Trial_By_Fire,
+		tooltip = L.Settings_Asylum_Trial_By_Fire_TT,
+	}, "asylum", "olms_trial_by_fire")
 	subTable = nil --end submenu
 
 

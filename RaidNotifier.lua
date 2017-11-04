@@ -1478,7 +1478,14 @@ do ---------------------------
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_STORM_THE_HEAVENS), "asylum", "olms_storm_the_heavens", 5)
 				end
 			elseif abilityId == buffsDebuffs.olms_gusts_of_steam then
-				dbg("Gusts Of Steam (small aoe)")
+				if settings.olms_gusts_of_steam then
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_GUSTS_OF_STEAM), "asylum", "olms_gusts_of_steam")
+				end
+			elseif abilityId == buffsDebuffs.olms_trial_by_fire then
+				dbg("Trial By Fire: %d/%d")
+				if settings.olms_trial_by_fire then
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_TRIAL_BY_FIRE), "asylum", "olms_trial_by_fire")
+				end
 			elseif abilityId == buffsDebuffs.llothis_soul_stained_corruption then
 				if settings.llothis_soul_stained_corruption == true then
 					dbg("Soul stained corruption 1")
@@ -1494,12 +1501,26 @@ do ---------------------------
 					end
 				end
 			end
-		elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
-			if settings.llothis_soul_stained_corruption == true then
-				if abilityId == buffsDebuffs.llothis_soul_stained_corruuption then
-					dbg("Soul stained corruption 2")
-					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_SOUL_STAINED_CORRUPTION), "asylum", "llothis_soul_stained_corruption")
+		elseif (result == ACTION_RESULT_EFFECT_GAINED) then
+			if abilityId == buffsDebuffs.olms_protector_spawn then
+				if settings.olms_protector_spawn == true then
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_PROTECTOR_SPAWN), "asylum", "olms_protector_spawn")
 				end
+			elseif abilityId == buffsDebuffs.olms_phase2 then
+				dbg("Phase2")
+			elseif abilityId == buffsDebuffs.olms_phase3 then
+				dbg("Phase3")
+			elseif abilityId == buffsDebuffs.olms_phase4 then
+				dbg("Phase4")
+			elseif abilityId == buffsDebuffs.olms_phase5 then
+				dbg("Phase5")
+			end
+		elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
+			if abilityId == buffsDebuffs.llothis_soul_stained_corruption then
+--				if settings.llothis_soul_stained_corruption == true then
+					dbg("Soul stained corruption 2")
+--					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_SOUL_STAINED_CORRUPTION), "asylum", "llothis_soul_stained_corruption")
+--				end
 			elseif abilityId == buffsDebuffs.olms_eruption then
 				if (settings.olms_eruption >= 1) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
