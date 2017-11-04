@@ -1482,7 +1482,7 @@ do ---------------------------
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_GUSTS_OF_STEAM), "asylum", "olms_gusts_of_steam")
 				end
 			elseif abilityId == buffsDebuffs.olms_trial_by_fire then
-				dbg("Trial By Fire: %d/%d", dType, dUnitId)
+				--dbg("Trial By Fire: %d/%d", dType, dUnitId)
 				if settings.olms_trial_by_fire then
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_TRIAL_BY_FIRE), "asylum", "olms_trial_by_fire")
 				end
