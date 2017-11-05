@@ -157,8 +157,8 @@ do ------------------
 			override_cost   = 0,
 		},
 		countdown = {
-			timerScale      = 1.0,
-			textScale       = 1.0,
+			timerScale      = 100,
+			textScale       = 100,
 			useColor        = false,
 		},
 		sounds = {
@@ -694,14 +694,14 @@ function RaidNotifier:CreateSettingsMenu()
 		type = "slider",
 		name = L.Settings_Countdown_TimerScale,
 		tooltip = L.Settings_Countdown_TimerScale_TT,
-		min = 0.8, max = 1.5, step = 0.05,
+		min = 80, max = 150, step = 5,
 		noAlert = true,
 	}, "countdown", "timerScale")
 	MakeControlEntry({
 		type = "slider",
 		name = L.Settings_Countdown_TextScale,
 		tooltip = L.Settings_Countdown_TextScale_TT,
-		min = 0.8, max = 1.5, step = 0.05,
+		min = 80, max = 150, step = 5,
 		noAlert = true,
 	}, "countdown", "textScale")
 	MakeControlEntry({

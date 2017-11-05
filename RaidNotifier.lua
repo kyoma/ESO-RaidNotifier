@@ -158,26 +158,40 @@ do ---------------------------------
 	end
 	
 	-- called when messageParams are applied to the line
-	-- TODO: Make this configurable?
+	local orgTextScale, orgCountdownScale, orgCountdownColor
 	local function SetupCallback(line, messageParams, doReset)
-		if doReset then -- we MUST make sure to reset anything that might have been changed by us
-			line.textControl:SetScale(1)
-			line.countdownControl:SetScale(1)
-			line.countdownControl:SetColor(1, 1, 1, 1)
-		else
-			line.textControl:SetScale(1.4)
-			line.countdownControl:SetScale(1.5)
-			line.countdownControl:SetColor(1, 1, 1, 1)
+		-- store original instead of hardcoding them (at this point they haven't been modified by us yet)
+		if not orgTextScale then
+			orgTextScale = line.textControl:GetScale()
 		end
+		if not orgCountdownScale then
+			orgCountdownScale = line.countdownControl:GetScale()
+		end
+		if not orgCountdownColor then
+			orgCountdownColor = {line.countdownControl:GetColor()}
+		end
+		local settings = RaidNotifier.Vars.countdown
+		if doReset then -- we MUST make sure to reset anything that might have been changed by us
+			line.textControl:SetScale(orgTextScale)
+			line.countdownControl:SetScale(orgCountdownScale)
+		else
+			line.textControl:SetScale(settings.textScale / 100)
+			line.countdownControl:SetScale(settings.timerScale / 100)
+		end
+		-- always reset this in case countdown was terminated before reaching zero (see below)
+		line.countdownControl:SetColor(unpack(orgCountdownColor))
 	end
 	local function CountdownCallback(line, countdownS)
 		-- set color to orange on 2 and red  on 1 and 0
-		if line.currentCountdownTimeS == 2 then
-			line.countdownControl:SetColor(0.9, 0.5, 0, 1)
-		elseif line.currentCountdownTimeS == 1 then
-			line.countdownControl:SetColor(1, 0, 0, 1)
-		elseif line.currentCountdownTimeS < 0 then
-			line.countdownControl:SetColor(1, 1, 1, 1)
+		local settings = RaidNotifier.Vars.countdown
+		if settings.useColor then
+			if line.currentCountdownTimeS == 2 then
+				line.countdownControl:SetColor(0.9, 0.5, 0, 1)
+			elseif line.currentCountdownTimeS == 1 then
+				line.countdownControl:SetColor(1, 0, 0, 1)
+			elseif line.currentCountdownTimeS < 0 then
+				line.countdownControl:SetColor(1, 1, 1, 1)
+			end
 		end
 	end
 
@@ -198,10 +212,7 @@ do ---------------------------------
 		return LCSA:CreateCountdown(timer, soundId, nil, text, nil, SetupCallback, CountdownCallback)
 	end
 	function RaidNotifier:StopCountdown(countdownIndex)
-		--if countdownIndex then 
-			--dbg("Stopping countdown #%d", countdownIndex or -1)
-			LCSA:EndCountdown(countdownIndex)
-		--end
+		LCSA:EndCountdown(countdownIndex)
 	end
 
 end
@@ -273,6 +284,7 @@ do ----------------------
 
 		self:SetElementHidden("ultimate", "ulti_window", settings.hidden)
 
+		ultimates = {}
 		if ultimateHandler.SetUltimateGroupId then 
 			ultimateHandler:SetUltimateGroupId(ultimateGroupId)
 		end
@@ -334,7 +346,7 @@ do ----------------------
 		if not listening then return end
 		listening = false
 		dbg("UnregisterForUltimateChanges")
-		
+
 		self:SetElementHidden("ultimate", "ulti_window", true)
 
 		ultimateHandler:UnregisterForUltimateChanges(self.OnUltimateReceived)
@@ -346,6 +358,18 @@ do ----------------------
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_GROUP_UPDATE)
 		--EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_UNIT_FRAME_UPDATE)
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_GROUP_MEMBER_ROLES_CHANGED)
+	end
+
+	function RaidNotifier:ToggleUltimateExchange()
+		--local settings = self.Vars.ultimate
+		if listening then
+			p("Disable Ultimate Exchange")
+			self:UnregisterForUltimateChanges()
+		else
+			p("Enable Ultimate Exchange")
+			self:RegisterForUltimateChanges()
+		end
+		self:UpdateUltimates()
 	end
 
 	SLASH_COMMANDS["/rnulti"] = function(str) 
@@ -588,6 +612,9 @@ do ----------------------
 		self:InitializeUltimateWindow("UltimateWindow")
 		self:InitializeStatusDisplay("StatusDisplay")
 		self:InitializeGlyphWindow("GlyphWindow", self.Vars.mawLorkhaj.zhaj_glyphs_invert)
+		
+		-- Bindings
+		ZO_CreateStringId("SI_BINDING_NAME_RAIDNOTIFIER_TOGGLE_ULTI", L.Binding_ToggleUltimateExchange)
 
 		-- Always add fragment now
 		self:AddFragment() 
@@ -1458,6 +1485,10 @@ do ---------------------------
 		local raidId = RaidNotifier.raidId
 		local self   = RaidNotifier
 		local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.asylum
+		
+		if buffsDebuffs.interest_list[abilityId] then
+			dbg("[%d] #%d %s (%d)", result, abilityId, GetAbilityName(abilityId), tUnitId)
+		end
 
 		if result == ACTION_RESULT_BEGIN then
 			if abilityId == buffsDebuffs.llothis_defiling_blast then
@@ -1487,6 +1518,7 @@ do ---------------------------
 			elseif abilityId == buffsDebuffs.felms_teleport_strike then
 				if settings.felms_teleport_strike >= 1 then
 					tName = LUNIT:GetNameForUnitId(tUnitId)
+					dbg("Teleport Strike %s", tName)
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_TELEPORT_STRIKE), "asylum", "felms_teleport_strike")
 					elseif (tName ~= "" and settings.felms_teleport_strike == 2) then

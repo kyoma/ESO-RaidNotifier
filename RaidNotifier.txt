@@ -40,6 +40,7 @@ BuffsDebuffs.lua
 Settings.lua
 UI.lua
 RaidNotifier.xml
+Bindings.xml
 
 lang/en.lua
 lang/$(language).lua

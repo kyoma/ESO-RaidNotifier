@@ -33,6 +33,8 @@ L.Settings_General_Choices_Inverted                 = "Inverted"
 -- Alerts
 L.Alerts_General_No_Bufffood                        = "You have no bufffood!"
 L.Alerts_General_Bufffood_Minutes                   = "Your '<<1>>' bufffood runs out in |cbd0000<<2>>|r minutes!"
+-- Bindings
+L.Binding_ToggleUltimateExchange                    = "Toggle Ultimate"
 
 
 --------------------------------

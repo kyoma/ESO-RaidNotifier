@@ -387,6 +387,16 @@ asylum.olms_phase3 = 98677 -- after 75% health
 asylum.olms_phase4 = 98678 -- after 50% health
 asylum.olms_phase5 = 98679 -- after 25% health
 
+-- list of abilities to keep an eye on (enable debug to see when they appear)
+asylum.interest_list = {}
+-- spawning of boss? no additional info on the unit itself it seems (check boss health to determine which one it is? how do we get unitId tho??)
+asylum.interest_list[10298] = true 
+-- "Dormant", when bosses goes sleepy sleep, 2200 & 2240 in succession, then 45s later 2250 when he wakes up, tUnitId == boss-in-question
+asylum.interest_list[99990] = true
+-- "Enrage", called when bosses enrage, 2240 on start, 2250 on stop (also when they go to sleep), seems to repeat each 20s (does that mean the enrage stacks up?), tUnitId == boss-in-question
+asylum.interest_list[101354] = true
+
+
 RaidNotifier.BuffsDebuffs[RAID_ASYLUM_SANCTORIUM] = asylum
 
 
