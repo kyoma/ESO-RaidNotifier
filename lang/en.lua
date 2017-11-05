@@ -371,7 +371,13 @@ L.Settings_Asylum_Exhaustive_Charges_TT          = "Alerts you when Saint Olms i
 L.Settings_Asylum_Storm_The_Heavens              = "Saint Olms: Storm the Heavens"
 L.Settings_Asylum_Storm_The_Heavens_TT           = "Alerts you when Saint Olms is about to go into the air and spawns a large amount of smaller lightning circles."
 L.Settings_Asylum_Eruption                       = "Saint Olms: Eruption"
-L.Settings_Asylum_Eruption_TT                    = "Alerts you when Saint Olms is about to jump."
+L.Settings_Asylum_Eruption_TT                    = "Alerts you when Saint Olms is about to jump. This is connected with Gusts Of Steam."
+L.Settings_Asylum_Gusts_Of_Steam                 = "Saint Olms: Gusts Of Steam"
+L.Settings_Asylum_Gusts_Of_Steam_TT              = "Alerts you when Saint Olms is about to jump and cast small aoe at everyone. This is connected with Eruption."
+L.Settings_Asylum_Protector_Spawn                = "Saint Olms: Protector Spawn"
+L.Settings_Asylum_Protector_Spawn_TT             = "Alerts you when sphere is about to spawn."
+L.Settings_Asylum_Trial_By_Fire                  = "Saint Olms: Trial By Fire"
+L.Settings_Asylum_Trial_By_Fire_TT               = "Alerts you when Saint Olms is about to cast fire on execute phase."
 
 -- Alerts
 L.Alerts_Asylum_Defiling_Blast                   = "Warning! |c00cc00Defiling Blast|r on you"
@@ -381,7 +387,11 @@ L.Alerts_Asylum_Teleport_Strike                  = "|cFFC000Teleport Strike|r on
 L.Alerts_Asylum_Teleport_Strike_Other            = "|cFFC000Teleport Strike|r on |cFF0000<<!aC:1>>|r"
 L.Alerts_Asylum_Exhaustive_Charges               = "Incoming |cFF0000Exhaustive Charges|r"
 L.Alerts_Asylum_Storm_The_Heavens                = "Incoming |cFF0000Storm The Heavens|r! Kite!"
-L.Alerts_Asylum_Eruption                         = "Incoming |cFF0000Eruption|r!"
+L.Alerts_Asylum_Eruption                         = "|c595959Eruption|r targeted at you"
+L.Alerts_Asylum_Eruption_Other                   = "|c595959Eruption|r! at |cFC0000<<!aC:1>>|r"
+L.Alerts_Asylum_Gusts_Of_Steam                   = "Incoming |cFF99000Gusts Of Steam|r! Hide!"
+L.Alerts_Asylum_Trial_By_Fire                    = "Incoming |cFF5500Fire|r!"
+L.Alerts_Asylum_Protector_Spawn                  = "|c0000FFSphere|r is up!"
 
 
 
