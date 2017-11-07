@@ -608,6 +608,9 @@ do ----------------------
 		
 		L = self:GetLocale()
 
+		-- Init debug
+		self:ToggleDebugTracker(self.Vars.dbg.tracker)
+
 		-- UI Elements
 		self:InitializeUltimateWindow("UltimateWindow")
 		self:InitializeStatusDisplay("StatusDisplay")
