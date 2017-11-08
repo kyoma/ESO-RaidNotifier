@@ -143,6 +143,7 @@ do ------------------
 			no_assistants = true,
 			last_pet = 0,
 			status_display  = {100, 400, CENTER},
+			unlock_status_icon = false,
 			default_sound   = SOUNDS.CHAMPION_POINTS_COMMITTED,
 		},
 		ultimate = {
@@ -553,6 +554,19 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_General_No_Assistants_TT,
 		noAlert = true,
 	}, "general", "no_assistants")
+        MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_General_Unlock_Status_Icon,
+		setFunc = function(value)
+				if (value) then
+					RaidNotifier:UpdateTwinAspect("tolunar")
+				else
+					RaidNotifier:UpdateTwinAspect("none")
+				end
+			end,
+		tooltip = L.Settings_General_Unlock_Status_Icon_TT,
+		noAlert = true,
+	}, "general", "unlock_status_icon")
 
 	local c, cV = Util.UnboxTable(self:GetSounds(), {"name", "id"})
 	table.remove(c, 1)   table.remove(cV, 1) -- remove "-Default-"
