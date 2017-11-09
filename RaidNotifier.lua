@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.3.2"
+RaidNotifier.Version         = "2.3.3"
 RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -506,6 +506,13 @@ do ----------------------
 			dbg("Register for %s (%s)", GetRaidZoneName(self.raidId), GetString("SI_DUNGEONDIFFICULTY", self.raidDifficulty))
 			
 			local combatEventCallback = self.CombatEventCallbacks[self.raidId]
+			local abilityList = {}
+			local function RegisterForAbility(abId)
+				if not abilityList[abId] then
+					abilityList[abId] = true
+					self:RegisterForCombatEvent(combatEventCallback, REGISTER_FILTER_ABILITY_ID, abId)
+				end
+			end
 
 			-- The main juicy events we want, registered seperately for better performance
 			-- TODO: Remove (some of) this debugging when releasing it
@@ -517,7 +524,7 @@ do ----------------------
 				if type(v) == "number" then 
 					if v > 10000 then
 						dbg("Found ability #%d (%s)", v, k)
-						self:RegisterForCombatEvent(combatEventCallback, REGISTER_FILTER_ABILITY_ID, v)
+						RegisterForAbility(v)
 					else
 						dbg("Ignoring %s (%s)", tostring(v), k)
 					end
@@ -525,7 +532,8 @@ do ----------------------
 					for l,w in pairs(v) do
 						if type(l) == "number" and l > 10000 then
 							dbg("Found ability #%d (%s)", l, k)
-							self:RegisterForCombatEvent(combatEventCallback, REGISTER_FILTER_ABILITY_ID, l)
+							RegisterForAbility(l)
+							--self:RegisterForCombatEvent(combatEventCallback, REGISTER_FILTER_ABILITY_ID, l)
 						else
 							dbg("Ignoring %s (%s)", l, k)
 						end
@@ -607,9 +615,9 @@ do ----------------------
 		self:CreateSettingsMenu()
 		
 		L = self:GetLocale()
-
+		
 		-- Init debug
-		self:ToggleDebugTracker(self.Vars.dbg.tracker)
+		self:ToggleDebugTracker(self.Vars.dbg.tracker or self.Vars.dbg.units)
 
 		-- UI Elements
 		self:InitializeUltimateWindow("UltimateWindow")
@@ -704,7 +712,7 @@ do -----------------------------
 			-- reset all minions for now
 			self.Minions = {}
 			-- remove any countdown that is active
-			dbg("Bosses changed, stop any active countdown")
+			--dbg("Bosses changed, stop any active countdown")
 			self:StopCountdown()
 		end
 
@@ -1483,15 +1491,15 @@ do ---------------------------
 
 	end
 
-
+	local GetTime = GetTimeStamp --GetGameTimeMilliseconds
 	function RaidNotifier.OnCombatEvent_AS(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
 		local raidId = RaidNotifier.raidId
 		local self   = RaidNotifier
 		local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.asylum
 		
-		if buffsDebuffs.interest_list[abilityId] then
-			dbg("[%d] #%d %s (%d)", result, abilityId, GetAbilityName(abilityId), tUnitId)
-		end
+		--if buffsDebuffs.interest_list[abilityId] then
+		--	dbg("[%d] #%d %s (%d) at %d", result, abilityId, GetAbilityName(abilityId), tUnitId, GetTime())
+		--end
 
 		if result == ACTION_RESULT_BEGIN then
 			if abilityId == buffsDebuffs.llothis_defiling_blast then
@@ -1513,17 +1521,15 @@ do ---------------------------
 				end
 			elseif abilityId == buffsDebuffs.olms_gusts_of_steam then
 				if settings.olms_gusts_of_steam then
-					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_GUSTS_OF_STEAM), "asylum", "olms_gusts_of_steam")
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_GUSTS_OF_STEAM), "asylum", "olms_gusts_of_steam", 10)
 				end
 			elseif abilityId == buffsDebuffs.olms_trial_by_fire then
-				--dbg("Trial By Fire: %d/%d", dType, dUnitId)
 				if settings.olms_trial_by_fire then
-					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_TRIAL_BY_FIRE), "asylum", "olms_trial_by_fire")
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_TRIAL_BY_FIRE), "asylum", "olms_trial_by_fire", 5)
 				end
 			elseif abilityId == buffsDebuffs.llothis_soul_stained_corruption then
-				if settings.llothis_soul_stained_corruption == true then
-					dbg("Soul stained corruption 1")
-					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_SOUL_STAINED_CORRUPTION), "asylum", "llothis_soul_stained_corruption")
+				if settings.llothis_soul_stained_corruption then
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_SOUL_STAINED_CORRUPTION), "asylum", "llothis_soul_stained_corruption", 5)
 				end
 			elseif abilityId == buffsDebuffs.felms_teleport_strike then
 				if settings.felms_teleport_strike >= 1 then
@@ -1537,34 +1543,148 @@ do ---------------------------
 				end
 			end
 		elseif (result == ACTION_RESULT_EFFECT_GAINED) then
-			if abilityId == buffsDebuffs.olms_protector_spawn then
+			if abilityId == buffsDebuffs.boss_spawn then
+				-- This one is tricky as it triggers each time a boss or minion spawns, thus without context it's not very useful.
+				-- Ways to use this:
+				--    Single occurance: Protector spawns (before it reaches its target location) or miniboss appears. Always a protector when 
+				--                      phase 2, then ~10 seconds later the Llothis boss. Also around ~25 seconds later for the Felms boss.
+				--    Triple occurance: Those fancy fire robo-spiders we just ignore. Always when phase 3 starts
+				--[[
+				if self:IsDevMode() and self.Minions.lastPhaseTimeMs then -- only once phase2 has started
+					local curTimeMs = GetTime()
+					self.Minions.bossSpawns = self.Minions.bossSpawns or {}
+					-- insert current spawn data
+					table.insert(self.Minions.bossSpawns, {id=tUnitId, timeMs=curTimeMs})
+					-- only do callLater if timeMs is different from last
+					if self.Minions.lastBossSpawnTimeMs == curTimeMs then
+						dbg("Multi-spawn, skipping callLater")
+					else
+						--dbg("Do CallLater %d/%s", curTimeMs, tostring(self.Minions.lastBossSpawnTimeMs))
+						if self.Minions.lastBossSpawnTimeMs then -- reset if its a new spawn time
+							self.Minions.bossSpawns = {}
+						end
+						zo_callLater(function()
+							if self.Minions.bossSpawns then
+							local index = #self.Minions.bossSpawns 
+							if index == 3 then
+								local lastTimeMs = self.Minions.bossSpawns[index].timeMs
+								dbg("Check spawns for spiders around %s", tostring(lastTimeMs))
+								d(self.Minions.bossSpawns)
+								if lastTimeMs == self.Minions.bossSpawns[index-1].timeMs and lastTimeMs == lastTimeMs == self.Minions.bossSpawns[index-2].timeMs then
+									table.remove(self.Minions.bossSpawns, index)
+									table.remove(self.Minions.bossSpawns, index-1)
+									table.remove(self.Minions.bossSpawns, index-2)
+									dbg("Found and removed spider spawns")
+								end
+							end
+							-- check if we still have spawns
+							index = #self.Minions.bossSpawns 
+							if index == 1 then
+								dbg("Check single spawn: %d", tUnitId)
+								local isProtector = true
+								if self.Minions.nextSpawnIsProtector then
+									self.Minions.nextSpawnIsProtector = false
+								elseif self.Minions.nextSpawnIsLlothis then
+									self.Minions.nextSpawnIsLlothis = false
+									-- nothing should have spawned since the first protector
+									local diff = curTimeMs - self.Minions.lastPhaseTimeMs
+									if diff <= 20 then -- small window for it to spawn, in case it's only +Felms
+										self.Minions.bossLlothisId = tUnitId -- should always be accurate at this point
+										dbg("Found Llothis Boss: %d", tUnitId)
+										isProtector = false
+									else
+										dbg("Missed our window for Llothis")
+									end
+								elseif self.Minions.nextSpawnIsFelms or self.Minions.nextSpawnIsFelmsBackup then
+									-- either the Felms boss or another protector spawned, hence we keep a 'backup'
+									local diff = curTimeMs - self.Minions.lastPhaseTimeMs
+									if diff >= 23 and diff <= 27 then -- small window for it to spawn, in case it's only +Llothis (normal is ~15 seconds??)
+										if self.Minions.bossFelmsId then
+											self.Minions.bossFelmsIdBackup = tUnitId 
+											dbg("Found Felms Boss BACKUP: %d after %d ms", tUnitId, diff)
+										else
+											self.Minions.bossFelmsId = tUnitId 
+											dbg("Found Felms Boss: %d after %d ms", tUnitId, diff)
+										end
+										isProtector = false
+									else
+										dbg("Missed our window for Felms")
+									end
+									if self.Minions.nextSpawnIsFelmsBackup then
+										self.Minions.nextSpawnIsFelmsBackup = false
+									else
+										self.Minions.nextSpawnIsFelms = false
+										self.Minions.nextSpawnIsFelmsBackup = true
+									end
+								end
+								if isProtector then
+									self.Minions.latestProtectorId = tUnitId
+									dbg("Protector about to spawn #%d", tUnitId)
+								end
+							end
+						end
+						end, 100) -- tiny delay
+						self.Minions.lastBossSpawnTimeMs = curTimeMs
+					end
+				end
+				--]]
+			elseif abilityId == buffsDebuffs.olms_protector_spawn then
+				--[[
+				if self:IsDevMode() then
+					-- verify that our latest protector id matches
+					if tUnitId ~= self.Minions.latestProtectorId then
+						dbg("Mismatch in protector id: %s vs %s", tostring(self.Minions.latestProtectorId), tostring(tUnitId))
+						-- make sure our Felms id is correct
+						if self.Minions.bossFelmsId == tUnitId then
+							dbg("We mistakenly gave Felms the protector id, try and fix it with backup: %s", tostring(self.Minions.bossFelmsIdBackup))
+							self.Minions.bossFelmsId = self.Minions.bossFelmsIdBackup
+							self.Minions.bossFelmsIdBackup = nil
+						end
+					end
+				end
+				--]]
 				if settings.olms_protector_spawn == true then
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_PROTECTOR_SPAWN), "asylum", "olms_protector_spawn")
 				end
+			elseif abilityId == buffsDebuffs.olms_boss_enrage then
+				--if tUnitId == self.Minions.bossFelmsId then
+				--	dbg("Felms enraged at %d", GetTime())
+				--elseif tUnitId == self.Minions.bossLlothisId then
+				--	dbg("Llothis enraged %d", GetTime())
+				--else
+				--	dbg("Unknown unit %d enraged at %d", tUnitId, GetTime())
+				--end
 			elseif abilityId == buffsDebuffs.olms_phase2 then
 				dbg("Phase2")
+				--self.Minions.lastPhaseTimeMs = GetTime()
+				--self.Minions.nextSpawnIsProtector = true
+				--self.Minions.nextSpawnIsLlothis = true
 			elseif abilityId == buffsDebuffs.olms_phase3 then
 				dbg("Phase3")
+				--self.Minions.lastPhaseTimeMs = GetTime()
+				--self.Minions.nextSpawnIsFelms = true
 			elseif abilityId == buffsDebuffs.olms_phase4 then
 				dbg("Phase4")
 			elseif abilityId == buffsDebuffs.olms_phase5 then
 				dbg("Phase5")
 			end
 		elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
-			if abilityId == buffsDebuffs.llothis_soul_stained_corruption then
---				if settings.llothis_soul_stained_corruption == true then
-					dbg("Soul stained corruption 2")
---					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_SOUL_STAINED_CORRUPTION), "asylum", "llothis_soul_stained_corruption")
---				end
-			elseif abilityId == buffsDebuffs.olms_eruption then
-				if (settings.olms_eruption >= 1) then
-					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_ERUPTION), "asylum", "olms_eruption")
-					elseif (tName ~= "" and settings.olms_eruption == 2) then
-						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_ERUPTION_OTHER), tName), "asylum", "orms_eruption")
-					end
-				end
+
+		elseif (result == ACTION_RESULT_EFFECT_FADED) then
+			if abilityId == buffsDebuffs.olms_protector_spawn then
+				-- It died, new protectors spawn ~9s later (coincidence?)
+
+			elseif abilityId == buffsDebuffs.olms_boss_dormant then
+				--if tUnitId == self.Minions.bossFelmsId then
+				--	dbg("Felms woke up at %d", GetTime())
+				--elseif tUnitId == self.Minions.bossLlothisId then
+				--	dbg("Llothis woke up at %d", GetTime())
+				--else
+				--	dbg("Unknown unit %d woke up at", tUnitId, GetTime())
+				--end
+			
 			end
+
 		end
 	end
 
@@ -1591,22 +1711,26 @@ do ---------------------------
 	local debugMsg = "[%d] %s (%d)%s%s"
 
 	local trackedUnits = {}
+	local trackedAbilities = {}
 	local function OnCombatDebugEvent(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
 
 		local self   = RaidNotifier
 		
-		--if self.Vars.dbg.units then
-		--	local function CheckUnit(id, name, type)
-		--		if id > 0 and abilityId ~= 90463 and not trackedUnits[id] then
-		--			if LUNIT:GetNameForUnitId(id) == "" then -- not a known unit like group members or bosses
-		--				trackedUnits[id] = true
-		--				df("Found new unit #%d (%d, %s)", id, abilityId, GetAbilityName(abilityId))
-		--			end
-		--		end
-		--	end
-		--	--CheckUnit(sUnitId, sName, sType)
-		--	CheckUnit(tUnitId, tName, tType)
-		--end
+		if self.Vars.dbg.units then
+			local function CheckUnit(id, name, type)
+				if id > 0 and not trackedUnits[id] then
+					trackedUnits[id] = true
+					local count = trackedAbilities[abilityId] or 0
+					if count < 10 then -- only report first few units from the same ability
+						if LUNIT:GetNameForUnitId(id) == "" then -- not a known unit like group members or bosses
+							trackedAbilities[abilityId] = (trackedAbilities[abilityId] or 0) + 1
+							df("Found new unit #%d (%d, %s)", id, abilityId, GetAbilityName(abilityId))
+						end
+					end
+				end
+			end
+			CheckUnit(tUnitId, tName, tType)
+		end
 
 		if (self.Vars.dbg.tracker and debugList[result] ~= nil) then
 			local function FormatUnit(prefix, uType, uName, uId)
