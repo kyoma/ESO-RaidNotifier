@@ -17,6 +17,8 @@ L.Settings_General_No_Assistants                    = "Turn off assistants when 
 L.Settings_General_No_Assistants_TT                 = "Only applies during trials and does NOT prevent them from being summoned."
 L.Settings_General_Center_Screen_Announce           = "Center Screen Announcements"
 L.Settings_General_Center_Screen_Announce_TT        = "Use the game's own center screen announcement system. Alternative is a more simplistic display message from Raid Notifier itself."
+L.Settings_General_Unlock_Status_Icon               = "Unlock Status Icon"
+L.Settings_General_Unlock_Status_Icon_TT            = "When enabled it will show status icon on the screen that can be moved."
 L.Settings_General_Default_Sound                    = "Default Sound"
 L.Settings_General_Default_Sound_TT                 = "The default sound to use for a notification."
 -- Choices
