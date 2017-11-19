@@ -1502,13 +1502,13 @@ do ---------------------------
 		--end
 
 		if result == ACTION_RESULT_BEGIN then
-			if abilityId == buffsDebuffs.llothis_defiling_blast then
+			if abilityId == buffsDebuffs.llothis_defiling_blast and hitValue == 2000 then
 				if settings.llothis_defiling_blast >= 1 then
 					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_DEFILING_BLAST), "asylum", "llothis_defiling_blast", 5)
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_DEFILING_BLAST), "asylum", "llothis_defiling_blast")
 					elseif (tName ~= "" and settings.llothis_defiling_blast == 2 ) then
-						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_DEFILING_BLAST_OTHER), tName), "asylum", "llothis_defiling_blast", 5)
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_DEFILING_BLAST_OTHER), tName), "asylum", "llothis_defiling_blast")
 					end
 				end
 			elseif abilityId == buffsDebuffs.olms_exhaustive_charges then
