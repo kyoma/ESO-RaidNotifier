@@ -1380,6 +1380,10 @@ function RaidNotifier:TryUpgradeSettings()
 	elseif lastVersion == "2.2.1" then
 		-- change "committee_overpower_auras_duration" to 9 seconds again since it was fixed in ESO v3.1.6
 		savedVars.hallsFab.committee_overpower_auras_duration = 9000
+	elseif lastVersion >= "2.3.2" and lastVersion < "2.3.4" then
+		-- reset countdown scales since they are still 0-1 instead of 0-100
+		savedVars.countdown.timerScale = 100
+		savedVars.countdown.textScale = 100
 	end
 	savedVars.addonVersion = version
 
