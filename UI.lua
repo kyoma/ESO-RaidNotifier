@@ -107,10 +107,12 @@ do --------------------
 
 		local settings = self.Vars.ultimate
 
+		local GetName = settings.useDisplayName and GetUnitDisplayName or GetUnitName 
+
 		if sortedUlti then
 			local text = "Ultimates:" --TODO: grab text from abilityId??
 			for i, data in ipairs(sortedUlti) do
-				local name = data.userName
+				local name = GetName(data.unitTag)
 				local c1,c2 = "",""
 				if settings.useColor then
 					if data.percent >= 100 then
