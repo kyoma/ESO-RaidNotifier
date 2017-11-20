@@ -1,4 +1,4 @@
-local MAJOR, MINOR = "LibUnits", 2
+local MAJOR, MINOR = "LibUnits", 3
 local lib, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end	--the same or newer version of this lib is already loaded into memory
 
@@ -38,6 +38,7 @@ end
 function lib.RefreshUnits()
 	--unassign all unit tags
 	lib.unitTags.group = {}
+	lib.displayNames = {}
 	--link new unit tags
 	for i=1, GetGroupSize() do
 		local unitTag = GetGroupUnitTagByIndex(i)
@@ -47,6 +48,7 @@ function lib.RefreshUnits()
 			lib.unitTags.group[unitId] = unitTag
 			lib.Log("Assigning (%s) to [%s] for #%d", unitTag, unitName, unitId)
 		end
+		lib.displayNames[unitName] = GetUnitDisplayName(unitTag)
 	end
 	--remove unowned
 	for name, id in pairs(lib.unitIds) do
@@ -72,82 +74,9 @@ function lib:GetNameForUnitId(unitId)
 	return lib.units[unitId] or ""
 end
 
-
---[[
-function lib:RegisterStatusGainedCallback(...)
-    lib.cm:RegisterCallback("StatusGained", ...)
+function lib:GetDisplayNameForUnitId(unitId)
+	return lib.displayNames[self:GetNameForUnitId(unitId)] or ""
 end
-function lib:RegisterStatusLostCallback(...)
-	lib.cm:RegisterCallback("StatusLost", ...)
-end
-function lib:RegisterStatusIncrementCallback(...)
-	lib.cm:RegisterCallback("StatusIncrement", ...)
-end
-function lib:RegisterStatusDecrementCallback(...)
-	lib.cm:RegisterCallback("StatusDecrement", ...)
-end
-
-
-local unitStatus = {}
-function lib:AddUnitStatus(unitName, status, durationMs)
-
-	if unitStatus[unitName] == nil then
-		unitStatus[unitName] = {}
-	end
-	if unitStatus[unitName][status] == nil then
-		unitStatus[unitName][status] = {
-			counter=0,
-			status=status,
-			name=unitName,
-		}
-	end
-	local data = unitStatus[unitName][status]
-	
-	data.counter = data.counter + 1
-	if data.counter == 1 then
-		lib.cm:FireCallbacks("StatusGained", unitName, status)
-	else
-		lib.cm:FireCallbacks("StatusIncrement", unitName, status, counter)
-	end
-	
-	local function DelayedDecrease()
-		data.counter = data.counter - 1
-		if data.counter == 0 then
-			lib.cm:FireCallbacks("StatusLost", unitName, status)
-		elseif data.counter > 0 then
-			lib.cm:FireCallbacks("StatusDecrement", unitName, status, counter)
-		else
-			data.counter 
-		end
-	end
-	if durationMs then
-		zo_callLater(DelayedDecrease, durationMs)
-	end
-
-end
-
-function lib:RemoveUnitStatus(unitName, status, removeStack)
-	if unitStatus[unitName] == nil then
-		unitStatus[unitName] = {}
-	end
-	if unitStatus[unitName][status] == nil then
-		unitStatus[unitName][status] = {
-			counter=0,
-			status=status,
-			name=unitName,
-		}
-	end
-	local data = unitStatus[unitName][status]
-	
-	data.counter = data.counter - 1
-	if data.counter == 0 then
-		lib.cm:FireCallbacks("StatusLost", unitName, status)
-	else
-		lib.cm:FireCallbacks("StatusDecrement", unitName, status, counter)
-	end
-
-end
---]]
 
 ---------------------------------------------------- Initialization ---------------------------------------------------
 
@@ -167,6 +96,7 @@ local function Load()
 	lib.unitTags = {}
 	lib.unitTags.group = {}
 	lib.unitTags.boss = {}
+	lib.displayNames = {}
 
 	-- During group invitation, we can receive a lot of event spam at once on a single invite when the
 	-- involved players are at the same location. Add a delay so we only refresh once in cases like this.

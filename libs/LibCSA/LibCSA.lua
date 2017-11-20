@@ -31,6 +31,8 @@ if not lib then return end
 local CSA = CENTER_SCREEN_ANNOUNCE
 local CSA_LINE_TYPE_COUNTDOWN = ZO_CenterScreenAnnouncementCountdownLine.GetLineType({}) -- we grab the local variable with this 'hack'
 
+local tickSoundId = SOUNDS.COUNTDOWN_TICK
+
 --TODO: prettify these hooks
 local ZO_CenterScreenAnnouncementCountdownLine_Initialize
 local ZO_CenterScreenAnnouncementCountdownLine_Reset
@@ -150,7 +152,7 @@ local function Load()
 	ZO_CenterScreenAnnouncementCountdownLine_PlayCountdownLoopAnimation = ZO_CenterScreenAnnouncementCountdownLine.PlayCountdownLoopAnimation
 	ZO_CenterScreenAnnouncementCountdownLine.PlayCountdownLoopAnimation = function(self, text)
 		self.countdownControl:SetText(text or self.currentCountdownTimeS)
-		PlaySound(SOUNDS.COUNTDOWN_TICK)
+		PlaySound(tickSoundId)
 		self.countdownLoopAnimationTimeline:PlayFromStart()
 	end
 
@@ -229,6 +231,13 @@ end
 
 function lib:HasActiveCountdown()
 	return CSA:HasActiveLines(CSA_LINE_TYPE_COUNTDOWN) 
+end
+
+function lib:GetTickSound()
+	return tickSoundId
+end
+function lib:SetTickSound(soundId)
+	tickSoundId = soundId or SOUNDS.NONE
 end
 
 if(lib.Unload) then lib.Unload() end

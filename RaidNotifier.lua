@@ -137,9 +137,14 @@ do ---------------------------------
 			self:SetLastNotify(category, setting, currentTime)
 		end
 
-		if (self.Vars.general.use_center_screen_announce and not LCSA:HasActiveCountdown()) then
-			CSA:AddMessage(EVENT_BROADCAST, CSA_CATEGORY_SMALL_TEXT, soundId, text, nil, nil, nil, nil, nil, duration)
-			CSA.nextUpdateTimeSeconds = 0 --they renamed it in ESO:Morrowind
+		if (self.Vars.general.use_center_screen_announce > 0 and not LCSA:HasActiveCountdown()) then
+			--CSA:AddMessage(EVENT_BROADCAST, CSA_CATEGORY_SMALL_TEXT, soundId, text, nil, nil, nil, nil, nil, duration)
+			local params = CSA:CreateMessageParams(self.Vars.general.use_center_screen_announce, soundId)
+			params:SetCSAType(CENTER_SCREEN_ANNOUNCE_TYPE_RAID_TRIAL)
+			params:SetText(text)
+			params:SetLifespanMS(duration)
+			CSA:AddMessageWithParams(params)
+			CSA.nextUpdateTimeSeconds = 0
 		else
 			lastAnnounceIndex = lastAnnounceIndex + 1
 			RaidNotifierUICenterAnnounce:SetHidden(false)
@@ -214,6 +219,15 @@ do ---------------------------------
 	function RaidNotifier:StopCountdown(countdownIndex)
 		LCSA:EndCountdown(countdownIndex)
 	end
+	
+	function RNTestCountdown(timer, text)
+		return LCSA:CreateCountdown(timer, "", nil, text, nil, SetupCallback, CountdownCallback)
+	end
+	
+	function RNTestAlert(alert)
+		RaidNotifier:AddAnnouncement(alert, "Dummy", "Dummy")
+	end
+	
 
 end
 
@@ -598,7 +612,6 @@ do ----------------------
 		if (not self.Vars.useAccountWide) then -- not using global settings, generate (or load) character specific settings
 			self.Vars = ZO_SavedVars:New(self.SV_Name, self.SV_Version, nil, self:GetDefaults())
 		end
-		--self:TryUpgradeSettings()
 
 		-- tiny functions
 		p = function(msg, ...)
@@ -747,17 +760,16 @@ do ---------------------------
 
 	local LUNIT = LibStub:GetLibrary("LibUnits")
 	local Util  = RaidNotifier.Util
+	local GetGameTimeMilliseconds = GetGameTimeMilliseconds
+	
+	local function UnitIdToString(id)
+		return RaidNotifier.Vars.general.useDisplayName and LUNIT:GetDisplayNameForUnitId(id) or LUNIT:GetNameForUnitId(id)
+	end
 
 	function RaidNotifier.OnCombatEvent_HRC(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
 
 		local raidId = RaidNotifier.raidId
 		local self   = RaidNotifier
-
-		-- Unregister if we left the raid instance
-		--if self:IsInRaidZone() == false then
-		--	self:UnregisterEvents()
-		--	return
-		--end
 
 		local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.helra
 
@@ -771,8 +783,7 @@ do ---------------------------
 			--   before actually displaying it.
 			if (abilityId == buffsDebuffs.warrior_stoneform) then
 				if (settings.warrior_stoneform >= 1) then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
-						
+					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					local lastIndex = self:GetLastNotify("helra", "warrior_stoneform") + 1
 					self:SetLastNotify("helra", "warrior_stoneform", lastIndex)
 					zo_callLater(function()
@@ -789,7 +800,7 @@ do ---------------------------
 		elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
 			if abilityId == buffsDebuffs.yokeda_meteor then
 				if settings.yokeda_meteor > 0 then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HELRA_YOKEDA_METEOR), "helra", "yokeda_meteor")
 					elseif (tName ~= "" and settings.yokeda_meteor == 2) then
@@ -847,7 +858,7 @@ do ---------------------------
 
 			-- Overchargers, Overcharged
 			elseif (buffsDebuffs.overcharged == abilityId) then
-				tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+				tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 				if settings.overcharge >= 1 then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ARCHIVE_OVERCHARGE), "archive", "overcharge")
@@ -858,7 +869,7 @@ do ---------------------------
 
 			-- Overchargers, Call Lightning
 			elseif (buffsDebuffs.call_lightning == abilityId) then
-				tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+				tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 				if settings.call_lightning >= 1 then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ARCHIVE_CALL_LIGHTNING), "archive", "call_lightning")
@@ -872,31 +883,6 @@ do ---------------------------
 
 			end
 
---[[		elseif (result == ACTION_RESULT_DAMAGE or
-				result == ACTION_RESULT_DOT_TICK or
-				result == ACTION_RESULT_CRITICAL_DAMAGE or
-				result == ACTION_RESULT_DOT_TICK_CRITICAL or
-				--result == ACTION_RESULT_BLOCKED_DAMAGE or
-				--result == ACTION_RESULT_DAMAGE_SHIELDED or
-				result == ACTION_RESULT_HOT_TICK or
-				result == ACTION_RESULT_HEAL or
-				result == ACTION_RESULT_CRITICAL_HEAL or
-				result == ACTION_RESULT_HOT_TICK_CRITICAL) then
-
-				if (settings.mage_conjure_reflection and self.tempVars.minions.archive.reflections[tUnitId]) then
-					local target = self.tempVars.minions.archive.reflections[tUnitId]
-					if (result == ACTION_RESULT_HEAL or result == ACTION_RESULT_HOT_TICK or result == ACTION_RESULT_CRITICAL_HEAL or result == ACTION_RESULT_HOT_TICK_CRITICAL) then
-						hitValue = -hitValue
-					end
-					target.health = target.health - hitValue
-					if target.health > target.maxHealth then 
-						target.health = target.maxHealth
-					elseif target.health < 0 then
-						target.health = 0
-					end
-					--df("[Test Combat] Damaged #%d (%s) for %d, new health is %d", target.uId, target.name, hitValue, target.health)
-				end
-]]--
 		end
 	end
 
@@ -922,14 +908,13 @@ do ---------------------------
 			elseif (abilityId == buffsDebuffs.serpent_world_shaper) then
 				 --per start of eclipse tear, just add countdown and use interval to limit it to the first
 				if (settings.serpent_world_shaper == true) then
-					--dbg("World Shaper detected")
 					self:StartCountdown(buffsDebuffs.serpent_world_shaper_delay, GetString(RAIDNOTIFIER_ALERTS_SANCTUM_SERPENT_WORLD_SHAPER), "sanctumOphidia", "serpent_world_shaper", 10)
 				end
 
 			-- Trolls, Spreading Poison
 			elseif (buffsDebuffs.spreading_poison[abilityId]) then
 				if settings.troll_poison >= 1 then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_TROLL_POISON), "sanctumOphidia", "troll_poison")
 					elseif (tName ~= "" and settings.troll_poison == 2) then
@@ -940,7 +925,7 @@ do ---------------------------
 			-- Trolls, Boulder Toss
 			elseif (buffsDebuffs.boulder_toss == abilityId) then
 				if settings.troll_boulder >= 1 then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_TROLL_BOULDER), "sanctumOphidia", "troll_boulder")
 					elseif (tName ~= "" and settings.troll_boulder == 2) then
@@ -951,7 +936,7 @@ do ---------------------------
 			-- Overchargers, Overcharged
 			elseif (buffsDebuffs.overcharged == abilityId) then
 				if settings.overcharge >= 1 then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_OVERCHARGE), "sanctumOphidia", "overcharge")
 					elseif (tName ~= "" and settings.overcharge == 2) then
@@ -962,7 +947,7 @@ do ---------------------------
 			-- Overchargers, Call Lightning
 			elseif (buffsDebuffs.call_lightning == abilityId) then
 				if settings.call_lightning >= 1 then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_CALL_LIGHTNING), "sanctumOphidia", "call_lightning")
 					elseif (tName ~= "" and settings.call_lightning == 2) then
@@ -987,7 +972,7 @@ do ---------------------------
 			--    away from each other.
 			--if (abilityId == buffsDebuffs.mantikora_spear) then
 			--	if settings.mantikora_spear >= 1 then
-			--		tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+			--		tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 			--		df("Manti SpearThrow - %d/%d/%s", tType, tUnitId, tName)
 			--		if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 			--			self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANCTUM_MANTIKORA_SPEAR), 3000, SOUNDS.CHAMPION_POINTS_COMMITTED,
@@ -1040,7 +1025,7 @@ do ---------------------------
 			-- General: Taking Aim
 			if (abilityId == buffsDebuffs.general_taking_aim) then
 				if (settings.general_taking_aim) then
-					--tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					--tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_DRAGONSTAR_GENERAL_TAKING_AIM), "dragonstar", "general_taking_aim")
 					end
@@ -1049,7 +1034,7 @@ do ---------------------------
 			-- General: Crystal Blast
 			elseif (abilityId == buffsDebuffs.general_crystal_blast) then
 				if (settings.general_crystal_blast) then
-					--tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					--tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_DRAGONSTAR_GENERAL_CRYSTAL_BLAST), "dragonstar", "general_crystal_blast")
 					end
@@ -1058,7 +1043,7 @@ do ---------------------------
 			-- Arena 2: Crushing Shock
 			elseif (abilityId == buffsDebuffs.arena2_crushing_shock) then
 				if (settings.arena2_crushing_shock) then
-					--tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					--tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_DRAGONSTAR_ARENA2_CRUSHING_SHOCK), "dragonstar", "arena2_crushing_shock")
 					end
@@ -1067,7 +1052,7 @@ do ---------------------------
 			-- Arena 6: Drain Resource
 			elseif (abilityId == buffsDebuffs.arena6_drain_resource) then
 				if (settings.arena6_drain_resource >= 1) then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_DRAGONSTAR_ARENA6_DRAIN_RESOURCE), "dragonstar", "arena6_drain_resource")
 					elseif (tName ~= "" and settings.arena6_drain_resource >= 2) then
@@ -1078,7 +1063,7 @@ do ---------------------------
 			-- Arena 8: Ice Charge
 			elseif (abilityId == buffsDebuffs.arena8_ice_charge) then
 				if (settings.arena8_ice_charge >= 1) then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_DRAGONSTAR_ARENA8_ICE_CHARGE), "dragonstar", "arena8_ice_charge")
 					elseif (tName ~= "" and settings.arena8_ice_charge >= 2) then
@@ -1088,7 +1073,7 @@ do ---------------------------
 			-- Arena 8: Fire Charge
 			elseif (abilityId == buffsDebuffs.arena8_fire_charge) then
 				if (settings.arena8_fire_charge >= 1) then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_DRAGONSTAR_ARENA8_FIRE_CHARGE), "dragonstar", "arena8_fire_charge")
 					elseif (tName ~= "" and settings.arena8_fire_charge >= 2) then
@@ -1176,7 +1161,7 @@ do ---------------------------
 			--Sun-Eater Eclipse Field
 			if (abilityId == buffsDebuffs.suneater_eclipse) then
 				if settings.suneater_eclipse >= 1 then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_SUNEATER_ECLIPSE), "mawLorkhaj", "suneater_eclipse")
 					elseif (tName ~= "" and settings.suneater_eclipse >= 2) then -- removed the distance check for now
@@ -1185,7 +1170,7 @@ do ---------------------------
 				end
 			elseif (abilityId == buffsDebuffs.shattering_strike) then
 				if (settings.shattering_strike >= 1) then
-					tName = LUNIT:GetNameForUnitId(tUnitId)
+					tName = UnitIdToString(tUnitId)
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_SHATTERINGSTRIKE), "mawLorkhaj", "shattering_strike")
 					elseif (tName ~= "" and settings.shattering_strike >= 2) then
@@ -1257,7 +1242,7 @@ do ---------------------------
 			--Rakkhat, Fang of Lorkhaj
 			if (abilityId == buffsDebuffs.rakkhat_unstablevoid) then
 				if settings.rakkhat_unstablevoid >= 1 then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 						if (settings.rakkhat_unstablevoid == 1 and settings.rakkhat_unstablevoid_countdown) then
 							self:StartCountdown(buffsDebuffs.rakkhat_unstablevoid_duration, GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_RAKKHAT_UNSTABLE_VOID), "mawLorkhaj", "rakkhat_unstablevoid")
@@ -1270,7 +1255,7 @@ do ---------------------------
 				end
 			--elseif (buffsDebuffs.rakkhat_lunarbastion[abilityId]) then
 			--	if settings.rakkhat_lunarbastion1 >= 1 then
-			--		tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+			--		tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 			--		if (tType == COMBAT_UNIT_TYPE_PLAYER)  then
 			--			if (settings.rakkhat_lunarbastion1 == 1 or settings.rakkhat_lunarbastion1 == 3) then --if "Self" or "All"
 			--				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_RAKKHAT_LUNARBASTION1), "mawLorkhaj", "rakkhat_lunarbastion1")
@@ -1306,7 +1291,7 @@ do ---------------------------
 
 			--if (buffsDebuffs.rakkhat_lunarbastion[abilityId]) then
 			--	if settings.rakkhat_lunarbastion2 >= 1 then
-			--		tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+			--		tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 			--		if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 			--			if (settings.rakkhat_lunarbastion2 == 1 or settings.rakkhat_lunarbastion2 == 3) then --if "Self" or "All"
 			--				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_RAKKHAT_LUNARBASTION2), "mawLorkhaj", "rakkhat_lunarbastion2")
@@ -1354,7 +1339,7 @@ do ---------------------------
 		if (result == ACTION_RESULT_BEGIN) then
 			if (abilityId == buffsDebuffs.taking_aim) then
 				if (settings.taking_aim >= 1) then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 						if (self:IsDevMode() and settings.taking_aim == 1 and settings.taking_aim_dynamic == true) then
 							dbg("Taking Aim incoming from Sphere #%d", sUnitId)
@@ -1377,7 +1362,7 @@ do ---------------------------
 				end
 			elseif (abilityId == buffsDebuffs.pinnacleBoss_conduit_drain) then
 				if settings.pinnacleBoss_conduit_drain >= 1 then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_CONDUIT_DRAIN), "hallsFab", "pinnacleBoss_conduit_drain")
 					elseif (tName ~= "" and settings.pinnacleBoss_conduit_drain == 2) then
@@ -1392,7 +1377,7 @@ do ---------------------------
 		elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
 			if (abilityId == buffsDebuffs.draining_ballista) then
 				if (settings.draining_ballista >= 1) then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_DRAINING_BALLISTA), "hallsFab", "draining_ballista", 4) -- do we need this 4sec delay?
 					elseif (tName ~= "" and settings.draining_ballista == 2) then
@@ -1491,20 +1476,20 @@ do ---------------------------
 
 	end
 
-	local GetTime = GetTimeStamp --GetGameTimeMilliseconds
+
 	function RaidNotifier.OnCombatEvent_AS(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
 		local raidId = RaidNotifier.raidId
 		local self   = RaidNotifier
 		local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.asylum
 		
 		--if buffsDebuffs.interest_list[abilityId] then
-		--	dbg("[%d] #%d %s (%d) at %d", result, abilityId, GetAbilityName(abilityId), tUnitId, GetTime())
+		--	dbg("[%d] #%d %s (%d)", result, abilityId, GetAbilityName(abilityId), tUnitId)
 		--end
 
 		if result == ACTION_RESULT_BEGIN then
 			if abilityId == buffsDebuffs.llothis_defiling_blast and hitValue == 2000 then
 				if settings.llothis_defiling_blast >= 1 then
-					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
+					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_DEFILING_BLAST), "asylum", "llothis_defiling_blast")
 					elseif (tName ~= "" and settings.llothis_defiling_blast == 2 ) then
@@ -1533,8 +1518,8 @@ do ---------------------------
 				end
 			elseif abilityId == buffsDebuffs.felms_teleport_strike then
 				if settings.felms_teleport_strike >= 1 then
-					tName = LUNIT:GetNameForUnitId(tUnitId)
-					dbg("Teleport Strike %s", tName)
+					tName = UnitIdToString(tUnitId)
+					--dbg("Teleport Strike %s", tName)
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_TELEPORT_STRIKE), "asylum", "felms_teleport_strike")
 					elseif (tName ~= "" and settings.felms_teleport_strike == 2) then
@@ -1549,38 +1534,16 @@ do ---------------------------
 				--    Single occurance: Protector spawns (before it reaches its target location) or miniboss appears. Always a protector when 
 				--                      phase 2, then ~10 seconds later the Llothis boss. Also around ~25 seconds later for the Felms boss.
 				--    Triple occurance: Those fancy fire robo-spiders we just ignore. Always when phase 3 starts
-				--[[
+				--
 				if self:IsDevMode() and self.Minions.lastPhaseTimeMs then -- only once phase2 has started
-					local curTimeMs = GetTime()
-					self.Minions.bossSpawns = self.Minions.bossSpawns or {}
-					-- insert current spawn data
-					table.insert(self.Minions.bossSpawns, {id=tUnitId, timeMs=curTimeMs})
+					local curTimeMs = GetGameTimeMilliseconds()
 					-- only do callLater if timeMs is different from last
-					if self.Minions.lastBossSpawnTimeMs == curTimeMs then
-						dbg("Multi-spawn, skipping callLater")
+					if  curTimeMs - (self.Minions.lastBossSpawnTimeMs or 0) < 100 then
+						self.Minions.ignoreSpawn = true
 					else
-						--dbg("Do CallLater %d/%s", curTimeMs, tostring(self.Minions.lastBossSpawnTimeMs))
-						if self.Minions.lastBossSpawnTimeMs then -- reset if its a new spawn time
-							self.Minions.bossSpawns = {}
-						end
 						zo_callLater(function()
-							if self.Minions.bossSpawns then
-							local index = #self.Minions.bossSpawns 
-							if index == 3 then
-								local lastTimeMs = self.Minions.bossSpawns[index].timeMs
-								dbg("Check spawns for spiders around %s", tostring(lastTimeMs))
-								d(self.Minions.bossSpawns)
-								if lastTimeMs == self.Minions.bossSpawns[index-1].timeMs and lastTimeMs == lastTimeMs == self.Minions.bossSpawns[index-2].timeMs then
-									table.remove(self.Minions.bossSpawns, index)
-									table.remove(self.Minions.bossSpawns, index-1)
-									table.remove(self.Minions.bossSpawns, index-2)
-									dbg("Found and removed spider spawns")
-								end
-							end
-							-- check if we still have spawns
-							index = #self.Minions.bossSpawns 
-							if index == 1 then
-								dbg("Check single spawn: %d", tUnitId)
+							if self.Minions.lastBossSpawnTimeMs and not self.Minions.ignoreSpawn then 
+								--dbg("Check single spawn: %d", tUnitId)
 								local isProtector = true
 								if self.Minions.nextSpawnIsProtector then
 									self.Minions.nextSpawnIsProtector = false
@@ -1588,44 +1551,44 @@ do ---------------------------
 									self.Minions.nextSpawnIsLlothis = false
 									-- nothing should have spawned since the first protector
 									local diff = curTimeMs - self.Minions.lastPhaseTimeMs
-									if diff <= 20 then -- small window for it to spawn, in case it's only +Felms
-										self.Minions.bossLlothisId = tUnitId -- should always be accurate at this point
-										dbg("Found Llothis Boss: %d", tUnitId)
+									if diff <= 20000 then -- small window for it to spawn, in case it's only +Felms
+										--self.Minions.bossLlothisId = tUnitId -- should always be accurate at this point
+										--dbg("Found Llothis Boss: %d", tUnitId)
 										isProtector = false
 									else
-										dbg("Missed our window for Llothis")
+										--dbg("Missed our window for Llothis")
 									end
-								elseif self.Minions.nextSpawnIsFelms or self.Minions.nextSpawnIsFelmsBackup then
-									-- either the Felms boss or another protector spawned, hence we keep a 'backup'
-									local diff = curTimeMs - self.Minions.lastPhaseTimeMs
-									if diff >= 23 and diff <= 27 then -- small window for it to spawn, in case it's only +Llothis (normal is ~15 seconds??)
-										if self.Minions.bossFelmsId then
-											self.Minions.bossFelmsIdBackup = tUnitId 
-											dbg("Found Felms Boss BACKUP: %d after %d ms", tUnitId, diff)
-										else
-											self.Minions.bossFelmsId = tUnitId 
-											dbg("Found Felms Boss: %d after %d ms", tUnitId, diff)
-										end
-										isProtector = false
-									else
-										dbg("Missed our window for Felms")
-									end
-									if self.Minions.nextSpawnIsFelmsBackup then
-										self.Minions.nextSpawnIsFelmsBackup = false
-									else
-										self.Minions.nextSpawnIsFelms = false
-										self.Minions.nextSpawnIsFelmsBackup = true
-									end
+								--elseif self.Minions.nextSpawnIsFelms then
+								--	-- either the Felms boss or another protector spawned, hence we keep a 'backup'
+								--	local diff = curTimeMs - self.Minions.lastPhaseTimeMs
+								--	if diff <= 25000 then -- small window for it to spawn, in case it's only +Llothis (normal is ~15 seconds??)
+								--		if self.Minions.bossFelmsId then
+								--			self.Minions.bossFelmsIdBackup = tUnitId 
+								--			dbg("Found Felms Boss BACKUP: %d after %d ms", tUnitId, diff)
+								--		else
+								--			self.Minions.bossFelmsId = tUnitId 
+								--			dbg("Found Felms Boss: %d after %d ms", tUnitId, diff)
+								--		end
+								--		isProtector = false
+								--	else
+								--		dbg("Missed our window for Felms")
+								--	end
+								--	if self.Minions.nextSpawnIsFelmsBackup then
+								--		self.Minions.nextSpawnIsFelmsBackup = false
+								--	else
+								--		self.Minions.nextSpawnIsFelms = false
+								--		self.Minions.nextSpawnIsFelmsBackup = true
+								--	end
 								end
 								if isProtector then
 									self.Minions.latestProtectorId = tUnitId
 									dbg("Protector about to spawn #%d", tUnitId)
+									self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_PROTECTOR_SPAWN), "asylum", "olms_protector_spawn")
 								end
 							end
-						end
 						end, 100) -- tiny delay
-						self.Minions.lastBossSpawnTimeMs = curTimeMs
 					end
+					self.Minions.lastBossSpawnTimeMs = curTimeMs
 				end
 				--]]
 			elseif abilityId == buffsDebuffs.olms_protector_spawn then
@@ -1635,34 +1598,36 @@ do ---------------------------
 					if tUnitId ~= self.Minions.latestProtectorId then
 						dbg("Mismatch in protector id: %s vs %s", tostring(self.Minions.latestProtectorId), tostring(tUnitId))
 						-- make sure our Felms id is correct
-						if self.Minions.bossFelmsId == tUnitId then
-							dbg("We mistakenly gave Felms the protector id, try and fix it with backup: %s", tostring(self.Minions.bossFelmsIdBackup))
-							self.Minions.bossFelmsId = self.Minions.bossFelmsIdBackup
-							self.Minions.bossFelmsIdBackup = nil
-						end
+						--if self.Minions.bossFelmsId == tUnitId then
+							dbg("We mistakenly gave Felms the protector id, try and fix it with backup: %s", tostring(self.Minions.latestProtectorId))
+							self.Minions.bossFelmsId = self.Minions.latestProtectorId
+						--end
 					end
+					self.Minions.latestProtectorId = nil
 				end
 				--]]
-				if settings.olms_protector_spawn == true then
-					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_PROTECTOR_SPAWN), "asylum", "olms_protector_spawn")
-				end
-			elseif abilityId == buffsDebuffs.olms_boss_enrage then
-				--if tUnitId == self.Minions.bossFelmsId then
-				--	dbg("Felms enraged at %d", GetTime())
-				--elseif tUnitId == self.Minions.bossLlothisId then
-				--	dbg("Llothis enraged %d", GetTime())
-				--else
-				--	dbg("Unknown unit %d enraged at %d", tUnitId, GetTime())
+				--if settings.olms_protector_spawn == true then
+				--	self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_PROTECTOR_ACTIVE), "asylum", "olms_protector_spawn")
 				--end
+			elseif abilityId == buffsDebuffs.olms_boss_enrage then
+				--[[
+				if tUnitId == self.Minions.bossFelmsId then
+					dbg("Felms enraged at %d", GetTime())
+				elseif tUnitId == self.Minions.bossLlothisId then
+					dbg("Llothis enraged %d", GetTime())
+				else
+					dbg("Unknown unit %d enraged at %d", tUnitId, GetTime())
+				end
+				--]]
 			elseif abilityId == buffsDebuffs.olms_phase2 then
 				dbg("Phase2")
-				--self.Minions.lastPhaseTimeMs = GetTime()
-				--self.Minions.nextSpawnIsProtector = true
-				--self.Minions.nextSpawnIsLlothis = true
+				self.Minions.lastPhaseTimeMs = GetGameTimeMilliseconds()
+				self.Minions.nextSpawnIsProtector = true
+				self.Minions.nextSpawnIsLlothis = true
 			elseif abilityId == buffsDebuffs.olms_phase3 then
 				dbg("Phase3")
-				--self.Minions.lastPhaseTimeMs = GetTime()
-				--self.Minions.nextSpawnIsFelms = true
+				self.Minions.lastPhaseTimeMs = GetGameTimeMilliseconds()
+				self.Minions.nextSpawnIsFelms = true
 			elseif abilityId == buffsDebuffs.olms_phase4 then
 				dbg("Phase4")
 			elseif abilityId == buffsDebuffs.olms_phase5 then
@@ -1671,19 +1636,19 @@ do ---------------------------
 		elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
 
 		elseif (result == ACTION_RESULT_EFFECT_FADED) then
-			if abilityId == buffsDebuffs.olms_protector_spawn then
-				-- It died, new protectors spawn ~9s later (coincidence?)
-
-			elseif abilityId == buffsDebuffs.olms_boss_dormant then
-				--if tUnitId == self.Minions.bossFelmsId then
-				--	dbg("Felms woke up at %d", GetTime())
-				--elseif tUnitId == self.Minions.bossLlothisId then
-				--	dbg("Llothis woke up at %d", GetTime())
-				--else
-				--	dbg("Unknown unit %d woke up at", tUnitId, GetTime())
-				--end
-			
-			end
+			--if abilityId == buffsDebuffs.olms_protector_spawn then
+			--	-- It died, new protectors spawn ~9s later (coincidence?)
+            --
+			--elseif abilityId == buffsDebuffs.olms_boss_dormant then
+			--	if tUnitId == self.Minions.bossFelmsId then
+			--		dbg("Felms woke up at %d", GetTime())
+			--	elseif tUnitId == self.Minions.bossLlothisId then
+			--		dbg("Llothis woke up at %d", GetTime())
+			--	else
+			--		dbg("Unknown unit %d woke up at", tUnitId, GetTime())
+			--	end
+			--
+			--end
 
 		end
 	end
@@ -1724,7 +1689,7 @@ do ---------------------------
 					if count < 10 then -- only report first few units from the same ability
 						if LUNIT:GetNameForUnitId(id) == "" then -- not a known unit like group members or bosses
 							trackedAbilities[abilityId] = (trackedAbilities[abilityId] or 0) + 1
-							df("Found new unit #%d (%d, %s)", id, abilityId, GetAbilityName(abilityId))
+							df("Found new unit #%d, %s (%d, %s)", id, tName, abilityId, GetAbilityName(abilityId))
 						end
 					end
 				end
@@ -1821,12 +1786,6 @@ do -----------------------------
 		local raidId = RaidNotifier.raidId
 		local self   = RaidNotifier
 
-		-- Unregister if we left the raid instance
-		--if self:IsInRaidZone() == false then
-		--	self:UnregisterEvents()
-		--	return
-		--end
-
 		-- try debugging poison spread in Sanctum (SHELVED INDEFINITELY)
 		--if (raidId == RAID_SANCTUM_OPHIDIA) then
 		--	local buffsDebuffs, settings = self.BuffsDebuffs.sanctum_ophidia, self.Vars.sanctumOphidia
@@ -1859,6 +1818,9 @@ do -----------------------------
 					end
 				end
 			end
+		
+		elseif (raidId == RAID_ASYLUM_SANCTORIUM) then
+
 		end
 
 		-- Buff Food

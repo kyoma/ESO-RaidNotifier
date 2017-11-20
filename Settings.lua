@@ -138,9 +138,10 @@ do ------------------
 		general = {
 			buffFood_reminder = true,
 			buffFood_reminder_interval = 60,
-			use_center_screen_announce = true,
+			use_center_screen_announce = CSA_CATEGORY_SMALL_TEXT,
 			vanity_pets = true,
 			no_assistants = true,
+			useDisplayName = false,
 			last_pet = 0,
 			status_display  = {100, 400, CENTER},
 			unlock_status_icon = false,
@@ -545,9 +546,20 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_General_Header,
 	})
 	MakeControlEntry({
-		type = "checkbox",
+		type = "dropdown",
 		name = L.Settings_General_Center_Screen_Announce,
 		tooltip = L.Settings_General_Center_Screen_Announce_TT,
+		choices = {
+			L.Settings_General_Choices_Small,
+			--L.Settings_General_Choices_Large,
+			L.Settings_General_Choices_Major,
+			L.Settings_General_Choices_Custom,
+		}, choicesValues = {
+			CSA_CATEGORY_SMALL_TEXT, 
+			--CSA_CATEGORY_LARGE_TEXT,
+			CSA_CATEGORY_MAJOR_TEXT,
+			0,
+		}, 
 		noAlert = true,
 	}, "general", "use_center_screen_announce")
 	MakeControlEntry({
@@ -574,7 +586,13 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_General_No_Assistants_TT,
 		noAlert = true,
 	}, "general", "no_assistants")
-        MakeControlEntry({
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_General_UseDisplayName,
+		tooltip = L.Settings_General_UseDisplayName_TT,
+		noAlert = true,
+	}, "general", "useDisplayName")
+	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_General_Unlock_Status_Icon,
 		setFunc = function(value)
@@ -1090,8 +1108,7 @@ function RaidNotifier:CreateSettingsMenu()
 		type = "checkbox",
 		name = L.Settings_HallsFab_Taking_Aim_Dynamic,
 		tooltip = L.Settings_HallsFab_Taking_Aim_Dynamic_TT,
-		disabled = function() return not self:IsDevMode() or savedVars.hallsFab.taking_aim ~= 1 end,
-		warning =  L.Settings_Debug_DevMode_Warning,
+		disabled = function() return not savedVars.hallsFab.taking_aim ~= 1 end,
 		noAlert = true,
 	}, "hallsFab", "taking_aim_dynamic")
 	MakeControlEntry({
@@ -1099,8 +1116,7 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_HallsFab_Taking_Aim_Duration,
 		tooltip = L.Settings_HallsFab_Taking_Aim_Duration_TT,
 		min = 2000, max = 10000, step = 100,
-		disabled = function() return not self:IsDevMode() or savedVars.hallsFab.taking_aim ~= 1 or savedVars.hallsFab.taking_aim_dynamic == false end,
-		warning = L.Settings_Debug_DevMode_Warning,
+		disabled = function() return not savedVars.hallsFab.taking_aim ~= 1 or savedVars.hallsFab.taking_aim_dynamic == false end,
 		noAlert = true,
 	}, "hallsFab", "taking_aim_duration")
 	MakeControlEntry({
@@ -1403,7 +1419,7 @@ function RaidNotifier:TryUpgradeSettings()
 
 	-- now for generic type checks
 	for category,content in pairs(defaults) do
-		if type(category) == "table" then
+		if type(content) == "table" then
 			for key, default in pairs(content) do
 				local value = savedVars[category][key]
 				if type(value) ~= type(default) then --type mismatch
@@ -1432,4 +1448,3 @@ function RaidNotifier:TryUpgradeSettings()
 		end
 	end
 end
-
