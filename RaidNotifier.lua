@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.3.3"
+RaidNotifier.Version         = "2.3.5"
 RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -232,10 +232,9 @@ do ----------------------
 
 	function RaidNotifier.OnUltimateReceived(unitTag, ultimateCurrent, ultimateCost) --, ultimateGroupId, isSelf)
 		local self     = RaidNotifier
-		local userName = GetUnitDisplayName(unitTag)
-		ultimates[userName] = 
+		ultimates[unitTag] = 
 		{
-			userName = userName,
+			unitTag  = unitTag,
 			name     = GetUnitName(unitTag),
 			roles    = {GetGroupMemberRoles(unitTag)},
 			current  = ultimateCurrent,
@@ -1502,13 +1501,13 @@ do ---------------------------
 		--end
 
 		if result == ACTION_RESULT_BEGIN then
-			if abilityId == buffsDebuffs.llothis_defiling_blast then
+			if abilityId == buffsDebuffs.llothis_defiling_blast and hitValue == 2000 then
 				if settings.llothis_defiling_blast >= 1 then
 					tName = LUNIT:GetNameForUnitId(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_DEFILING_BLAST), "asylum", "llothis_defiling_blast", 5)
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_DEFILING_BLAST), "asylum", "llothis_defiling_blast")
 					elseif (tName ~= "" and settings.llothis_defiling_blast == 2 ) then
-						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_DEFILING_BLAST_OTHER), tName), "asylum", "llothis_defiling_blast", 5)
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_DEFILING_BLAST_OTHER), tName), "asylum", "llothis_defiling_blast")
 					end
 				end
 			elseif abilityId == buffsDebuffs.olms_exhaustive_charges then
