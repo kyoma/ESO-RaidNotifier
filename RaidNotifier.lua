@@ -232,9 +232,10 @@ do ----------------------
 
 	function RaidNotifier.OnUltimateReceived(unitTag, ultimateCurrent, ultimateCost) --, ultimateGroupId, isSelf)
 		local self     = RaidNotifier
-		ultimates[unitTag] = 
+		local userName = GetUnitDisplayName(unitTag)
+		ultimates[userName] = 
 		{
-			unitTag  = unitTag,
+			userName = userName,
 			name     = GetUnitName(unitTag),
 			roles    = {GetGroupMemberRoles(unitTag)},
 			current  = ultimateCurrent,
