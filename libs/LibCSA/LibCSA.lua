@@ -1,7 +1,7 @@
 --[[
 Author: Kyoma
 Filename: LibCSA.lua
-Version: 2.0
+Version: 2.1
 
 Description: This library serves to provide a global  enhancement of the center screen announcement system to make it more flexible
              for wider purposes. 
@@ -24,7 +24,7 @@ Description: This library serves to provide a global  enhancement of the center 
 ]]--
 
 local libLoaded
-local LIB_NAME, VERSION = "LibCSA", 2.0
+local LIB_NAME, VERSION = "LibCSA", 2.1
 local lib, oldminor = LibStub:NewLibrary(LIB_NAME, VERSION)
 if not lib then return end
 
@@ -110,7 +110,7 @@ local function Load()
 	ZO_CenterScreenAnnouncementCountdownLine_Reset = ZO_CenterScreenAnnouncementCountdownLine.Reset
 	ZO_CenterScreenAnnouncementCountdownLine.Reset = function(self)
 		-- needs to be called first because Reset() will nil out messageParams
-		local setupCallback = self.messageParams:GetSetupCallback() 
+		local setupCallback = self.messageParams and self.messageParams:GetSetupCallback() 
 		if setupCallback then
 			setupCallback(self, self.messageParams, true)
 		end

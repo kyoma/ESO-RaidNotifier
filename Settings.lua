@@ -221,7 +221,7 @@ do ------------------
 		hallsFab = {
 			conduit_strike        = true, 
 			taking_aim            = 1, -- "Self"
-			taking_aim_dynamic    = false,
+			taking_aim_dynamic    = 1, -- "Normal"
 			taking_aim_duration   = 5000,
 			draining_ballista     = 1, -- "Self"
 			power_leech           = false,
@@ -441,6 +441,11 @@ function RaidNotifier:CreateSettingsMenu()
 		hallsFab = {
 			pinnacleBoss_conduit_drain = off_self_all,
 			taking_aim = off_self_all,
+			taking_aim_dynamic = {
+				L.Settings_General_Choices_Off,
+				L.Settings_General_Choices_Normal,
+				L.Settings_General_Choices_Custom,
+			},
 			draining_ballista = off_self_all,
 		},
 		asylum = {
@@ -1105,10 +1110,11 @@ function RaidNotifier:CreateSettingsMenu()
 		choices = choices.hallsFab.taking_aim,
 	}, "hallsFab", "taking_aim")
 	MakeControlEntry({
-		type = "checkbox",
+		type = "dropdown",
 		name = L.Settings_HallsFab_Taking_Aim_Dynamic,
 		tooltip = L.Settings_HallsFab_Taking_Aim_Dynamic_TT,
-		disabled = function() return not savedVars.hallsFab.taking_aim ~= 1 end,
+		choices = choices.hallsFab.taking_aim_dynamic,
+		disabled = function() return savedVars.hallsFab.taking_aim ~= 1 end,
 		noAlert = true,
 	}, "hallsFab", "taking_aim_dynamic")
 	MakeControlEntry({
@@ -1116,7 +1122,7 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_HallsFab_Taking_Aim_Duration,
 		tooltip = L.Settings_HallsFab_Taking_Aim_Duration_TT,
 		min = 2000, max = 10000, step = 100,
-		disabled = function() return not savedVars.hallsFab.taking_aim ~= 1 or savedVars.hallsFab.taking_aim_dynamic == false end,
+		disabled = function() return savedVars.hallsFab.taking_aim ~= 1 or savedVars.hallsFab.taking_aim_dynamic ~= 2 end,
 		noAlert = true,
 	}, "hallsFab", "taking_aim_duration")
 	MakeControlEntry({
@@ -1140,7 +1146,6 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_HallsFab_Venom_Injection,
 		tooltip = L.Settings_HallsFab_Venom_Injection_TT,
 	}, "hallsFab", "venom_injection")
-	
 	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_HallsFab_Scalded_Debuff,
@@ -1414,6 +1419,13 @@ function RaidNotifier:TryUpgradeSettings()
 		-- reset countdown scales since they are still 0-1 instead of 0-100
 		savedVars.countdown.timerScale = 100
 		savedVars.countdown.textScale = 100
+	end
+	
+	if lastVersion > "0" and lastVersion < "2.3.6" then
+		-- set taking_aim_duration to "Custom" if previous duration differs from the default
+		if savedVars.hallsFab.taking_aim_duration ~= defaults.hallsFab.taking_aim_duration then
+			savedVars.hallsFab.taking_aim_dynamic = 2 -- "Custom"
+		end
 	end
 	savedVars.addonVersion = version
 

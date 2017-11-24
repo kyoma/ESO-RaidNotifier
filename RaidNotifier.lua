@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.3.5"
+RaidNotifier.Version         = "2.3.6"
 RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -1341,9 +1341,9 @@ do ---------------------------
 				if (settings.taking_aim >= 1) then
 					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
-						if (settings.taking_aim == 1 and settings.taking_aim_dynamic == true) then
-							dbg("Taking Aim incoming from Sphere #%d", sUnitId)
-							buffsDebuffs.taking_aim_index = self:StartCountdown(settings.taking_aim_duration, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM), "hallsFab", "taking_aim")
+						if (settings.taking_aim == 1 and settings.taking_aim_dynamic > 0) then
+							dbg("Taking Aim incoming from Sphere #%d, hitValue=%d", sUnitId, hitValue)
+							buffsDebuffs.taking_aim_index = self:StartCountdown(settings.taking_aim_dynamic == 2 and settings.taking_aim_duration or hitValue, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM), "hallsFab", "taking_aim")
 							self.Minions.incomingSource = sUnitId
 						else
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM), "hallsFab", "taking_aim")
