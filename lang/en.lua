@@ -350,6 +350,7 @@ L.Settings_HallsFab_Reclaim_Achieve_TT              = "Alerts you when the bombe
 -- Alerts
 L.Alerts_HallsFab_Taking_Aim                        = "|cFF6600Taking Aim|r targeted at you!"
 L.Alerts_HallsFab_Taking_Aim_Other                  = "|cFF6600Taking Aim|r targeted at |cFF0000<<!aC:1>>|r!"
+L.Alerts_HallsFab_Taking_Aim_Simple                 = "|cFF6600Taking Aim|r"
 L.Alerts_HallsFab_Conduit_Spawn                     = "A Conduit is about to spawn"
 L.Alerts_HallsFab_Conduit_Drain                     = "A Conduit is draining you!"
 L.Alerts_HallsFab_Conduit_Drain_Other               = "A Conduit is draining |cFF0000<<!aC:1>>|r!"

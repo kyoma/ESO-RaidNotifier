@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.3.6"
+RaidNotifier.Version         = "2.3.7"
 RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -70,8 +70,10 @@ do ---------------------------------
 		{name = "Champion Point Committed",  id = SOUNDS.CHAMPION_POINTS_COMMITTED},
 		{name = "Champion Point Gained", 	 id = SOUNDS.CHAMPION_POINT_GAINED},
 		{name = "Dark Fissure Closed", 		 id = SOUNDS.SKILL_XP_DARK_FISSURE_CLOSED},
+		{name = "Duel Start",				 id = SOUNDS.DUEL_START},
 		{name = "Emperor Coronated", 		 id = SOUNDS.EMPEROR_CORONATED_ALDMERI},
 		{name = "Gate Closed", 				 id = SOUNDS.AVA_GATE_CLOSED},
+		{name = "Justice State Changed",	 id = SOUNDS.JUSTICE_STATE_CHANGED},
 		{name = "Morph Ability", 			 id = SOUNDS.ABILITY_MORPH_PURCHASED},
 		{name = "Objective Complete", 		 id = SOUNDS.OBJECTIVE_COMPLETED},
 		{name = "Quest Abandoned", 			 id = SOUNDS.QUEST_ABANDONED},
@@ -84,6 +86,7 @@ do ---------------------------------
 		{name = "Skill Leveled", 			 id = SOUNDS.SKILL_LINE_LEVELED_UP},
 		{name = "Stat Purchase", 			 id = SOUNDS.STATS_PURCHASE},
 		{name = "Synergy Ready", 			 id = SOUNDS.ABILITY_SYNERGY_READY},
+		{name = "TelVar Multiplier Max",	 id = SOUNDS.TELVAR_MULTIPLIERMAX},
 	}
 	function RaidNotifier:GetSounds()
 		return Sounds
@@ -461,6 +464,72 @@ do ----------------------
 		end
 	end
 
+	local blackList = {
+		[43752] = true, -- Soul Summons / Seelenbeschwörung
+		[21263] = true, -- Ayleid Health Bonus
+		[92232] = true, -- Pelinals Wildheit
+		[64210] = true, -- erhöhter Erfahrungsgewinn
+		[66776] = true, -- erhöhter Erfahrungsgewinn
+		[77123] = true, -- Jubiläums-Erfahrungsbonus 2017
+		[85501] = true, -- erhöhter Erfahrungsgewinn
+		[85502] = true, -- erhöhter Erfahrungsgewinn
+		[85503] = true, -- erhöhter Erfahrungsgewinn
+		[86755] = true, -- Feiertags-Erfahrungsbonus
+		[88445] = true, -- erhöhter Erfahrungsgewinn
+		[89683] = true, -- erhöhter Erfahrungsgewinn
+		[91369] = true, -- erhöhter Erfahrungsgewinn der Narrenpastete
+	}
+
+	local function GetActiveFoodBuff(abilityId)
+		if blackList[abilityId] ~= nil then
+			return false
+		end
+		if DoesAbilityExist(abilityId) then
+			if GetAbilityTargetDescription(abilityId) ~= GetString(SI_TARGETTYPE2)
+			or GetAbilityEffectDescription(abilityId) ~= ""
+			or GetAbilityRadius(abilityId) > 0
+			or GetAbilityAngleDistance(abilityId) > 0
+			or GetAbilityDuration(abilityId) < 600000 then
+				return false
+			end
+			local cost, mechanic = GetAbilityCost(abilityId)
+			local channeled, castTime = GetAbilityCastInfo(abilityId)
+			local minRangeCM, maxRangeCM = GetAbilityRange(abilityId)
+			if cost > 0 or mechanic > 0 or channeled or castTime > 0 or minRangeCM > 0 or maxRangeCM > 0 or GetAbilityDescription(abilityId) == "" then
+				return false
+			end
+			return true
+		end
+	end
+
+	local function CheckFoodBuffs()
+		local self = RaidNotifier
+		local settings = self.Vars.general
+		if not settings.buffFood_reminder then return end
+
+		local buffFoodFound = false
+		local numBuffs = GetNumBuffs("player")
+		if numBuffs > 0 then
+			for i = 1, numBuffs do
+				local _, _, finish, _, _, _, _, _, _, _, abilityId, canClickOff = GetUnitBuffInfo("player", i)
+				if GetActiveFoodBuff(abilityId) and canClickOff then
+					buffFoodFound = true
+					local bufffood_remaining = finish - (GetGameTimeMilliseconds() / 1000)
+					local formatedTime       = ZO_FormatTime(bufffood_remaining, TIME_FORMAT_STYLE_COLONS, TIME_FORMAT_PRECISION_SECONDS)
+
+					-- new set interval
+					if bufffood_remaining <= 600 then
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_GENERAL_BUFFFOOD_MINUTES), name, formatedTime), "general", "buffFood_reminder", settings.buffFood_reminder_interval)
+					end
+				end
+			end
+		end
+		-- no bufffood found, alert every interval
+		if buffFoodFound == false then
+			self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_GENERAL_NO_BUFFFOOD), "general", "buffFood_reminder", settings.buffFood_reminder_interval)
+		end
+	end
+	
 	-- These should remain the same throughout updates
 	local RaidZoneIds = 
 	{
@@ -557,9 +626,9 @@ do ----------------------
 				end
 			end
 			dbg("----------------------------------------------")
-	
 
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_EFFECT_CHANGED, self.OnEffectChanged)
+			EVENT_MANAGER:AddFilterForEvent(self.Name, EVENT_EFFECT_CHANGED, REGISTER_FILTER_UNIT_TAG, "player")
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_BOSSES_CHANGED, self.OnBossesChanged)
 
 			-- Toggle assistants off when combat starts
@@ -576,6 +645,9 @@ do ----------------------
 	
 			-- Ultimate exchanging
 			self:RegisterForUltimateChanges()
+
+			-- Food buffs
+			EVENT_MANAGER:RegisterForUpdate(self.Name .. "Food", 2000, CheckFoodBuffs)
 
 			-- Disable pets if that setting is set
 			ToggleVanityPets(true)
@@ -602,6 +674,9 @@ do ----------------------
 
 		-- Ultimate exchanging
 		self:UnregisterForUltimateChanges()
+		
+				-- Food buffs
+		EVENT_MANAGER:UnregisterForUpdate(self.Name .. "Food")
 
 		-- Re-enable pets
 		ToggleVanityPets(false)
@@ -1343,7 +1418,7 @@ do ---------------------------
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
 						if (settings.taking_aim == 1 and settings.taking_aim_dynamic > 0) then
 							dbg("Taking Aim incoming from Sphere #%d, hitValue=%d", sUnitId, hitValue)
-							buffsDebuffs.taking_aim_index = self:StartCountdown(settings.taking_aim_dynamic == 2 and settings.taking_aim_duration or hitValue, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM), "hallsFab", "taking_aim")
+							buffsDebuffs.taking_aim_index = self:StartCountdown(settings.taking_aim_dynamic == 2 and settings.taking_aim_duration or hitValue, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM_SIMPLE), "hallsFab", "taking_aim")
 							self.Minions.incomingSource = sUnitId
 						else
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM), "hallsFab", "taking_aim")
@@ -1538,12 +1613,12 @@ do ---------------------------
 				if self:IsDevMode() and self.Minions.lastPhaseTimeMs then -- only once phase2 has started
 					local curTimeMs = GetGameTimeMilliseconds()
 					-- only do callLater if timeMs is different from last
+					self.Minions.ignoreSpawn = false
 					if  curTimeMs - (self.Minions.lastBossSpawnTimeMs or 0) < 100 then
 						self.Minions.ignoreSpawn = true
 					else
 						zo_callLater(function()
 							if self.Minions.lastBossSpawnTimeMs and not self.Minions.ignoreSpawn then 
-								--dbg("Check single spawn: %d", tUnitId)
 								local isProtector = true
 								if self.Minions.nextSpawnIsProtector then
 									self.Minions.nextSpawnIsProtector = false
@@ -1786,77 +1861,29 @@ do -----------------------------
 		local raidId = RaidNotifier.raidId
 		local self   = RaidNotifier
 
-		-- try debugging poison spread in Sanctum (SHELVED INDEFINITELY)
-		--if (raidId == RAID_SANCTUM_OPHIDIA) then
-		--	local buffsDebuffs, settings = self.BuffsDebuffs.sanctum_ophidia, self.Vars.sanctumOphidia
-        --
-		--	if uTag == "player" then
-		--		local poisonType = buffsDebuffs.spreading_poison[abilityId]
-		--		if poisonType and changeType ~= EFFECT_RESULT_FADED then
-		--			dbg("Spreading Poison Type%d (#%d) time=%d", poisonType, abilityId, endTime - beginTime)
-		--		end
-		--	end
-		--end
-		
 		-- HoF is the first raid to make it here! WHOOHOOW!! (all cuz we needz dem stackcount)
 		if (raidId == RAID_HALLS_OF_FABRICATION) then
 			local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.hallsFab
-			
-			--if (uType == COMBAT_UNIT_TYPE_PLAYER) then -- doesn't seem to be the case even when it really is the player
-			if (uTag == "player") then
-				if abilityId == buffsDebuffs.pinnacleBoss_scalded_debuff then
-					if settings.pinnacleBoss_scalded == true then
-						if (changeType == EFFECT_RESULT_FADED) then
-							self:UpdateScaldedStacks(0)
-						else
-							self:UpdateScaldedStacks(stackCount, beginTime, endTime)
-						end
-					end
-				elseif abilityId == buffsDebuffs.venom_injection then
-					if settings.venom_injection then
-						self:UpdateSphereVenom(changeType ~= EFFECT_RESULT_FADED, beginTime, endTime)
+
+			if abilityId == buffsDebuffs.pinnacleBoss_scalded_debuff then
+				if settings.pinnacleBoss_scalded == true then
+					if (changeType == EFFECT_RESULT_FADED) then
+						self:UpdateScaldedStacks(0)
+					else
+						self:UpdateScaldedStacks(stackCount, beginTime, endTime)
 					end
 				end
-			end
-		
-		elseif (raidId == RAID_ASYLUM_SANCTORIUM) then
-
-		end
-
-		-- Buff Food
-		-- TODO: Replace, Remove or Revamp???
-		if (self.Vars.general.buffFood_reminder and uType == COMBAT_UNIT_TYPE_PLAYER) then
-			local buffsDebuffs = self.BuffsDebuffs.buffFood
-			local buffFoodFound = false
-			local reminderInterval = self.Vars.general.buffFood_reminder_interval
-
-			local numAuras = GetNumBuffs("player")
-			if (numAuras > 0) then
-				for x = 1, numAuras do
-					local name, _, finish, _, _, _, _, _, _, _, abilityId, _ = GetUnitBuffInfo('player', x)
-					if buffsDebuffs[abilityId] then
-						buffFoodFound = true
-
-						local bufffood_remaining = finish - (GetFrameTimeMilliseconds() / 1000)
-						local formatedTime       = ZO_FormatTime(bufffood_remaining, TIME_FORMAT_STYLE_COLONS, TIME_FORMAT_PRECISION_SECONDS)
-
-						-- new set interval
-						if bufffood_remaining <= 600 then
-							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_GENERAL_BUFFFOOD_MINUTES), name, formatedTime), "general", "buffFood_reminder", reminderInterval)
-						end
-					end
+			elseif abilityId == buffsDebuffs.venom_injection then
+				if settings.venom_injection then
+					self:UpdateSphereVenom(changeType ~= EFFECT_RESULT_FADED, beginTime, endTime)
 				end
 			end
-			-- no bufffood found, alert every interval
-			if buffFoodFound == false then
-				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_GENERAL_NO_BUFFFOOD), "general", "buffFood_reminder", reminderInterval)
-			end
+
 		end
 
 	end
 
 end
-
 
 -- ----------------------------
 -- EVENT: EVENT_ADD_ON_LOADED
