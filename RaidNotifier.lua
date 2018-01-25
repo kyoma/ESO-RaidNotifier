@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.3.7"
+RaidNotifier.Version         = "2.3.9"
 RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -511,7 +511,7 @@ do ----------------------
 		local numBuffs = GetNumBuffs("player")
 		if numBuffs > 0 then
 			for i = 1, numBuffs do
-				local _, _, finish, _, _, _, _, _, _, _, abilityId, canClickOff = GetUnitBuffInfo("player", i)
+				local name, _, finish, _, _, _, _, _, _, _, abilityId, canClickOff = GetUnitBuffInfo("player", i)
 				if GetActiveFoodBuff(abilityId) and canClickOff then
 					buffFoodFound = true
 					local bufffood_remaining = finish - (GetGameTimeMilliseconds() / 1000)
@@ -838,7 +838,11 @@ do ---------------------------
 	local GetGameTimeMilliseconds = GetGameTimeMilliseconds
 	
 	local function UnitIdToString(id)
-		return RaidNotifier.Vars.general.useDisplayName and LUNIT:GetDisplayNameForUnitId(id) or LUNIT:GetNameForUnitId(id)
+		local name = RaidNotifier.Vars.general.useDisplayName and LUNIT:GetDisplayNameForUnitId(id) or LUNIT:GetNameForUnitId(id)
+		if name == "" then
+			name = "#"..id
+		end
+		return name
 	end
 
 	function RaidNotifier.OnCombatEvent_HRC(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
@@ -857,23 +861,28 @@ do ---------------------------
 			--   normal interval code. So we add a delay and check if we got another alert
 			--   before actually displaying it.
 			if (abilityId == buffsDebuffs.warrior_stoneform) then
-				if (settings.warrior_stoneform >= 1) then
-					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
-					local lastIndex = self:GetLastNotify("helra", "warrior_stoneform") + 1
-					self:SetLastNotify("helra", "warrior_stoneform", lastIndex)
-					zo_callLater(function()
-						if (lastIndex == self:GetLastNotify("helra", "warrior_stoneform")) then
-							if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
-								self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HELRA_WARRIOR_STONEFORM), "helra", "warrior_stoneform")
-							elseif (tName ~= "" and settings.warrior_stoneform == 2) then
-								self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_HELRA_WARRIOR_STONEFORM_OTHER), tName), "helra", "warrior_stoneform")
-							end
-						end
-					end, 200)
-				end
+				tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
+				dbg("BEGIN >> Warrior Stone Form on %s, hitValue: %d", tName, hitValue)
+				--if (settings.warrior_stoneform >= 1) then
+				--	tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
+				--	local lastIndex = self:GetLastNotify("helra", "warrior_stoneform") + 1
+				--	self:SetLastNotify("helra", "warrior_stoneform", lastIndex)
+				--	zo_callLater(function()
+				--		if (lastIndex == self:GetLastNotify("helra", "warrior_stoneform")) then
+				--			if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
+				--				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HELRA_WARRIOR_STONEFORM), "helra", "warrior_stoneform")
+				--			elseif (tName ~= "" and settings.warrior_stoneform == 2) then
+				--				self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_HELRA_WARRIOR_STONEFORM_OTHER), tName), "helra", "warrior_stoneform")
+				--			end
+				--		end
+				--	end, 200)
+				--end
 			end
 		elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
-			if abilityId == buffsDebuffs.yokeda_meteor then
+			if (abilityId == buffsDebuffs.warrior_stoneform) then
+				tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
+				dbg("GAINED_DURATION >> Warrior Stone Form on %s, hitValue: %d", tName, hitValue)
+			elseif abilityId == buffsDebuffs.yokeda_meteor then
 				if settings.yokeda_meteor > 0 then
 					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
@@ -882,6 +891,11 @@ do ---------------------------
 						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_HELRA_YOKEDA_METEOR_OTHER), tName), "helra", "yokeda_meteor")
 					end
 				end
+			end
+		elseif (result == ACTION_RESULT_EFFECT_GAINED) then
+			if (abilityId == buffsDebuffs.warrior_stoneform) then
+				tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
+				dbg("GAINED >> Warrior Stone Form on %s, hitValue: %d", tName, hitValue)
 			end
 		end
 	end
@@ -1657,8 +1671,10 @@ do ---------------------------
 								end
 								if isProtector then
 									self.Minions.latestProtectorId = tUnitId
-									dbg("Protector about to spawn #%d", tUnitId)
-									self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_PROTECTOR_SPAWN), "asylum", "olms_protector_spawn")
+									--dbg("Protector about to spawn #%d", tUnitId)
+									if settings.olms_protector_spawn then 
+										self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_PROTECTOR_SPAWN), "asylum", "olms_protector_spawn")
+									end
 								end
 							end
 						end, 100) -- tiny delay
@@ -1695,18 +1711,18 @@ do ---------------------------
 				end
 				--]]
 			elseif abilityId == buffsDebuffs.olms_phase2 then
-				dbg("Phase2")
+				--dbg("Phase2")
 				self.Minions.lastPhaseTimeMs = GetGameTimeMilliseconds()
 				self.Minions.nextSpawnIsProtector = true
 				self.Minions.nextSpawnIsLlothis = true
 			elseif abilityId == buffsDebuffs.olms_phase3 then
-				dbg("Phase3")
+				--dbg("Phase3")
 				self.Minions.lastPhaseTimeMs = GetGameTimeMilliseconds()
 				self.Minions.nextSpawnIsFelms = true
 			elseif abilityId == buffsDebuffs.olms_phase4 then
-				dbg("Phase4")
+				--dbg("Phase4")
 			elseif abilityId == buffsDebuffs.olms_phase5 then
-				dbg("Phase5")
+				--dbg("Phase5")
 			end
 		elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
 
