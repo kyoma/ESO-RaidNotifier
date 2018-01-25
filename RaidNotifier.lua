@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.3.7"
+RaidNotifier.Version         = "2.3.8"
 RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -511,7 +511,7 @@ do ----------------------
 		local numBuffs = GetNumBuffs("player")
 		if numBuffs > 0 then
 			for i = 1, numBuffs do
-				local _, _, finish, _, _, _, _, _, _, _, abilityId, canClickOff = GetUnitBuffInfo("player", i)
+				local name, _, finish, _, _, _, _, _, _, _, abilityId, canClickOff = GetUnitBuffInfo("player", i)
 				if GetActiveFoodBuff(abilityId) and canClickOff then
 					buffFoodFound = true
 					local bufffood_remaining = finish - (GetGameTimeMilliseconds() / 1000)
