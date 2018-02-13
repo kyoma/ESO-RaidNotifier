@@ -3,7 +3,7 @@ local Util = RaidNotifier.Util
 
 local tinsert	 			= table.insert
 local tremove				= table.remove
-local tsort		 			= table.sort
+local tsort				= table.sort
 
 -- Constants for easy reading
 local RAID_HEL_RA_CITADEL        = 1

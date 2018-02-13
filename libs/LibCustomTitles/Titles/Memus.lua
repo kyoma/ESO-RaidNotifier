@@ -14,7 +14,7 @@ MY_MODULE:RegisterTitle("@Panadulek", nil, false, {en = "Exploitdulek"}, {color=
 MY_MODULE:RegisterTitle("@Panadulek", nil, 92, {en = "Pyrotechnic Dragon Lord"}, {color={"#F5C514", "#D20F08"}})
 MY_MODULE:RegisterTitle("@Panadulek", nil, 93, {en = "Asmael's Sister"}, {color={"#F5C514", "#D20F08"}})
 MY_MODULE:RegisterTitle("@FKNSTEVO", nil, 92, {en = "Take My Heal"}, {color={"#3ef245", "#42d9f4"}})
-MY_MODULE:RegisterTitle("@Zathurin", nil, 702, {en = "Tempest Warlock"}, {color={"#009AE5", "#6C12CD"}})
+MY_MODULE:RegisterTitle("@Zæthürin", nil, 702, {en = "Tempest Warlock"}, {color={"#009AE5", "#6C12CD"}})
 MY_MODULE:RegisterTitle("@Zedh", nil, 92, {en = "Fluffle Puff"}, {color="#FF69B4"})
 MY_MODULE:RegisterTitle("@ZoM_Head", nil, 51, {en = "Top Pirate"})
 MY_MODULE:RegisterTitle("@Healsthefeels", nil, 1391, {en = "The Snake"}, {color="#FF0000"})
