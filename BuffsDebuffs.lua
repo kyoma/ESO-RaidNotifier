@@ -330,7 +330,6 @@ halls_fab.committee_overload_aura        = 94757
 halls_fab.committee_overcharge_aura      = 90715
 --  Ruined Factotum spawns
 halls_fab.committee_fabricant_spawn      = 90499
-halls_fab.committee_fabricant_spawn_old  = 92835 
 halls_fab.committee_reclaim_achieve      = 94458 -- achievement "Planned Obsolescence" has failed if this shows up
 halls_fab.committee_catastrophic_discharge = {}
 halls_fab.committee_catastrophic_discharge[90581] = true
