@@ -243,6 +243,7 @@ do ----------------------
 
 	local LGS = LibStub:GetLibrary("LibGroupSocket")
 	local ultimateHandler = LGS:GetHandler(LGS.MESSAGE_TYPE_ULTIMATE)
+	RNUltimateHandler = ultimateHandler -- debug
 	local ultimateAbilityId = 46537  -- Aggressive Warhorn Rank IV
 	local ultimateGroupId   = 29     -- hardcoded for now
 	local ultimates = {}
@@ -416,6 +417,8 @@ do ----------------------
 		elseif (args[1] == "refresh") then
 			ultimates = {}
 			ultimateHandler:Refresh()
+		elseif (args[1] == "debug") then
+			ultimateHandler:SetDebug(tonumber(args[2]))
 		elseif (args[1] == "cost") then
 			if (#args == 2) then
 				if (tonumber(args[2]) ~= nil) then
