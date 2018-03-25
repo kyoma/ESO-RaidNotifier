@@ -863,20 +863,20 @@ do ---------------------------
 			if (abilityId == buffsDebuffs.warrior_stoneform) then
 				tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 				dbg("BEGIN >> Warrior Stone Form on %s, hitValue: %d", tName, hitValue)
-				--if (settings.warrior_stoneform >= 1) then
-				--	tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
-				--	local lastIndex = self:GetLastNotify("helra", "warrior_stoneform") + 1
-				--	self:SetLastNotify("helra", "warrior_stoneform", lastIndex)
-				--	zo_callLater(function()
-				--		if (lastIndex == self:GetLastNotify("helra", "warrior_stoneform")) then
-				--			if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
-				--				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HELRA_WARRIOR_STONEFORM), "helra", "warrior_stoneform")
-				--			elseif (tName ~= "" and settings.warrior_stoneform == 2) then
-				--				self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_HELRA_WARRIOR_STONEFORM_OTHER), tName), "helra", "warrior_stoneform")
-				--			end
-				--		end
-				--	end, 200)
-				--end
+				if (settings.warrior_stoneform >= 1) then
+					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
+					local lastIndex = self:GetLastNotify("helra", "warrior_stoneform") + 1
+					self:SetLastNotify("helra", "warrior_stoneform", lastIndex)
+					zo_callLater(function()
+						if (lastIndex == self:GetLastNotify("helra", "warrior_stoneform")) then
+							if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
+								self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HELRA_WARRIOR_STONEFORM), "helra", "warrior_stoneform")
+							elseif (tName ~= "" and settings.warrior_stoneform == 2) then
+								self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_HELRA_WARRIOR_STONEFORM_OTHER), tName), "helra", "warrior_stoneform")
+							end
+						end
+					end, 200)
+				end
 			end
 		elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
 			if (abilityId == buffsDebuffs.warrior_stoneform) then
