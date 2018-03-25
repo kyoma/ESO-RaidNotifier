@@ -263,7 +263,7 @@ do ----------------------
 
 	function RaidNotifier:UpdateUltimates()
 		local settings = self.Vars.ultimate
-		if settings.hidden then return end
+		if settings.hidden or GetGroupSize() == 0 then return end
 
 		local sortedUlti = {}
 		for userName, data in pairs(ultimates) do
