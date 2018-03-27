@@ -133,7 +133,7 @@ function handler:Send()
     local timeout = IsUnitInCombat("player") and MIN_COMBAT_SEND_TIMEOUT or MIN_SEND_TIMEOUT
     if(now - lastSendTime < timeout) then
 	if (handler.debug == 2) then
-            d("now("..now..") - lastSendTime("..lastSendTime.." < timeout("..timeout..")")
+            d("now("..now..") - lastSendTime("..lastSendTime..") < timeout("..timeout..")")
 	end
         return 
     end
@@ -155,7 +155,9 @@ function handler:Send()
 			index = LGS:WriteUint8(data, index, ultimateCost)
 		end
 
-		--	Log("Send %d byte: is full: %s, needs full: %s, ultimate: %s, cost: %s", #data, tostring(sendFullUpdate), tostring(needFullUpdate), tostring(ultimateCurrent), tostring(ultimateCost))
+	if (handler.debug == 1) then
+		Log("Send %d byte: is full: %s, needs full: %s, ultimate: %s, cost: %s", #data, tostring(sendFullUpdate), tostring(needFullUpdate), tostring(ultimateCurrent), tostring(ultimateCost))
+	end
         if(LGS:Send(type, data)) then
 			--	Log("Send Complete")
             lastSendTime = now
@@ -165,6 +167,10 @@ function handler:Send()
 			end
             sendFullUpdate = false
             needFullUpdate = false
+	else
+	    if (handler.debug == 2) then
+    	        Log("Send failed")
+	    end
         end
     end
 end
@@ -175,9 +181,6 @@ function handler:Refresh()
 end
 
 local function OnUpdate()
-    if (handler.debug == 2) then
-        df("OnUpdate")
-    end
     handler:Send()
 end
 
