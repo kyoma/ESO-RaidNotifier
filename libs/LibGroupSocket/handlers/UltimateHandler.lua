@@ -26,6 +26,7 @@ local defaultData = {
     enabled = true,
 }
 handler.callbacks = handler.callbacks or 0
+handler.debug = 0
 
 local function GetCachedUnitResources(unitTag, skipCreate)
     local unitName = GetUnitName(unitTag)
@@ -40,6 +41,14 @@ local function GetCachedUnitResources(unitTag, skipCreate)
     return unitResources
 end
 
+function handler:SetDebug(dbg)
+	handler.debug = dbg
+end
+
+function handler:ResetResources()
+    handler.resources = {}
+end	
+
 function handler:GetLastUpdateTime(unitTag)
     local unitResources = GetCachedUnitResources(unitTag, SKIP_CREATE)
     if(unitResources) then return unitResources.lastUpdate end
@@ -53,8 +62,15 @@ function handler:SetUltimateCost(cost)
 end
 
 local function OnData(unitTag, data, isSelf)
-	if (handler.callbacks == 0) then return end --dont do anything if nobody is using this handler
-	
+    if (handler.callbacks == 0) then 
+        if (handler.debug > 0) then
+	    df("handler.callbas == 0")
+        end
+        return 
+    end --dont do anything if nobody is using this handler
+    if (handler.debug == 3) then
+        df("OnData")
+    end	
     local index, bitIndex = 1, 1
     local isFullUpdate, index, bitIndex = LGS:ReadBit(data, index, bitIndex)
     local requestsFullUpdate, index, bitIndex = LGS:ReadBit(data, index, bitIndex)
@@ -87,13 +103,16 @@ local function NumCallbacks()
 end
 
 function handler:RegisterForUltimateChanges(callback)
+    if (handler.debug == 3) then
+        df("RegisterForUltimateChanges")
+    end    
     LGS.cm:RegisterCallback(ON_ULTIMATE_CHANGED, callback)
-	NumCallbacks()
+    NumCallbacks()
 end
 
 function handler:UnregisterForUltimateChanges(callback)
     LGS.cm:UnregisterCallback(ON_ULTIMATE_CHANGED, callback)
-	NumCallbacks()
+    NumCallbacks()
 end
 
 local function GetPowerValues(unitResources, powerType)
@@ -103,10 +122,21 @@ local function GetPowerValues(unitResources, powerType)
 end
 
 function handler:Send()
+    if (handler.debug == 3) then
+        df("Send")
+    end
     if(not saveData.enabled or not IsUnitGrouped("player") or handler.callbacks == 0) then return end
+    if (handler.debug == 3) then
+        df("...")
+    end
     local now = GetTimeStamp()
     local timeout = IsUnitInCombat("player") and MIN_COMBAT_SEND_TIMEOUT or MIN_SEND_TIMEOUT
-    if(now - lastSendTime < timeout) then return end
+    if(now - lastSendTime < timeout) then
+	if (handler.debug == 2) then
+            d("now("..now..") - lastSendTime("..lastSendTime.." < timeout("..timeout..")")
+	end
+        return 
+    end
 
     local unitResources = GetCachedUnitResources("player")
     local ultimate, ultimateCurrent, ultimateMaximum = GetPowerValues(unitResources, POWERTYPE_ULTIMATE)
@@ -145,13 +175,22 @@ function handler:Refresh()
 end
 
 local function OnUpdate()
+    if (handler.debug == 2) then
+        df("OnUpdate")
+    end
     handler:Send()
 end
 
 local isActive = false
 
 local function StartSending()
+    if (handler.debug == 2) then
+        df("StartSending")
+    end    
     if(not isActive and saveData.enabled and IsUnitGrouped("player")) then
+	if (handler.debug > 0) then
+            df("StartSending .. register OnUpdate")
+        end
         EVENT_MANAGER:RegisterForUpdate("LibGroupSocketUltimateHandler", 1000, OnUpdate)
         isActive = true
     end
@@ -165,11 +204,17 @@ local function StopSending()
 end
 
 local function OnUnitCreated(_, unitTag)
+    if (handler.debug == 2) then	
+        df("OnUnitCreated: "..unitTag)  
+    end
     sendFullUpdate = true
     StartSending()
 end
 
 local function OnUnitDestroyed(_, unitTag)
+    if (handler.debug == 2) then
+        df("OnUnitDestroyed: "..unitTag.. " (isActive("..isActive.."), unitGrouped("..IsUnitGrouped("player")..")")
+    end
     resources[GetUnitName(unitTag)] = nil
     if(isActive and not IsUnitGrouped("player")) then
         StopSending()

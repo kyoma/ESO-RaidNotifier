@@ -33,4 +33,4 @@ MY_MODULE:RegisterTitle("@secunder7",       nil,       702,     {en = "Heart of 
 MY_MODULE:RegisterTitle("@Napoleoff",       nil,      1391,     {en = "Malzahar"                                                                                                        },    {color="#A825F8"})
 MY_MODULE:RegisterTitle("@Trinet",          nil,        92,     {en = "Señor Chile"                                                                                                     },    {color={"#0000FF", "#FF0000"}})
 MY_MODULE:RegisterTitle("@gaimers",         nil,     false,     {en = "What do you |c990000meme|r?"                                                                                     })
-MY_MODULE:RegisterTitle("@CristianoRonaldo",nil,        92,     {en = "Karma's a Bitch"                                                                                                 },    {color="#FF0000"})
+MY_MODULE:RegisterTitle("@CristianoRonaldo",nil,        92,     {en = "Karma's a Bitch"                                                                                                 },    {color={"#33CCFF","#66FF33"}})
