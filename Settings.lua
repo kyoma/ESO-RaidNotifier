@@ -247,6 +247,7 @@ do ------------------
 			olms_exhaustive_charges = false,
 			olms_protector_spawn = true,
 			olms_trial_by_fire = true,
+			olms_pre_gusts_of_steam = false,
 		},
 		dbg = {
 			enable = false,
@@ -1226,6 +1227,11 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_Asylum_Storm_The_Heavens,
 		tooltip = L.Settings_Asylum_Storm_The_Heavens_TT,
 	}, "asylum", "olms_storm_the_heavens")
+        MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Asylum_Pre_Gusts_Of_Steam,
+		tooltip = L.Settings_Asylum_Pre_Gusts_Of_Steam_TT,
+	}, "asylum", "olms_pre_gusts_of_steam")
 	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_Asylum_Gusts_Of_Steam,

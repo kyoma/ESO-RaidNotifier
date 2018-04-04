@@ -584,6 +584,14 @@ do ----------------------
 		eventIndex = 0
 	end
 
+	local intervalCheck = false
+	function RaidNotifier.SetIntervalCheck(enabled)
+		intervalCheck = enabled
+	end
+        function RaidNotifier.GetIntervalCheck(enabled)
+		return intervalCheck
+	end
+
 	local listening = false
 	function RaidNotifier:RegisterEvents(raidId)
 		if listening then return end
@@ -639,8 +647,15 @@ do ----------------------
 			-- Toggle assistants off when combat starts
 			local function OnCombatStateChanged(_, inCombat)
 				local settings = self.Vars.general
-				if (inCombat and settings.no_assistants and GetActiveCollectibleByType(COLLECTIBLE_CATEGORY_TYPE_ASSISTANT) > 0) then
-					UseCollectible(GetActiveCollectibleByType(COLLECTIBLE_CATEGORY_TYPE_ASSISTANT))
+				if (inCombat) then
+					if (self.GetIntervalCheck()) then
+						EVENT_MANAGER:RegisterForUpdate(self.Name .. "_IntervalCheck", 1000, self.OnIntervalCheck);
+					end
+					if (settings.no_assistants and GetActiveCollectibleByType(COLLECTIBLE_CATEGORY_TYPE_ASSISTANT) > 0) then
+						UseCollectible(GetActiveCollectibleByType(COLLECTIBLE_CATEGORY_TYPE_ASSISTANT))
+					end
+				else
+					EVENT_MANAGER:UnregisterForUpdate(self.Name .. "_IntervalCheck")
 				end
 			end
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_PLAYER_COMBAT_STATE, OnCombatStateChanged)
@@ -791,6 +806,30 @@ do -----------------------------
 		return bossCount, bossAlive, bossFull
 	end
 
+	function RaidNotifier.OnIntervalCheck()
+		local self = RaidNotifier
+		local raidId = RaidNotifier.raidId
+		local buffsDebuffs = RaidNotifier.BuffsDebuffs[raidId]
+		if (raidId == RAID_ASYLUM_SANCTORIUM) then
+			local settings = self.Vars.asylum
+
+			if (settings.olms_pre_gusts_of_steam) then
+				health, maxHealth = GetUnitPower("boss1", POWERTYPE_HEALTH) -- Llothi
+				local healthPercent = health * 100 / maxHealth
+				if (self.Minions.olmsHealthChecked == nil) then
+					self.Minions.olmsHealthChecked = healthPercent
+				end
+				for _, jumpPercent in pairs(buffsDebuffs.olms_phasesHealth) do
+					if (jumpPercent < self.Minions.olmsHealthChecked and healthPercent <= (jumpPercent + 2)) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_PRE_GUSTS_OF_STEAM), "asylum", "olms_pre_gusts_of_steam")
+						self.Minions.olmsHealthChecked = jumpPercent
+						break
+					end
+				end
+			end
+		end
+	end
+
 	function RaidNotifier.OnBossesChanged()
 		local self   = RaidNotifier
 		local raidId = RaidNotifier.raidId
@@ -827,6 +866,14 @@ do -----------------------------
 		elseif (raidId == RAID_HALLS_OF_FABRICATION) then
 			if (bossCount == 3) then --Refabrication Committee
 				
+			end
+		elseif (raidId == RAID_ASYLUM_SANCTORIUM) then
+			if (DoesUnitExist("boss1")) then
+				dbg("SetIntervalCheck(true)")
+				self.SetIntervalCheck(true)
+			else
+				dbg("SetIntervalCheck(false)")
+				self.SetIntervalCheck(false)
 			end
 		end
 	end

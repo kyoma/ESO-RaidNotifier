@@ -384,6 +384,7 @@ asylum.olms_gusts_of_steam = 98868 -- aoe under everyone's feet (jump starts)
 asylum.olms_eruption = 99974 -- jump
 asylum.olms_trial_by_fire = 98582
 asylum.olms_protector_spawn = 64508 -- aka find turret, better than 64489 due to its tUnitId
+asylum.olms_phasesHealth = {90, 75, 50, 25}
 asylum.olms_phase2 = 98615 -- after 90% health
 asylum.olms_phase3 = 98677 -- after 75% health
 asylum.olms_phase4 = 98678 -- after 50% health
