@@ -1599,8 +1599,8 @@ do ---------------------------
 				if tUnitId == self.Minions.incomingSource then
 					dbg("Sphere #%d was interrupted", tUnitId)
 					self.Minions.incomingSource = nil
-					--self:StopCountdown(buffsDebuffs.taking_aim_index)
-					--buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
+					self:StopCountdown(buffsDebuffs.taking_aim_index)
+					buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
 				end
 			--end
 		elseif (result == ACTION_RESULT_DIED) then
@@ -1608,8 +1608,8 @@ do ---------------------------
 				if tUnitId == self.Minions.incomingSource then
 					dbg("Sphere #%d died", tUnitId)
 					self.Minions.incomingSource = nil
-					--self:StopCountdown(buffsDebuffs.taking_aim_index)
-					--buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
+					self:StopCountdown(buffsDebuffs.taking_aim_index)
+					buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
 				end
 				--self.Minions[tUnitId] = nil 
 			--end
