@@ -188,7 +188,7 @@ do ---------------------------------
 			line.countdownControl:SetScale(settings.timerScale / 100)
 		end
 		-- always reset this in case countdown was terminated before reaching zero (see below)
-		line.countdownControl:SetColor(unpack(orgCountdownColor))
+		line.countdownControl:SetColor(orgCountdownColor[1], orgCountdownColor[2], orgCountdownColor[3])
 	end
 	local function CountdownCallback(line, countdownS)
 		-- set color to orange on 2 and red  on 1 and 0
