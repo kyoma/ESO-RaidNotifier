@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.3.12"
+RaidNotifier.Version         = "2.4"
 RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -19,6 +19,7 @@ RAID_MAW_OF_LORKHAJ        = 5
 RAID_MAELSTROM_ARENA       = 6
 RAID_HALLS_OF_FABRICATION  = 7
 RAID_ASYLUM_SANCTORIUM     = 8
+RAID_CLOUDREST		   = 9
 
 -- Debugging
 local function p() end
@@ -546,6 +547,7 @@ do ----------------------
 		[RAID_MAELSTROM_ARENA]       = 677,
 		[RAID_HALLS_OF_FABRICATION]  = 975,
 		[RAID_ASYLUM_SANCTORIUM]     = 1000,
+		[RAID_CLOUDREST]             = 1051,
 	}
 
 	local RaidZones = {}
@@ -1749,6 +1751,12 @@ do ---------------------------
 		end
 	end
 
+	function RaidNotifier.OnCombatEvent_AS(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
+		local raidId = RaidNotifier.raidId
+		local self   = RaidNotifier
+--		local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.cloudrest
+	end
+
 
 	RaidNotifier.CombatEventCallbacks = 
 	{
@@ -1760,6 +1768,7 @@ do ---------------------------
 		[RAID_MAELSTROM_ARENA]       = RaidNotifier.OnCombatEvent_MA,
 		[RAID_HALLS_OF_FABRICATION]  = RaidNotifier.OnCombatEvent_HOF,
 		[RAID_ASYLUM_SANCTORIUM]     = RaidNotifier.OnCombatEvent_AS,
+		[RAID_CLOUDREST]             = RaidNotifier.OnCombatEvent_CR,
 	}
 	
 	-------------------

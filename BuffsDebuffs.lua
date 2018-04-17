@@ -403,3 +403,9 @@ asylum.interest_list[101354] = true
 asylum.interest_list[64508] = true 
 
 RaidNotifier.BuffsDebuffs[RAID_ASYLUM_SANCTORIUM] = asylum
+
+-- ------------------------------------------------------
+-- -- Cloudrest  ----------------------------------------
+-- -- ---------------------------------------------------
+local cloudrest = {}
+RaidNotifier.BuffsDebuffs[RAID_CLOUDREST] = cloudrest
