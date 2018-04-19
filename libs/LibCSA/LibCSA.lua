@@ -198,14 +198,14 @@ local function Load()
 	lib.Unload = Unload
 end
 
-local CSH = ZO_CenterScreenAnnounce_GetHandlers()
-function lib:HookHandler(eventId, hook)
-	local originalHandler = CSH[eventId]
-	CSH[eventId] = function(...)
-		local messageParams = originalHandler(...)
-		return hook(messageParams, ...)
-	end
-end
+--local CSH = ZO_CenterScreenAnnounce_GetHandlers()
+--function lib:HookHandler(eventId, hook)
+--	local originalHandler = CSH[eventId]
+--	CSH[eventId] = function(...)
+--		local messageParams = originalHandler(...)
+--		return hook(messageParams, ...)
+--	end
+--end
 
 function lib:CreateCountdown(displayTimeMs, soundId, endIcon, mainText, secondaryText, setupCallback, countdownCallback)
 	local messageParams = CSA:CreateMessageParams(CSA_CATEGORY_COUNTDOWN_TEXT, soundId)
