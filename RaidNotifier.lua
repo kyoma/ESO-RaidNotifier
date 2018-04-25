@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.3.12"
+RaidNotifier.Version         = "2.4"
 RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -588,7 +588,7 @@ do ----------------------
 	function RaidNotifier.SetIntervalCheck(enabled)
 		intervalCheck = enabled
 	end
-        function RaidNotifier.GetIntervalCheck(enabled)
+        function RaidNotifier.IsIntervalCheck()
 		return intervalCheck
 	end
 
@@ -648,7 +648,7 @@ do ----------------------
 			local function OnCombatStateChanged(_, inCombat)
 				local settings = self.Vars.general
 				if (inCombat) then
-					if (self.GetIntervalCheck()) then
+					if (self.IsIntervalCheck()) then
 						EVENT_MANAGER:RegisterForUpdate(self.Name .. "_IntervalCheck", 1000, self.OnIntervalCheck);
 					end
 					if (settings.no_assistants and GetActiveCollectibleByType(COLLECTIBLE_CATEGORY_TYPE_ASSISTANT) > 0) then
@@ -758,6 +758,11 @@ do ----------------------
 			elseif self.raidId > 0 then
 				self:UnregisterEvents()
 			end
+			if (self.IsIntervalCheck()) then
+				dbg("SetIntervalCheck(false)")
+				self.SetIntervalCheck(false)
+			end
+
 		end
 		OnZoneChanged()
 		--EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_ZONE_CHANGED, OnZoneChanged) -- Doesn't fire after zoning and not always when subzoning
@@ -813,15 +818,15 @@ do -----------------------------
 		if (raidId == RAID_ASYLUM_SANCTORIUM) then
 			local settings = self.Vars.asylum
 
-			if (settings.olms_pre_gusts_of_steam) then
+			if (settings.olms_gusts_of_steam and settings.olms_gusts_of_steam_slider > 0) then
 				health, maxHealth = GetUnitPower("boss1", POWERTYPE_HEALTH) -- Llothi
 				local healthPercent = health * 100 / maxHealth
 				if (self.Minions.olmsHealthChecked == nil) then
 					self.Minions.olmsHealthChecked = healthPercent
 				end
 				for _, jumpPercent in pairs(buffsDebuffs.olms_phasesHealth) do
-					if (jumpPercent < self.Minions.olmsHealthChecked and healthPercent <= (jumpPercent + 2)) then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_PRE_GUSTS_OF_STEAM), "asylum", "olms_pre_gusts_of_steam")
+					if (jumpPercent < self.Minions.olmsHealthChecked and healthPercent <= (jumpPercent + settings.olms_gusts_of_steam_slider)) then
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_PRE_GUSTS_OF_STEAM), settings.olms_gusts_of_steam_slider), "asylum", "olms_gusts_of_steam")
 						self.Minions.olmsHealthChecked = jumpPercent
 						break
 					end
@@ -871,9 +876,6 @@ do -----------------------------
 			if (DoesUnitExist("boss1")) then
 				dbg("SetIntervalCheck(true)")
 				self.SetIntervalCheck(true)
-			else
-				dbg("SetIntervalCheck(false)")
-				self.SetIntervalCheck(false)
 			end
 		end
 	end
@@ -1662,7 +1664,7 @@ do ---------------------------
 					tName = UnitIdToString(tUnitId)
 					--dbg("Teleport Strike %s", tName)
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_TELEPORT_STRIKE), "asylum", "felms_teleport_strike")
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_TELEPORT_STRIKE), "asylum", "felms_teleport_strike", 10)
 					elseif (tName ~= "" and settings.felms_teleport_strike == 2) then
 						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_TELEPORT_STRIKE_OTHER), tName), "asylum", "felms_teleport_strike")
 					end
