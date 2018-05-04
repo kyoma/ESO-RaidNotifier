@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.3.11"
+RaidNotifier.Version         = "2.4"
 RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -187,7 +187,7 @@ do ---------------------------------
 			line.countdownControl:SetScale(settings.timerScale / 100)
 		end
 		-- always reset this in case countdown was terminated before reaching zero (see below)
-		line.countdownControl:SetColor(unpack(orgCountdownColor))
+		line.countdownControl:SetColor(orgCountdownColor[1], orgCountdownColor[2], orgCountdownColor[3])
 	end
 	local function CountdownCallback(line, countdownS)
 		-- set color to orange on 2 and red  on 1 and 0
@@ -243,6 +243,7 @@ do ----------------------
 
 	local LGS = LibStub:GetLibrary("LibGroupSocket")
 	local ultimateHandler = LGS:GetHandler(LGS.MESSAGE_TYPE_ULTIMATE)
+	RNUltimateHandler = ultimateHandler -- debug
 	local ultimateAbilityId = 46537  -- Aggressive Warhorn Rank IV
 	local ultimateGroupId   = 29     -- hardcoded for now
 	local ultimates = {}
@@ -263,7 +264,7 @@ do ----------------------
 
 	function RaidNotifier:UpdateUltimates()
 		local settings = self.Vars.ultimate
-		if settings.hidden then return end
+		if settings.hidden or GetGroupSize() == 0 then return end
 
 		local sortedUlti = {}
 		for userName, data in pairs(ultimates) do
@@ -416,6 +417,10 @@ do ----------------------
 		elseif (args[1] == "refresh") then
 			ultimates = {}
 			ultimateHandler:Refresh()
+		elseif (args[1] == "debug") then
+			ultimateHandler:SetDebug(tonumber(args[2]))
+		elseif (args[1] == "clear") then
+			ultimateHandler:ResetResources()
 		elseif (args[1] == "cost") then
 			if (#args == 2) then
 				if (tonumber(args[2]) ~= nil) then
@@ -579,6 +584,14 @@ do ----------------------
 		eventIndex = 0
 	end
 
+	local intervalCheck = false
+	function RaidNotifier.SetIntervalCheck(enabled)
+		intervalCheck = enabled
+	end
+        function RaidNotifier.IsIntervalCheck()
+		return intervalCheck
+	end
+
 	local listening = false
 	function RaidNotifier:RegisterEvents(raidId)
 		if listening then return end
@@ -634,8 +647,15 @@ do ----------------------
 			-- Toggle assistants off when combat starts
 			local function OnCombatStateChanged(_, inCombat)
 				local settings = self.Vars.general
-				if (inCombat and settings.no_assistants and GetActiveCollectibleByType(COLLECTIBLE_CATEGORY_TYPE_ASSISTANT) > 0) then
-					UseCollectible(GetActiveCollectibleByType(COLLECTIBLE_CATEGORY_TYPE_ASSISTANT))
+				if (inCombat) then
+					if (self.IsIntervalCheck()) then
+						EVENT_MANAGER:RegisterForUpdate(self.Name .. "_IntervalCheck", 1000, self.OnIntervalCheck);
+					end
+					if (settings.no_assistants and GetActiveCollectibleByType(COLLECTIBLE_CATEGORY_TYPE_ASSISTANT) > 0) then
+						UseCollectible(GetActiveCollectibleByType(COLLECTIBLE_CATEGORY_TYPE_ASSISTANT))
+					end
+				else
+					EVENT_MANAGER:UnregisterForUpdate(self.Name .. "_IntervalCheck")
 				end
 			end
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_PLAYER_COMBAT_STATE, OnCombatStateChanged)
@@ -738,6 +758,11 @@ do ----------------------
 			elseif self.raidId > 0 then
 				self:UnregisterEvents()
 			end
+			if (self.IsIntervalCheck()) then
+				dbg("SetIntervalCheck(false)")
+				self.SetIntervalCheck(false)
+			end
+
 		end
 		OnZoneChanged()
 		--EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_ZONE_CHANGED, OnZoneChanged) -- Doesn't fire after zoning and not always when subzoning
@@ -786,6 +811,30 @@ do -----------------------------
 		return bossCount, bossAlive, bossFull
 	end
 
+	function RaidNotifier.OnIntervalCheck()
+		local self = RaidNotifier
+		local raidId = RaidNotifier.raidId
+		local buffsDebuffs = RaidNotifier.BuffsDebuffs[raidId]
+		if (raidId == RAID_ASYLUM_SANCTORIUM) then
+			local settings = self.Vars.asylum
+
+			if (settings.olms_gusts_of_steam and settings.olms_gusts_of_steam_slider > 0) then
+				health, maxHealth = GetUnitPower("boss1", POWERTYPE_HEALTH) -- Llothi
+				local healthPercent = health * 100 / maxHealth
+				if (self.Minions.olmsHealthChecked == nil) then
+					self.Minions.olmsHealthChecked = healthPercent
+				end
+				for _, jumpPercent in pairs(buffsDebuffs.olms_phasesHealth) do
+					if (jumpPercent < self.Minions.olmsHealthChecked and healthPercent <= (jumpPercent + settings.olms_gusts_of_steam_slider)) then
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_PRE_GUSTS_OF_STEAM), settings.olms_gusts_of_steam_slider), "asylum", "olms_gusts_of_steam")
+						self.Minions.olmsHealthChecked = jumpPercent
+						break
+					end
+				end
+			end
+		end
+	end
+
 	function RaidNotifier.OnBossesChanged()
 		local self   = RaidNotifier
 		local raidId = RaidNotifier.raidId
@@ -822,6 +871,11 @@ do -----------------------------
 		elseif (raidId == RAID_HALLS_OF_FABRICATION) then
 			if (bossCount == 3) then --Refabrication Committee
 				
+			end
+		elseif (raidId == RAID_ASYLUM_SANCTORIUM) then
+			if (DoesUnitExist("boss1")) then
+				dbg("SetIntervalCheck(true)")
+				self.SetIntervalCheck(true)
 			end
 		end
 	end
@@ -863,20 +917,20 @@ do ---------------------------
 			if (abilityId == buffsDebuffs.warrior_stoneform) then
 				tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 				dbg("BEGIN >> Warrior Stone Form on %s, hitValue: %d", tName, hitValue)
-				--if (settings.warrior_stoneform >= 1) then
-				--	tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
-				--	local lastIndex = self:GetLastNotify("helra", "warrior_stoneform") + 1
-				--	self:SetLastNotify("helra", "warrior_stoneform", lastIndex)
-				--	zo_callLater(function()
-				--		if (lastIndex == self:GetLastNotify("helra", "warrior_stoneform")) then
-				--			if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
-				--				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HELRA_WARRIOR_STONEFORM), "helra", "warrior_stoneform")
-				--			elseif (tName ~= "" and settings.warrior_stoneform == 2) then
-				--				self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_HELRA_WARRIOR_STONEFORM_OTHER), tName), "helra", "warrior_stoneform")
-				--			end
-				--		end
-				--	end, 200)
-				--end
+				if (settings.warrior_stoneform >= 1) then
+					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
+					local lastIndex = self:GetLastNotify("helra", "warrior_stoneform") + 1
+					self:SetLastNotify("helra", "warrior_stoneform", lastIndex)
+					zo_callLater(function()
+						if (lastIndex == self:GetLastNotify("helra", "warrior_stoneform")) then
+							if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
+								self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HELRA_WARRIOR_STONEFORM), "helra", "warrior_stoneform")
+							elseif (tName ~= "" and settings.warrior_stoneform == 2) then
+								self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_HELRA_WARRIOR_STONEFORM_OTHER), tName), "helra", "warrior_stoneform")
+							end
+						end
+					end, 200)
+				end
 			end
 		elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
 			if (abilityId == buffsDebuffs.warrior_stoneform) then
@@ -1547,8 +1601,8 @@ do ---------------------------
 				if tUnitId == self.Minions.incomingSource then
 					dbg("Sphere #%d was interrupted", tUnitId)
 					self.Minions.incomingSource = nil
-					--self:StopCountdown(buffsDebuffs.taking_aim_index)
-					--buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
+					self:StopCountdown(buffsDebuffs.taking_aim_index)
+					buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
 				end
 			--end
 		elseif (result == ACTION_RESULT_DIED) then
@@ -1556,8 +1610,8 @@ do ---------------------------
 				if tUnitId == self.Minions.incomingSource then
 					dbg("Sphere #%d died", tUnitId)
 					self.Minions.incomingSource = nil
-					--self:StopCountdown(buffsDebuffs.taking_aim_index)
-					--buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
+					self:StopCountdown(buffsDebuffs.taking_aim_index)
+					buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
 				end
 				--self.Minions[tUnitId] = nil 
 			--end
@@ -1610,7 +1664,7 @@ do ---------------------------
 					tName = UnitIdToString(tUnitId)
 					--dbg("Teleport Strike %s", tName)
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_TELEPORT_STRIKE), "asylum", "felms_teleport_strike")
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_TELEPORT_STRIKE), "asylum", "felms_teleport_strike", 10)
 					elseif (tName ~= "" and settings.felms_teleport_strike == 2) then
 						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_TELEPORT_STRIKE_OTHER), tName), "asylum", "felms_teleport_strike")
 					end

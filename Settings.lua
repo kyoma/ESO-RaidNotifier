@@ -247,6 +247,7 @@ do ------------------
 			olms_exhaustive_charges = false,
 			olms_protector_spawn = true,
 			olms_trial_by_fire = true,
+			olms_gusts_of_steam_slider = 0,
 		},
 		dbg = {
 			enable = false,
@@ -1231,12 +1232,19 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_Asylum_Gusts_Of_Steam,
 		tooltip = L.Settings_Asylum_Gusts_Of_Steam_TT,
 	}, "asylum", "olms_gusts_of_steam")
-        MakeControlEntry({
+	MakeControlEntry({
+		type = "slider",
+		name = L.Settings_Asylum_Gusts_Of_Steam_Slider,
+		tooltip = L.Settings_Asylum_Gusts_Of_Steam_Slider_TT,
+		min = 0, max = 5, step = 1,
+		noAlert = true,
+	}, "asylum", "olms_gusts_of_steam_slider")
+	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_Asylum_Protector_Spawn,
 		tooltip = L.Settings_Asylum_Protector_Spawn_TT,
 	}, "asylum", "olms_protector_spawn")
-        MakeControlEntry({
+	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_Asylum_Trial_By_Fire,
 		tooltip = L.Settings_Asylum_Trial_By_Fire_TT,
