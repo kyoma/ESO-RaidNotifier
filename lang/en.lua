@@ -405,6 +405,47 @@ L.Alerts_Asylum_Protector_Active                 = "|c0000FFProtector|r active!"
 
 
 --------------------------------
+------   CLOUDREST         -----
+--------------------------------
+L.Settings_Cloudrest_Header			= "Cloudrest"
+-- Settings
+L.Settings_Cloudrest_Spn_Yaghra                 = "General: Spear"
+L.Settings_Cloudrest_Spn_Yaghra_TT              = ""
+L.Settings_Cloudrest_Shadow_Realm_Cast          = "General: Portal Spawn"
+L.Settings_Cloudrest_Shadow_Realm_Cast_TT	= ""
+L.Settings_Cloudrest_Hoarfrost                  = "Faralielle: Hoarfrost"
+L.Settings_Cloudrest_Hoarfrost_TT               = ""
+L.Settings_Cloudrest_Hoarfrost_Shed             = "Faralielle: Hoarfrost Drop"
+L.Settings_Cloudrest_Hoarfrost_Shed_TT          = ""
+L.Settings_Cloudrest_Chilling_Comet             = "Faralielle: Chilling Comet"
+L.Settings_Cloudrest_Chilling_Comet_TT          = ""
+L.Settings_Cloudrest_Roaring_Flare              = "Siroria: Roaring Flame"
+L.Settings_Cloudrest_Roaring_Flare_TT           = ""
+L.Settings_Cloudrest_Voltaic_Overload           = "Belanaril: Voltaic Overload"
+L.Settings_Cloudrest_Voltaic_Overload_TT        = ""
+L.Settings_Cloudrest_Nocturnals_Favor		= "Z'Maja: Nocturnal's Favor"
+L.Settings_Cloudrest_Nocturnals_Favor_TT        = "Heavy attack"
+L.Settings_Cloudrest_Crushing_Darkness          = "Z'Maja: Crushing Darkness"
+L.Settings_Cloudrest_Crushing_Darkness_TT       = "Following aoe"
+
+-- Alerts
+L.Alerts_Cloudrest_Spn_Yaghra                   = "|cffd000Spear|r is up!"
+L.Alerts_Cloudrest_Hoarfrost                    = "|c00ddffHoarfrost|r at you!"
+L.Alerts_Cloudrest_Hoarfrost_Other              = "|c00ddffHoarfrost|r at |cff0000<<!aC:1>>|r."
+L.Alerts_Cloudrest_Hoarfrost_Shed               = "|c00ddffHoarfrost|r dropped."
+L.Alerts_Cloudrest_Hoarfrost_Shed_Other         = "|c00ddffHoarfrost|r dropped by |cff0000<<!aC:1>>|r."
+L.Alerts_Cloudrest_Chilling_Comet               = "|cff0000Chilling Comet|r at you. Block!"
+L.Alerts_Cloudrest_Roaring_Flare                = "|cff7700Roaring Flare|r at you."
+L.Alerts_Cloudrest_Roaring_Flare_Other          = "|cff7700Roaring Flare|r at |cff0000<<!aC:1>>|r. Stack on!"
+L.Alerts_Cloudrest_Voltaic_Current              = "Incoming |c55b4d4Voltaic Overload|r at you in"
+L.Alerts_Cloudrest_Voltaic_Overload             = "|c4d61c1Voltaic Overload|r at you! Swap Bar!"
+L.Alerts_Cloudrest_Shadow_Realm_Cast            = "|cab82ffPortal|r Spawn"
+L.Alerts_Cloudrest_Nocturnals_Favor             = "|cff0000Nocturnal's Favor|r at you!"
+L.Alerts_Cloudrest_Crushing_Darkness            = "|cff5f0fCrushing Darkness|r at you."
+
+
+
+--------------------------------
 ----       Debugging        ----
 --------------------------------
 L.Settings_Debug_Header                  = "Debug"
