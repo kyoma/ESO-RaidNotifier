@@ -198,7 +198,13 @@ local function Load()
 	lib.Unload = Unload
 end
 
-local CSH = ZO_CenterScreenAnnounce_GetHandlers()
+local CSA_GetEventHandlers = nil
+if (ZO_CenterScreenAnnounce_GetHandlers) then
+	CSA_GetEventHandlers = ZO_CenterScreenAnnounce_GetHandlers -- v22
+else
+	CSA_GetEventHandlers = ZO_CenterScreenAnnounce_GetEventHandlers -- v23
+end
+local CSH = CSA_GetEventHandlers()
 function lib:HookHandler(eventId, hook)
 	local originalHandler = CSH[eventId]
 	CSH[eventId] = function(...)

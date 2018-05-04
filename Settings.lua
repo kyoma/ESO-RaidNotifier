@@ -249,6 +249,17 @@ do ------------------
 			olms_trial_by_fire = true,
 			olms_gusts_of_steam_slider = 0,
 		},
+		cloudrest = {
+--			spn_yaghra = false,
+			shadow_realm_cast = false,
+			hoarfrost = 0, -- "Off"
+			hoarfrost_shed = true,
+			chilling_comet = true,
+			roaring_flare = 2, -- "Full"
+			voltaic_overload = 1, -- "Self"
+			nocturnals_favor = 0, -- "Off"
+			crushing_darkness = 1, -- "Self"
+		},
 		dbg = {
 			enable = false,
 			notify = false,
@@ -453,6 +464,22 @@ function RaidNotifier:CreateSettingsMenu()
 			llothis_defiling_blast = off_self_all, 
 			felms_teleport_strike = off_self_all,
 			olms_eruption = off_self_all,
+		},
+		cloudrest = {
+			hoarfrost = off_self_all,
+			roaring_flare = off_self_all,
+			crushing_darkness = {
+				L.Settings_General_Choices_Off,
+				L.Settings_General_Choices_Self,
+			},
+			voltaic_overload = {
+				L.Settings_General_Choices_Off,
+				L.Settings_General_Choices_Self,
+			},
+			nocturnals_favor = {
+				 L.Settings_General_Choices_Off,
+				 L.Settings_General_Choices_Self,
+			}
 		},
 	}
 
@@ -1157,7 +1184,7 @@ function RaidNotifier:CreateSettingsMenu()
 		type = "checkbox",
 		name = L.Settings_HallsFab_Conduit_Spawn,
 		tooltip = L.Settings_HallsFab_Conduit_Spawn_TT,
-   }, "hallsFab", "pinnacleBoss_conduit_spawn")
+	}, "hallsFab", "pinnacleBoss_conduit_spawn")
   	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_HallsFab_Conduit_Drain,
@@ -1251,6 +1278,59 @@ function RaidNotifier:CreateSettingsMenu()
 	}, "asylum", "olms_trial_by_fire")
 	subTable = nil --end submenu
 
+        -- Asylum Sanctorium
+	MakeSubmenu(L.Settings_Cloudrest_Header, RaidNotifier:GetRaidDescription(RAID_CLOUDREST))
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Cloudrest_Spn_Yaghra,
+		tooltip = L.Settings_Cloudrest_Spn_Yaghra_TT,
+	}, "cloudrest", "spn_yaghra")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Cloudrest_Shadow_Realm_Cast,
+		tooltip = L.Settings_Cloudrest_Shadow_Realm_Cast_TT,
+	}, "cloudrest", "shadow_realm_cast")
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_Cloudrest_Hoarfrost,
+		tooltip = L.Settings_Cloudrest_Hoarfrost_TT,
+		choices = choices.cloudrest.hoarfrost,
+	}, "cloudrest", "hoarfrost")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Cloudrest_Hoarfrost_Shed,
+		tooltip = L.Settings_Cloudrest_Hoarfrost_Shed_TT,
+	}, "cloudrest", "hoarfrost_shed")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Cloudrest_Chilling_Comet,
+		tooltip = L.Settings_Cloudrest_Chilling_Comet_TT,
+	}, "cloudrest", "chilling_comet")
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_Cloudrest_Roaring_Flare,
+		tooltip = L.Settings_Cloudrest_Roaring_Flare_TT,
+		choices = choices.cloudrest.roaring_flare,
+	}, "cloudrest", "roaring_flare")
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_Cloudrest_Voltaic_Overload,
+		tooltip = L.Settings_Cloudrest_Voltaic_Overload_TT,
+		choices = choices.cloudrest.voltaic_overload,
+	}, "cloudrest", "voltaic_overload")
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_Cloudrest_Nocturnals_Favor,
+		tooltip = L.Settings_Cloudrest_Nocturnals_Favor_TT,
+		choices = choices.cloudrest.nocturnals_favor,
+	}, "cloudrest", "nocturnals_favor")
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_Cloudrest_Crushing_Darkness,
+		tooltip = L.Settings_Cloudrest_Crushing_Darkness_TT,
+		choices = choices.cloudrest.crushing_darkness,
+	}, "cloudrest", "crushing_darkness")
+	subTable = nil --end submenu
 
 	MakeControlEntry({
 		type = "header",
