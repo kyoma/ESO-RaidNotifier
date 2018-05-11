@@ -410,8 +410,8 @@ L.Alerts_Asylum_Protector_Active                 = "|c0000FFProtector|r active!"
 --------------------------------
 L.Settings_Cloudrest_Header			= "Cloudrest"
 -- Settings
-L.Settings_Cloudrest_Spn_Yaghra                 = "General: Spear"
-L.Settings_Cloudrest_Spn_Yaghra_TT              = ""
+--L.Settings_Cloudrest_Spn_Yaghra                 = "General: Spear"
+--L.Settings_Cloudrest_Spn_Yaghra_TT              = ""
 L.Settings_Cloudrest_Shadow_Realm_Cast          = "General: Portal Spawn"
 L.Settings_Cloudrest_Shadow_Realm_Cast_TT	= ""
 L.Settings_Cloudrest_Hoarfrost                  = "Faralielle: Hoarfrost"

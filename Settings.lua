@@ -1280,11 +1280,11 @@ function RaidNotifier:CreateSettingsMenu()
 
         -- Asylum Sanctorium
 	MakeSubmenu(L.Settings_Cloudrest_Header, RaidNotifier:GetRaidDescription(RAID_CLOUDREST))
-	MakeControlEntry({
-		type = "checkbox",
-		name = L.Settings_Cloudrest_Spn_Yaghra,
-		tooltip = L.Settings_Cloudrest_Spn_Yaghra_TT,
-	}, "cloudrest", "spn_yaghra")
+--	MakeControlEntry({
+--		type = "checkbox",
+--		name = L.Settings_Cloudrest_Spn_Yaghra,
+--		tooltip = L.Settings_Cloudrest_Spn_Yaghra_TT,
+--	}, "cloudrest", "spn_yaghra")
 	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_Cloudrest_Shadow_Realm_Cast,

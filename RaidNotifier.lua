@@ -1879,10 +1879,10 @@ do ---------------------------
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_CRUSHING_DARKNESS), "cloudrest", "crushing_darkness")
 					end
 				end
-			elseif buffsDebuffs.spn_yaghra[abilityId] == true then
-				if (settings.spn_yaghra == true) then
-					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SPN_YAGHRA), "cloudrest", "spn_yaghra")
-				end
+--			elseif buffsDebuffs.spn_yaghra[abilityId] == true then
+--				if (settings.spn_yaghra == true) then
+--					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SPN_YAGHRA), "cloudrest", "spn_yaghra")
+--				end
 --			elseif abilityId == buffsDebuffs.hoarfrost_syn then
 --				if (settings.hoarfrost >= 1) then
 --					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
