@@ -1,5 +1,5 @@
 local MY_MODULE_NAME = "Kyoma"
-local MY_MODULE_VERSION = 9
+local MY_MODULE_VERSION = 10
 
 local LCC = LibStub('LibCustomTitlesRN')
 if not LCC then return end
@@ -25,7 +25,9 @@ MY_MODULE:RegisterTitle("@DerpyShadowz",    nil,      1391,     {en = "The Silly
 MY_MODULE:RegisterTitle("@DerpyShadowz",    "Dreams of Dragons Fire",      
                                                       1391,     {en = "A World In Ruin",                                                                                                },    {color={"#ED1515", "#F5C514"}})
 MY_MODULE:RegisterTitle("@iJonno",          nil,      1730,     {en = "Princess",                       de = "Prinzessin",                      fr = "Princesse"                        },    {color="#FAABFF"})
-MY_MODULE:RegisterTitle("@iJonno",          nil,      1810,     {en = "Princess",                       de = "Prinzessin",                      fr = "Princesse"                        },    {color="#FAABFF"})
+MY_MODULE:RegisterTitle("@iJonno",          nil,      1503,     {en = "Princess",                       de = "Prinzessin",                      fr = "Princesse"                        },    {color="#FAABFF"})
+MY_MODULE:RegisterTitle("@iijonno",         nil,      1730,     {en = "Princess",                       de = "Prinzessin",                      fr = "Princesse"                        },    {color="#FAABFF"})
+MY_MODULE:RegisterTitle("@iijonno",         nil,      1503,     {en = "Princess",                       de = "Prinzessin",                      fr = "Princesse"                        },    {color="#FAABFF"})
 MY_MODULE:RegisterTitle("@Floliroy",        nil,      1391,     {en = "Leeeeroy Jeeeeenkins"                                                                                            },    {color={"#0131B4", "#ED1600"}})
 MY_MODULE:RegisterTitle("@Floliroy",        nil,      1810,     {en = "Leeeeroy Jeeeeenkins"                                                                                            },    {color={"#FE2008", "#F9E259"}})
 MY_MODULE:RegisterTitle("@Floliroy",        nil,      1330,     {en = "Leeeeroy Jeeeeenkins"                                                                                            },    {color={"#EFC509", "#2DCAED"}})
@@ -33,4 +35,4 @@ MY_MODULE:RegisterTitle("@secunder7",       nil,       702,     {en = "Heart of 
 MY_MODULE:RegisterTitle("@Napoleoff",       nil,      1391,     {en = "Malzahar"                                                                                                        },    {color="#A825F8"})
 MY_MODULE:RegisterTitle("@Trinet",          nil,        92,     {en = "Señor Chile"                                                                                                     },    {color={"#0000FF", "#FF0000"}})
 MY_MODULE:RegisterTitle("@gaimers",         nil,     false,     {en = "What do you |c990000meme|r?"                                                                                     })
-MY_MODULE:RegisterTitle("@CristianoRonaldo",nil,        92,     {en = "Karma's a Bitch"                                                                                                 },    {color={"#33CCFF","#66FF33"}})
+MY_MODULE:RegisterTitle("@Karma'X",         nil,      true,     {en = "Karma's a Bitch"                                                                                                 },    {color={"#33CCFF","#66FF33"}})
