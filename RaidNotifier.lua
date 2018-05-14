@@ -216,6 +216,9 @@ do ---------------------------------
 
 	function RaidNotifier:StartCountdown(timer, text, category, setting, interval)
 		local soundId = self:GetSoundValue(category, setting)
+		if soundId == DEFAULT_SOUND then --
+			soundId = self.Vars.general.default_sound
+		end
 
 		if not text or text == "" then
 			p("Invalid text for '%s -> %s'", category, setting)
