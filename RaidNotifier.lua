@@ -65,7 +65,7 @@ do ---------------------------------
 	local Sounds = 
 	{
 		{name = "-Default-", 				 id = DEFAULT_SOUND},
-		{name = "-None-", 					 id = SOUNDS.NONE},
+		{name = "-None-", 					 id = SOUNDS.NO_SOUND},
 		{name = "Add Guild Member", 		 id = SOUNDS.GUILD_ROSTER_ADDED},
 		{name = "Book Acquired", 			 id = SOUNDS.BOOK_ACQUIRED},
 		{name = "Book Collection Completed", id = SOUNDS.BOOK_COLLECTION_COMPLETED},
@@ -90,6 +90,7 @@ do ---------------------------------
 		{name = "Synergy Ready", 			 id = SOUNDS.ABILITY_SYNERGY_READY},
 		{name = "TelVar Multiplier Max",	 id = SOUNDS.TELVAR_MULTIPLIERMAX},
 	}
+	
 	function RaidNotifier:GetSounds()
 		return Sounds
 	end
@@ -1898,7 +1899,7 @@ do ---------------------------
 				if (settings.voltaic_overload > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						--self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_CURRENT), "cloudrest", "voltaic_current")
-						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_CURRENT), "cloudrest", "voltaic_current")
+						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_CURRENT), "cloudrest", "voltaic_overload")
 					end
 				end
 			elseif abilityId == buffsDebuffs.voltaic_overload then
