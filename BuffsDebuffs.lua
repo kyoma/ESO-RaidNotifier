@@ -435,6 +435,7 @@ cloudrest.voltaic_current = 103895
 cloudrest.voltaic_current_delay = 3000
 -- overload [2240] hitValue 1, then [2245] hitValue 10000
 cloudrest.voltaic_overload = 87346 -- start and end
+cloudrest.voltaic_overload_time = 14000 -- start and end
 cloudrest.voltaic_overload_progress = {}
 cloudrest.voltaic_overload_progress[109059] = true
 cloudrest.voltaic_overload_progress[109060] = true
@@ -448,6 +449,7 @@ cloudrest.shadow_realm_cast = 103946 -- 2 seconds?
 cloudrest.nocturnals_favor = 104535 -- 2200 and 2250
 cloudrest.crushing_darkness = 105239 -- 2240
 cloudrest.sotDead_proj_to_corpse = 105120 -- [2250] T event after shadow is dead
+
 
 RaidNotifier.BuffsDebuffs[RAID_CLOUDREST] = cloudrest
 

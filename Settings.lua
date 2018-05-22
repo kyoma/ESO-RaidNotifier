@@ -257,6 +257,7 @@ do ------------------
 			chilling_comet = true,
 			roaring_flare = 2, -- "Full"
 			voltaic_overload = 1, -- "Self"
+			voltaic_overload_time = 12000, -- "Self"
 			nocturnals_favor = 0, -- "Off"
 			crushing_darkness = 1, -- "Self"
 		},

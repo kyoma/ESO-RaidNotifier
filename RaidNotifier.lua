@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.5.1"
+RaidNotifier.Version         = "2.5.2"
 RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -1900,18 +1900,30 @@ do ---------------------------
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						--self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_CURRENT), "cloudrest", "voltaic_current")
 						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_CURRENT), "cloudrest", "voltaic_overload")
+						
+						self.voltaic_overload = true
+						zo_callLater(function()
+							self.voltaic_overload = false
+						end, hitValue)						
 					end
 				end
 			elseif abilityId == buffsDebuffs.voltaic_overload then
 				if (settings.voltaic_overload > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						self:StartCountdown(settings.voltaic_overload_time, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_overload")
+						
 						self.voltaic_overload = true
 						zo_callLater(function()
 							self.voltaic_overload = false
-						end, hitValue)
---						self:StartCountdown(hitValue / 1000, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_current_cd")
+						end, voltaic_overload_time)
 					end
 				end
+			end
+		elseif result == ACTION_RESULT_EFFECT_FADED then
+			-- when player die or overload just ended
+			if abilityId == buffsDebuffs.voltaic_overload then
+				self.voltaic_overload = false
+				self.StopCountdown()
 			end
 		elseif result == ACTION_RESULT_DAMAGE then
 			if buffsDebuffs.voltaic_overload_progress[abilityId] == true then
