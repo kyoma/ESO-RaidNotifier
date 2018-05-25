@@ -1864,6 +1864,10 @@ do ---------------------------
 						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SHADOW_REALM_CAST), "cloudrest", "shadow_realm_cast")
 					end
 				end
+			elseif abilityId == buffsDebuffs.sum_shadow_beads then
+				if (settings.sum_shadow_beads == true) then
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SUM_SHADOW_BEADS), "cloudrest", "sum_shadow_beads")
+				end
 			elseif abilityId == buffsDebuffs.roaring_flare then
 				if (settings.roaring_flare >= 1) then
 --					tName = UnitIdToString(tUnitId)
@@ -1887,10 +1891,10 @@ do ---------------------------
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_CRUSHING_DARKNESS), "cloudrest", "crushing_darkness")
 					end
 				end
---			elseif buffsDebuffs.spn_yaghra[abilityId] == true then
---				if (settings.spn_yaghra == true) then
---					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SPN_YAGHRA), "cloudrest", "spn_yaghra")
---				end
+			elseif abilityId == buffsDebuffs.olorime_spears then
+				if (settings.olorime_spears == true) then
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_OLORIME_SPEARS), "cloudrest", "olorime_spears")
+				end
 --			elseif abilityId == buffsDebuffs.hoarfrost_syn then
 --				if (settings.hoarfrost >= 1) then
 --					if (tType == COMBAT_UNIT_TYPE_PLAYER) then

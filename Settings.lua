@@ -250,14 +250,15 @@ do ------------------
 			olms_gusts_of_steam_slider = 0,
 		},
 		cloudrest = {
---			spn_yaghra = false,
+			olorime_spears = false,
+			sum_shadow_beads = false,
 			shadow_realm_cast = false,
 			hoarfrost = 0, -- "Off"
 			hoarfrost_shed = true,
 			chilling_comet = true,
 			roaring_flare = 2, -- "Full"
 			voltaic_overload = 1, -- "Self"
-			voltaic_overload_time = 12000, -- "Self"
+			voltaic_overload_time = 10000, -- "Self"
 			nocturnals_favor = 0, -- "Off"
 			crushing_darkness = 1, -- "Self"
 		},
@@ -1281,11 +1282,11 @@ function RaidNotifier:CreateSettingsMenu()
 
         -- Asylum Sanctorium
 	MakeSubmenu(L.Settings_Cloudrest_Header, RaidNotifier:GetRaidDescription(RAID_CLOUDREST))
---	MakeControlEntry({
---		type = "checkbox",
---		name = L.Settings_Cloudrest_Spn_Yaghra,
---		tooltip = L.Settings_Cloudrest_Spn_Yaghra_TT,
---	}, "cloudrest", "spn_yaghra")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Cloudrest_Olorime_Spears,
+		tooltip = L.Settings_Cloudrest_Olorime_Spears_TT,
+	}, "cloudrest", "olorime_spears")
 	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_Cloudrest_Shadow_Realm_Cast,
@@ -1319,6 +1320,11 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_Cloudrest_Voltaic_Overload_TT,
 		choices = choices.cloudrest.voltaic_overload,
 	}, "cloudrest", "voltaic_overload")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Cloudrest_Sum_Shadow_Beads,
+		tooltip = L.Settings_Cloudrest_Sum_Shadow_Beads_TT,
+	}, "cloudrest", "sum_shadow_beads")
 	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_Cloudrest_Nocturnals_Favor,

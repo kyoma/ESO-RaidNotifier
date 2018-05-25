@@ -410,8 +410,8 @@ L.Alerts_Asylum_Protector_Active                 = "|c0000FFProtector|r active!"
 --------------------------------
 L.Settings_Cloudrest_Header			= "Cloudrest"
 -- Settings
---L.Settings_Cloudrest_Spn_Yaghra                 = "General: Spear"
---L.Settings_Cloudrest_Spn_Yaghra_TT              = ""
+L.Settings_Cloudrest_Olorime_Spears             = "General: Olorime Spear"
+L.Settings_Cloudrest_Olorime_Spears_TT          = ""
 L.Settings_Cloudrest_Shadow_Realm_Cast          = "General: Portal Spawn"
 L.Settings_Cloudrest_Shadow_Realm_Cast_TT       = "Alerts you when portal is spawned for group to go in Shadow Real."
 L.Settings_Cloudrest_Hoarfrost                  = "Faralielle: Hoarfrost"
@@ -426,11 +426,13 @@ L.Settings_Cloudrest_Voltaic_Overload           = "Belanaril: Voltaic Overload"
 L.Settings_Cloudrest_Voltaic_Overload_TT        = "Alerts you that you are about to get the Voltaic Overload debuff where after you get the debuff, you cannot bar swap for 10 seconds (not working on main boss)."
 L.Settings_Cloudrest_Nocturnals_Favor	        = "Z'Maja: Nocturnal's Favor"
 L.Settings_Cloudrest_Nocturnals_Favor_TT        = "Alerts you when Z'Maja has targeted you and will do her Heavy Attack."
+L.Settings_Cloudrest_Sum_Shadow_Beads           = "Z'Maja: Spheres"
+L.Settings_Cloudrest_Sum_Shadow_Beads_TT        = ""
 L.Settings_Cloudrest_Crushing_Darkness          = "Z'Maja: Crushing Darkness"
 L.Settings_Cloudrest_Crushing_Darkness_TT       = "Alerts you when Tether AoE is following you and needs to be kited."
 
 -- Alerts
-L.Alerts_Cloudrest_Spn_Yaghra                   = "|cffd000Spear|r is up!"
+L.Alerts_Cloudrest_Olorime_Spears               = "|cffd000Spear|r is up!"
 L.Alerts_Cloudrest_Hoarfrost                    = "|c00ddffHoarfrost|r at you!"
 L.Alerts_Cloudrest_Hoarfrost_Other              = "|c00ddffHoarfrost|r at |cff0000<<!aC:1>>|r."
 L.Alerts_Cloudrest_Hoarfrost_Shed               = "|c00ddffHoarfrost|r dropped."
@@ -442,6 +444,7 @@ L.Alerts_Cloudrest_Voltaic_Current              = "Incoming |c55b4d4Voltaic Over
 L.Alerts_Cloudrest_Voltaic_Overload             = "|c4d61c1Voltaic Overload|r at you! Swap Bar!"
 L.Alerts_Cloudrest_Voltaic_Overload_Cd          = "|c4d61c1Voltaic Overload|r"
 L.Alerts_Cloudrest_Shadow_Realm_Cast            = "|cab82ffPortal|r Spawn"
+L.Alerts_Cloudrest_Sum_Shadow_Beads             = "|cab82ffOrbs|r up"
 L.Alerts_Cloudrest_Nocturnals_Favor             = "|cff0000Nocturnal's Favor|r at you!"
 L.Alerts_Cloudrest_Crushing_Darkness            = "|cff5f0fCrushing Darkness|r at you."
 

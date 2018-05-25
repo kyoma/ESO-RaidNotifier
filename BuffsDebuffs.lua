@@ -409,6 +409,11 @@ RaidNotifier.BuffsDebuffs[RAID_ASYLUM_SANCTORIUM] = asylum
 -- -- Cloudrest  ----------------------------------------
 -- -- ---------------------------------------------------
 local cloudrest = {}
+
+cloudrest.shadow_realm_cast = 103946
+--cloudrest.olorime_spears = {} -- 2240
+--cloudrest.olorime_spears[104021] = true
+cloudrest.olorime_spears = 104019
 cloudrest.spn_yaghra = {}
 cloudrest.spn_yaghra[104430] = true
 cloudrest.spn_yaghra[104435] = true --
@@ -421,7 +426,7 @@ cloudrest.spn_yaghra[104443] = true
 -- Shade of Galenwe and Falarielle
 cloudrest.hoarfrost = 103760
 cloudrest.hoarfrost_syn = 103697
-cloudrest.hoarfrost_shed = 103714
+--cloudrest.hoarfrost_shed = 103714
 cloudrest.chilling_comet = 106374
 
 -- Shade of Siroria
@@ -445,10 +450,13 @@ cloudrest.voltaic_overload_progress[109063] = true
 cloudrest.voltaic_overload_progress[109064] = true
 cloudrest.voltaic_overload_progress[109065] = true
 cloudrest.voltaic_overload_progress[109066] = true
-cloudrest.shadow_realm_cast = 103946 -- 2 seconds?
+
+-- Maja
+cloudrest.start_cd_of_srealm = 105890
 cloudrest.nocturnals_favor = 104535 -- 2200 and 2250
 cloudrest.crushing_darkness = 105239 -- 2240
 cloudrest.sotDead_proj_to_corpse = 105120 -- [2250] T event after shadow is dead
+cloudrest.sum_shadow_beads = 105291
 
 
 RaidNotifier.BuffsDebuffs[RAID_CLOUDREST] = cloudrest
