@@ -1857,8 +1857,12 @@ do ---------------------------
 					end
 				end
 			elseif abilityId == buffsDebuffs.shadow_realm_cast then
-				if (settings.shadow_realm_cast and not self:IsCountdownInProgress()) then
-					self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SHADOW_REALM_CAST), "cloudrest", "shadow_realm_cast")
+				if (settings.shadow_realm_cast) then
+					if (self:IsCountdownInProgress()) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SHADOW_REALM_CAST), "cloudrest", "shadow_realm_cast")
+					else
+						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SHADOW_REALM_CAST), "cloudrest", "shadow_realm_cast")
+					end
 				end
 			elseif abilityId == buffsDebuffs.roaring_flare then
 				if (settings.roaring_flare >= 1) then
