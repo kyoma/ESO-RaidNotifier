@@ -414,14 +414,6 @@ cloudrest.shadow_realm_cast = 103946
 --cloudrest.olorime_spears = {} -- 2240
 --cloudrest.olorime_spears[104021] = true
 cloudrest.olorime_spears = 104019
-cloudrest.spn_yaghra = {}
-cloudrest.spn_yaghra[104430] = true
-cloudrest.spn_yaghra[104435] = true --
-cloudrest.spn_yaghra[104439] = true
-cloudrest.spn_yaghra[104440] = true
-cloudrest.spn_yaghra[104441] = true --
-cloudrest.spn_yaghra[104442] = true
-cloudrest.spn_yaghra[104443] = true
 
 -- Shade of Galenwe and Falarielle
 cloudrest.hoarfrost = 103760

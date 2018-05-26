@@ -1823,7 +1823,9 @@ do ---------------------------
 		local raidId = RaidNotifier.raidId
 		local self   = RaidNotifier
 		local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.cloudrest
-		tName = UnitIdToString(tUnitId)
+		if (tName == nil or tName == "") then
+			tName = UnitIdToString(tUnitId)
+		end
 		dbg("[%d](%d) %s -> %s (%d)", result, abilityId, GetAbilityName(abilityId), tName, hitValue)
 
 		if result == ACTION_RESULT_BEGIN then
