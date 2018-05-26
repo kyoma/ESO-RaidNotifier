@@ -1852,6 +1852,10 @@ do ---------------------------
 						end
 					end
 				end
+			elseif abilityId == buffsDebuffs.tentacle_spawn then
+				if (settings.tentacle_spawn == true) then
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_TENTACLE_SPAWN), "cloudrest", "tentacle_spawn")
+				end
 			elseif abilityId == buffsDebuffs.nocturnals_favor then
 				if (settings.nocturnals_favor > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then

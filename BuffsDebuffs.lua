@@ -449,6 +449,7 @@ cloudrest.nocturnals_favor = 104535 -- 2200 and 2250
 cloudrest.crushing_darkness = 105239 -- 2240
 cloudrest.sotDead_proj_to_corpse = 105120 -- [2250] T event after shadow is dead
 cloudrest.sum_shadow_beads = 105291
+cloudrest.tentacle_spawn = 105016
 
 
 RaidNotifier.BuffsDebuffs[RAID_CLOUDREST] = cloudrest

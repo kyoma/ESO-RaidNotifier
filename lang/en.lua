@@ -428,6 +428,8 @@ L.Settings_Cloudrest_Nocturnals_Favor	        = "Z'Maja: Nocturnal's Favor"
 L.Settings_Cloudrest_Nocturnals_Favor_TT        = "Alerts you when Z'Maja has targeted you and will do her Heavy Attack."
 L.Settings_Cloudrest_Sum_Shadow_Beads           = "Z'Maja: Spheres"
 L.Settings_Cloudrest_Sum_Shadow_Beads_TT        = "Alerts when Spheres are about to spawn."
+L.Settings_Cloudrest_Tentacle_Spawn             = "Z'Maja: Tentacle Spawn"
+L.Settings_Cloudrest_Tentacle_Spawn_TT          = "Alerts when Nocturnal Creeper is about to spawn."
 L.Settings_Cloudrest_Crushing_Darkness          = "Z'Maja: Crushing Darkness"
 L.Settings_Cloudrest_Crushing_Darkness_TT       = "Alerts you when Tether AoE is following you and needs to be kited."
 
@@ -444,9 +446,10 @@ L.Alerts_Cloudrest_Voltaic_Current              = "Incoming |c55b4d4Voltaic Over
 L.Alerts_Cloudrest_Voltaic_Overload             = "|c4d61c1Voltaic Overload|r at you! Swap Bar!"
 L.Alerts_Cloudrest_Voltaic_Overload_Cd          = "|c4d61c1Voltaic Overload|r"
 L.Alerts_Cloudrest_Shadow_Realm_Cast            = "|cab82ffPortal|r Spawn"
+L.Alerts_Cloudrest_Shadow_Realm_Cast            = "|c00a86bTentacle|r Spawn"
 L.Alerts_Cloudrest_Sum_Shadow_Beads             = "|cab82ffOrbs|r are about to spawn"
 L.Alerts_Cloudrest_Nocturnals_Favor             = "|cff0000Nocturnal's Favor|r at you!"
-L.Alerts_Cloudrest_Crushing_Darkness            = "|cff5f0fCrushing Darkness|r at you. Kite!"
+L.Alerts_Cloudrest_Crushing_Darkness            = "|cfc0c66Crushing Darkness|r at you. Kite!"
 
 
 

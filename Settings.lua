@@ -261,6 +261,7 @@ do ------------------
 			voltaic_overload_time = 10000, -- "Self"
 			nocturnals_favor = 0, -- "Off"
 			crushing_darkness = 1, -- "Self"
+			tentacle_spawn = false,
 		},
 		dbg = {
 			enable = false,
@@ -1280,7 +1281,7 @@ function RaidNotifier:CreateSettingsMenu()
 	}, "asylum", "olms_trial_by_fire")
 	subTable = nil --end submenu
 
-        -- Asylum Sanctorium
+        -- Cloudrest
 	MakeSubmenu(L.Settings_Cloudrest_Header, RaidNotifier:GetRaidDescription(RAID_CLOUDREST))
 	MakeControlEntry({
 		type = "checkbox",
@@ -1325,6 +1326,11 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_Cloudrest_Sum_Shadow_Beads,
 		tooltip = L.Settings_Cloudrest_Sum_Shadow_Beads_TT,
 	}, "cloudrest", "sum_shadow_beads")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Cloudrest_Tentacle_Spawn,
+		tooltip = L.Settings_Cloudrest_Tentacle_Spawn_TT,
+	}, "cloudrest", "tentacle_spawn")
 	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_Cloudrest_Nocturnals_Favor,
