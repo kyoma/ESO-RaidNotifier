@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.5.2"
+RaidNotifier.Version         = "2.5.3"
 RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -1853,7 +1853,7 @@ do ---------------------------
 					end
 				end
 			elseif abilityId == buffsDebuffs.tentacle_spawn then
-				if (settings.tentacle_spawn == true and self.break_amulet == true) then
+				if (settings.tentacle_spawn == true and self.break_amulet == false) then
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_TENTACLE_SPAWN), "cloudrest", "tentacle_spawn")
 				end
 			elseif abilityId == buffsDebuffs.nocturnals_favor then
@@ -1871,7 +1871,7 @@ do ---------------------------
 					end
 				end
 			elseif abilityId == buffsDebuffs.sum_shadow_beads then
-				if (settings.sum_shadow_beads == true and self.break_amulet == true) then
+				if (settings.sum_shadow_beads == true and self.break_amulet == false) then
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SUM_SHADOW_BEADS), "cloudrest", "sum_shadow_beads")
 				end
 			elseif abilityId == buffsDebuffs.roaring_flare then
