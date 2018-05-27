@@ -446,8 +446,8 @@ L.Alerts_Cloudrest_Voltaic_Current              = "Incoming |c55b4d4Voltaic Over
 L.Alerts_Cloudrest_Voltaic_Overload             = "|c4d61c1Voltaic Overload|r at you! Swap Bar!"
 L.Alerts_Cloudrest_Voltaic_Overload_Cd          = "|c4d61c1Voltaic Overload|r"
 L.Alerts_Cloudrest_Shadow_Realm_Cast            = "|cab82ffPortal|r Spawn"
-L.Alerts_Cloudrest_Shadow_Realm_Cast            = "|c00a86bTentacle|r Spawn"
-L.Alerts_Cloudrest_Sum_Shadow_Beads             = "|cab82ffOrbs|r are about to spawn"
+L.Alerts_Cloudrest_Tentacle_Spawn               = "|c00a86bTentacle|r Spawn"
+L.Alerts_Cloudrest_Sum_Shadow_Beads             = "|cab82ffSpheres|r are about to spawn"
 L.Alerts_Cloudrest_Nocturnals_Favor             = "|cff0000Nocturnal's Favor|r at you!"
 L.Alerts_Cloudrest_Crushing_Darkness            = "|cfc0c66Crushing Darkness|r at you. Kite!"
 
