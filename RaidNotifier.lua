@@ -1853,7 +1853,7 @@ do ---------------------------
 					end
 				end
 			elseif abilityId == buffsDebuffs.tentacle_spawn then
-				if (settings.tentacle_spawn == true) then
+				if (settings.tentacle_spawn == true and self.break_amulet == true) then
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_TENTACLE_SPAWN), "cloudrest", "tentacle_spawn")
 				end
 			elseif abilityId == buffsDebuffs.nocturnals_favor then
@@ -1871,7 +1871,7 @@ do ---------------------------
 					end
 				end
 			elseif abilityId == buffsDebuffs.sum_shadow_beads then
-				if (settings.sum_shadow_beads == true) then
+				if (settings.sum_shadow_beads == true and self.break_amulet == true) then
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SUM_SHADOW_BEADS), "cloudrest", "sum_shadow_beads")
 				end
 			elseif abilityId == buffsDebuffs.roaring_flare then
@@ -1885,7 +1885,13 @@ do ---------------------------
 				end
 			end
 		elseif result == ACTION_RESULT_EFFECT_GAINED then
-			if abilityId == buffsDebuffs.chilling_comet then
+			if (abilityId == buffsDebuffs.start_cd_of_srealm) then
+				self.break_amulet = false
+			elseif (abilityId == buffsDebuffs.break_amulet) then
+				if (settings.break_amulet == true) then
+					self.break_amulet = true
+				end
+			elseif abilityId == buffsDebuffs.chilling_comet then
 				if (settings.chilling_comet == true) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_CHILLING_COMET), "cloudrest", "chilling_comet")

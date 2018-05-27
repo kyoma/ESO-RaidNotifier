@@ -262,6 +262,7 @@ do ------------------
 			nocturnals_favor = 0, -- "Off"
 			crushing_darkness = 1, -- "Self"
 			tentacle_spawn = false,
+			break_amulet = false,
 		},
 		dbg = {
 			enable = false,
@@ -1321,6 +1322,11 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_Cloudrest_Voltaic_Overload_TT,
 		choices = choices.cloudrest.voltaic_overload,
 	}, "cloudrest", "voltaic_overload")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Cloudrest_Break_Amulet,
+		tooltip = L.Settings_Cloudrest_Break_Amulet_TT,
+	}, "cloudrest", "break_amulet")
 	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_Cloudrest_Sum_Shadow_Beads,
