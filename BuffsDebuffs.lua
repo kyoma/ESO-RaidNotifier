@@ -416,7 +416,9 @@ cloudrest.shadow_realm_cast = 103946
 cloudrest.olorime_spears = 104019
 
 -- Shade of Galenwe and Falarielle
-cloudrest.hoarfrost = 103760
+cloudrest.hoarfrost = {}
+cloudrest.hoarfrost[103760] = true
+cloudrest.hoarfrost[103743] = true
 cloudrest.hoarfrost_syn = 103697
 --cloudrest.hoarfrost_shed = 103714
 cloudrest.chilling_comet = 106374
@@ -429,7 +431,6 @@ cloudrest.roaring_flare = 103531
 --cloudrest.voltaic_current = 103553
 -- [2245] hitValue 10000
 cloudrest.voltaic_current = 103895
-cloudrest.voltaic_current_delay = 3000
 -- overload [2240] hitValue 1, then [2245] hitValue 10000
 cloudrest.voltaic_overload = 87346 -- start and end
 cloudrest.voltaic_overload_time = 14000 -- start and end

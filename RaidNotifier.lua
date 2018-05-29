@@ -1829,14 +1829,14 @@ do ---------------------------
 		dbg("[%d](%d) %s -> %s (%d)", result, abilityId, GetAbilityName(abilityId), tName, hitValue)
 
 		if result == ACTION_RESULT_BEGIN then
-			if abilityId == buffsDebuffs.hoarfrost then
+			if buffsDebuffs.hoarfrost[abilityId] == true then
 				if (settings.hoarfrost >= 1) then
 --					tName = UnitIdToString(tUnitId)
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST), "cloudrest", "hoarfrost")
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST), "cloudrest", "hoarfrost", 2)
 					elseif (tName ~= "" and settings.hoarfrost > 1) then
 						self.currentHoarfrostUserId = tUnitId
-						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER), tName), "cloudrest", "hoarfrost")
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER), tName), "cloudrest", "hoarfrost", 2)
 					end
 				end
 			elseif abilityId == buffsDebuffs.hoarfrost_shed then
@@ -1897,6 +1897,16 @@ do ---------------------------
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_CHILLING_COMET), "cloudrest", "chilling_comet")
 					end
 				end
+			elseif buffsDebuffs.hoarfrost[abilityId] == true then
+				if (settings.hoarfrost >= 1) then
+--					tName = UnitIdToString(tUnitId)
+					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST), "cloudrest", "hoarfrost", 2)
+					elseif (tName ~= "" and settings.hoarfrost > 1) then
+						self.currentHoarfrostUserId = tUnitId
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER), tName), "cloudrest", "hoarfrost", 2)
+					end
+				end				
 			elseif abilityId == buffsDebuffs.crushing_darkness then
 				if (settings.crushing_darkness > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
@@ -1928,16 +1938,16 @@ do ---------------------------
 					end
 				end
 			elseif abilityId == buffsDebuffs.voltaic_overload then
-				if (settings.voltaic_overload > 0) then
-					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self:StartCountdown(settings.voltaic_overload_time, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_overload")
+--				if (settings.voltaic_overload > 0) then
+--					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+--						self:StartCountdown(settings.voltaic_overload_time, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_overload")
 						
-						self.voltaic_overload = true
-						zo_callLater(function()
-							self.voltaic_overload = false
-						end, voltaic_overload_time)
-					end
-				end
+--						self.voltaic_overload = true
+--						zo_callLater(function()
+--							self.voltaic_overload = false
+--						end, voltaic_overload_time)
+--					end
+--				end
 			end
 		elseif result == ACTION_RESULT_EFFECT_FADED then
 			-- when player die or overload just ended
@@ -2089,6 +2099,7 @@ do -----------------------------
 
 		local raidId = RaidNotifier.raidId
 		local self   = RaidNotifier
+--		dbg("==>%s --> %d -> %d (%d)", uName, beginTime, endTime, stackCount)
 
 		-- HoF is the first raid to make it here! WHOOHOOW!! (all cuz we needz dem stackcount)
 		if (raidId == RAID_HALLS_OF_FABRICATION) then
@@ -2107,7 +2118,21 @@ do -----------------------------
 					self:UpdateSphereVenom(changeType ~= EFFECT_RESULT_FADED, beginTime, endTime)
 				end
 			end
-
+		elseif (raidId == RAID_CLOUDREST) then
+			local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.cloudrest
+			
+			if abilityId == buffsDebuffs.voltaic_overload then
+				if (settings.voltaic_overload > 0) then
+					if changeType == EFFECT_RESULT_GAINED then
+						self:StartCountdown(settings.voltaic_overload_time, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_overload")
+						
+						self.voltaic_overload = true
+						zo_callLater(function()
+							self.voltaic_overload = false
+						end, (endTime - beginTime) * 1000)
+					end
+				end				
+			end
 		end
 
 	end
