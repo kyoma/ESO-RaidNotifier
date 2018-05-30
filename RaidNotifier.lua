@@ -264,7 +264,7 @@ do ----------------------
 	local LGS = LibStub:GetLibrary("LibGroupSocket")
 	local ultimateHandler = LGS:GetHandler(LGS.MESSAGE_TYPE_ULTIMATE)
 	RNUltimateHandler = ultimateHandler -- debug
-	local ultimateAbilityId = 46537  -- Aggressive Warhorn Rank IV
+	local ultimateAbilityId = 40223  -- Aggressive Warhorn Rank IV
 	local ultimateGroupId   = 29     -- hardcoded for now
 	local ultimates = {}
 
