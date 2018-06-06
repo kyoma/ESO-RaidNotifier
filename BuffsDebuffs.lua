@@ -420,7 +420,7 @@ cloudrest.hoarfrost = {}
 cloudrest.hoarfrost[103760] = true
 cloudrest.hoarfrost[103743] = true
 cloudrest.hoarfrost_syn = 103697
---cloudrest.hoarfrost_shed = 103714
+cloudrest.hoarfrost_shed = 103714
 cloudrest.chilling_comet = 106374
 
 -- Shade of Siroria
@@ -430,10 +430,12 @@ cloudrest.roaring_flare = 103531
 -- [2200] hitValue 3000 (noone)
 --cloudrest.voltaic_current = 103553
 -- [2245] hitValue 10000
-cloudrest.voltaic_current = 103895
+cloudrest.voltaic_current = {}
+cloudrest.voltaic_current[103895] = true
+cloudrest.voltaic_current[103896] = true
+--cloudrest.voltaic_current = 103555
 -- overload [2240] hitValue 1, then [2245] hitValue 10000
 cloudrest.voltaic_overload = 87346 -- start and end
-cloudrest.voltaic_overload_time = 14000 -- start and end
 cloudrest.voltaic_overload_progress = {}
 cloudrest.voltaic_overload_progress[109059] = true
 cloudrest.voltaic_overload_progress[109060] = true
@@ -453,6 +455,9 @@ cloudrest.sum_shadow_beads = 105291
 cloudrest.tentacle_spawn = 105016
 cloudrest.break_amulet = 106023
 
+cloudrest.interest_list = {}
+cloudrest.interest_list[103697] = true
+cloudrest.interest_list[103895] = true
 
 RaidNotifier.BuffsDebuffs[RAID_CLOUDREST] = cloudrest
 

@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.5.3"
+RaidNotifier.Version         = "2.6"
 RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -1833,10 +1833,10 @@ do ---------------------------
 				if (settings.hoarfrost >= 1) then
 --					tName = UnitIdToString(tUnitId)
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST), "cloudrest", "hoarfrost", 2)
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST), "cloudrest", "hoarfrost", 5)
 					elseif (tName ~= "" and settings.hoarfrost > 1) then
 						self.currentHoarfrostUserId = tUnitId
-						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER), tName), "cloudrest", "hoarfrost", 2)
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER), tName), "cloudrest", "hoarfrost", 5)
 					end
 				end
 			elseif abilityId == buffsDebuffs.hoarfrost_shed then
@@ -1899,12 +1899,11 @@ do ---------------------------
 				end
 			elseif buffsDebuffs.hoarfrost[abilityId] == true then
 				if (settings.hoarfrost >= 1) then
---					tName = UnitIdToString(tUnitId)
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST), "cloudrest", "hoarfrost", 2)
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST), "cloudrest", "hoarfrost", 5)
 					elseif (tName ~= "" and settings.hoarfrost > 1) then
 						self.currentHoarfrostUserId = tUnitId
-						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER), tName), "cloudrest", "hoarfrost", 2)
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER), tName), "cloudrest", "hoarfrost", 5)
 					end
 				end				
 			elseif abilityId == buffsDebuffs.crushing_darkness then
@@ -1917,27 +1916,15 @@ do ---------------------------
 				if (settings.olorime_spears == true) then
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_OLORIME_SPEARS), "cloudrest", "olorime_spears")
 				end
---			elseif abilityId == buffsDebuffs.hoarfrost_syn then
---				if (settings.hoarfrost >= 1) then
---					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
---						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SYN), "cloudrest", "hoarfrost_syn")
---					end
---				end
-			end
-		elseif result == ACTION_RESULT_EFFECT_GAINED_DURATION then
-			if abilityId == buffsDebuffs.voltaic_current then
-				if (settings.voltaic_overload > 0) then
+			elseif abilityId == buffsDebuffs.hoarfrost_syn then
+				if (settings.hoarfrost > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						--self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_CURRENT), "cloudrest", "voltaic_current")
-						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_CURRENT), "cloudrest", "voltaic_overload")
-						
-						self.voltaic_overload = true
-						zo_callLater(function()
-							self.voltaic_overload = false
-						end, hitValue)						
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SYN), "cloudrest", "hoarfrost_syn")
 					end
 				end
-			elseif abilityId == buffsDebuffs.voltaic_overload then
+			end
+		elseif result == ACTION_RESULT_EFFECT_GAINED_DURATION then
+			if abilityId == buffsDebuffs.voltaic_overload then
 --				if (settings.voltaic_overload > 0) then
 --					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 --						self:StartCountdown(settings.voltaic_overload_time, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_overload")
@@ -1948,21 +1935,33 @@ do ---------------------------
 --						end, voltaic_overload_time)
 --					end
 --				end
+			elseif buffsDebuffs.voltaic_current[abilityId] == true then
+				if (settings.voltaic_overload > 0) then
+					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						--self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_CURRENT), "cloudrest", "voltaic_current")
+						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_CURRENT), "cloudrest", "voltaic_overload")
+
+						self.voltaic_overload = self.voltaic_overload and self.voltaic_overload + 1 or 1
+						zo_callLater(function()
+							self.voltaic_overload = self.voltaic_overload - 1
+						end, hitValue)
+					end
+				end
 			end
 		elseif result == ACTION_RESULT_EFFECT_FADED then
 			-- when player die or overload just ended
 			if abilityId == buffsDebuffs.voltaic_overload then
-				self.voltaic_overload = false
+				self.voltaic_overload = 0
 				self.StopCountdown()
 			end
-		elseif result == ACTION_RESULT_DAMAGE then
-			if buffsDebuffs.voltaic_overload_progress[abilityId] == true then
-				if (settings.voltaic_overload > 0 and self.voltaic_overload == true) then
-					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD), "cloudrest", "voltaic_overload", 2000)
-					end
-				end
-			end
+--		elseif result == ACTION_RESULT_DAMAGE then
+--			if buffsDebuffs.voltaic_overload_progress[abilityId] == true then
+--				if (settings.voltaic_overload > 0 and self.voltaic_overload and self.voltaic_overload > 0) then
+--					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+--						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD), "cloudrest", "voltaic_overload", 2)
+--					end
+--				end
+--			end
 		end
 	end
 
@@ -2124,14 +2123,17 @@ do -----------------------------
 			if abilityId == buffsDebuffs.voltaic_overload then
 				if (settings.voltaic_overload > 0) then
 					if changeType == EFFECT_RESULT_GAINED then
-						self:StartCountdown(settings.voltaic_overload_time, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_overload")
+						local time = (endTime - beginTime) * 1000
+						self:StartCountdown(time, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_overload")
 						
-						self.voltaic_overload = true
+						self.voltaic_overload = self.voltaic_overload and self.voltaic_overload + 1 or 1
 						zo_callLater(function()
-							self.voltaic_overload = false
-						end, (endTime - beginTime) * 1000)
+							self.voltaic_overload = self.voltaic_overload - 1
+						end, time)
 					end
-				end				
+				end
+			elseif buffsDebuffs.voltaic_current[abilityId] == true then
+				dbg("Effect voltaic current: %s -> %d (%d)", GetAbilityName(abilityId), endTime - beginTime, stackCount)
 			end
 		end
 

@@ -439,6 +439,7 @@ L.Settings_Cloudrest_Crushing_Darkness_TT       = "Alerts you when Tether AoE is
 L.Alerts_Cloudrest_Olorime_Spears               = "|cffd000Spear|r is up!"
 L.Alerts_Cloudrest_Hoarfrost                    = "|c00ddffHoarfrost|r at you!"
 L.Alerts_Cloudrest_Hoarfrost_Other              = "|c00ddffHoarfrost|r at |cff0000<<!aC:1>>|r."
+L.Alerts_Cloudrest_Hoarfrost_Syn                = "|cff0000Use synergy|r to drop hoarfrost!"
 L.Alerts_Cloudrest_Hoarfrost_Shed               = "|c00ddffHoarfrost|r dropped."
 L.Alerts_Cloudrest_Hoarfrost_Shed_Other         = "|c00ddffHoarfrost|r dropped by |cff0000<<!aC:1>>|r."
 L.Alerts_Cloudrest_Chilling_Comet               = "|cff0000Chilling Comet|r at you. Block!"
