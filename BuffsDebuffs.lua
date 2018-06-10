@@ -431,8 +431,9 @@ cloudrest.roaring_flare = 103531
 --cloudrest.voltaic_current = 103553
 -- [2245] hitValue 10000
 cloudrest.voltaic_current = {}
-cloudrest.voltaic_current[103895] = true
-cloudrest.voltaic_current[103896] = true
+cloudrest.voltaic_current[103895] = true -- mainboss
+cloudrest.voltaic_current[103896] = true -- sideboss only
+cloudrest.voltaic_current[110427] = true -- mainboss execute
 --cloudrest.voltaic_current = 103555
 -- overload [2240] hitValue 1, then [2245] hitValue 10000
 cloudrest.voltaic_overload = 87346 -- start and end
