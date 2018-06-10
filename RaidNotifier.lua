@@ -1919,7 +1919,7 @@ do ---------------------------
 			elseif abilityId == buffsDebuffs.hoarfrost_syn then
 				if (settings.hoarfrost > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SYN), "cloudrest", "hoarfrost_syn")
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SYN), "cloudrest", "hoarfrost_syn", 5)
 					end
 				end
 			end
