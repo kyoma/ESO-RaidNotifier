@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.3.11"
+RaidNotifier.Version         = "2.6.1"
 RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -19,6 +19,7 @@ RAID_MAW_OF_LORKHAJ        = 5
 RAID_MAELSTROM_ARENA       = 6
 RAID_HALLS_OF_FABRICATION  = 7
 RAID_ASYLUM_SANCTORIUM     = 8
+RAID_CLOUDREST		   = 9
 
 -- Debugging
 local function p() end
@@ -33,6 +34,7 @@ local L
 
 local ActionResults = 
 {
+	ACTION_RESULT_DAMAGE,
 	ACTION_RESULT_BEGIN,
 	ACTION_RESULT_BEGIN_CHANNEL,
 	ACTION_RESULT_EFFECT_GAINED,
@@ -63,7 +65,7 @@ do ---------------------------------
 	local Sounds = 
 	{
 		{name = "-Default-", 				 id = DEFAULT_SOUND},
-		{name = "-None-", 					 id = SOUNDS.NONE},
+		{name = "-None-", 					 id = SOUNDS.NO_SOUND},
 		{name = "Add Guild Member", 		 id = SOUNDS.GUILD_ROSTER_ADDED},
 		{name = "Book Acquired", 			 id = SOUNDS.BOOK_ACQUIRED},
 		{name = "Book Collection Completed", id = SOUNDS.BOOK_COLLECTION_COMPLETED},
@@ -88,6 +90,7 @@ do ---------------------------------
 		{name = "Synergy Ready", 			 id = SOUNDS.ABILITY_SYNERGY_READY},
 		{name = "TelVar Multiplier Max",	 id = SOUNDS.TELVAR_MULTIPLIERMAX},
 	}
+	
 	function RaidNotifier:GetSounds()
 		return Sounds
 	end
@@ -187,8 +190,14 @@ do ---------------------------------
 			line.countdownControl:SetScale(settings.timerScale / 100)
 		end
 		-- always reset this in case countdown was terminated before reaching zero (see below)
-		line.countdownControl:SetColor(unpack(orgCountdownColor))
+		line.countdownControl:SetColor(orgCountdownColor[1], orgCountdownColor[2], orgCountdownColor[3])
 	end
+
+	local countdownInProgress = false
+	function RaidNotifier:IsCountdownInProgress()
+		return countdownInProgress
+	end
+
 	local function CountdownCallback(line, countdownS)
 		-- set color to orange on 2 and red  on 1 and 0
 		local settings = RaidNotifier.Vars.countdown
@@ -199,12 +208,18 @@ do ---------------------------------
 				line.countdownControl:SetColor(1, 0, 0, 1)
 			elseif line.currentCountdownTimeS < 0 then
 				line.countdownControl:SetColor(1, 1, 1, 1)
+				countdownInProgress = false
 			end
+		elseif line.currentCountdownTimeS < 0 then
+			countdownInProgress = false
 		end
 	end
 
 	function RaidNotifier:StartCountdown(timer, text, category, setting, interval)
 		local soundId = self:GetSoundValue(category, setting)
+		if soundId == DEFAULT_SOUND then --
+			soundId = self.Vars.general.default_sound
+		end
 
 		if not text or text == "" then
 			p("Invalid text for '%s -> %s'", category, setting)
@@ -217,10 +232,15 @@ do ---------------------------------
 			end
 			self:SetLastNotify(category, setting, currentTime)
 		end
-		return LCSA:CreateCountdown(timer, soundId, nil, text, nil, SetupCallback, CountdownCallback)
+		local countdownId = LCSA:CreateCountdown(timer, soundId, nil, text, nil, SetupCallback, CountdownCallback)
+		if countdownId > 0 then
+			countdownInProgress = true
+		end
+		return countdownId
 	end
 	function RaidNotifier:StopCountdown(countdownIndex)
 		LCSA:EndCountdown(countdownIndex)
+		countdownInProgress = false
 	end
 	
 	function RNTestCountdown(timer, text)
@@ -243,7 +263,8 @@ do ----------------------
 
 	local LGS = LibStub:GetLibrary("LibGroupSocket")
 	local ultimateHandler = LGS:GetHandler(LGS.MESSAGE_TYPE_ULTIMATE)
-	local ultimateAbilityId = 46537  -- Aggressive Warhorn Rank IV
+	RNUltimateHandler = ultimateHandler -- debug
+	local ultimateAbilityId = 40223  -- Aggressive Warhorn Rank IV
 	local ultimateGroupId   = 29     -- hardcoded for now
 	local ultimates = {}
 
@@ -263,7 +284,7 @@ do ----------------------
 
 	function RaidNotifier:UpdateUltimates()
 		local settings = self.Vars.ultimate
-		if settings.hidden then return end
+		if settings.hidden or GetGroupSize() == 0 then return end
 
 		local sortedUlti = {}
 		for userName, data in pairs(ultimates) do
@@ -416,6 +437,10 @@ do ----------------------
 		elseif (args[1] == "refresh") then
 			ultimates = {}
 			ultimateHandler:Refresh()
+		elseif (args[1] == "debug") then
+			ultimateHandler:SetDebug(tonumber(args[2]))
+		elseif (args[1] == "clear") then
+			ultimateHandler:ResetResources()
 		elseif (args[1] == "cost") then
 			if (#args == 2) then
 				if (tonumber(args[2]) ~= nil) then
@@ -541,6 +566,7 @@ do ----------------------
 		[RAID_MAELSTROM_ARENA]       = 677,
 		[RAID_HALLS_OF_FABRICATION]  = 975,
 		[RAID_ASYLUM_SANCTORIUM]     = 1000,
+		[RAID_CLOUDREST]             = 1051,
 	}
 
 	local RaidZones = {}
@@ -577,6 +603,14 @@ do ----------------------
 			self:UnregisterForCombatEvent(i)
 		end
 		eventIndex = 0
+	end
+
+	local intervalCheck = false
+	function RaidNotifier.SetIntervalCheck(enabled)
+		intervalCheck = enabled
+	end
+        function RaidNotifier.IsIntervalCheck()
+		return intervalCheck
 	end
 
 	local listening = false
@@ -634,8 +668,15 @@ do ----------------------
 			-- Toggle assistants off when combat starts
 			local function OnCombatStateChanged(_, inCombat)
 				local settings = self.Vars.general
-				if (inCombat and settings.no_assistants and GetActiveCollectibleByType(COLLECTIBLE_CATEGORY_TYPE_ASSISTANT) > 0) then
-					UseCollectible(GetActiveCollectibleByType(COLLECTIBLE_CATEGORY_TYPE_ASSISTANT))
+				if (inCombat) then
+					if (self.IsIntervalCheck()) then
+						EVENT_MANAGER:RegisterForUpdate(self.Name .. "_IntervalCheck", 1000, self.OnIntervalCheck);
+					end
+					if (settings.no_assistants and GetActiveCollectibleByType(COLLECTIBLE_CATEGORY_TYPE_ASSISTANT) > 0) then
+						UseCollectible(GetActiveCollectibleByType(COLLECTIBLE_CATEGORY_TYPE_ASSISTANT))
+					end
+				else
+					EVENT_MANAGER:UnregisterForUpdate(self.Name .. "_IntervalCheck")
 				end
 			end
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_PLAYER_COMBAT_STATE, OnCombatStateChanged)
@@ -738,6 +779,11 @@ do ----------------------
 			elseif self.raidId > 0 then
 				self:UnregisterEvents()
 			end
+			if (self.IsIntervalCheck()) then
+				dbg("SetIntervalCheck(false)")
+				self.SetIntervalCheck(false)
+			end
+
 		end
 		OnZoneChanged()
 		--EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_ZONE_CHANGED, OnZoneChanged) -- Doesn't fire after zoning and not always when subzoning
@@ -786,6 +832,30 @@ do -----------------------------
 		return bossCount, bossAlive, bossFull
 	end
 
+	function RaidNotifier.OnIntervalCheck()
+		local self = RaidNotifier
+		local raidId = RaidNotifier.raidId
+		local buffsDebuffs = RaidNotifier.BuffsDebuffs[raidId]
+		if (raidId == RAID_ASYLUM_SANCTORIUM) then
+			local settings = self.Vars.asylum
+
+			if (settings.olms_gusts_of_steam and settings.olms_gusts_of_steam_slider > 0) then
+				health, maxHealth = GetUnitPower("boss1", POWERTYPE_HEALTH) -- Llothi
+				local healthPercent = health * 100 / maxHealth
+				if (self.Minions.olmsHealthChecked == nil) then
+					self.Minions.olmsHealthChecked = healthPercent
+				end
+				for _, jumpPercent in pairs(buffsDebuffs.olms_phasesHealth) do
+					if (jumpPercent < self.Minions.olmsHealthChecked and healthPercent <= (jumpPercent + settings.olms_gusts_of_steam_slider)) then
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_PRE_GUSTS_OF_STEAM), settings.olms_gusts_of_steam_slider), "asylum", "olms_gusts_of_steam")
+						self.Minions.olmsHealthChecked = jumpPercent
+						break
+					end
+				end
+			end
+		end
+	end
+
 	function RaidNotifier.OnBossesChanged()
 		local self   = RaidNotifier
 		local raidId = RaidNotifier.raidId
@@ -822,6 +892,11 @@ do -----------------------------
 		elseif (raidId == RAID_HALLS_OF_FABRICATION) then
 			if (bossCount == 3) then --Refabrication Committee
 				
+			end
+		elseif (raidId == RAID_ASYLUM_SANCTORIUM) then
+			if (DoesUnitExist("boss1")) then
+				dbg("SetIntervalCheck(true)")
+				self.SetIntervalCheck(true)
 			end
 		end
 	end
@@ -863,20 +938,20 @@ do ---------------------------
 			if (abilityId == buffsDebuffs.warrior_stoneform) then
 				tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
 				dbg("BEGIN >> Warrior Stone Form on %s, hitValue: %d", tName, hitValue)
-				--if (settings.warrior_stoneform >= 1) then
-				--	tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
-				--	local lastIndex = self:GetLastNotify("helra", "warrior_stoneform") + 1
-				--	self:SetLastNotify("helra", "warrior_stoneform", lastIndex)
-				--	zo_callLater(function()
-				--		if (lastIndex == self:GetLastNotify("helra", "warrior_stoneform")) then
-				--			if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
-				--				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HELRA_WARRIOR_STONEFORM), "helra", "warrior_stoneform")
-				--			elseif (tName ~= "" and settings.warrior_stoneform == 2) then
-				--				self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_HELRA_WARRIOR_STONEFORM_OTHER), tName), "helra", "warrior_stoneform")
-				--			end
-				--		end
-				--	end, 200)
-				--end
+				if (settings.warrior_stoneform >= 1) then
+					tName = UnitIdToString(tUnitId) --isn't supplied by event for group members, only for the player
+					local lastIndex = self:GetLastNotify("helra", "warrior_stoneform") + 1
+					self:SetLastNotify("helra", "warrior_stoneform", lastIndex)
+					zo_callLater(function()
+						if (lastIndex == self:GetLastNotify("helra", "warrior_stoneform")) then
+							if (tType == COMBAT_UNIT_TYPE_PLAYER) then 
+								self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HELRA_WARRIOR_STONEFORM), "helra", "warrior_stoneform")
+							elseif (tName ~= "" and settings.warrior_stoneform == 2) then
+								self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_HELRA_WARRIOR_STONEFORM_OTHER), tName), "helra", "warrior_stoneform")
+							end
+						end
+					end, 200)
+				end
 			end
 		elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
 			if (abilityId == buffsDebuffs.warrior_stoneform) then
@@ -1547,8 +1622,8 @@ do ---------------------------
 				if tUnitId == self.Minions.incomingSource then
 					dbg("Sphere #%d was interrupted", tUnitId)
 					self.Minions.incomingSource = nil
-					--self:StopCountdown(buffsDebuffs.taking_aim_index)
-					--buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
+					self:StopCountdown(buffsDebuffs.taking_aim_index)
+					buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
 				end
 			--end
 		elseif (result == ACTION_RESULT_DIED) then
@@ -1556,8 +1631,8 @@ do ---------------------------
 				if tUnitId == self.Minions.incomingSource then
 					dbg("Sphere #%d died", tUnitId)
 					self.Minions.incomingSource = nil
-					--self:StopCountdown(buffsDebuffs.taking_aim_index)
-					--buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
+					self:StopCountdown(buffsDebuffs.taking_aim_index)
+					buffsDebuffs.taking_aim_index = 0 -- don't set it to nil
 				end
 				--self.Minions[tUnitId] = nil 
 			--end
@@ -1610,7 +1685,7 @@ do ---------------------------
 					tName = UnitIdToString(tUnitId)
 					--dbg("Teleport Strike %s", tName)
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_TELEPORT_STRIKE), "asylum", "felms_teleport_strike")
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_TELEPORT_STRIKE), "asylum", "felms_teleport_strike", 10)
 					elseif (tName ~= "" and settings.felms_teleport_strike == 2) then
 						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ASYLUM_TELEPORT_STRIKE_OTHER), tName), "asylum", "felms_teleport_strike")
 					end
@@ -1744,6 +1819,152 @@ do ---------------------------
 		end
 	end
 
+	function RaidNotifier.OnCombatEvent_CR(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
+		local raidId = RaidNotifier.raidId
+		local self   = RaidNotifier
+		local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.cloudrest
+		if (tName == nil or tName == "") then
+			tName = UnitIdToString(tUnitId)
+		end
+		dbg("[%d](%d) %s -> %s (%d)", result, abilityId, GetAbilityName(abilityId), tName, hitValue)
+
+		if result == ACTION_RESULT_BEGIN then
+			if buffsDebuffs.hoarfrost[abilityId] == true then
+				if (settings.hoarfrost >= 1) then
+--					tName = UnitIdToString(tUnitId)
+					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST), "cloudrest", "hoarfrost", 5)
+					elseif (tName ~= "" and settings.hoarfrost > 1) then
+						self.currentHoarfrostUserId = tUnitId
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER), tName), "cloudrest", "hoarfrost", 5)
+					end
+				end
+			elseif abilityId == buffsDebuffs.hoarfrost_shed then
+				if (settings.hoarfrost_shed == true) then
+--					tName = UnitIdToString(tUnitId)
+					if (tName ~= "" and tType ~= COMBAT_UNIT_TYPE_PLAYER) then
+						if (not self.currentHoarfrostUserId or self.currentHoarfrostUserId == 0) then
+							dbg("No info about current hoarfrost person")
+							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SHED), "cloudrest", "hoarfrost_shed")
+						else
+							self.currentHoarfrostUserId = 0
+							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SHED_OTHER), tName), "cloudrest", "hoarfrost_shed")
+						end
+					end
+				end
+			elseif abilityId == buffsDebuffs.tentacle_spawn then
+				if (settings.tentacle_spawn == true and self.break_amulet == false) then
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_TENTACLE_SPAWN), "cloudrest", "tentacle_spawn")
+				end
+			elseif abilityId == buffsDebuffs.nocturnals_favor then
+				if (settings.nocturnals_favor > 0) then
+					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_NOCTURNALS_FAVOR), "cloudrest", "nocturnals_favor")
+					end
+				end
+			elseif abilityId == buffsDebuffs.shadow_realm_cast then
+				if (settings.shadow_realm_cast) then
+					if (self:IsCountdownInProgress()) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SHADOW_REALM_CAST), "cloudrest", "shadow_realm_cast")
+					else
+						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SHADOW_REALM_CAST), "cloudrest", "shadow_realm_cast")
+					end
+				end
+			elseif abilityId == buffsDebuffs.sum_shadow_beads then
+				if (settings.sum_shadow_beads == true and self.break_amulet == false) then
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SUM_SHADOW_BEADS), "cloudrest", "sum_shadow_beads")
+				end
+			elseif abilityId == buffsDebuffs.roaring_flare then
+				if (settings.roaring_flare >= 1) then
+--					tName = UnitIdToString(tUnitId)
+					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE), "cloudrest", "roaring_flare")
+					elseif (tName ~= "" and settings.roaring_flare > 1) then
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE_OTHER), tName), "cloudrest", "roaring_flare")
+					end
+				end
+			end
+		elseif result == ACTION_RESULT_EFFECT_GAINED then
+			if (abilityId == buffsDebuffs.start_cd_of_srealm) then
+				self.break_amulet = false
+			elseif (abilityId == buffsDebuffs.break_amulet) then
+				if (settings.break_amulet == true) then
+					self.break_amulet = true
+				end
+			elseif abilityId == buffsDebuffs.chilling_comet then
+				if (settings.chilling_comet == true) then
+					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_CHILLING_COMET), "cloudrest", "chilling_comet")
+					end
+				end
+			elseif buffsDebuffs.hoarfrost[abilityId] == true then
+				if (settings.hoarfrost >= 1) then
+					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST), "cloudrest", "hoarfrost", 5)
+					elseif (tName ~= "" and settings.hoarfrost > 1) then
+						self.currentHoarfrostUserId = tUnitId
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER), tName), "cloudrest", "hoarfrost", 5)
+					end
+				end				
+			elseif abilityId == buffsDebuffs.crushing_darkness then
+				if (settings.crushing_darkness > 0) then
+					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_CRUSHING_DARKNESS), "cloudrest", "crushing_darkness")
+					end
+				end
+			elseif abilityId == buffsDebuffs.olorime_spears then
+				if (settings.olorime_spears == true) then
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_OLORIME_SPEARS), "cloudrest", "olorime_spears")
+				end
+			elseif abilityId == buffsDebuffs.hoarfrost_syn then
+				if (settings.hoarfrost > 0) then
+					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SYN), "cloudrest", "hoarfrost_syn", 5)
+					end
+				end
+			end
+		elseif result == ACTION_RESULT_EFFECT_GAINED_DURATION then
+			if abilityId == buffsDebuffs.voltaic_overload then
+--				if (settings.voltaic_overload > 0) then
+--					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+--						self:StartCountdown(settings.voltaic_overload_time, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_overload")
+						
+--						self.voltaic_overload = true
+--						zo_callLater(function()
+--							self.voltaic_overload = false
+--						end, voltaic_overload_time)
+--					end
+--				end
+			elseif buffsDebuffs.voltaic_current[abilityId] == true then
+				if (settings.voltaic_overload > 0) then
+					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						--self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_CURRENT), "cloudrest", "voltaic_current")
+						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_CURRENT), "cloudrest", "voltaic_overload")
+
+						self.voltaic_overload = self.voltaic_overload and self.voltaic_overload + 1 or 1
+						zo_callLater(function()
+							self.voltaic_overload = self.voltaic_overload - 1
+						end, hitValue)
+					end
+				end
+			end
+		elseif result == ACTION_RESULT_EFFECT_FADED then
+			-- when player die or overload just ended
+			if abilityId == buffsDebuffs.voltaic_overload then
+				self.voltaic_overload = 0
+				self.StopCountdown()
+			end
+--		elseif result == ACTION_RESULT_DAMAGE then
+--			if buffsDebuffs.voltaic_overload_progress[abilityId] == true then
+--				if (settings.voltaic_overload > 0 and self.voltaic_overload and self.voltaic_overload > 0) then
+--					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+--						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD), "cloudrest", "voltaic_overload", 2)
+--					end
+--				end
+--			end
+		end
+	end
+
 
 	RaidNotifier.CombatEventCallbacks = 
 	{
@@ -1755,6 +1976,7 @@ do ---------------------------
 		[RAID_MAELSTROM_ARENA]       = RaidNotifier.OnCombatEvent_MA,
 		[RAID_HALLS_OF_FABRICATION]  = RaidNotifier.OnCombatEvent_HOF,
 		[RAID_ASYLUM_SANCTORIUM]     = RaidNotifier.OnCombatEvent_AS,
+		[RAID_CLOUDREST]             = RaidNotifier.OnCombatEvent_CR,
 	}
 	
 	-------------------
@@ -1810,7 +2032,7 @@ do ---------------------------
 					local ability = (aName ~= "" and aName ~= nil) and aName or GetAbilityName(abilityId)
 
 					debugList[result][abilityId] = self.Vars.dbg.spamControl
-					d(debugMsg:format(result, ability, abilityId, source, target))
+					d(debugMsg:format(result, ability, abilityId, source, target, hitValue))
 				
 				end
 			end
@@ -1876,6 +2098,7 @@ do -----------------------------
 
 		local raidId = RaidNotifier.raidId
 		local self   = RaidNotifier
+--		dbg("==>%s --> %d -> %d (%d)", uName, beginTime, endTime, stackCount)
 
 		-- HoF is the first raid to make it here! WHOOHOOW!! (all cuz we needz dem stackcount)
 		if (raidId == RAID_HALLS_OF_FABRICATION) then
@@ -1894,7 +2117,24 @@ do -----------------------------
 					self:UpdateSphereVenom(changeType ~= EFFECT_RESULT_FADED, beginTime, endTime)
 				end
 			end
-
+		elseif (raidId == RAID_CLOUDREST) then
+			local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.cloudrest
+			
+			if abilityId == buffsDebuffs.voltaic_overload then
+				if (settings.voltaic_overload > 0) then
+					if changeType == EFFECT_RESULT_GAINED then
+						local time = (endTime - beginTime) * 1000
+						self:StartCountdown(time, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_overload")
+						
+						self.voltaic_overload = self.voltaic_overload and self.voltaic_overload + 1 or 1
+						zo_callLater(function()
+							self.voltaic_overload = self.voltaic_overload - 1
+						end, time)
+					end
+				end
+			elseif buffsDebuffs.voltaic_current[abilityId] == true then
+				dbg("Effect voltaic current: %s -> %d (%d)", GetAbilityName(abilityId), endTime - beginTime, stackCount)
+			end
 		end
 
 	end
