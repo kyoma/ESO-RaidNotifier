@@ -383,6 +383,8 @@ L.Settings_Asylum_Storm_The_Heavens              = "Saint Olms: Storm the Heaven
 L.Settings_Asylum_Storm_The_Heavens_TT           = "Alerts you when Saint Olms is about to go into the air and spawns a large amount of smaller lightning circles."
 L.Settings_Asylum_Gusts_Of_Steam                 = "Saint Olms: Gusts Of Steam"
 L.Settings_Asylum_Gusts_Of_Steam_TT              = "Alerts you when Saint Olms is about to jump back and forth, signaling the next phase of the fight."
+L.Settings_Asylum_Gusts_Of_Steam_Slider          = "       - Percentage before jump"
+L.Settings_Asylum_Gusts_Of_Steam_Slider_TT       = "Show notification couple percent of boss health faster before he jump."
 L.Settings_Asylum_Protector_Spawn                = "Saint Olms: Protector Spawn"
 L.Settings_Asylum_Protector_Spawn_TT             = "Alerts you when sphere is about to spawn."
 L.Settings_Asylum_Trial_By_Fire                  = "Saint Olms: Trial By Fire"
@@ -395,12 +397,62 @@ L.Alerts_Asylum_Teleport_Strike                  = "|cFF3366Teleport Strike|r on
 L.Alerts_Asylum_Teleport_Strike_Other            = "|cFF3366Teleport Strike|r on |cFF0000<<!aC:1>>|r"
 L.Alerts_Asylum_Exhaustive_Charges               = "Incoming |cFF0000Exhaustive Charges|r"
 L.Alerts_Asylum_Storm_The_Heavens                = "Incoming |cFF0000Storm The Heavens|r! Kite!"
-L.Alerts_Asylum_Eruption                         = "|c595959Eruption|r targeted at you"
-L.Alerts_Asylum_Eruption_Other                   = "|c595959Eruption|r! at |cFC0000<<!aC:1>>|r"
 L.Alerts_Asylum_Gusts_Of_Steam                   = "Incoming |cFF9900Gusts Of Steam|r! Hide!"
+L.Alerts_Asylum_Pre_Gusts_Of_Steam               = "<<1>> to |cFF0000jump|r! Prepare to Hide!"
 L.Alerts_Asylum_Trial_By_Fire                    = "Incoming |cFF5500Fire|r!"
 L.Alerts_Asylum_Protector_Spawn                  = "|c0000FFProtector|r spawning!"
 L.Alerts_Asylum_Protector_Active                 = "|c0000FFProtector|r active!"
+
+
+
+--------------------------------
+------   CLOUDREST         -----
+--------------------------------
+L.Settings_Cloudrest_Header			= "Cloudrest"
+-- Settings
+L.Settings_Cloudrest_Olorime_Spears             = "General: Olorime Spear"
+L.Settings_Cloudrest_Olorime_Spears_TT          = "Alerts you when spears are up and someone has to pick it up."
+L.Settings_Cloudrest_Shadow_Realm_Cast          = "General: Portal Spawn"
+L.Settings_Cloudrest_Shadow_Realm_Cast_TT       = "Alerts you when portal is spawned for group to go in Shadow Real."
+L.Settings_Cloudrest_Hoarfrost                  = "Faralielle: Hoarfrost"
+L.Settings_Cloudrest_Hoarfrost_TT               = "Alerts you when you have the Hoarfrost debuff on you that needs to be synergised to remove."
+L.Settings_Cloudrest_Hoarfrost_Shed             = "Faralielle: Hoarfrost Drop"
+L.Settings_Cloudrest_Hoarfrost_Shed_TT          = "Alerts you when Hoarfrost debuff has been dropped from another player and needs to be picked up."
+L.Settings_Cloudrest_Chilling_Comet             = "Faralielle: Chilling Comet"
+L.Settings_Cloudrest_Chilling_Comet_TT          = "Alerts you when Chilling Comet debuff is applied to you that needs to be blocked and not overlapped with another player who has the same debuff before explosion."
+L.Settings_Cloudrest_Roaring_Flare              = "Siroria: Roaring Flame"
+L.Settings_Cloudrest_Roaring_Flare_TT           = "Alerts when you or any of your team members have the Roaring Flare debuff that requires a minimum of 3 team members in total to stack to negate this debuff."
+L.Settings_Cloudrest_Voltaic_Overload           = "Belanaril: Voltaic Overload"
+L.Settings_Cloudrest_Voltaic_Overload_TT        = "Alerts you that you are about to get the Voltaic Overload debuff where after you get the debuff, you cannot bar swap for 10 seconds (not working on main boss)."
+L.Settings_Cloudrest_Nocturnals_Favor	        = "Z'Maja: Nocturnal's Favor"
+L.Settings_Cloudrest_Nocturnals_Favor_TT        = "Alerts you when Z'Maja has targeted you and will do her Heavy Attack."
+L.Settings_Cloudrest_Break_Amulet               = "Z'Maja: Only important mechanic on execute"
+L.Settings_Cloudrest_Break_Amulet_TT            = "Disable spheres, tentacle notifications on execute phase"
+L.Settings_Cloudrest_Sum_Shadow_Beads           = "Z'Maja: Spheres"
+L.Settings_Cloudrest_Sum_Shadow_Beads_TT        = "Alerts when Spheres are about to spawn."
+L.Settings_Cloudrest_Tentacle_Spawn             = "Z'Maja: Creeper Spawn"
+L.Settings_Cloudrest_Tentacle_Spawn_TT          = "Alerts when Nocturnal Creeper is about to spawn."
+L.Settings_Cloudrest_Crushing_Darkness          = "Z'Maja: Crushing Darkness"
+L.Settings_Cloudrest_Crushing_Darkness_TT       = "Alerts you when Tether AoE is following you and needs to be kited."
+
+-- Alerts
+L.Alerts_Cloudrest_Olorime_Spears               = "|cffd000Spear|r is up!"
+L.Alerts_Cloudrest_Hoarfrost                    = "|c00ddffHoarfrost|r at you!"
+L.Alerts_Cloudrest_Hoarfrost_Other              = "|c00ddffHoarfrost|r at |cff0000<<!aC:1>>|r."
+L.Alerts_Cloudrest_Hoarfrost_Syn                = "|cff0000Use synergy|r to drop hoarfrost!"
+L.Alerts_Cloudrest_Hoarfrost_Shed               = "|c00ddffHoarfrost|r dropped."
+L.Alerts_Cloudrest_Hoarfrost_Shed_Other         = "|c00ddffHoarfrost|r dropped by |cff0000<<!aC:1>>|r."
+L.Alerts_Cloudrest_Chilling_Comet               = "|cff0000Chilling Comet|r at you. Block!"
+L.Alerts_Cloudrest_Roaring_Flare                = "|cff7700Roaring Flare|r at you."
+L.Alerts_Cloudrest_Roaring_Flare_Other          = "|cff7700Roaring Flare|r at |cff0000<<!aC:1>>|r. Stack on!"
+L.Alerts_Cloudrest_Voltaic_Current              = "Incoming |c55b4d4Voltaic Overload|r at you in"
+L.Alerts_Cloudrest_Voltaic_Overload             = "|c4d61c1Voltaic Overload|r at you! Swap Bar!"
+L.Alerts_Cloudrest_Voltaic_Overload_Cd          = "|c4d61c1Voltaic Overload|r. Don't swap!"
+L.Alerts_Cloudrest_Shadow_Realm_Cast            = "|cab82ffPortal|r Spawn"
+L.Alerts_Cloudrest_Tentacle_Spawn               = "|c00a86bCreeper|r Spawn"
+L.Alerts_Cloudrest_Sum_Shadow_Beads             = "|cab82ffSpheres|r are about to spawn"
+L.Alerts_Cloudrest_Nocturnals_Favor             = "|cff0000Nocturnal's Favor|r at you!"
+L.Alerts_Cloudrest_Crushing_Darkness            = "|cfc0c66Crushing Darkness|r at you. Kite!"
 
 
 

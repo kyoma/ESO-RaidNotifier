@@ -384,6 +384,7 @@ asylum.olms_gusts_of_steam = 98868 -- aoe under everyone's feet (jump starts)
 asylum.olms_eruption = 99974 -- jump
 asylum.olms_trial_by_fire = 98582
 asylum.olms_protector_spawn = 64508 -- aka find turret, better than 64489 due to its tUnitId
+asylum.olms_phasesHealth = {90, 75, 50, 25}
 asylum.olms_phase2 = 98615 -- after 90% health
 asylum.olms_phase3 = 98677 -- after 75% health
 asylum.olms_phase4 = 98678 -- after 50% health
@@ -403,3 +404,61 @@ asylum.interest_list[101354] = true
 asylum.interest_list[64508] = true 
 
 RaidNotifier.BuffsDebuffs[RAID_ASYLUM_SANCTORIUM] = asylum
+
+-- ------------------------------------------------------
+-- -- Cloudrest  ----------------------------------------
+-- -- ---------------------------------------------------
+local cloudrest = {}
+
+cloudrest.shadow_realm_cast = 103946
+--cloudrest.olorime_spears = {} -- 2240
+--cloudrest.olorime_spears[104021] = true
+cloudrest.olorime_spears = 104019
+
+-- Shade of Galenwe and Falarielle
+cloudrest.hoarfrost = {}
+cloudrest.hoarfrost[103760] = true
+cloudrest.hoarfrost[103743] = true
+cloudrest.hoarfrost_syn = 103697
+cloudrest.hoarfrost_shed = 103714
+cloudrest.chilling_comet = 106374
+
+-- Shade of Siroria
+cloudrest.roaring_flare = 103531
+
+-- Shade of Relequen and Belanaril
+-- [2200] hitValue 3000 (noone)
+--cloudrest.voltaic_current = 103553
+-- [2245] hitValue 10000
+cloudrest.voltaic_current = {}
+cloudrest.voltaic_current[103895] = true -- mainboss
+cloudrest.voltaic_current[103896] = true -- sideboss only
+cloudrest.voltaic_current[110427] = true -- mainboss execute
+--cloudrest.voltaic_current = 103555
+-- overload [2240] hitValue 1, then [2245] hitValue 10000
+cloudrest.voltaic_overload = 87346 -- start and end
+cloudrest.voltaic_overload_progress = {}
+cloudrest.voltaic_overload_progress[109059] = true
+cloudrest.voltaic_overload_progress[109060] = true
+cloudrest.voltaic_overload_progress[109061] = true
+cloudrest.voltaic_overload_progress[109062] = true
+cloudrest.voltaic_overload_progress[109063] = true
+cloudrest.voltaic_overload_progress[109064] = true
+cloudrest.voltaic_overload_progress[109065] = true
+cloudrest.voltaic_overload_progress[109066] = true
+
+-- Maja
+cloudrest.start_cd_of_srealm = 105890
+cloudrest.nocturnals_favor = 104535 -- 2200 and 2250
+cloudrest.crushing_darkness = 105239 -- 2240
+cloudrest.sotDead_proj_to_corpse = 105120 -- [2250] T event after shadow is dead
+cloudrest.sum_shadow_beads = 105291
+cloudrest.tentacle_spawn = 105016
+cloudrest.break_amulet = 106023
+
+cloudrest.interest_list = {}
+cloudrest.interest_list[103697] = true
+cloudrest.interest_list[103895] = true
+
+RaidNotifier.BuffsDebuffs[RAID_CLOUDREST] = cloudrest
+
