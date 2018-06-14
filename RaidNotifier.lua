@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.6.2"
+RaidNotifier.Version         = "2.6.2.1"
 RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -1860,6 +1860,14 @@ do ---------------------------
 				if (settings.nocturnals_favor > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_NOCTURNALS_FAVOR), "cloudrest", "nocturnals_favor")
+					end
+				end
+			elseif abilityId == buffsDebuffs.baneful_barb then
+				if (settings.baneful_barb > 0) then
+					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_BANEFUL_BARB), "cloudrest", "baneful_barb")
+					elseif (tName ~= "" and settings.baneful_barb > 1) then
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_BANEFUL_BARB_OTHER), tName), "cloudrest", "baneful_barb")
 					end
 				end
 			elseif abilityId == buffsDebuffs.shadow_realm_cast then

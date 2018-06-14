@@ -256,6 +256,7 @@ do ------------------
 			hoarfrost = 0, -- "Off"
 			hoarfrost_shed = true,
 			chilling_comet = true,
+			baneful_barb = 0, -- "Off"
 			roaring_flare = 2, -- "Full"
 			voltaic_overload = 1, -- "Self"
 			voltaic_overload_time = 10000, -- "Self"
@@ -480,6 +481,7 @@ function RaidNotifier:CreateSettingsMenu()
 				L.Settings_General_Choices_Off,
 				L.Settings_General_Choices_Self,
 			},
+			baneful_barb = off_self_all,
 			nocturnals_favor = {
 				 L.Settings_General_Choices_Off,
 				 L.Settings_General_Choices_Self,
@@ -1322,6 +1324,12 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_Cloudrest_Voltaic_Overload_TT,
 		choices = choices.cloudrest.voltaic_overload,
 	}, "cloudrest", "voltaic_overload")
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_Cloudrest_Baneful_Barb,
+		tooltip = L.Settings_Cloudrest_Baneful_Barb_TT,
+		choices = choices.cloudrest.baneful_barb,
+	}, "cloudrest", "baneful_barb")	
 	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_Cloudrest_Break_Amulet,

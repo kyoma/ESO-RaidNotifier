@@ -455,6 +455,8 @@ cloudrest.sotDead_proj_to_corpse = 105120 -- [2250] T event after shadow is dead
 cloudrest.sum_shadow_beads = 105291
 cloudrest.tentacle_spawn = 105016
 cloudrest.break_amulet = 106023
+cloudrest.baneful_barb = 105975
+cloudrest.shade_baneful_mark = 107196
 
 cloudrest.interest_list = {}
 cloudrest.interest_list[103697] = true
