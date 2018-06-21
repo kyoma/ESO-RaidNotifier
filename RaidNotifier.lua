@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.6.2.1"
+RaidNotifier.Version         = "2.6.2.2"
 RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -1882,10 +1882,32 @@ do ---------------------------
 				if (settings.sum_shadow_beads == true and self.break_amulet == false) then
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SUM_SHADOW_BEADS), "cloudrest", "sum_shadow_beads")
 				end
-			elseif abilityId == buffsDebuffs.roaring_flare then
+			elseif buffsDebuffs.roaring_flare[abilityId] then
 				if (settings.roaring_flare >= 1) then
---					tName = UnitIdToString(tUnitId)
-					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+					if (self.break_amulet and not self.targetedByFire_2) then -- first fire on execute
+						-- lets merge both fires together
+						self.targetedByFire_2 = tType == COMBAT_UNIT_TYPE_PLAYER and "you" or tName
+						self.targetedByFireTime_2 = GetGameTimeMilliseconds()
+						dbg("First fire - %s", self.targetedByFire_2)
+						zo_callLater(function()
+							if (self.targetedByFire_2) then -- this should not happen but if, then display only one fire
+								dbg("This should not happen! Only one fire on execute?")
+								if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+									self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE), "cloudrest", "roaring_flare")
+								elseif (tName ~= "" and settings.roaring_flare > 1) then
+									self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE_OTHER), tName), "cloudrest", "roaring_flare")
+								end
+								self.targetedByFire_2 = nil
+								self.targetedByFireTime_2 = 0
+							end
+						end, 500)
+					elseif (self.targetedByFire_2) then -- second fire on execute
+						local targetedByFire_1 = tType == COMBAT_UNIT_TYPE_PLAYER and "you" or tName;
+						dbg("Roaring Flare diff between both fires %d ms", self.targetedByFireTime_2 - GetGameTimeMilliseconds());
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE_2), self.targetedByFire_2, targetedByFire_1), "cloudrest", "roaring_flare")
+						self.targetedByFire_2 = nil
+						self.targetedByFireTime_2 = 0
+					elseif (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE), "cloudrest", "roaring_flare")
 					elseif (tName ~= "" and settings.roaring_flare > 1) then
 						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE_OTHER), tName), "cloudrest", "roaring_flare")
