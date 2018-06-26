@@ -423,7 +423,7 @@ L.Settings_Cloudrest_Chilling_Comet_TT          = "Alerts you when Chilling Come
 L.Settings_Cloudrest_Roaring_Flare              = "Siroria: Roaring Flame"
 L.Settings_Cloudrest_Roaring_Flare_TT           = "Alerts when you or any of your team members have the Roaring Flare debuff that requires a minimum of 3 team members in total to stack to negate this debuff."
 L.Settings_Cloudrest_Voltaic_Overload           = "Belanaril: Voltaic Overload"
-L.Settings_Cloudrest_Voltaic_Overload_TT        = "Alerts you that you are about to get the Voltaic Overload debuff where after you get the debuff, you cannot bar swap for 10 seconds (not working on main boss)."
+L.Settings_Cloudrest_Voltaic_Overload_TT        = "Alerts you that you are about to get the Voltaic Overload debuff where after you get the debuff, you cannot bar swap for 10 seconds."
 L.Settings_Cloudrest_Nocturnals_Favor	        = "Z'Maja: Nocturnal's Favor"
 L.Settings_Cloudrest_Nocturnals_Favor_TT        = "Alerts you when Z'Maja has targeted you and will do her Heavy Attack."
 L.Settings_Cloudrest_Baneful_Barb               = "Yaghra Monstrosity: Baneful Barb"
@@ -439,8 +439,10 @@ L.Settings_Cloudrest_Crushing_Darkness_TT       = "Alerts you when Tether AoE is
 
 -- Alerts
 L.Alerts_Cloudrest_Olorime_Spears               = "|cffd000Spear|r is up!"
-L.Alerts_Cloudrest_Hoarfrost                    = "|c00ddffHoarfrost|r at you!"
-L.Alerts_Cloudrest_Hoarfrost_Other              = "|c00ddffHoarfrost|r at |cff0000<<!aC:1>>|r."
+L.Alerts_Cloudrest_Hoarfrost0                   = "|c00ddffHoarfrost|r at you!"
+L.Alerts_Cloudrest_Hoarfrost1                   = "|cff0000Last|r |c00ddffHoarfrost|r at you!"
+L.Alerts_Cloudrest_Hoarfrost_Other0             = "|c00ddffHoarfrost|r at |cff0000<<!aC:1>>|r."
+L.Alerts_Cloudrest_Hoarfrost_Other1             = "|cff0000Last|r |c00ddffHoarfrost|r at |cff0000<<!aC:1>>|r."
 L.Alerts_Cloudrest_Hoarfrost_Syn                = "|cff0000Use synergy|r to drop hoarfrost!"
 L.Alerts_Cloudrest_Hoarfrost_Shed               = "|c00ddffHoarfrost|r dropped."
 L.Alerts_Cloudrest_Hoarfrost_Shed_Other         = "|c00ddffHoarfrost|r dropped by |cff0000<<!aC:1>>|r."

@@ -416,9 +416,9 @@ cloudrest.shadow_realm_cast = 103946
 cloudrest.olorime_spears = 104019
 
 -- Shade of Galenwe and Falarielle
-cloudrest.hoarfrost = {}
-cloudrest.hoarfrost[103760] = true
-cloudrest.hoarfrost[103743] = true
+--cloudrest.hoarfrost = {}
+cloudrest.hoarfrost     = 103760 -- first frost
+cloudrest.hoarfrost_aoe = 103743 -- when picked up from the floor
 cloudrest.hoarfrost_syn = 103697
 cloudrest.hoarfrost_shed = 103714
 cloudrest.chilling_comet = 106374
@@ -459,6 +459,7 @@ cloudrest.tentacle_spawn = 105016
 cloudrest.break_amulet = 106023
 cloudrest.baneful_barb = 105975
 cloudrest.shade_baneful_mark = 107196
+cloudrest.player_exit_srealm = 105218
 
 cloudrest.interest_list = {}
 cloudrest.interest_list[103697] = true
