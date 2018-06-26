@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.6.2"
+RaidNotifier.Version         = "2.6.4"
 RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -1832,13 +1832,15 @@ do ---------------------------
 		if result == ACTION_RESULT_BEGIN then
 			if abilityId == buffsDebuffs.hoarfrost then
                 self.hoarfrostCount = 1
+                dbg("Hoarfrost %d on %s", self.hoarfrostCount, tName)
 				if (settings.hoarfrost >= 1) then
 --					tName = UnitIdToString(tUnitId)
+                    local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST), "cloudrest", "hoarfrost", 5)
+						self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
 					elseif (tName ~= "" and settings.hoarfrost > 1) then
 						self.currentHoarfrostUserId = tUnitId
-						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER), tName), "cloudrest", "hoarfrost", 5)
+						self:AddAnnouncement(zo_strformat(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER", tmp), tName), "cloudrest", "hoarfrost")
 					end
 				end
 			elseif abilityId == buffsDebuffs.hoarfrost_shed then
@@ -1864,6 +1866,14 @@ do ---------------------------
 						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_NOCTURNALS_FAVOR), "cloudrest", "nocturnals_favor")
 					end
 				end
+			elseif abilityId == buffsDebuffs.baneful_barb then
+				if (settings.baneful_barb > 0) then
+					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_BANEFUL_BARB), "cloudrest", "baneful_barb")
+					elseif (tName ~= "" and settings.baneful_barb > 1) then
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_BANEFUL_BARB_OTHER), tName), "cloudrest", "baneful_barb")
+					end
+				end
 			elseif abilityId == buffsDebuffs.shadow_realm_cast then
 				if (settings.shadow_realm_cast) then
 					if (self:IsCountdownInProgress()) then
@@ -1876,10 +1886,32 @@ do ---------------------------
 				if (settings.sum_shadow_beads == true and not (self.inExecute and settings.break_amulet)) then
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SUM_SHADOW_BEADS), "cloudrest", "sum_shadow_beads")
 				end
-			elseif abilityId == buffsDebuffs.roaring_flare then
+			elseif buffsDebuffs.roaring_flare[abilityId] then
 				if (settings.roaring_flare >= 1) then
---					tName = UnitIdToString(tUnitId)
-					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+					if (self.break_amulet and not self.targetedByFire_2) then -- first fire on execute
+						-- lets merge both fires together
+						self.targetedByFire_2 = tType == COMBAT_UNIT_TYPE_PLAYER and "you" or tName
+						self.targetedByFireTime_2 = GetGameTimeMilliseconds()
+						dbg("First fire - %s", self.targetedByFire_2)
+						zo_callLater(function()
+							if (self.targetedByFire_2) then -- this should not happen but if, then display only one fire
+								dbg("This should not happen! Only one fire on execute?")
+								if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+									self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE), "cloudrest", "roaring_flare")
+								elseif (tName ~= "" and settings.roaring_flare > 1) then
+									self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE_OTHER), tName), "cloudrest", "roaring_flare")
+								end
+								self.targetedByFire_2 = nil
+								self.targetedByFireTime_2 = 0
+							end
+						end, 500)
+					elseif (self.targetedByFire_2) then -- second fire on execute
+						local targetedByFire_1 = tType == COMBAT_UNIT_TYPE_PLAYER and "you" or tName;
+						dbg("Roaring Flare diff between both fires %d ms", self.targetedByFireTime_2 - GetGameTimeMilliseconds());
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE_2), self.targetedByFire_2, targetedByFire_1), "cloudrest", "roaring_flare")
+						self.targetedByFire_2 = nil
+						self.targetedByFireTime_2 = 0
+					elseif (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE), "cloudrest", "roaring_flare")
 					elseif (tName ~= "" and settings.roaring_flare > 1) then
 						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE_OTHER), tName), "cloudrest", "roaring_flare")
@@ -1890,9 +1922,10 @@ do ---------------------------
 			if (abilityId == buffsDebuffs.start_cd_of_srealm) then
 				--self.break_amulet = false -- will be reset further up
             elseif (abilityId == buffsDebuffs.player_exit_srealm) then
-                if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-                    self.hoarfrostCount = 0 -- make sure it won't show the "last frost" alert by mistake if the player missed some of the combat events while he was away
-                end
+                dbg("Exit ShadowRealm >> %s", tName)
+                --if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+                --    self.hoarfrostCount = 0 -- make sure it won't show the "last frost" alert by mistake if the player missed some of the combat events while he was away
+                --end
 			elseif (abilityId == buffsDebuffs.break_amulet) then
                 self.inExecute = true
 				--if (settings.break_amulet == true) then
@@ -1907,12 +1940,13 @@ do ---------------------------
 			elseif abilityId == buffsDebuffs.hoarfrost_aoe then
                 self.hoarfrostCount = self.hoarfrostCount + 1 
 				if (settings.hoarfrost >= 1) then
+                    dbg("Hoarfrost %d on %s", self.hoarfrostCount, tName)
                     local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0 -- need to disable this in execute due to the additional hoarfrost interferring
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-                        self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST, tmp), "cloudrest", "hoarfrost")
+                        self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
 					elseif (tName ~= "" and settings.hoarfrost > 1) then
 						self.currentHoarfrostUserId = tUnitId
-						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER, tmp), tName), "cloudrest", "hoarfrost")
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER), tName), "cloudrest", "hoarfrost")
 					end
 				end				
 			elseif abilityId == buffsDebuffs.crushing_darkness then
@@ -1933,7 +1967,12 @@ do ---------------------------
 				end
 			end
 		elseif result == ACTION_RESULT_EFFECT_GAINED_DURATION then
-			if abilityId == buffsDebuffs.voltaic_overload then
+            if buffsDebuffs.shadow_world[abilityId] == true then
+                if tType == COMBAT_UNIT_TYPE_PLAYER then
+                    dbg("I entered Shadow World, reset hoarfrost count for me")
+                    self.hoarfrostCount = 0
+                end
+			elseif abilityId == buffsDebuffs.voltaic_overload then
 --				if (settings.voltaic_overload > 0) then
 --					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 --						self:StartCountdown(settings.voltaic_overload_time, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_overload")

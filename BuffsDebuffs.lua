@@ -410,6 +410,10 @@ RaidNotifier.BuffsDebuffs[RAID_ASYLUM_SANCTORIUM] = asylum
 -- -- ---------------------------------------------------
 local cloudrest = {}
 
+cloudrest.shadow_world = {} --- debuff upon entering the shadow world
+cloudrest.shadow_world[108045] = true
+cloudrest.shadow_world[104620] = true
+
 cloudrest.shadow_realm_cast = 103946
 --cloudrest.olorime_spears = {} -- 2240
 --cloudrest.olorime_spears[104021] = true
@@ -424,7 +428,9 @@ cloudrest.hoarfrost_shed = 103714
 cloudrest.chilling_comet = 106374
 
 -- Shade of Siroria
-cloudrest.roaring_flare = 103531
+cloudrest.roaring_flare = {}
+cloudrest.roaring_flare[103531] = true
+cloudrest.roaring_flare[110431] = true -- additional fire on execute
 
 -- Shade of Relequen and Belanaril
 -- [2200] hitValue 3000 (noone)
@@ -455,6 +461,8 @@ cloudrest.sotDead_proj_to_corpse = 105120 -- [2250] T event after shadow is dead
 cloudrest.sum_shadow_beads = 105291
 cloudrest.tentacle_spawn = 105016
 cloudrest.break_amulet = 106023
+cloudrest.baneful_barb = 105975
+cloudrest.shade_baneful_mark = 107196
 cloudrest.player_exit_srealm = 105218
 
 cloudrest.interest_list = {}
