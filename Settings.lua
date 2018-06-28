@@ -255,6 +255,7 @@ do ------------------
 			shadow_realm_cast = false,
 			hoarfrost = 0, -- "Off"
 			hoarfrost_shed = true,
+            hoarfrost_countdown = true,
 			chilling_comet = true,
 			baneful_barb = 0, -- "Off"
 			roaring_flare = 2, -- "Full"
@@ -1302,6 +1303,11 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_Cloudrest_Hoarfrost_TT,
 		choices = choices.cloudrest.hoarfrost,
 	}, "cloudrest", "hoarfrost")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Cloudrest_Hoarfrost_Countdown,
+		tooltip = L.Settings_Cloudrest_Hoarfrost_Countdown_TT,
+	}, "cloudrest", "hoarfrost_countdown")
 	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_Cloudrest_Hoarfrost_Shed,

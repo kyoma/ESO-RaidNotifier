@@ -1831,13 +1831,17 @@ do ---------------------------
 
 		if result == ACTION_RESULT_BEGIN then
 			if abilityId == buffsDebuffs.hoarfrost then
-                self.hoarfrostCount = 1
-                dbg("Hoarfrost %d on %s", self.hoarfrostCount, tName)
+				self.hoarfrostCount = 1
+				dbg("Hoarfrost %d on %s, hitValue= %d", self.hoarfrostCount, tName, hitValue)
 				if (settings.hoarfrost >= 1) then
 --					tName = UnitIdToString(tUnitId)
-                    local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0
+					local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
+						if settings.hoarfrost_countdown and not LCSA:IsCountdownInProgress() then
+							self:StartCountdown(buffsDebuffs.hoarfrost_countdown, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
+						else
+							self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
+						end
 					elseif (tName ~= "" and settings.hoarfrost > 1) then
 						self.currentHoarfrostUserId = tUnitId
 						self:AddAnnouncement(zo_strformat(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER", tmp), tName), "cloudrest", "hoarfrost")
@@ -1928,6 +1932,7 @@ do ---------------------------
                 --end
 			elseif (abilityId == buffsDebuffs.break_amulet) then
                 self.inExecute = true
+				dbg("Entering execute phase")
 				--if (settings.break_amulet == true) then
 				--	self.break_amulet = true
 				--end
@@ -1940,15 +1945,19 @@ do ---------------------------
 			elseif abilityId == buffsDebuffs.hoarfrost_aoe then
                 self.hoarfrostCount = self.hoarfrostCount + 1 
 				if (settings.hoarfrost >= 1) then
-                    dbg("Hoarfrost %d on %s", self.hoarfrostCount, tName)
+                    dbg("Hoarfrost %d on %s, hitValue= %d", self.hoarfrostCount, tName, hitValue)
                     local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0 -- need to disable this in execute due to the additional hoarfrost interferring
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-                        self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
+                        if settings.hoarfrost_countdown and not LCSA:IsCountdownInProgress() then
+                            self:StartCountdown(buffsDebuffs.hoarfrost_countdown, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
+                        else
+                            self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
+                        end
 					elseif (tName ~= "" and settings.hoarfrost > 1) then
 						self.currentHoarfrostUserId = tUnitId
-						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER), tName), "cloudrest", "hoarfrost")
+						self:AddAnnouncement(zo_strformat(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER", tmp), tName), "cloudrest", "hoarfrost")
 					end
-				end				
+				end
 			elseif abilityId == buffsDebuffs.crushing_darkness then
 				if (settings.crushing_darkness > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
@@ -1968,8 +1977,9 @@ do ---------------------------
 			end
 		elseif result == ACTION_RESULT_EFFECT_GAINED_DURATION then
             if buffsDebuffs.shadow_world[abilityId] == true then
+                dbg("Enter ShadowRealm >> %s", tName)
                 if tType == COMBAT_UNIT_TYPE_PLAYER then
-                    dbg("I entered Shadow World, reset hoarfrost count for me")
+                    dbg("Reset hoarfrost count for me")
                     self.hoarfrostCount = 0
                 end
 			elseif abilityId == buffsDebuffs.voltaic_overload then
