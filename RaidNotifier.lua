@@ -861,6 +861,7 @@ do -----------------------------
 		local raidId = RaidNotifier.raidId
 
 		self.Minions = self.Minions or {}
+        self.inExecute = false
 		local bossCount, bossAlive, bossFull = self:GetNumBosses(true)
 		-- reset if: 
 		--    1) there are no bosses
@@ -1826,17 +1827,24 @@ do ---------------------------
 		if (tName == nil or tName == "") then
 			tName = UnitIdToString(tUnitId)
 		end
-		dbg("[%d](%d) %s -> %s (%d)", result, abilityId, GetAbilityName(abilityId), tName, hitValue)
+		--dbg("[%d](%d) %s -> %s (%d)", result, abilityId, GetAbilityName(abilityId), tName, hitValue)
 
 		if result == ACTION_RESULT_BEGIN then
-			if buffsDebuffs.hoarfrost[abilityId] == true then
+			if abilityId == buffsDebuffs.hoarfrost then
+				self.hoarfrostCount = 1
+				dbg("Hoarfrost %d on %s, hitValue= %d", self.hoarfrostCount, tName, hitValue)
 				if (settings.hoarfrost >= 1) then
 --					tName = UnitIdToString(tUnitId)
+					local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST), "cloudrest", "hoarfrost", 5)
+						if settings.hoarfrost_countdown and not LCSA:IsCountdownInProgress() then
+							self:StartCountdown(buffsDebuffs.hoarfrost_countdown, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
+						else
+							self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
+						end
 					elseif (tName ~= "" and settings.hoarfrost > 1) then
 						self.currentHoarfrostUserId = tUnitId
-						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER), tName), "cloudrest", "hoarfrost", 5)
+						self:AddAnnouncement(zo_strformat(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER", tmp), tName), "cloudrest", "hoarfrost")
 					end
 				end
 			elseif abilityId == buffsDebuffs.hoarfrost_shed then
@@ -1853,7 +1861,7 @@ do ---------------------------
 					end
 				end
 			elseif abilityId == buffsDebuffs.tentacle_spawn then
-				if (settings.tentacle_spawn == true and self.break_amulet == false) then
+				if (settings.tentacle_spawn == true and not (self.inExecute and settings.break_amulet)) then
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_TENTACLE_SPAWN), "cloudrest", "tentacle_spawn")
 				end
 			elseif abilityId == buffsDebuffs.nocturnals_favor then
@@ -1879,7 +1887,7 @@ do ---------------------------
 					end
 				end
 			elseif abilityId == buffsDebuffs.sum_shadow_beads then
-				if (settings.sum_shadow_beads == true and self.break_amulet == false) then
+				if (settings.sum_shadow_beads == true and not (self.inExecute and settings.break_amulet)) then
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SUM_SHADOW_BEADS), "cloudrest", "sum_shadow_beads")
 				end
 			elseif buffsDebuffs.roaring_flare[abilityId] then
@@ -1916,26 +1924,40 @@ do ---------------------------
 			end
 		elseif result == ACTION_RESULT_EFFECT_GAINED then
 			if (abilityId == buffsDebuffs.start_cd_of_srealm) then
-				self.break_amulet = false
+				--self.break_amulet = false -- will be reset further up
+            elseif (abilityId == buffsDebuffs.player_exit_srealm) then
+                dbg("Exit ShadowRealm >> %s", tName)
+                --if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+                --    self.hoarfrostCount = 0 -- make sure it won't show the "last frost" alert by mistake if the player missed some of the combat events while he was away
+                --end
 			elseif (abilityId == buffsDebuffs.break_amulet) then
-				if (settings.break_amulet == true) then
-					self.break_amulet = true
-				end
+                self.inExecute = true
+				dbg("Entering execute phase")
+				--if (settings.break_amulet == true) then
+				--	self.break_amulet = true
+				--end
 			elseif abilityId == buffsDebuffs.chilling_comet then
 				if (settings.chilling_comet == true) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_CHILLING_COMET), "cloudrest", "chilling_comet")
 					end
 				end
-			elseif buffsDebuffs.hoarfrost[abilityId] == true then
+			elseif abilityId == buffsDebuffs.hoarfrost_aoe then
+                self.hoarfrostCount = self.hoarfrostCount + 1 
 				if (settings.hoarfrost >= 1) then
+                    dbg("Hoarfrost %d on %s, hitValue= %d", self.hoarfrostCount, tName, hitValue)
+                    local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0 -- need to disable this in execute due to the additional hoarfrost interferring
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST), "cloudrest", "hoarfrost", 5)
+                        if settings.hoarfrost_countdown and not LCSA:IsCountdownInProgress() then
+                            self:StartCountdown(buffsDebuffs.hoarfrost_countdown, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
+                        else
+                            self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
+                        end
 					elseif (tName ~= "" and settings.hoarfrost > 1) then
 						self.currentHoarfrostUserId = tUnitId
-						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER), tName), "cloudrest", "hoarfrost", 5)
+						self:AddAnnouncement(zo_strformat(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER", tmp), tName), "cloudrest", "hoarfrost")
 					end
-				end				
+				end
 			elseif abilityId == buffsDebuffs.crushing_darkness then
 				if (settings.crushing_darkness > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
@@ -1954,7 +1976,13 @@ do ---------------------------
 				end
 			end
 		elseif result == ACTION_RESULT_EFFECT_GAINED_DURATION then
-			if abilityId == buffsDebuffs.voltaic_overload then
+            if buffsDebuffs.shadow_world[abilityId] == true then
+                dbg("Enter ShadowRealm >> %s", tName)
+                if tType == COMBAT_UNIT_TYPE_PLAYER then
+                    dbg("Reset hoarfrost count for me")
+                    self.hoarfrostCount = 0
+                end
+			elseif abilityId == buffsDebuffs.voltaic_overload then
 --				if (settings.voltaic_overload > 0) then
 --					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 --						self:StartCountdown(settings.voltaic_overload_time, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_overload")
