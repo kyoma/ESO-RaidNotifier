@@ -2044,7 +2044,7 @@ do ---------------------------
 	for _, result in ipairs(ActionResults) do
 		debugList[result] = {}
 	end
-	local debugMsg = "[%d] %s (%d)%s%s"
+	local debugMsg = "[%d] %s (%d)%s%s => %d"
 
 	local trackedUnits = {}
 	local trackedAbilities = {}
