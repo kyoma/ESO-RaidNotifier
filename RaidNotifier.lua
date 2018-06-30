@@ -232,6 +232,7 @@ do ---------------------------------
 			end
 			self:SetLastNotify(category, setting, currentTime)
 		end
+		dbg("Start")
 		local countdownId = LCSA:CreateCountdown(timer, soundId, nil, text, nil, SetupCallback, CountdownCallback)
 		if countdownId > 0 then
 			countdownInProgress = true
@@ -1832,16 +1833,17 @@ do ---------------------------
 		if result == ACTION_RESULT_BEGIN then
 			if abilityId == buffsDebuffs.hoarfrost then
 				self.hoarfrostCount = 1
-				dbg("Hoarfrost %d on %s, hitValue= %d", self.hoarfrostCount, tName, hitValue)
 				if (settings.hoarfrost >= 1) then
---					tName = UnitIdToString(tUnitId)
-					local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0
+					dbg("Hoarfrost %d on %s, hitValue= %d", self.hoarfrostCount, tName, hitValue)
+                    local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0 -- need to disable this in execute due to the additional hoarfrost interferring
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						if settings.hoarfrost_countdown and not LCSA:IsCountdownInProgress() then
-							self:StartCountdown(buffsDebuffs.hoarfrost_countdown, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
-						else
-							self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
-						end
+						self.hoarfrostStart = GetGameTimeMilliseconds()
+						self.hoarfrostEnd = 0
+                        if settings.hoarfrost_countdown and not self:IsCountdownInProgress() then
+                            self:StartCountdown(buffsDebuffs.hoarfrost_countdown, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
+                        else
+                            self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
+                        end
 					elseif (tName ~= "" and settings.hoarfrost > 1) then
 						self.currentHoarfrostUserId = tUnitId
 						self:AddAnnouncement(zo_strformat(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER", tmp), tName), "cloudrest", "hoarfrost")
@@ -1945,10 +1947,12 @@ do ---------------------------
 			elseif abilityId == buffsDebuffs.hoarfrost_aoe then
                 self.hoarfrostCount = self.hoarfrostCount + 1 
 				if (settings.hoarfrost >= 1) then
-                    dbg("Hoarfrost %d on %s, hitValue= %d", self.hoarfrostCount, tName, hitValue)
+					dbg("Hoarfrost %d on %s, hitValue= %d", self.hoarfrostCount, tName, hitValue)
                     local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0 -- need to disable this in execute due to the additional hoarfrost interferring
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-                        if settings.hoarfrost_countdown and not LCSA:IsCountdownInProgress() then
+						self.hoarfrostStart = GetGameTimeMilliseconds()
+						self.hoarfrostEnd = 0
+                        if settings.hoarfrost_countdown and not self:IsCountdownInProgress() then
                             self:StartCountdown(buffsDebuffs.hoarfrost_countdown, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
                         else
                             self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
@@ -1971,6 +1975,10 @@ do ---------------------------
 			elseif abilityId == buffsDebuffs.hoarfrost_syn then
 				if (settings.hoarfrost > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						if self.hoarfrostEnd == 0 then 
+							self.hoarfrostEnd = GetGameTimeMilliseconds()
+						end
+						dbg("Hoarfrost syn, hitValue=%d, duration=%d", hitValue, self.hoarfrostEnd - self.hoarfrostStart)
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SYN), "cloudrest", "hoarfrost_syn", 5)
 					end
 				end
