@@ -65,9 +65,11 @@ do
 		if type(ctrl) == "string" then
 			ctrl = RaidNotifierUI:GetNamedChild(ctrl)
 		end
-		elements[ctrl.key] = ctrl --just save by key as it probably never conflicts
-		ctrl:SetHandler("OnMoveStop", SaveElementPosition)
-		LoadElementPosition(ctrl)
+		--if (not self:GetElement("", ctrl.key)) then
+			elements[ctrl.key] = ctrl --just save by key as it probably never conflicts
+			ctrl:SetHandler("OnMoveStop", SaveElementPosition)
+			LoadElementPosition(ctrl)
+		--end
 		return ctrl
 	end
 
@@ -481,8 +483,34 @@ do -------------------
 
 end
 
+-- -------------------
+-- -- ARROW DISPLAY
+do -------------------
 
+	local display = nil -- parent
 
+	function RaidNotifier:InitializeArrowDisplay(control)
+		display = self:RegisterElement(control)
+		--display.arrow = display:GetNamedChild("Arrow")
+	end
+
+	function RaidNotifier:TrackPlayer(playerTag, trackTime)
+		display:SetHidden(false)
+		EVENT_MANAGER:RegisterForUpdate(self.Name .. "_TrackPlayer", 50, function()
+			local rotationAngle = self.Util:GetRotationAngle(playerTag)
+			display:SetTextureRotation(rotationAngle + 4.7)	
+		end);
+		if (trackTime ~= nil and trackTime > 0) then
+			zo_callLater(function()
+				self:StopTrackPlayer();
+			end, trackTime)
+		end		
+	end
+	function RaidNotifier:StopTrackPlayer()
+		EVENT_MANAGER:UnregisterForUpdate(self.Name .. "_TrackPlayer")
+		display:SetHidden(true)	
+	end
+end
 -- -----------------
 -- -- GLYPH WINDOW
 do -----------------
