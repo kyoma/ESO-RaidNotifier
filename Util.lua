@@ -143,3 +143,14 @@ function Util.HSL2RGB(h,s,l)
 
    return _h2rgb(m1, m2, h+1/3), _h2rgb(m1, m2, h), _h2rgb(m1, m2, h-1/3)
 end
+
+local function GetNormalizedAngle(angle)
+	return angle - 2 * math.pi * math.floor((angle + math.pi) / 2 * math.pi)
+end
+
+function Util:GetRotationAngle(unitTag)
+	local playerX, playerY = GetMapPlayerPosition("player")
+	local targetX, targetY = GetMapPlayerPosition(unitTag)
+	return GetNormalizedAngle(-1 * (GetNormalizedAngle(GetPlayerCameraHeading()) - math.atan2(playerX - targetX, playerY - targetY)))
+end
+	

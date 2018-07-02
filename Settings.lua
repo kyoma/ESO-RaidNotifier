@@ -259,6 +259,7 @@ do ------------------
 			chilling_comet = true,
 			baneful_barb = 0, -- "Off"
 			roaring_flare = 2, -- "Full"
+			track_roaring_flare = false,
 			voltaic_overload = 1, -- "Self"
 			voltaic_overload_time = 10000, -- "Self"
 			nocturnals_favor = 0, -- "Off"
@@ -1324,6 +1325,11 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_Cloudrest_Roaring_Flare_TT,
 		choices = choices.cloudrest.roaring_flare,
 	}, "cloudrest", "roaring_flare")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Cloudrest_Track_Roaring_Flare,
+		tooltip = L.Settings_Cloudrest_Track_Roaring_Flare_TT,
+	}, "cloudrest", "track_roaring_flare")
 	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_Cloudrest_Voltaic_Overload,

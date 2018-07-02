@@ -432,6 +432,7 @@ cloudrest.chilling_comet = 106374
 cloudrest.roaring_flare = {}
 cloudrest.roaring_flare[103531] = true
 cloudrest.roaring_flare[110431] = true -- additional fire on execute
+cloudrest.roaring_flare_countdown = 6000 -- hardcoded for now
 
 -- Shade of Relequen and Belanaril
 -- [2200] hitValue 3000 (noone)

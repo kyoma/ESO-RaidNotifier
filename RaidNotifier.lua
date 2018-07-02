@@ -753,6 +753,7 @@ do ----------------------
 		self:InitializeUltimateWindow("UltimateWindow")
 		self:InitializeStatusDisplay("StatusDisplay")
 		self:InitializeGlyphWindow("GlyphWindow", self.Vars.mawLorkhaj.zhaj_glyphs_invert)
+		self:InitializeArrowDisplay("ArrowDisplay")
 		
 		-- Bindings
 		ZO_CreateStringId("SI_BINDING_NAME_RAIDNOTIFIER_TOGGLE_ULTI", L.Binding_ToggleUltimateExchange)
@@ -1920,6 +1921,11 @@ do ---------------------------
 					elseif (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE), "cloudrest", "roaring_flare")
 					elseif (tName ~= "" and settings.roaring_flare > 1) then
+						if (settings.track_roaring_flare) then
+							local tUnitTag = GetUnitTagForUnitId(tUnitId)
+							dbg("Tracking UnitTag: %s (%d)", tUnitTag, tUnitId)
+							self:TrackPlayer(tUnitTag, 6000)
+						end
 						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE_OTHER), tName), "cloudrest", "roaring_flare")
 					end
 				end
@@ -2052,7 +2058,7 @@ do ---------------------------
 	for _, result in ipairs(ActionResults) do
 		debugList[result] = {}
 	end
-	local debugMsg = "[%d] %s (%d)%s%s"
+	local debugMsg = "[%d] %s (%d)%s%s => %d"
 
 	local trackedUnits = {}
 	local trackedAbilities = {}
@@ -2131,6 +2137,14 @@ do ---------------------------
 		elseif (args[1] == "spam") then
 			settings.spamControl = Util.GetArgValue(args[2], settings.spamControl)
 			p("%s Spam Control", settings.spamControl and "Enabled" or "Disabled")
+		elseif (args[1] == "arrow") then			
+			p("Arrow test")
+			local masterList = GROUP_LIST_MANAGER:GetMasterList()
+			if (#masterList == 0) then
+				p("Group is empty")
+			else
+				self:TrackPlayer(masterList[1].unitTag, 6000)
+			end
 		elseif (args[1] == "enemy") then
 			settings.myEnemyOnly = Util.GetArgValue(args[2], settings.myEnemyOnly)
 			p("%s My Enemy Only", settings.myEnemyOnly and "Enabled" or "Disabled")
