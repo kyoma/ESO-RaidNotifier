@@ -1922,9 +1922,9 @@ do ---------------------------
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE), "cloudrest", "roaring_flare")
 					elseif (tName ~= "" and settings.roaring_flare > 1) then
 						if (settings.track_roaring_flare) then
-							local tUnitTag = GetUnitTagForUnitId(tUnitId)
+							local tUnitTag = LUNIT:GetUnitTagForUnitId(tUnitId)
 							dbg("Tracking UnitTag: %s (%d)", tUnitTag, tUnitId)
-							self:TrackPlayer(tUnitTag, 6000)
+							self:TrackPlayer(tUnitTag, buffsDebuffs.roaring_flare_countdown)
 						end
 						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE_OTHER), tName), "cloudrest", "roaring_flare")
 					end
