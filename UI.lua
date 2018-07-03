@@ -495,20 +495,24 @@ do -------------------
 	end
 
 	function RaidNotifier:TrackPlayer(playerTag, trackTime)
-		display:SetHidden(false)
-		EVENT_MANAGER:RegisterForUpdate(self.Name .. "_TrackPlayer", 50, function()
+		local function Update()
 			local rotationAngle = self.Util:GetRotationAngle(playerTag)
-			display:SetTextureRotation(rotationAngle + 4.7)	
-		end);
-		if (trackTime ~= nil and trackTime > 0) then
-			zo_callLater(function()
-				self:StopTrackPlayer();
-			end, trackTime)
-		end		
+			display:SetTextureRotation(rotationAngle)
+		end
+		
+		local function Stop()
+			self:StopTrackPlayer();
+		end
+		if trackTime ~= nil and trackTime > 0 then
+			display:SetHidden(false)
+		
+			EVENT_MANAGER:RegisterForUpdate(self.Name .. "_TrackPlayer", 50, Update)
+			zo_callLater(Stop, trackTime)
+		end
 	end
 	function RaidNotifier:StopTrackPlayer()
 		EVENT_MANAGER:UnregisterForUpdate(self.Name .. "_TrackPlayer")
-		display:SetHidden(true)	
+		display:SetHidden(true)
 	end
 end
 -- -----------------
