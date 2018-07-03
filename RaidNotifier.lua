@@ -1841,7 +1841,7 @@ do ---------------------------
 						self.hoarfrostStart = GetGameTimeMilliseconds()
 						self.hoarfrostEnd = 0
                         if settings.hoarfrost_countdown and not self:IsCountdownInProgress() then
-                            self:StartCountdown(buffsDebuffs.hoarfrost_countdown, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
+                            self:StartCountdown(buffsDebuffs.hoarfrost_countdown + hitValue, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
                         else
                             self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
                         end
@@ -1922,7 +1922,7 @@ do ---------------------------
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE), "cloudrest", "roaring_flare")
 					elseif (tName ~= "" and settings.roaring_flare > 1) then
 						if (settings.track_roaring_flare) then
-							local tUnitTag = GetUnitTagForUnitId(tUnitId)
+							local tUnitTag = LUNIT:GetUnitTagForUnitId(tUnitId)
 							dbg("Tracking UnitTag: %s (%d)", tUnitTag, tUnitId)
 							self:TrackPlayer(tUnitTag, 6000)
 						end
