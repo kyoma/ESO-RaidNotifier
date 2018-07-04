@@ -1841,7 +1841,7 @@ do ---------------------------
 						self.hoarfrostStart = GetGameTimeMilliseconds()
 						self.hoarfrostEnd = 0
                         if settings.hoarfrost_countdown and not self:IsCountdownInProgress() then
-                            self:StartCountdown(buffsDebuffs.hoarfrost_countdown, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
+                            self:StartCountdown(buffsDebuffs.hoarfrost_countdown + hitValue, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
                         else
                             self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
                         end
@@ -2143,7 +2143,7 @@ do ---------------------------
 			if (#masterList == 0) then
 				p("Group is empty")
 			else
-				self:TrackPlayer(masterList[1].unitTag, 6000)
+				self:TrackPlayer(masterList[1].unitTag, 20000)
 			end
 		elseif (args[1] == "enemy") then
 			settings.myEnemyOnly = Util.GetArgValue(args[2], settings.myEnemyOnly)
