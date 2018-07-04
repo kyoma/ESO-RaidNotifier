@@ -40,7 +40,7 @@ do
 			settings = settings.position
 		end
 		if not settings then
-			df("Could not find saved position for '%s'", ctrl:GetName())
+			--df("Could not find saved position for '%s'", ctrl:GetName())
 		else
 			local anchor = settings[3] or TOPLEFT
 			settings[1], settings[2] = CUSTOM_ANCHORS[anchor](ctrl)
@@ -53,7 +53,7 @@ do
 			settings = settings.position
 		end
 		if not settings then
-			df("Could not find saved position for '%s'", ctrl:GetName())
+			--df("Could not find saved position for '%s'", ctrl:GetName())
 		else
 			ctrl:ClearAnchors()
 			ctrl:SetAnchor(settings[3] or TOPLEFT, RaidNotifierUI, TOPLEFT, settings[1], settings[2])
@@ -65,11 +65,9 @@ do
 		if type(ctrl) == "string" then
 			ctrl = RaidNotifierUI:GetNamedChild(ctrl)
 		end
-		--if (not self:GetElement("", ctrl.key)) then
-			elements[ctrl.key] = ctrl --just save by key as it probably never conflicts
-			ctrl:SetHandler("OnMoveStop", SaveElementPosition)
-			LoadElementPosition(ctrl)
-		--end
+		elements[ctrl.key] = ctrl --just save by key as it probably never conflicts
+		ctrl:SetHandler("OnMoveStop", SaveElementPosition)
+		LoadElementPosition(ctrl)
 		return ctrl
 	end
 
