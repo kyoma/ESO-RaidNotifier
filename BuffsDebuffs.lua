@@ -421,8 +421,10 @@ cloudrest.olorime_spears = 104019
 
 -- Shade of Galenwe and Falarielle
 --cloudrest.hoarfrost = {}
-cloudrest.hoarfrost     = 103760 -- first frost
-cloudrest.hoarfrost_aoe = 103743 -- when picked up from the floor
+cloudrest.hoarfrost     = {}
+cloudrest.hoarfrost[103760] = true -- first frost
+cloudrest.hoarfrost[110465] = true -- during execute
+cloudrest.hoarfrost_aoe = 103743 -- when picked up from the floor (no 2nd one for execute?)
 cloudrest.hoarfrost_countdown = 6000 -- hardcoded for now
 cloudrest.hoarfrost_syn = 103697
 cloudrest.hoarfrost_shed = 103714

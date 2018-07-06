@@ -232,7 +232,6 @@ do ---------------------------------
 			end
 			self:SetLastNotify(category, setting, currentTime)
 		end
-		dbg("Start")
 		local countdownId = LCSA:CreateCountdown(timer, soundId, nil, text, nil, SetupCallback, CountdownCallback)
 		if countdownId > 0 then
 			countdownInProgress = true
@@ -1832,7 +1831,7 @@ do ---------------------------
 		--dbg("[%d](%d) %s -> %s (%d)", result, abilityId, GetAbilityName(abilityId), tName, hitValue)
 
 		if result == ACTION_RESULT_BEGIN then
-			if abilityId == buffsDebuffs.hoarfrost then
+			if buffsDebuffs.hoarfrost[abilityId] then
 				self.hoarfrostCount = 1
 				if (settings.hoarfrost >= 1) then
 					dbg("Hoarfrost %d on %s, hitValue= %d", self.hoarfrostCount, tName, hitValue)

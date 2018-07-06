@@ -144,7 +144,7 @@
 
 					</Controls>
 				</Control>
-				<Texture name="$(parent)ArrowDisplay" textureFile="RaidNotifier/assets/arrow.dds" movable="true" mouseEnabled="true" hidden="true" clampedToScreen="true" color="ff9900">
+				<Texture name="$(parent)ArrowDisplay" textureFile="RaidNotifier/assets/arrow.dds" movable="false" mouseEnabled="false" hidden="true" clampedToScreen="true" color="ff9900">
 					<Dimensions x="128" y="128" />
 					<Anchor point="CENTER" relativePoint="CENTER" relativeTo="GuiRoot" />
 					<OnInitialized>
