@@ -418,6 +418,7 @@ cloudrest.shadow_realm_cast = 103946
 --cloudrest.olorime_spears = {} -- 2240
 --cloudrest.olorime_spears[104021] = true
 cloudrest.olorime_spears = 104019
+cloudrest.olorime_spears_synergized = 104017
 
 -- Shade of Galenwe and Falarielle
 --cloudrest.hoarfrost = {}
@@ -456,6 +457,8 @@ cloudrest.voltaic_overload_progress[109063] = true
 cloudrest.voltaic_overload_progress[109064] = true
 cloudrest.voltaic_overload_progress[109065] = true
 cloudrest.voltaic_overload_progress[109066] = true
+--cloudrest.amplification = 109022
+-- [2240] hitValue ticks from 1 to 41 over the course of voltaic overload
 
 -- Maja
 cloudrest.start_cd_of_srealm = 105890
@@ -470,8 +473,7 @@ cloudrest.shade_baneful_mark = 107196
 cloudrest.player_exit_srealm = 105218
 
 cloudrest.interest_list = {}
-cloudrest.interest_list[103697] = true
-cloudrest.interest_list[103895] = true
+
 
 RaidNotifier.BuffsDebuffs[RAID_CLOUDREST] = cloudrest
 
