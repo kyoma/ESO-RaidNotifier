@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name            = "RaidNotifier"
 RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.6.6"
+RaidNotifier.Version         = "2.6.7"
 RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name         = "RNVars"
 RaidNotifier.SV_Version      = 4
@@ -24,6 +24,7 @@ RAID_CLOUDREST		   = 9
 -- Debugging
 local function p() end
 local function dbg() end
+local function dlog() end
 
 function RaidNotifier:IsDevMode()
 	return self.Vars.dbg.devMode == true
@@ -634,6 +635,7 @@ do ----------------------
 			-- The main juicy events we want, registered seperately for better performance
 			-- TODO: Remove (some of) this debugging when releasing it
 			-- TODO: Also add filter for action result but will require re-organizing BuffsDebuffs.lua 
+--
 			dbg("----------------------------------------------")
 			dbg(" Gathering Abilities for Raid")
 			local raidData = self.BuffsDebuffs[self.raidId]
@@ -661,6 +663,7 @@ do ----------------------
 			end
 			dbg("----------------------------------------------")
 
+--]]
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_EFFECT_CHANGED, self.OnEffectChanged)
 			EVENT_MANAGER:AddFilterForEvent(self.Name, EVENT_EFFECT_CHANGED, REGISTER_FILTER_UNIT_TAG, "player")
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_BOSSES_CHANGED, self.OnBossesChanged)
@@ -728,6 +731,9 @@ do ----------------------
 		if (not self.Vars.useAccountWide) then -- not using global settings, generate (or load) character specific settings
 			self.Vars = ZO_SavedVars:New(self.SV_Name, self.SV_Version, nil, self:GetDefaults())
 		end
+		if not RN_DEBUG_LOG then
+			RN_DEBUG_LOG = {}
+		end
 
 		-- tiny functions
 		p = function(msg, ...)
@@ -738,8 +744,17 @@ do ----------------------
 			if self.Vars.dbg.enabled then
 				p(msg, ...)
 			end
+			dlog(msg, ...)
 		end
 		self.dbg = dbg
+
+		table.insert(RN_DEBUG_LOG, {})
+		local curLog = RN_DEBUG_LOG[#RN_DEBUG_LOG]
+		dlog = function(msg, ...)
+			--dbg(msg,...)
+			local time = string.format("%s:%03d ", GetTimeString(), GetGameTimeMilliseconds() % 1000)
+			table.insert(curLog, string.format("%s -> %s", time, msg:format(...)))
+		end
 		
 		self:CreateSettingsMenu()
 		
@@ -1829,6 +1844,9 @@ do ---------------------------
 			tName = UnitIdToString(tUnitId)
 		end
 		--dbg("[%d](%d) %s -> %s (%d)", result, abilityId, GetAbilityName(abilityId), tName, hitValue)
+		--if buffsDebuffs.interest_list[abilityId] then
+		--	dlog("[%d](%d) %s -> %s (%d)", result, abilityId, GetAbilityName(abilityId), tName, hitValue)
+		--end
 
 		if result == ACTION_RESULT_BEGIN then
 			if buffsDebuffs.hoarfrost[abilityId] then
@@ -1881,6 +1899,8 @@ do ---------------------------
 					end
 				end
 			elseif abilityId == buffsDebuffs.shadow_realm_cast then
+				self.olorimeSpears = {}
+				self.lastOlorimeSpearMs = 0
 				if (settings.shadow_realm_cast) then
 					if (self:IsCountdownInProgress()) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SHADOW_REALM_CAST), "cloudrest", "shadow_realm_cast")
@@ -1894,7 +1914,7 @@ do ---------------------------
 				end
 			elseif buffsDebuffs.roaring_flare[abilityId] then
 				if (settings.roaring_flare >= 1) then
-					if (self.break_amulet and not self.targetedByFire_2) then -- first fire on execute
+					if (self.inExecute and not self.targetedByFire_2) then -- first fire on execute
 						-- lets merge both fires together
 						self.targetedByFire_2 = tType == COMBAT_UNIT_TYPE_PLAYER and "you" or tName
 						self.targetedByFireTime_2 = GetGameTimeMilliseconds()
@@ -1920,7 +1940,7 @@ do ---------------------------
 					elseif (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE), "cloudrest", "roaring_flare")
 					elseif (tName ~= "" and settings.roaring_flare > 1) then
-						if (settings.track_roaring_flare) then
+						if (settings.track_roaring_flare and not self.inExecute) then
 							local tUnitTag = LUNIT:GetUnitTagForUnitId(tUnitId)
 							dbg("Tracking UnitTag: %s (%d)", tUnitTag, tUnitId)
 							self:TrackPlayer(tUnitTag, 6000)
@@ -1977,6 +1997,10 @@ do ---------------------------
 				if (settings.olorime_spears == true) then
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_OLORIME_SPEARS), "cloudrest", "olorime_spears")
 				end
+				
+			elseif abilityId == buffsDebuffs.olorime_spears_synergized then
+				--dbg("Spear Synergized ")
+				
 			elseif abilityId == buffsDebuffs.hoarfrost_syn then
 				if (settings.hoarfrost > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
@@ -1996,35 +2020,48 @@ do ---------------------------
                     self.hoarfrostCount = 0
                 end
 			elseif abilityId == buffsDebuffs.voltaic_overload then
---				if (settings.voltaic_overload > 0) then
---					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
---						self:StartCountdown(settings.voltaic_overload_time, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_overload")
-						
---						self.voltaic_overload = true
---						zo_callLater(function()
---							self.voltaic_overload = false
---						end, voltaic_overload_time)
---					end
---				end
+				if (settings.voltaic_overload > 0) then
+					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_overload")
+					
+						--self.voltaic_overload = true
+						--zo_callLater(function()
+						--	self.voltaic_overload = false
+						--end, voltaic_overload_time)
+					end
+				end
 			elseif buffsDebuffs.voltaic_current[abilityId] == true then
 				if (settings.voltaic_overload > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						--self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_CURRENT), "cloudrest", "voltaic_current")
 						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_CURRENT), "cloudrest", "voltaic_overload")
 
-						self.voltaic_overload = self.voltaic_overload and self.voltaic_overload + 1 or 1
-						zo_callLater(function()
-							self.voltaic_overload = self.voltaic_overload - 1
-						end, hitValue)
+						--self.voltaic_overload = self.voltaic_overload and self.voltaic_overload + 1 or 1
+						--zo_callLater(function()
+						--	self.voltaic_overload = self.voltaic_overload - 1
+						--end, hitValue)
 					end
 				end
 			end
 		elseif result == ACTION_RESULT_EFFECT_FADED then
 			-- when player die or overload just ended
 			if abilityId == buffsDebuffs.voltaic_overload then
-				self.voltaic_overload = 0
+				--self.voltaic_overload = 0
 				self.StopCountdown()
+			elseif abilityId == buffsDebuffs.olorime_spears_synergized then
+				local now = GetGameTimeMilliseconds()
+				dbg("Spear Synergized Done at %d", now)
+				if self.lastOlorimeSpearMs > 0 then
+					local diff = now - self.lastOlorimeSpearMs 
+					local x, y = GetMapPlayerPosition(LUNIT:GetUnitTagForUnitId(tUnitId))
+					dbg(" DiffMs: %d, Pos: %f / %f", diff, x, y)
+				else
+					local x, y = GetMapPlayerPosition(LUNIT:GetUnitTagForUnitId(tUnitId))
+					dbg(" First spear, Pos: %f / %f", x, y)
+				end
+				self.lastOlorimeSpearMs = now
 			end
+			
 --		elseif result == ACTION_RESULT_DAMAGE then
 --			if buffsDebuffs.voltaic_overload_progress[abilityId] == true then
 --				if (settings.voltaic_overload > 0 and self.voltaic_overload and self.voltaic_overload > 0) then
@@ -2061,9 +2098,22 @@ do ---------------------------
 
 	local trackedUnits = {}
 	local trackedAbilities = {}
+	
+	local blacklist = {
+		[90618] = true,
+		[90619] = true,
+		[90624] = true,
+	}
 	local function OnCombatDebugEvent(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
 
 		local self   = RaidNotifier
+
+		
+		if abilityId < 80000 then
+			return 
+		elseif blacklist[abilityId] then
+			return 
+		end
 		
 		if self.Vars.dbg.units then
 			local function CheckUnit(id, name, type)
@@ -2103,7 +2153,7 @@ do ---------------------------
 					local ability = (aName ~= "" and aName ~= nil) and aName or GetAbilityName(abilityId)
 
 					debugList[result][abilityId] = self.Vars.dbg.spamControl
-					d(debugMsg:format(result, ability, abilityId, source, target, hitValue))
+					dlog(debugMsg, result, ability, abilityId, source, target, hitValue)
 				
 				end
 			end
@@ -2195,24 +2245,6 @@ do -----------------------------
 				if settings.venom_injection then
 					self:UpdateSphereVenom(changeType ~= EFFECT_RESULT_FADED, beginTime, endTime)
 				end
-			end
-		elseif (raidId == RAID_CLOUDREST) then
-			local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.cloudrest
-			
-			if abilityId == buffsDebuffs.voltaic_overload then
-				if (settings.voltaic_overload > 0) then
-					if changeType == EFFECT_RESULT_GAINED then
-						local time = (endTime - beginTime) * 1000
-						self:StartCountdown(time, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_overload")
-						
-						self.voltaic_overload = self.voltaic_overload and self.voltaic_overload + 1 or 1
-						zo_callLater(function()
-							self.voltaic_overload = self.voltaic_overload - 1
-						end, time)
-					end
-				end
-			elseif buffsDebuffs.voltaic_current[abilityId] == true then
-				dbg("Effect voltaic current: %s -> %d (%d)", GetAbilityName(abilityId), endTime - beginTime, stackCount)
 			end
 		end
 

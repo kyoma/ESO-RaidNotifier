@@ -134,6 +134,7 @@ do ------------------
 	-- }
 	
 	local defaults = {
+		dLog = {}, 
 		useAccountWide = true, 
 		general = {
 			buffFood_reminder = true,
