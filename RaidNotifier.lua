@@ -1862,18 +1862,25 @@ do ---------------------------
 						else
 							self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
 						end
-					elseif (tName ~= "" and settings.hoarfrost > 1) then
+					elseif (tName ~= "") then
 						self.currentHoarfrostUserId = tUnitId
-						self:AddAnnouncement(zo_strformat(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER", tmp), tName), "cloudrest", "hoarfrost")
+						if (settings.hoarfrost > 1) then
+							self:AddAnnouncement(zo_strformat(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER", tmp), tName), "cloudrest", "hoarfrost")
+						end
 					end
 				end
 			elseif abilityId == buffsDebuffs.hoarfrost_shed then
 				if (settings.hoarfrost_shed == true) then
-					if (tName ~= "" and tType ~= COMBAT_UNIT_TYPE_PLAYER) then
+					dbg("Hoarfrost SHED %d self(%s)", self.currentHoarfrostUserId and self.currentHoarfrostUserId or -1, tType == COMBAT_UNIT_TYPE_PLAYER and "true" or "false")
+					if (tType ~= COMBAT_UNIT_TYPE_PLAYER) then
 						if (not self.currentHoarfrostUserId or self.currentHoarfrostUserId == 0) then
 							dbg("No info about current hoarfrost person")
 							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SHED), "cloudrest", "hoarfrost_shed")
 						else
+							if (tName == "") then
+								tName = UnitIdToString(self.currentHoarfrostUserId)
+								dbg("Hoarfrost userId taken from currentHoarfrostUserId")
+							end
 							self.currentHoarfrostUserId = 0
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SHED_OTHER), tName), "cloudrest", "hoarfrost_shed")
 						end
