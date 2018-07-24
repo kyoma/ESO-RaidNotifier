@@ -2254,6 +2254,20 @@ do -----------------------------
 					self:UpdateSphereVenom(changeType ~= EFFECT_RESULT_FADED, beginTime, endTime)
 				end
 			end
+		elseif (raidId == RAID_CLOUDREST) then	
+			local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.cloudrest	
+			
+			if abilityId == buffsDebuffs.voltaic_overload then	
+				if (settings.voltaic_overload > 0) then	
+					if changeType == EFFECT_RESULT_GAINED then
+						local time = (endTime - beginTime) * 1000	
+--						self:StartCountdown(time, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_overload")	
+						dbg("Overload should be triggered")
+					elseif buffsDebuffs.voltaic_current[abilityId] == true then	
+						dbg("Effect voltaic current: %s -> %d (%d)", GetAbilityName(abilityId), endTime - beginTime, stackCount)	
+					end
+				end
+			end
 		end
 
 	end
