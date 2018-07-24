@@ -153,4 +153,44 @@ function Util:GetRotationAngle(unitTag)
 	local targetX, targetY = GetMapPlayerPosition(unitTag)
 	return GetNormalizedAngle(-1 * (GetNormalizedAngle(GetPlayerCameraHeading()) - math.atan2(playerX - targetX, playerY - targetY)))
 end
-	
+
+local function GetRangeDivisor() -- RangeReticle function (Author: Adein - http://www.esoui.com/downloads/info177-RangeReticle.html)
+	local mapWidth, mapHeight = GetMapNumTiles()
+	local mapType = GetMapType()
+	local mapContentType = GetMapContentType()
+
+	local divisor = mapType * mapWidth
+
+	if mapContentType == MAP_CONTENT_NONE then
+		if mapType == MAPTYPE_SUBZONE then
+			divisor = 1.00
+		elseif mapType == MAPTYPE_ZONE then
+			divisor = 0.20
+		end
+	elseif mapContentType == MAP_CONTENT_AVA then
+		if mapType == MAPTYPE_SUBZONE then
+			divisor = 1.75
+		elseif mapType == MAPTYPE_ZONE then
+			divisor = 0.08
+		end
+	elseif mapContentType == MAP_CONTENT_DUNGEON then
+		if mapType == MAPTYPE_SUBZONE then
+			divisor = 1.45
+		elseif mapType == MAPTYPE_ZONE then
+			divisor = 1.79
+		end
+	end
+
+	return divisor
+end
+
+function Util:GetDistance(pX, pY, tX, tY)
+        local diffX = (tX - pX)
+	local diffY = (tX - pY)
+
+	local dist = math.sqrt(x * x + y * y) * 800 / GetRangeDivisor()
+	dist = zo_round(dist * 100) / 100
+
+	return dist
+end
+
