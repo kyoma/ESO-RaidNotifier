@@ -1853,15 +1853,15 @@ do ---------------------------
 				self.hoarfrostCount = 1
 				if (settings.hoarfrost >= 1) then
 					dbg("Hoarfrost %d on %s, hitValue= %d", self.hoarfrostCount, tName, hitValue)
-                    local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0 -- need to disable this in execute due to the additional hoarfrost interferring
+					local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0 -- need to disable this in execute due to the additional hoarfrost interferring
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self.hoarfrostStart = GetGameTimeMilliseconds()
 						self.hoarfrostEnd = 0
-                        if settings.hoarfrost_countdown and not self:IsCountdownInProgress() then
-                            self:StartCountdown(buffsDebuffs.hoarfrost_countdown + hitValue, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
-                        else
-                            self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
-                        end
+						if settings.hoarfrost_countdown and not self:IsCountdownInProgress() then
+							self:StartCountdown(buffsDebuffs.hoarfrost_countdown + hitValue, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
+						else
+							self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
+						end
 					elseif (tName ~= "" and settings.hoarfrost > 1) then
 						self.currentHoarfrostUserId = tUnitId
 						self:AddAnnouncement(zo_strformat(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER", tmp), tName), "cloudrest", "hoarfrost")
@@ -1869,7 +1869,6 @@ do ---------------------------
 				end
 			elseif abilityId == buffsDebuffs.hoarfrost_shed then
 				if (settings.hoarfrost_shed == true) then
---					tName = UnitIdToString(tUnitId)
 					if (tName ~= "" and tType ~= COMBAT_UNIT_TYPE_PLAYER) then
 						if (not self.currentHoarfrostUserId or self.currentHoarfrostUserId == 0) then
 							dbg("No info about current hoarfrost person")
@@ -1952,13 +1951,13 @@ do ---------------------------
 		elseif result == ACTION_RESULT_EFFECT_GAINED then
 			if (abilityId == buffsDebuffs.start_cd_of_srealm) then
 				--self.break_amulet = false -- will be reset further up
-            elseif (abilityId == buffsDebuffs.player_exit_srealm) then
-                dbg("Exit ShadowRealm >> %s", tName)
-                --if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-                --    self.hoarfrostCount = 0 -- make sure it won't show the "last frost" alert by mistake if the player missed some of the combat events while he was away
-                --end
+			elseif (abilityId == buffsDebuffs.player_exit_srealm) then
+				dbg("Exit ShadowRealm >> %s", tName)
+	        	        --if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+        	        	--    self.hoarfrostCount = 0 -- make sure it won't show the "last frost" alert by mistake if the player missed some of the combat events while he was away
+	                	--end
 			elseif (abilityId == buffsDebuffs.break_amulet) then
-                self.inExecute = true
+	        	        self.inExecute = true
 				dbg("Entering execute phase")
 				--if (settings.break_amulet == true) then
 				--	self.break_amulet = true
@@ -1970,18 +1969,18 @@ do ---------------------------
 					end
 				end
 			elseif abilityId == buffsDebuffs.hoarfrost_aoe then
-                self.hoarfrostCount = self.hoarfrostCount + 1 
+				self.hoarfrostCount = self.hoarfrostCount + 1 
 				if (settings.hoarfrost >= 1) then
 					dbg("Hoarfrost %d on %s, hitValue= %d", self.hoarfrostCount, tName, hitValue)
-                    local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0 -- need to disable this in execute due to the additional hoarfrost interferring
+					local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0 -- need to disable this in execute due to the additional hoarfrost interferring
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self.hoarfrostStart = GetGameTimeMilliseconds()
 						self.hoarfrostEnd = 0
-                        if settings.hoarfrost_countdown and not self:IsCountdownInProgress() then
-                            self:StartCountdown(buffsDebuffs.hoarfrost_countdown, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
-                        else
-                            self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
-                        end
+						if settings.hoarfrost_countdown and not self:IsCountdownInProgress() then
+							self:StartCountdown(buffsDebuffs.hoarfrost_countdown, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
+						else
+							self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
+						end
 					elseif (tName ~= "" and settings.hoarfrost > 1) then
 						self.currentHoarfrostUserId = tUnitId
 						self:AddAnnouncement(zo_strformat(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER", tmp), tName), "cloudrest", "hoarfrost")
@@ -2009,16 +2008,18 @@ do ---------------------------
 						end
 						dbg("Hoarfrost syn, hitValue=%d, duration=%d", hitValue, self.hoarfrostEnd - self.hoarfrostStart)
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SYN), "cloudrest", "hoarfrost_syn", 5)
+					elseif (tName ~= "") then
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SYN_OTHER), tName), "cloudrest", "hoarfrost_syn", 5)
 					end
 				end
 			end
 		elseif result == ACTION_RESULT_EFFECT_GAINED_DURATION then
-            if buffsDebuffs.shadow_world[abilityId] == true then
-                dbg("Enter ShadowRealm >> %s", tName)
-                if tType == COMBAT_UNIT_TYPE_PLAYER then
-                    dbg("Reset hoarfrost count for me")
-                    self.hoarfrostCount = 0
-                end
+			if buffsDebuffs.shadow_world[abilityId] == true then
+				dbg("Enter ShadowRealm >> %s", tName)
+				if tType == COMBAT_UNIT_TYPE_PLAYER then
+					dbg("Reset hoarfrost count for me")
+					self.hoarfrostCount = 0
+				end
 			elseif abilityId == buffsDebuffs.voltaic_overload then
 				if (settings.voltaic_overload > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
