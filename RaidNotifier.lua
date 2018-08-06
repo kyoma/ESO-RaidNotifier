@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name           = "RaidNotifier"
 RaidNotifier.DisplayName    = "Raid Notifier"
-RaidNotifier.Version        = "2.6.8"
+RaidNotifier.Version        = "2.6.9"
 RaidNotifier.Author         = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name        = "RNVars"
 RaidNotifier.SV_Version     = 4
@@ -1856,8 +1856,6 @@ do ---------------------------
 					dbg("Hoarfrost %d on %s, hitValue= %d", self.hoarfrostCount, tName, hitValue)
 					local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0 -- need to disable this in execute due to the additional hoarfrost interferring
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self.hoarfrostStart = GetGameTimeMilliseconds()
-						self.hoarfrostEnd = 0
 						if settings.hoarfrost_countdown and not self:IsCountdownInProgress() then
 							self:StartCountdown(buffsDebuffs.hoarfrost_countdown + hitValue, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
 						else
@@ -1902,6 +1900,9 @@ do ---------------------------
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SUM_SHADOW_BEADS), "cloudrest", "sum_shadow_beads")
 				end
 			elseif buffsDebuffs.roaring_flare[abilityId] then
+				if self.inExecute then
+					dbg("roaring flare [%d] -> %s", abilityId, tName or "nil")
+				end
 				if (settings.roaring_flare >= 1) then
 					if (self.inExecute and not self.targetedByFire_2) then -- first fire on execute
 						-- lets merge both fires together
@@ -1961,8 +1962,6 @@ do ---------------------------
 					dbg("Hoarfrost %d on %s, hitValue= %d", self.hoarfrostCount, tName, hitValue)
 					local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0 -- need to disable this in execute due to the additional hoarfrost interferring
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self.hoarfrostStart = GetGameTimeMilliseconds()
-						self.hoarfrostEnd = 0
 						if settings.hoarfrost_countdown and not self:IsCountdownInProgress() then
 							self:StartCountdown(buffsDebuffs.hoarfrost_countdown, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
 						else
@@ -1976,12 +1975,9 @@ do ---------------------------
 			elseif abilityId == buffsDebuffs.hoarfrost_shed then
 				if (settings.hoarfrost_shed == true) then
 					if (tName ~= "" and tType ~= COMBAT_UNIT_TYPE_PLAYER) then
-						--if (not self.currentHoarfrostUserId or self.currentHoarfrostUserId == 0) then
-						--	dbg("No info about current hoarfrost person")
-						--	self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SHED), "cloudrest", "hoarfrost_shed")
-						--else
+						if self.hoarfrostCount < 3 or self.inExecute then 
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SHED_OTHER), tName), "cloudrest", "hoarfrost_shed")
-						--end
+						end
 					end
 				end
 			elseif abilityId == buffsDebuffs.crushing_darkness then
@@ -2001,13 +1997,7 @@ do ---------------------------
 			elseif abilityId == buffsDebuffs.hoarfrost_syn then
 				if (settings.hoarfrost > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						if self.hoarfrostEnd == 0 then 
-							self.hoarfrostEnd = GetGameTimeMilliseconds()
-						end
-						dbg("Hoarfrost syn, hitValue=%d, duration=%d", hitValue, self.hoarfrostEnd - self.hoarfrostStart)
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SYN), "cloudrest", "hoarfrost_syn", 5)
-					elseif (tName ~= "") then
-						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SYN_OTHER), tName), "cloudrest", "hoarfrost_syn", 5)
 					end
 				end
 			end
