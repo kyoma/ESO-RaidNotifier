@@ -1999,7 +1999,7 @@ do ---------------------------
 				if (settings.hoarfrost > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SYN), "cloudrest", "hoarfrost_syn", 5)
-					elseif (tName ~= "") then
+					elseif (tName ~= "" and self.hoarfrostCount < 3) then
 						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SYN_OTHER), tName), "cloudrest", "hoarfrost_syn", 5)
 					end
 				end

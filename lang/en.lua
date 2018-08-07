@@ -450,6 +450,7 @@ L.Alerts_Cloudrest_Hoarfrost_Other1             = "|cff0000Last|r |c00ddffHoarfr
 L.Alerts_Cloudrest_Hoarfrost_Countdown0         = "Drop |c00ddffHoarfrost|r in..."
 L.Alerts_Cloudrest_Hoarfrost_Countdown1         = "Drop |cff0000Last|r |c00ddffHoarfrost|r in..."
 L.Alerts_Cloudrest_Hoarfrost_Syn                = "|cff0000Use synergy|r to drop hoarfrost!"
+L.Alerts_Cloudrest_Hoarfrost_Syn_Other          = "|c00ddffHoarfrost|r dropped by |cff0000<<!aC:1>>|r."
 L.Alerts_Cloudrest_Hoarfrost_Shed               = "|c00ddffHoarfrost|r dropped."
 L.Alerts_Cloudrest_Hoarfrost_Shed_Other         = "|c00ddffHoarfrost|r dropped by |cff0000<<!aC:1>>|r."
 L.Alerts_Cloudrest_Baneful_Barb                 = "|cff0000Baneful Barb|r. Rolldodge!"
