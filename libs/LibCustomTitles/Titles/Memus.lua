@@ -26,5 +26,5 @@ MY_MODULE:RegisterTitle("@Healsthefeels", nil, 1391, {en = "The Snake"}, {color=
 MY_MODULE:RegisterTitle("@peniku8", nil, 92, {en = "Plague Cycle"}, {color="#6c00ff"})
 MY_MODULE:RegisterTitle("@kilnerdyne", nil, 92, {en = "Late Night Master"}, {color={"#2277BB", "#005599"}})
 MY_MODULE:RegisterTitle("@LiofaTR", nil, 92, {en = "The Tonk"}, {color={"#F2726E", "#C40808"}})
-MY_MODULE:RegisterTitle("@XiaoWeiXiao", nil, 92, {en = "cE70000To|r|cFF8C00ma|r|cFFEF00to|r|c00811F|sh|r|c0044FFar|r|c760089k|r"})
-MY_MODULE:RegisterTitle("@WHoitsma", nil, 92, {en = "cE70000The|r|cFF8C00God|r|cFFEF00of|r|c00811F|Fem|r|c0044FFini|r|c760089sts|r"})
+MY_MODULE:RegisterTitle("@XiaoWeiXiao", nil, 92, {en = "|cE70000To|r|cFF8C00ma|r|cFFEF00to|r|c00811F|sh|r|c0044FFar|r|c760089k|r"})
+MY_MODULE:RegisterTitle("@WHoitsma", nil, 92, {en = "|cE70000The|r|cFF8C00God|r|cFFEF00of|r|c00811F|Fem|r|c0044FFini|r|c760089sts|r"})
