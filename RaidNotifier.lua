@@ -3,23 +3,23 @@ RaidNotifier.Util = {}
 
 local RaidNotifier = RaidNotifier
 
-RaidNotifier.Name            = "RaidNotifier"
-RaidNotifier.DisplayName     = "Raid Notifier"
-RaidNotifier.Version         = "2.6.7"
-RaidNotifier.Author          = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
-RaidNotifier.SV_Name         = "RNVars"
-RaidNotifier.SV_Version      = 4
+RaidNotifier.Name           = "RaidNotifier"
+RaidNotifier.DisplayName    = "Raid Notifier"
+RaidNotifier.Version        = "2.6.9"
+RaidNotifier.Author         = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
+RaidNotifier.SV_Name        = "RNVars"
+RaidNotifier.SV_Version     = 4
 
 -- Constants for easy reading
-RAID_HEL_RA_CITADEL        = 1
-RAID_AETHERIAN_ARCHIVE     = 2
-RAID_SANCTUM_OPHIDIA       = 3
-RAID_DRAGONSTAR_ARENA      = 4
-RAID_MAW_OF_LORKHAJ        = 5
-RAID_MAELSTROM_ARENA       = 6
-RAID_HALLS_OF_FABRICATION  = 7
-RAID_ASYLUM_SANCTORIUM     = 8
-RAID_CLOUDREST		   = 9
+RAID_HEL_RA_CITADEL         = 1
+RAID_AETHERIAN_ARCHIVE      = 2
+RAID_SANCTUM_OPHIDIA        = 3
+RAID_DRAGONSTAR_ARENA       = 4
+RAID_MAW_OF_LORKHAJ         = 5
+RAID_MAELSTROM_ARENA        = 6
+RAID_HALLS_OF_FABRICATION   = 7
+RAID_ASYLUM_SANCTORIUM      = 8
+RAID_CLOUDREST              = 9
 
 -- Debugging
 local function p() end
@@ -731,9 +731,10 @@ do ----------------------
 		if (not self.Vars.useAccountWide) then -- not using global settings, generate (or load) character specific settings
 			self.Vars = ZO_SavedVars:New(self.SV_Name, self.SV_Version, nil, self:GetDefaults())
 		end
-		if not RN_DEBUG_LOG then
-			RN_DEBUG_LOG = {}
-		end
+		--if not RN_DEBUG_LOG then
+		--	RN_DEBUG_LOG = {}
+		--end
+		RN_DEBUG_LOG = nil
 
 		-- tiny functions
 		p = function(msg, ...)
@@ -744,17 +745,17 @@ do ----------------------
 			if self.Vars.dbg.enabled then
 				p(msg, ...)
 			end
-			dlog(msg, ...)
+			--dlog(msg, ...)
 		end
 		self.dbg = dbg
 
-		table.insert(RN_DEBUG_LOG, {})
-		local curLog = RN_DEBUG_LOG[#RN_DEBUG_LOG]
-		dlog = function(msg, ...)
-			--dbg(msg,...)
-			local time = string.format("%s:%03d ", GetTimeString(), GetGameTimeMilliseconds() % 1000)
-			table.insert(curLog, string.format("%s -> %s", time, msg:format(...)))
-		end
+		--table.insert(RN_DEBUG_LOG, {})
+		--local curLog = RN_DEBUG_LOG[#RN_DEBUG_LOG]
+		--dlog = function(msg, ...)
+		--	--dbg(msg,...)
+		--	local time = string.format("%s:%03d ", GetTimeString(), GetGameTimeMilliseconds() % 1000)
+		--	table.insert(curLog, string.format("%s -> %s", time, msg:format(...)))
+		--end
 		
 		self:CreateSettingsMenu()
 		
@@ -877,7 +878,7 @@ do -----------------------------
 		local raidId = RaidNotifier.raidId
 
 		self.Minions = self.Minions or {}
-        self.inExecute = false
+		self.inExecute = false
 		local bossCount, bossAlive, bossFull = self:GetNumBosses(true)
 		-- reset if: 
 		--    1) there are no bosses
@@ -1855,34 +1856,15 @@ do ---------------------------
 					dbg("Hoarfrost %d on %s, hitValue= %d", self.hoarfrostCount, tName, hitValue)
 					local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0 -- need to disable this in execute due to the additional hoarfrost interferring
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self.hoarfrostStart = GetGameTimeMilliseconds()
-						self.hoarfrostEnd = 0
 						if settings.hoarfrost_countdown and not self:IsCountdownInProgress() then
 							self:StartCountdown(buffsDebuffs.hoarfrost_countdown + hitValue, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
 						else
 							self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
 						end
-					elseif (tName ~= "") then
+					elseif (tName ~= "" and settings.hoarfrost > 1) then
 						self.currentHoarfrostUserId = tUnitId
 						if (settings.hoarfrost > 1) then
 							self:AddAnnouncement(zo_strformat(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER", tmp), tName), "cloudrest", "hoarfrost")
-						end
-					end
-				end
-			elseif abilityId == buffsDebuffs.hoarfrost_shed then
-				if (settings.hoarfrost_shed == true) then
-					dbg("Hoarfrost SHED %d self(%s)", self.currentHoarfrostUserId and self.currentHoarfrostUserId or -1, tType == COMBAT_UNIT_TYPE_PLAYER and "true" or "false")
-					if (tType ~= COMBAT_UNIT_TYPE_PLAYER) then
-						if (not self.currentHoarfrostUserId or self.currentHoarfrostUserId == 0) then
-							dbg("No info about current hoarfrost person")
-							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SHED), "cloudrest", "hoarfrost_shed")
-						else
-							if (tName == "") then
-								tName = UnitIdToString(self.currentHoarfrostUserId)
-								dbg("Hoarfrost userId taken from currentHoarfrostUserId")
-							end
-							self.currentHoarfrostUserId = 0
-							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SHED_OTHER), tName), "cloudrest", "hoarfrost_shed")
 						end
 					end
 				end
@@ -1919,6 +1901,9 @@ do ---------------------------
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SUM_SHADOW_BEADS), "cloudrest", "sum_shadow_beads")
 				end
 			elseif buffsDebuffs.roaring_flare[abilityId] then
+				if self.inExecute then
+					dbg("roaring flare [%d] -> %s", abilityId, tName or "nil")
+				end
 				if (settings.roaring_flare >= 1) then
 					if (self.inExecute and not self.targetedByFire_2) then -- first fire on execute
 						-- lets merge both fires together
@@ -1960,11 +1945,8 @@ do ---------------------------
 				--self.break_amulet = false -- will be reset further up
 			elseif (abilityId == buffsDebuffs.player_exit_srealm) then
 				dbg("Exit ShadowRealm >> %s", tName)
-	        	        --if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-        	        	--    self.hoarfrostCount = 0 -- make sure it won't show the "last frost" alert by mistake if the player missed some of the combat events while he was away
-	                	--end
 			elseif (abilityId == buffsDebuffs.break_amulet) then
-	        	        self.inExecute = true
+				self.inExecute = true
 				dbg("Entering execute phase")
 				--if (settings.break_amulet == true) then
 				--	self.break_amulet = true
@@ -1981,8 +1963,6 @@ do ---------------------------
 					dbg("Hoarfrost %d on %s, hitValue= %d", self.hoarfrostCount, tName, hitValue)
 					local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0 -- need to disable this in execute due to the additional hoarfrost interferring
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self.hoarfrostStart = GetGameTimeMilliseconds()
-						self.hoarfrostEnd = 0
 						if settings.hoarfrost_countdown and not self:IsCountdownInProgress() then
 							self:StartCountdown(buffsDebuffs.hoarfrost_countdown, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
 						else
@@ -1991,6 +1971,14 @@ do ---------------------------
 					elseif (tName ~= "" and settings.hoarfrost > 1) then
 						self.currentHoarfrostUserId = tUnitId
 						self:AddAnnouncement(zo_strformat(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER", tmp), tName), "cloudrest", "hoarfrost")
+					end
+				end
+			elseif abilityId == buffsDebuffs.hoarfrost_shed then
+				if (settings.hoarfrost_shed == true) then
+					if (tName ~= "" and tType ~= COMBAT_UNIT_TYPE_PLAYER) then
+						if self.hoarfrostCount < 3 or self.inExecute then 
+							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SHED_OTHER), tName), "cloudrest", "hoarfrost_shed")
+						end
 					end
 				end
 			elseif abilityId == buffsDebuffs.crushing_darkness then
@@ -2010,10 +1998,6 @@ do ---------------------------
 			elseif abilityId == buffsDebuffs.hoarfrost_syn then
 				if (settings.hoarfrost > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						if self.hoarfrostEnd == 0 then 
-							self.hoarfrostEnd = GetGameTimeMilliseconds()
-						end
-						dbg("Hoarfrost syn, hitValue=%d, duration=%d", hitValue, self.hoarfrostEnd - self.hoarfrostStart)
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SYN), "cloudrest", "hoarfrost_syn", 5)
 					elseif (tName ~= "") then
 						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SYN_OTHER), tName), "cloudrest", "hoarfrost_syn", 5)
@@ -2278,8 +2262,8 @@ end
 -- EVENT: EVENT_ADD_ON_LOADED
 -- ----------------------------
 local function OnAddonLoaded(_, addonName)
-    if addonName ~= RaidNotifier.Name then return end
-    EVENT_MANAGER:UnregisterForEvent(RaidNotifier.Name, EVENT_ADD_ON_LOADED)
+	if addonName ~= RaidNotifier.Name then return end
+	EVENT_MANAGER:UnregisterForEvent(RaidNotifier.Name, EVENT_ADD_ON_LOADED)
 	RaidNotifier:Initialize()
 end
 EVENT_MANAGER:RegisterForEvent(RaidNotifier.Name, EVENT_ADD_ON_LOADED, OnAddonLoaded)
