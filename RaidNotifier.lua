@@ -1863,11 +1863,10 @@ do ---------------------------
 						end
 					elseif (tName ~= "" and settings.hoarfrost > 1) then
 						self.currentHoarfrostUserId = tUnitId
-						if (settings.hoarfrost > 1) then
-							self:AddAnnouncement(zo_strformat(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER", tmp), tName), "cloudrest", "hoarfrost")
-						end
+						self:AddAnnouncement(zo_strformat(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER", tmp), tName), "cloudrest", "hoarfrost")
 					end
 				end
+
 			elseif abilityId == buffsDebuffs.tentacle_spawn then
 				if (settings.tentacle_spawn == true and not (self.inExecute and settings.break_amulet)) then
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_TENTACLE_SPAWN), "cloudrest", "tentacle_spawn")
@@ -1999,8 +1998,6 @@ do ---------------------------
 				if (settings.hoarfrost > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SYN), "cloudrest", "hoarfrost_syn", 5)
-					elseif (tName ~= "" and self.hoarfrostCount < 3) then
-						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SYN_OTHER), tName), "cloudrest", "hoarfrost_syn", 5)
 					end
 				end
 			end
@@ -2236,20 +2233,6 @@ do -----------------------------
 			elseif abilityId == buffsDebuffs.venom_injection then
 				if settings.venom_injection then
 					self:UpdateSphereVenom(changeType ~= EFFECT_RESULT_FADED, beginTime, endTime)
-				end
-			end
-		elseif (raidId == RAID_CLOUDREST) then	
-			local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.cloudrest	
-			
-			if abilityId == buffsDebuffs.voltaic_overload then	
-				if (settings.voltaic_overload > 0) then	
-					if changeType == EFFECT_RESULT_GAINED then
-						local time = (endTime - beginTime) * 1000	
---						self:StartCountdown(time, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_overload")	
-						dbg("Overload should be triggered")
-					elseif buffsDebuffs.voltaic_current[abilityId] == true then	
-						dbg("Effect voltaic current: %s -> %d (%d)", GetAbilityName(abilityId), endTime - beginTime, stackCount)	
-					end
 				end
 			end
 		end
