@@ -731,10 +731,10 @@ do ----------------------
 		if (not self.Vars.useAccountWide) then -- not using global settings, generate (or load) character specific settings
 			self.Vars = ZO_SavedVars:New(self.SV_Name, self.SV_Version, nil, self:GetDefaults())
 		end
-		--if not RN_DEBUG_LOG then
-		--	RN_DEBUG_LOG = {}
-		--end
-		RN_DEBUG_LOG = nil
+		if not RN_DEBUG_LOG then
+			RN_DEBUG_LOG = {}
+		end
+		--RN_DEBUG_LOG = nil
 
 		-- tiny functions
 		p = function(msg, ...)
@@ -745,17 +745,17 @@ do ----------------------
 			if self.Vars.dbg.enabled then
 				p(msg, ...)
 			end
-			--dlog(msg, ...)
+			dlog(msg, ...)
 		end
 		self.dbg = dbg
 
-		--table.insert(RN_DEBUG_LOG, {})
-		--local curLog = RN_DEBUG_LOG[#RN_DEBUG_LOG]
-		--dlog = function(msg, ...)
-		--	--dbg(msg,...)
-		--	local time = string.format("%s:%03d ", GetTimeString(), GetGameTimeMilliseconds() % 1000)
-		--	table.insert(curLog, string.format("%s -> %s", time, msg:format(...)))
-		--end
+		table.insert(RN_DEBUG_LOG, {})
+		local curLog = RN_DEBUG_LOG[#RN_DEBUG_LOG]
+		dlog = function(msg, ...)
+			--dbg(msg,...)
+			local time = string.format("%s:%03d ", GetTimeString(), GetGameTimeMilliseconds() % 1000)
+			table.insert(curLog, string.format("%s -> %s", time, msg:format(...)))
+		end
 		
 		self:CreateSettingsMenu()
 		
@@ -878,17 +878,17 @@ do -----------------------------
 		local raidId = RaidNotifier.raidId
 
 		self.Minions = self.Minions or {}
-		self.inExecute = false
 		local bossCount, bossAlive, bossFull = self:GetNumBosses(true)
 		-- reset if: 
 		--    1) there are no bosses
 		--    2) all bosses are dead
 		--    3) all bosses are at full health
 		if bossCount == 0 or bossAlive == 0 or bossFull == bossCount then
+			self.inExecute = false
 			-- reset all minions for now
 			self.Minions = {}
 			-- remove any countdown that is active
-			--dbg("Bosses changed, stop any active countdown")
+			dbg("Bosses changed, stop any active countdown")
 			self:StopCountdown()
 		end
 
@@ -1844,17 +1844,21 @@ do ---------------------------
 		if (tName == nil or tName == "") then
 			tName = UnitIdToString(tUnitId)
 		end
-		--dbg("[%d](%d) %s -> %s (%d)", result, abilityId, GetAbilityName(abilityId), tName, hitValue)
-		--if buffsDebuffs.interest_list[abilityId] then
-		--	dlog("[%d](%d) %s -> %s (%d)", result, abilityId, GetAbilityName(abilityId), tName, hitValue)
-		--end
 
 		if result == ACTION_RESULT_BEGIN then
 			if buffsDebuffs.hoarfrost[abilityId] then
-				self.hoarfrostCount = 1
+				local track = buffsDebuffs.hoarfrost[abilityId]
+				dbg("Hoarfrost started (track #%d)", track)
+				self.hoarfrostData = self.hoarfrostData or {}
+				self.hoarfrostData[track] =
+				{
+					count = 0, -- will be incremented to 1 once it's actually added to the player
+					unitId = tUnitId,
+					ms = GetGameTimeMilliseconds(),
+				}
+				dbg("Begin hoarfrost track #%d for %s", track, tName)
 				if (settings.hoarfrost >= 1) then
-					dbg("Hoarfrost %d on %s, hitValue= %d", self.hoarfrostCount, tName, hitValue)
-					local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0 -- need to disable this in execute due to the additional hoarfrost interferring
+					local tmp = 0
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						if settings.hoarfrost_countdown and not self:IsCountdownInProgress() then
 							self:StartCountdown(buffsDebuffs.hoarfrost_countdown + hitValue, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
@@ -1862,13 +1866,12 @@ do ---------------------------
 							self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
 						end
 					elseif (tName ~= "" and settings.hoarfrost > 1) then
-						self.currentHoarfrostUserId = tUnitId
 						self:AddAnnouncement(zo_strformat(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER", tmp), tName), "cloudrest", "hoarfrost")
 					end
 				end
 
 			elseif abilityId == buffsDebuffs.tentacle_spawn then
-				if (settings.tentacle_spawn == true and not (self.inExecute and settings.break_amulet)) then
+				if (settings.tentacle_spawn == true and not (self.break_amulet and settings.break_amulet)) then
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_TENTACLE_SPAWN), "cloudrest", "tentacle_spawn")
 				end
 			elseif abilityId == buffsDebuffs.nocturnals_favor then
@@ -1896,15 +1899,15 @@ do ---------------------------
 					end
 				end
 			elseif abilityId == buffsDebuffs.sum_shadow_beads then
-				if (settings.sum_shadow_beads == true and not (self.inExecute and settings.break_amulet)) then
+				if (settings.sum_shadow_beads == true and not (self.break_amulet and settings.break_amulet)) then
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SUM_SHADOW_BEADS), "cloudrest", "sum_shadow_beads")
 				end
 			elseif buffsDebuffs.roaring_flare[abilityId] then
-				if self.inExecute then
-					dbg("roaring flare [%d] -> %s", abilityId, tName or "nil")
-				end
+				--if self.break_amulet then
+				--	dbg("roaring flare [%d] -> %s", abilityId, tName or "nil")
+				--end
 				if (settings.roaring_flare >= 1) then
-					if (self.inExecute and not self.targetedByFire_2) then -- first fire on execute
+					if (self.break_amulet and not self.targetedByFire_2) then -- first fire on execute
 						-- lets merge both fires together
 						self.targetedByFire_2 = tType == COMBAT_UNIT_TYPE_PLAYER and "you" or tName
 						self.targetedByFireTime_2 = GetGameTimeMilliseconds()
@@ -1930,7 +1933,7 @@ do ---------------------------
 					elseif (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE), "cloudrest", "roaring_flare")
 					elseif (tName ~= "" and settings.roaring_flare > 1) then
-						if (settings.track_roaring_flare and not self.inExecute) then
+						if (settings.track_roaring_flare and not self.break_amulet) then
 							local tUnitTag = LUNIT:GetUnitTagForUnitId(tUnitId)
 							dbg("Tracking UnitTag: %s (%d)", tUnitTag, tUnitId)
 							self:TrackPlayer(tUnitTag, buffsDebuffs.roaring_flare_countdown)
@@ -1941,41 +1944,51 @@ do ---------------------------
 			end
 		elseif result == ACTION_RESULT_EFFECT_GAINED then
 			if (abilityId == buffsDebuffs.start_cd_of_srealm) then
-				--self.break_amulet = false -- will be reset further up
+				self.break_amulet = false
 			elseif (abilityId == buffsDebuffs.player_exit_srealm) then
 				dbg("Exit ShadowRealm >> %s", tName)
 			elseif (abilityId == buffsDebuffs.break_amulet) then
-				self.inExecute = true
+				--self.inExecute = true
 				dbg("Entering execute phase")
-				--if (settings.break_amulet == true) then
-				--	self.break_amulet = true
-				--end
+				self.break_amulet = true
 			elseif abilityId == buffsDebuffs.chilling_comet then
 				if (settings.chilling_comet == true) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_CHILLING_COMET), "cloudrest", "chilling_comet")
 					end
 				end
-			elseif abilityId == buffsDebuffs.hoarfrost_aoe then
-				self.hoarfrostCount = self.hoarfrostCount + 1 
-				if (settings.hoarfrost >= 1) then
-					dbg("Hoarfrost %d on %s, hitValue= %d", self.hoarfrostCount, tName, hitValue)
-					local tmp = (self.hoarfrostCount >= 3 and not self.inExecute) and 1 or 0 -- need to disable this in execute due to the additional hoarfrost interferring
-					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						if settings.hoarfrost_countdown and not self:IsCountdownInProgress() then
-							self:StartCountdown(buffsDebuffs.hoarfrost_countdown, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
-						else
-							self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
+			elseif buffsDebuffs.hoarfrost_new[abilityId] then
+				if hitValue == 1 then 
+					local track = buffsDebuffs.hoarfrost_new[abilityId]
+					local data = self.hoarfrostData[track]
+					data.count = data.count + 1
+					dbg("Increment hoarfrost track #%d to %d for %s", track, data.count, tName)
+					if data.unitId ~= tUnitId or (GetGameTimeMilliseconds() - data.ms) > 3000 then -- filter out the first one since we already showed the notification for it during ACTION_RESULT_BEGIN
+						if (settings.hoarfrost >= 1) then
+							local tmp = data.count >= 3 and 1 or 0
+							if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+								if settings.hoarfrost_countdown and not self:IsCountdownInProgress() then
+									self:StartCountdown(buffsDebuffs.hoarfrost_countdown, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
+								else
+									self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
+								end
+							elseif (tName ~= "" and settings.hoarfrost > 1) then
+								self:AddAnnouncement(zo_strformat(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER", tmp), tName), "cloudrest", "hoarfrost")
+							end
 						end
-					elseif (tName ~= "" and settings.hoarfrost > 1) then
-						self.currentHoarfrostUserId = tUnitId
-						self:AddAnnouncement(zo_strformat(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_OTHER", tmp), tName), "cloudrest", "hoarfrost")
 					end
 				end
 			elseif abilityId == buffsDebuffs.hoarfrost_shed then
 				if (settings.hoarfrost_shed == true) then
 					if (tName ~= "" and tType ~= COMBAT_UNIT_TYPE_PLAYER) then
-						if self.hoarfrostCount < 3 or self.inExecute then 
+						local count = 0
+						for i, data in ipairs(self.hoarfrostData) do
+							if data.unitId == tUnitId then
+								count = data.count
+								dbg("Hoarfrost track #%d dropped by %s", i, tName)
+							end
+						end
+						if count < 3 and not self.break_amulet then --disable this in execute for now, will have an option for it later
 							self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_SHED_OTHER), tName), "cloudrest", "hoarfrost_shed")
 						end
 					end
@@ -2006,17 +2019,19 @@ do ---------------------------
 				dbg("Enter ShadowRealm >> %s", tName)
 				if tType == COMBAT_UNIT_TYPE_PLAYER then
 					dbg("Reset hoarfrost count for me")
-					self.hoarfrostCount = 0
+					if self.hoarfrostData then 
+						if self.hoarfrostData[1] then
+							self.hoarfrostData[1].count = 0
+						end
+						if self.hoarfrostData[2] then
+							self.hoarfrostData[2].count = 0
+						end
+					end
 				end
 			elseif abilityId == buffsDebuffs.voltaic_overload then
 				if (settings.voltaic_overload > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_overload")
-					
-						--self.voltaic_overload = true
-						--zo_callLater(function()
-						--	self.voltaic_overload = false
-						--end, voltaic_overload_time)
 					end
 				end
 			elseif buffsDebuffs.voltaic_current[abilityId] == true then
@@ -2024,11 +2039,6 @@ do ---------------------------
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						--self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_CURRENT), "cloudrest", "voltaic_current")
 						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_CURRENT), "cloudrest", "voltaic_overload")
-
-						--self.voltaic_overload = self.voltaic_overload and self.voltaic_overload + 1 or 1
-						--zo_callLater(function()
-						--	self.voltaic_overload = self.voltaic_overload - 1
-						--end, hitValue)
 					end
 				end
 			end
@@ -2037,18 +2047,18 @@ do ---------------------------
 			if abilityId == buffsDebuffs.voltaic_overload then
 				--self.voltaic_overload = 0
 				self.StopCountdown()
-			elseif abilityId == buffsDebuffs.olorime_spears_synergized then
-				local now = GetGameTimeMilliseconds()
-				dbg("Spear Synergized Done at %d", now)
-				if self.lastOlorimeSpearMs > 0 then
-					local diff = now - self.lastOlorimeSpearMs 
-					local x, y = GetMapPlayerPosition(LUNIT:GetUnitTagForUnitId(tUnitId))
-					dbg(" DiffMs: %d, Pos: %f / %f", diff, x, y)
-				else
-					local x, y = GetMapPlayerPosition(LUNIT:GetUnitTagForUnitId(tUnitId))
-					dbg(" First spear, Pos: %f / %f", x, y)
-				end
-				self.lastOlorimeSpearMs = now
+			--elseif abilityId == buffsDebuffs.olorime_spears_synergized then
+			--	local now = GetGameTimeMilliseconds()
+			--	dbg("Spear Synergized Done at %d", now)
+			--	if self.lastOlorimeSpearMs > 0 then
+			--		local diff = now - self.lastOlorimeSpearMs 
+			--		local x, y = GetMapPlayerPosition(LUNIT:GetUnitTagForUnitId(tUnitId))
+			--		dbg(" DiffMs: %d, Pos: %f / %f", diff, x, y)
+			--	else
+			--		local x, y = GetMapPlayerPosition(LUNIT:GetUnitTagForUnitId(tUnitId))
+			--		dbg(" First spear, Pos: %f / %f", x, y)
+			--	end
+			--	self.lastOlorimeSpearMs = now
 			end
 			
 --		elseif result == ACTION_RESULT_DAMAGE then
