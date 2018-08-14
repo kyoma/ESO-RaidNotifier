@@ -421,6 +421,7 @@ cloudrest.olorime_spears = 104019
 cloudrest.olorime_spears_synergized = 104017
 
 -- Shade of Galenwe and Falarielle
+<<<<<<< HEAD
 --cloudrest.hoarfrost = {}
 cloudrest.hoarfrost     = {} --ACTION_RESULT_BEGIN, hitValue = 2500
 cloudrest.hoarfrost[103760] = 1 -- first frost
@@ -428,9 +429,15 @@ cloudrest.hoarfrost[110465] = 2 -- during execute
 cloudrest.hoarfrost_new = {} --ACTION_RESULT_EFFECT_GAINED, hitValue = 1
 cloudrest.hoarfrost_new[103673] = 1
 cloudrest.hoarfrost_new[110513] = 2
+=======
+cloudrest.hoarfrost = {}
+cloudrest.hoarfrost[103760] = true -- first frost
+cloudrest.hoarfrost[110465] = true -- during execute
+cloudrest.hoarfrost_aoe = 103743 -- when picked up from the floor (no 2nd one for execute?)
+>>>>>>> ec7e108e2d2eb37468cb4d11e18f892663f11e5f
 cloudrest.hoarfrost_countdown = 6000 -- hardcoded for now
 cloudrest.hoarfrost_syn = 103697
-cloudrest.hoarfrost_shed = 103714
+cloudrest.hoarfrost_shed = 103715
 cloudrest.chilling_comet = 106374
 
 -- Shade of Siroria
