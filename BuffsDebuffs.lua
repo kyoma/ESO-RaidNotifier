@@ -429,7 +429,7 @@ cloudrest.hoarfrost_new[103673] = 1
 cloudrest.hoarfrost_new[110513] = 2
 cloudrest.hoarfrost_countdown = 6000 -- hardcoded for now
 cloudrest.hoarfrost_syn = 103697
-cloudrest.hoarfrost_shed = 103715
+cloudrest.hoarfrost_shed = 103714
 cloudrest.chilling_comet = 106374
 
 -- Shade of Siroria
