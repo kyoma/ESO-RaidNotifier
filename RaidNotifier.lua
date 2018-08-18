@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name           = "RaidNotifier"
 RaidNotifier.DisplayName    = "Raid Notifier"
-RaidNotifier.Version        = "2.7"
+RaidNotifier.Version        = "2.7.1"
 RaidNotifier.Author         = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name        = "RNVars"
 RaidNotifier.SV_Version     = 4
@@ -25,6 +25,8 @@ RAID_CLOUDREST              = 9
 local function p() end
 local function dbg() end
 local function dlog() end
+
+local ENABLE_DEBUG_LOG = false
 
 function RaidNotifier:IsDevMode()
 	return self.Vars.dbg.devMode == true
@@ -731,10 +733,8 @@ do ----------------------
 		if (not self.Vars.useAccountWide) then -- not using global settings, generate (or load) character specific settings
 			self.Vars = ZO_SavedVars:New(self.SV_Name, self.SV_Version, nil, self:GetDefaults())
 		end
-		if not RN_DEBUG_LOG then
-			RN_DEBUG_LOG = {}
-		end
-		--RN_DEBUG_LOG = nil
+		
+
 
 		-- tiny functions
 		p = function(msg, ...)
@@ -749,14 +749,21 @@ do ----------------------
 		end
 		self.dbg = dbg
 
-		table.insert(RN_DEBUG_LOG, {})
-		local curLog = RN_DEBUG_LOG[#RN_DEBUG_LOG]
-		dlog = function(msg, ...)
-			--dbg(msg,...)
-			local time = string.format("%s:%03d ", GetTimeString(), GetGameTimeMilliseconds() % 1000)
-			table.insert(curLog, string.format("%s -> %s", time, msg:format(...)))
+		if ENABLE_DEBUG_LOG then 
+			if not RN_DEBUG_LOG then
+				RN_DEBUG_LOG = {}
+				end
+			table.insert(RN_DEBUG_LOG, {})
+			local curLog = RN_DEBUG_LOG[#RN_DEBUG_LOG]
+			dlog = function(msg, ...)
+				local time = string.format("%s:%03d ", GetTimeString(), GetGameTimeMilliseconds() % 1000)
+				table.insert(curLog, string.format("%s -> %s", time, msg:format(...)))
+			end
+		else
+			dlog = dbg
+			RN_DEBUG_LOG = nil
 		end
-		
+
 		self:CreateSettingsMenu()
 		
 		L = self:GetLocale()
@@ -888,8 +895,10 @@ do -----------------------------
 			-- reset all minions for now
 			self.Minions = {}
 			-- remove any countdown that is active
-			dbg("Bosses changed, stop any active countdown")
-			self:StopCountdown()
+			if not IsUnitInCombat("player") then
+				dbg("Bosses changed, stop any active countdown")
+				self:StopCountdown()
+			end
 		end
 
 		if (raidId == RAID_MAW_OF_LORKHAJ) then
