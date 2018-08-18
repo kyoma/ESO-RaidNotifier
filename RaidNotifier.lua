@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name           = "RaidNotifier"
 RaidNotifier.DisplayName    = "Raid Notifier"
-RaidNotifier.Version        = "2.7.1"
+RaidNotifier.Version        = "2.7.2"
 RaidNotifier.Author         = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name        = "RNVars"
 RaidNotifier.SV_Version     = 4
@@ -733,8 +733,6 @@ do ----------------------
 		if (not self.Vars.useAccountWide) then -- not using global settings, generate (or load) character specific settings
 			self.Vars = ZO_SavedVars:New(self.SV_Name, self.SV_Version, nil, self:GetDefaults())
 		end
-		
-
 
 		-- tiny functions
 		p = function(msg, ...)
@@ -745,14 +743,16 @@ do ----------------------
 			if self.Vars.dbg.enabled then
 				p(msg, ...)
 			end
-			dlog(msg, ...)
+			if ENABLE_DEBUG_LOG then
+				dlog(msg, ...)
+			end
 		end
 		self.dbg = dbg
 
 		if ENABLE_DEBUG_LOG then 
 			if not RN_DEBUG_LOG then
 				RN_DEBUG_LOG = {}
-				end
+			end
 			table.insert(RN_DEBUG_LOG, {})
 			local curLog = RN_DEBUG_LOG[#RN_DEBUG_LOG]
 			dlog = function(msg, ...)
