@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name           = "RaidNotifier"
 RaidNotifier.DisplayName    = "Raid Notifier"
-RaidNotifier.Version        = "2.7"
+RaidNotifier.Version        = "2.7.2"
 RaidNotifier.Author         = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name        = "RNVars"
 RaidNotifier.SV_Version     = 4
@@ -289,8 +289,7 @@ do ----------------------
 
 		local sortedUlti = {}
 		for userName, data in pairs(ultimates) do
-			local selectedRole = data.role
-			if (selectedRole == LFG_ROLE_DPS and settings.showDps or selectedRole == LFG_ROLE_HEAL and settings.showHealers or selectedRole == LFG_ROLE_TANK and settings.showTanks) then
+			if (data.role == LFG_ROLE_DPS and settings.showDps or data.role == LFG_ROLE_HEAL and settings.showHealers or data.role == LFG_ROLE_TANK and settings.showTanks) then
 				table.insert(sortedUlti, data)
 			end
 		end
