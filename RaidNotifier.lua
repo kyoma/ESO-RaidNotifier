@@ -888,8 +888,10 @@ do -----------------------------
 			-- reset all minions for now
 			self.Minions = {}
 			-- remove any countdown that is active
-			dbg("Bosses changed, stop any active countdown")
-			self:StopCountdown()
+			if not IsUnitInCombat("player") then
+				dbg("Bosses changed, stop any active countdown")
+				self:StopCountdown()
+			end
 		end
 
 		if (raidId == RAID_MAW_OF_LORKHAJ) then
