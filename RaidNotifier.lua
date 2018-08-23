@@ -278,7 +278,7 @@ do ----------------------
 		{
 			userName = userName,
 			name     = GetUnitName(unitTag),
-			role    = GetGroupMemberSelectedRole(unitTag),
+			role     = GetGroupMemberSelectedRole(unitTag),
 			current  = ultimateCurrent,
 			percent  = math.floor((ultimateCurrent / ultimateCost) * 100), --round it down?
 		}
@@ -291,8 +291,7 @@ do ----------------------
 
 		local sortedUlti = {}
 		for userName, data in pairs(ultimates) do
-			local selectedRole = data.role
-			if (selectedRole == LFG_ROLE_DPS and settings.showDps or selectedRole == LFG_ROLE_HEAL and settings.showHealers or selectedRole == LFG_ROLE_TANK and settings.showTanks) then
+			if (data.role == LFG_ROLE_DPS and settings.showDps or data.role == LFG_ROLE_HEAL and settings.showHealers or data.role == LFG_ROLE_TANK and settings.showTanks) then
 				table.insert(sortedUlti, data)
 			end
 		end
@@ -1857,7 +1856,6 @@ do ---------------------------
 		if result == ACTION_RESULT_BEGIN then
 			if buffsDebuffs.hoarfrost[abilityId] then
 				local track = buffsDebuffs.hoarfrost[abilityId]
-				dbg("Hoarfrost started (track #%d)", track)
 				self.hoarfrostData = self.hoarfrostData or {}
 				self.hoarfrostData[track] =
 				{
