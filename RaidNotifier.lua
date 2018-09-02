@@ -26,6 +26,8 @@ local function p() end
 local function dbg() end
 local function dlog() end
 
+local ENABLE_DEBUG_LOG = false
+
 function RaidNotifier:IsDevMode()
 	return self.Vars.dbg.devMode == true
 end
@@ -276,7 +278,7 @@ do ----------------------
 		{
 			userName = userName,
 			name     = GetUnitName(unitTag),
-			role    = GetGroupMemberSelectedRole(unitTag),
+			role     = GetGroupMemberSelectedRole(unitTag),
 			current  = ultimateCurrent,
 			percent  = math.floor((ultimateCurrent / ultimateCost) * 100), --round it down?
 		}
@@ -730,10 +732,6 @@ do ----------------------
 		if (not self.Vars.useAccountWide) then -- not using global settings, generate (or load) character specific settings
 			self.Vars = ZO_SavedVars:New(self.SV_Name, self.SV_Version, nil, self:GetDefaults())
 		end
-		if not RN_DEBUG_LOG then
-			RN_DEBUG_LOG = {}
-		end
-		--RN_DEBUG_LOG = nil
 
 		-- tiny functions
 		p = function(msg, ...)
@@ -744,18 +742,27 @@ do ----------------------
 			if self.Vars.dbg.enabled then
 				p(msg, ...)
 			end
-			dlog(msg, ...)
+			if ENABLE_DEBUG_LOG then
+				dlog(msg, ...)
+			end
 		end
 		self.dbg = dbg
 
-		table.insert(RN_DEBUG_LOG, {})
-		local curLog = RN_DEBUG_LOG[#RN_DEBUG_LOG]
-		dlog = function(msg, ...)
-			--dbg(msg,...)
-			local time = string.format("%s:%03d ", GetTimeString(), GetGameTimeMilliseconds() % 1000)
-			table.insert(curLog, string.format("%s -> %s", time, msg:format(...)))
+		if ENABLE_DEBUG_LOG then 
+			if not RN_DEBUG_LOG then
+				RN_DEBUG_LOG = {}
+			end
+			table.insert(RN_DEBUG_LOG, {})
+			local curLog = RN_DEBUG_LOG[#RN_DEBUG_LOG]
+			dlog = function(msg, ...)
+				local time = string.format("%s:%03d ", GetTimeString(), GetGameTimeMilliseconds() % 1000)
+				table.insert(curLog, string.format("%s -> %s", time, msg:format(...)))
+			end
+		else
+			dlog = dbg
+			RN_DEBUG_LOG = nil
 		end
-		
+
 		self:CreateSettingsMenu()
 		
 		L = self:GetLocale()
@@ -887,8 +894,10 @@ do -----------------------------
 			-- reset all minions for now
 			self.Minions = {}
 			-- remove any countdown that is active
-			dbg("Bosses changed, stop any active countdown")
-			self:StopCountdown()
+			if not IsUnitInCombat("player") then
+				dbg("Bosses changed, stop any active countdown")
+				self:StopCountdown()
+			end
 		end
 
 		if (raidId == RAID_MAW_OF_LORKHAJ) then
@@ -1847,7 +1856,6 @@ do ---------------------------
 		if result == ACTION_RESULT_BEGIN then
 			if buffsDebuffs.hoarfrost[abilityId] then
 				local track = buffsDebuffs.hoarfrost[abilityId]
-				dbg("Hoarfrost started (track #%d)", track)
 				self.hoarfrostData = self.hoarfrostData or {}
 				self.hoarfrostData[track] =
 				{
