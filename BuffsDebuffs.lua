@@ -420,6 +420,11 @@ cloudrest.shadow_realm_cast = 103946
 cloudrest.olorime_spears = 104019
 cloudrest.olorime_spears_synergized = 104017
 
+cloudrest.heavy_attack = {}
+cloudrest.heavy_attack[104755] = true -- Scalding sunder - fire
+cloudrest.heavy_attack[105780] = true -- Shocking smash - lightening
+cloudrest.heavy_attack[106375] = true -- Ravaging Blow - frost
+
 -- Shade of Galenwe and Falarielle
 cloudrest.hoarfrost = {} --ACTION_RESULT_BEGIN, hitValue = 2500
 cloudrest.hoarfrost[103760] = 1 -- first frost
