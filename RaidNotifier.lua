@@ -1889,9 +1889,11 @@ do ---------------------------
 				end
 			elseif buffsDebuffs.heavy_attack[abilityId] == true then
 				if (settings.heavy_attack >= 1) then
-					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HEAVY_ATTACK), "cloudrest", "heavy_attack")
-				elseif (tName ~= "" and settings.heavy_attack > 1) then
-					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HEAVY_ATTACK_OTHER), tName), "cloudrest", "heavy_attack")
+					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HEAVY_ATTACK), "cloudrest", "heavy_attack")
+					elseif (tName ~= "" and settings.heavy_attack > 1) then
+						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HEAVY_ATTACK_OTHER), tName), "cloudrest", "heavy_attack")
+					end
 				end
 			elseif abilityId == buffsDebuffs.baneful_barb then
 				if (settings.baneful_barb > 0) then
