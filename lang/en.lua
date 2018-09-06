@@ -408,7 +408,7 @@ L.Alerts_Asylum_Protector_Active                 = "|c0000FFProtector|r active!"
 --------------------------------
 ------   CLOUDREST         -----
 --------------------------------
-L.Settings_Cloudrest_Header			= "Cloudrest"
+L.Settings_Cloudrest_Header			            = "Cloudrest"
 -- Settings
 L.Settings_Cloudrest_Olorime_Spears             = "General: Olorime Spear"
 L.Settings_Cloudrest_Olorime_Spears_TT          = "Alerts you when spears are up and someone has to pick it up."
@@ -420,6 +420,8 @@ L.Settings_Cloudrest_Hoarfrost_Countdown        = "       - Use Countdown"
 L.Settings_Cloudrest_Hoarfrost_Countdown_TT     = "Use a countdown to show when you will be able to drop it."
 L.Settings_Cloudrest_Hoarfrost_Shed             = "Faralielle: Hoarfrost Drop"
 L.Settings_Cloudrest_Hoarfrost_Shed_TT          = "Alerts you when Hoarfrost debuff has been dropped from another player and needs to be picked up."
+L.Settings_Cloudrest_Heavy_Attack               = "Mini Boss: Heavy Attack"
+L.Settings_Cloudrest_Heavy_Attack_TT            = "Alerts you when Lightening(Shocking Smash), Fire(Scalding Sunder) or Frost(Ravaging Blow) mini boss is casting heavy attack."
 L.Settings_Cloudrest_Chilling_Comet             = "Faralielle: Chilling Comet"
 L.Settings_Cloudrest_Chilling_Comet_TT          = "Alerts you when Chilling Comet debuff is applied to you that needs to be blocked and not overlapped with another player who has the same debuff before explosion."
 L.Settings_Cloudrest_Roaring_Flare              = "Siroria: Roaring Flame"
@@ -452,6 +454,8 @@ L.Alerts_Cloudrest_Hoarfrost_Countdown1         = "Drop |cff0000Last|r |c00ddffH
 L.Alerts_Cloudrest_Hoarfrost_Syn                = "|cff0000Use synergy|r to drop hoarfrost!"
 L.Alerts_Cloudrest_Hoarfrost_Shed               = "|c00ddffHoarfrost|r dropped."
 L.Alerts_Cloudrest_Hoarfrost_Shed_Other         = "|c00ddffHoarfrost|r dropped by |cff0000<<!aC:1>>|r."
+L.Alerts_Cloudrest_Heavy_Attack                 = "|c00a86bHeavy Attack|r on you!"
+L.Alerts_Cloudrest_Heavy_Attack_Other           = "|c00a86bHeavy Attack!|r on |cff0000<<!aC:1>>|r."
 L.Alerts_Cloudrest_Baneful_Barb                 = "|cff0000Baneful Barb|r. Rolldodge!"
 L.Alerts_Cloudrest_Baneful_Barb_Other           = "|cff0000Baneful Barb|r on |cff0000<<!aC:1>>|r."
 L.Alerts_Cloudrest_Chilling_Comet               = "|cff0000Chilling Comet|r at you. Block!"

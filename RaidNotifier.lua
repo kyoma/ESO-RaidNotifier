@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name           = "RaidNotifier"
 RaidNotifier.DisplayName    = "Raid Notifier"
-RaidNotifier.Version        = "2.7.2"
+RaidNotifier.Version        = "2.7.3"
 RaidNotifier.Author         = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name        = "RNVars"
 RaidNotifier.SV_Version     = 4
@@ -1886,6 +1886,12 @@ do ---------------------------
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_NOCTURNALS_FAVOR), "cloudrest", "nocturnals_favor")
 					end
+				end
+			elseif buffsDebuffs.heavy_attack[abilityId] == true then
+				if (settings.heavy_attack >= 1) then
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HEAVY_ATTACK), "cloudrest", "heavy_attack")
+				elseif (tName ~= "" and settings.heavy_attack > 1) then
+					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_HEAVY_ATTACK_OTHER), tName), "cloudrest", "heavy_attack")
 				end
 			elseif abilityId == buffsDebuffs.baneful_barb then
 				if (settings.baneful_barb > 0) then

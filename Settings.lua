@@ -257,6 +257,7 @@ do ------------------
 			hoarfrost = 0, -- "Off"
 			hoarfrost_shed = true,
             hoarfrost_countdown = true,
+			heavy_attack = 0, -- "Off"			
 			chilling_comet = true,
 			baneful_barb = 0, -- "Off"
 			roaring_flare = 2, -- "Full"
@@ -475,6 +476,7 @@ function RaidNotifier:CreateSettingsMenu()
 		},
 		cloudrest = {
 			hoarfrost = off_self_all,
+			heavy_attack = off_self_all,
 			roaring_flare = off_self_all,
 			crushing_darkness = {
 				L.Settings_General_Choices_Off,
@@ -1339,10 +1341,16 @@ function RaidNotifier:CreateSettingsMenu()
 	}, "cloudrest", "voltaic_overload")
 	MakeControlEntry({
 		type = "dropdown",
+		name = L.Settings_Cloudrest_Heavy_Attack,
+		tooltip = L.Settings_Cloudrest_Heavy_Attack_TT,
+		choices = choices.cloudrest.heavy_attack,
+	}, "cloudrest", "heavy_attack")		
+	MakeControlEntry({
+		type = "dropdown",
 		name = L.Settings_Cloudrest_Baneful_Barb,
 		tooltip = L.Settings_Cloudrest_Baneful_Barb_TT,
 		choices = choices.cloudrest.baneful_barb,
-	}, "cloudrest", "baneful_barb")	
+	}, "cloudrest", "baneful_barb")		
 	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_Cloudrest_Break_Amulet,
