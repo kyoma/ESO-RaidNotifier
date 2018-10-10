@@ -8,6 +8,11 @@
 				<ScaleAnimation duration="200" delay="750" startScale="0.8" endScale="1.0"/>
 			</Animations>
 		</AnimationTimeline>
+		<AnimationTimeline name="CenterAnnounceFadeIn">
+			<Animations>
+				<AlphaAnimation duration="500" startAlpha="0" endAlpha="1" />
+			</Animations>
+		</AnimationTimeline>
 	</Animations>
 	<Controls>
 		<Control name="RaidNotifierGlyphTemplate" virtual="true">
@@ -66,10 +71,13 @@
 		<TopLevelControl name="RaidNotifierUI" hidden="true" mouseEnabled="true">
 			<Anchor point="TOPLEFT" relativeTo="GuiRoot" relativePoint="TOPLEFT" />
 			<Controls>
-				<Label name="$(parent)CenterAnnounce" font="ZoFontCenterScreenAnnounceLarge" hidden="true">
-					<Anchor point="CENTER" relativeTo="GuiRoot" offsetY="-100"/>
-				</Label>
-				
+				<Label name="$(parent)CenterAnnounceOld" font="ZoFontCenterScreenAnnounceLarge" hidden="true">
+					<Anchor point="CENTER" relativeTo="GuiRoot" relativePoint="CENTER" offsetY="-100"/>
+				</Label>				
+				<Control name="$(parent)CenterAnnounce" resizeToFitDescendents="false" mouseEnabled="true" movable="true" clampedToScreen="true" hidden="false">
+					<Anchor point="CENTER" relativeTo="GuiRoot" relativePoint="CENTER" offsetY="-100"/>
+					<Dimensions x="250" y="150" />
+				</Control>				
 				<Control name="$(parent)UltimateWindow" movable="true" mouseEnabled="true" resizeToFitDescendents="true" hidden="true" clampedToScreen ="true">
 					<Dimensions x="250" y="200" />
 					<Anchor point="TOPLEFT" relativeTo="GuiRoot" offsetX="100" offsetY="600" />

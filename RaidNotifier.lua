@@ -154,16 +154,20 @@ do ---------------------------------
 			params:SetLifespanMS(duration)
 			CSA:AddMessageWithParams(params)
 			CSA.nextUpdateTimeSeconds = 0
+		elseif (self:IsDevMode()) then
+			local pool = RaidNotifier.NotificationsPool.GetInstance()
+			pool:Add(text, duration)
+			if soundId ~= nil then PlaySound(soundId) end
 		else
 			lastAnnounceIndex = lastAnnounceIndex + 1
-			RaidNotifierUICenterAnnounce:SetHidden(false)
-			RaidNotifierUICenterAnnounce:SetText(text)
+			RaidNotifierUICenterAnnounceOld:SetHidden(false)
+			RaidNotifierUICenterAnnounceOld:SetText(text)
 		
 			local index = lastAnnounceIndex
 			zo_callLater(function()
 				--only hide it if we are the last/most recent announcement
 				if index == lastAnnounceIndex then
-					RaidNotifierUICenterAnnounce:SetHidden(true)
+					RaidNotifierUICenterAnnounceOld:SetHidden(true)
 				end
 			end, duration)
 		
@@ -235,7 +239,15 @@ do ---------------------------------
 			end
 			self:SetLastNotify(category, setting, currentTime)
 		end
-		local countdownId = LCSA:CreateCountdown(timer, soundId, nil, text, nil, SetupCallback, CountdownCallback)
+		
+		local countdownId = 0
+--[[		if (self:IsDevMode()) then
+			local pool = RaidNotifier.NotificationsPool.GetInstance()
+			countdownId = pool:Add(text, duration, true)
+			if soundId ~= nil then PlaySound(soundId) end			
+		else]]
+			countdownId = LCSA:CreateCountdown(timer, soundId, nil, text, nil, SetupCallback, CountdownCallback)
+--		end
 		if countdownId > 0 then
 			countdownInProgress = true
 		end
@@ -2208,6 +2220,23 @@ do ---------------------------
 			else
 				self:TrackPlayer(masterList[1].unitTag, 20000)
 			end
+		elseif (args[1] == "notifications") then
+			if (args[2] ~= nil) then
+				self:StartCountdown(10000, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM_SIMPLE), "hallsFab", "taking_aim")
+			end
+			self:AddAnnouncement("Next Notification", "cloudrest", "olorime_spears2")
+			zo_callLater(function()
+				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_CHILLING_COMET), "cloudrest", "chilling_comet")
+				zo_callLater(function()
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_OLORIME_SPEARS), "cloudrest", "olorime_spears")
+					zo_callLater(function()
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_TENTACLE_SPAWN), "cloudrest", "tentacle_spawn")
+						zo_callLater(function()
+							self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_POWER_LEECH), "hallsFab", "power_leech")
+						end, 1500)
+					end, 500)
+				end, 500)
+			end, 1000)
 		elseif (args[1] == "enemy") then
 			settings.myEnemyOnly = Util.GetArgValue(args[2], settings.myEnemyOnly)
 			p("%s My Enemy Only", settings.myEnemyOnly and "Enabled" or "Disabled")

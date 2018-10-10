@@ -35,6 +35,7 @@ libs/LibGroupSocket/handlers/UltimateHandler.lua
 libs/LibCSA/LibCSA.lua
 libs/LibUnits/LibUnits.lua
 
+Notifications.lua
 RaidNotifier.lua
 Util.lua
 BuffsDebuffs.lua
