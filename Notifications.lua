@@ -47,7 +47,7 @@ function Notification:Show(text, displayTime)
 	zo_callLater(function()
 		self:SetHidden(true)
 		self.freeToUse = true
-		d("Hiding: "..self.id)
+		--d("Hiding: "..self.id)
 	end, displayTime and displayTime or self.displayTime)
 	return self.id
 end
@@ -121,7 +121,7 @@ function NotificationsPool:Add(text, displayTime, isCountdown)
 	local notifyId = 0
 	for i = #self.pool, 1, -1 do
 		if (self.pool[i]:IsFreeToUse()) then
-			d("Used already created notification "..self.pool[i]:GetId())
+			--d("Used already created notification "..self.pool[i]:GetId())
 			notify = self.pool[i]
 			notifyId = i
 			break;
@@ -134,7 +134,7 @@ function NotificationsPool:Add(text, displayTime, isCountdown)
 		notify:SetText("X") -- we need anything to get text height
 		self.pool[id] = notify
 		notifyId = id
-		d("Created new notification "..id)
+		--d("Created new notification "..id)
 	end
 
 	local curr = nil
