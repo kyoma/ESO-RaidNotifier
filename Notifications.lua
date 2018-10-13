@@ -130,7 +130,7 @@ function NotificationsPool:Add(text, displayTime, isCountdown)
 
 	if (notify == nil) then
 		local id = #self.pool + 1
-		notify = Notification:New(id, 4000, self.parent)
+		notify = Notification:New(id, 3000, self.parent)
 		notify:SetText("X") -- we need anything to get text height
 		self.pool[id] = notify
 		notifyId = id
@@ -157,11 +157,7 @@ function NotificationsPool:Add(text, displayTime, isCountdown)
 	end
 	self.pool[1] = notify
 	notify:GetCtrl():SetAnchor(TOP, self.parent, TOP, 0, 0)
-	if (isCountdown) then
-		return notify:Countdown(text, displayTime)
-	else
-		return notify:Show(text, displayTime)
-	end
+	return notify:Show(text, displayTime)
 end
 
 RaidNotifier = RaidNotifier or {}
