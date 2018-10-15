@@ -74,7 +74,7 @@
 				<Label name="$(parent)CenterAnnounceOld" font="ZoFontCenterScreenAnnounceLarge" hidden="true">
 					<Anchor point="CENTER" relativeTo="GuiRoot" relativePoint="CENTER" offsetY="-100"/>
 				</Label>				
-				<Control name="$(parent)CenterAnnounce" resizeToFitDescendents="false" mouseEnabled="true" movable="true" clampedToScreen="true" hidden="false">
+				<Control name="$(parent)CenterAnnounce" resizeToFitDescendents="false" mouseEnabled="false" movable="true" clampedToScreen="true" hidden="false">
 					<Anchor point="CENTER" relativeTo="GuiRoot" relativePoint="CENTER" offsetY="-100"/>
 					<Dimensions x="250" y="150" />
 				</Control>				
