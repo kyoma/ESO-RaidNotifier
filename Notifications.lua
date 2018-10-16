@@ -130,7 +130,7 @@ function NotificationsPool:Add(text, displayTime, isCountdown)
 
 	if (notify == nil) then
 		local id = #self.pool + 1
-		notify = Notification:New(id, 3000, self.parent)
+		notify = Notification:New(id, self.displayTime, self.parent)
 		notify:SetText("X") -- we need anything to get text height
 		self.pool[id] = notify
 		notifyId = id
