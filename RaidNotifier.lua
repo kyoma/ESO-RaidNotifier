@@ -637,6 +637,9 @@ do ----------------------
 			dbg("Register for %s (%s)", GetRaidZoneName(self.raidId), GetString("SI_DUNGEONDIFFICULTY", self.raidDifficulty))
 			
 			local combatEventCallback = self.CombatEventCallbacks[self.raidId]
+			local bossesChangedCallback = self.BossesChangedCallbacks[self.raidId]
+			local effectChangedCallback = self.EffectChangedCallbacks[self.raidId]
+
 			local abilityList = {}
 			local function RegisterForAbility(abId)
 				if not abilityList[abId] then
@@ -676,7 +679,6 @@ do ----------------------
 			end
 			dbg("----------------------------------------------")
 
---]]
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_EFFECT_CHANGED, self.OnEffectChanged)
 			EVENT_MANAGER:AddFilterForEvent(self.Name, EVENT_EFFECT_CHANGED, REGISTER_FILTER_UNIT_TAG, "player")
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_BOSSES_CHANGED, self.OnBossesChanged)
@@ -710,7 +712,7 @@ do ----------------------
 			ToggleVanityPets(true)
 
 			-- In case of initializing while already at a boss
-			self.OnBossesChanged()
+			bossesChangedCallback()
 		end
 	end
 
@@ -2098,7 +2100,39 @@ do ---------------------------
 --			end
 		end
 	end
+	
+-- -----------------------------
+-- EVENT: EVENT_EFFECT_CHANGED
+do -----------------------------
 
+	local Util  = RaidNotifier.Util
+
+	function RaidNotifier.OnEffectChanged(eventCode, changeType, eSlot, eName, uTag, beginTime, endTime, stackCount, iconName, buffType, eType, aType, statusEffectType, uName, uId, abilityId, uType) 
+
+		local raidId = RaidNotifier.raidId
+		local self   = RaidNotifier
+--		dbg("==>%s --> %d -> %d (%d)", uName, beginTime, endTime, stackCount)
+
+		-- HoF is the first raid to make it here! WHOOHOOW!! (all cuz we needz dem stackcount)
+		if (raidId == RAID_HALLS_OF_FABRICATION) then
+			local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.hallsFab
+
+			if abilityId == buffsDebuffs.pinnacleBoss_scalded_debuff then
+				if settings.pinnacleBoss_scalded == true then
+					if (changeType == EFFECT_RESULT_FADED) then
+						self:UpdateScaldedStacks(0)
+					else
+						self:UpdateScaldedStacks(stackCount, beginTime, endTime)
+					end
+				end
+			elseif abilityId == buffsDebuffs.venom_injection then
+				if settings.venom_injection then
+					self:UpdateSphereVenom(changeType ~= EFFECT_RESULT_FADED, beginTime, endTime)
+				end
+			end
+		end
+	end
+end	
 
 	RaidNotifier.CombatEventCallbacks = 
 	{
@@ -2111,6 +2145,32 @@ do ---------------------------
 		[RAID_HALLS_OF_FABRICATION]  = RaidNotifier.OnCombatEvent_HOF,
 		[RAID_ASYLUM_SANCTORIUM]     = RaidNotifier.OnCombatEvent_AS,
 		[RAID_CLOUDREST]             = RaidNotifier.OnCombatEvent_CR,
+	}
+
+	RaidNotifier.EffectChangedCallbacks = 
+	{
+		[RAID_HEL_RA_CITADEL]        = RaidNotifier.OnEffectChanged,
+		[RAID_AETHERIAN_ARCHIVE]     = RaidNotifier.OnEffectChanged,
+		[RAID_SANCTUM_OPHIDIA]       = RaidNotifier.OnEffectChanged,
+		[RAID_DRAGONSTAR_ARENA]      = RaidNotifier.OnEffectChanged,
+		[RAID_MAW_OF_LORKHAJ]        = RaidNotifier.OnEffectChanged,
+		[RAID_MAELSTROM_ARENA]       = RaidNotifier.OnEffectChanged,
+		[RAID_HALLS_OF_FABRICATION]  = RaidNotifier.OnEffectChanged,
+		[RAID_ASYLUM_SANCTORIUM]     = RaidNotifier.OnEffectChanged,
+		[RAID_CLOUDREST]             = RaidNotifier.OnEffectChanged,
+	}
+
+	RaidNotifier.BossesChangedCallbacks =
+	{
+		[RAID_HEL_RA_CITADEL]        = RaidNotifier.OnBossesChanged,
+		[RAID_AETHERIAN_ARCHIVE]     = RaidNotifier.OnBossesChanged,
+		[RAID_SANCTUM_OPHIDIA]       = RaidNotifier.OnBossesChanged,
+		[RAID_DRAGONSTAR_ARENA]      = RaidNotifier.OnBossesChanged,
+		[RAID_MAW_OF_LORKHAJ]        = RaidNotifier.OnBossesChanged,
+		[RAID_MAELSTROM_ARENA]       = RaidNotifier.OnBossesChanged,
+		[RAID_HALLS_OF_FABRICATION]  = RaidNotifier.OnBossesChanged,
+		[RAID_ASYLUM_SANCTORIUM]     = RaidNotifier.OnBossesChanged,
+		[RAID_CLOUDREST]             = RaidNotifier.OnBossesChanged,
 	}
 	
 	-------------------
@@ -2255,42 +2315,6 @@ do ---------------------------
 			settings.enabled = Util.GetArgValue(args[1], settings.enabled)
 			p("%s Debugging", settings.enabled and "Enabled" or "Disabled")
 		end
-	end
-
-end
-
-
--- -----------------------------
--- EVENT: EVENT_EFFECT_CHANGED
-do -----------------------------
-
-	local Util  = RaidNotifier.Util
-
-	function RaidNotifier.OnEffectChanged(eventCode, changeType, eSlot, eName, uTag, beginTime, endTime, stackCount, iconName, buffType, eType, aType, statusEffectType, uName, uId, abilityId, uType) 
-
-		local raidId = RaidNotifier.raidId
-		local self   = RaidNotifier
---		dbg("==>%s --> %d -> %d (%d)", uName, beginTime, endTime, stackCount)
-
-		-- HoF is the first raid to make it here! WHOOHOOW!! (all cuz we needz dem stackcount)
-		if (raidId == RAID_HALLS_OF_FABRICATION) then
-			local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.hallsFab
-
-			if abilityId == buffsDebuffs.pinnacleBoss_scalded_debuff then
-				if settings.pinnacleBoss_scalded == true then
-					if (changeType == EFFECT_RESULT_FADED) then
-						self:UpdateScaldedStacks(0)
-					else
-						self:UpdateScaldedStacks(stackCount, beginTime, endTime)
-					end
-				end
-			elseif abilityId == buffsDebuffs.venom_injection then
-				if settings.venom_injection then
-					self:UpdateSphereVenom(changeType ~= EFFECT_RESULT_FADED, beginTime, endTime)
-				end
-			end
-		end
-
 	end
 
 end
