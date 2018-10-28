@@ -15,8 +15,14 @@ L.Settings_General_Vanity_Pets                      = "Désactive les Familiers 
 L.Settings_General_Vanity_Pets_TT                   = "Désactive les Familiers Pacifiques quand l'épreuve commence. Lorsque vous terminez ou quittez une épreuve il se réactivera."
 L.Settings_General_No_Assistants                    = "Désactive les Assistants lors des combats"
 L.Settings_General_No_Assistants_TT                 = "Ne s'applique que durant les épreuves et n'empêche PAS de les invoquer."
-L.Settings_General_Center_Screen_Announce           = "Annonce au Centre de l'Écran"
-L.Settings_General_Center_Screen_Announce_TT        = "Utilise le système d'annonce au centre de l'écran du jeu. L'alternative est un affichage plus simpliste de RaidNotifier lui-même."
+L.Settings_General_Center_Screen_Announce           = "Type des Annonces"
+L.Settings_General_Center_Screen_Announce_TT        = "Le type à utiliser pour l'affichage des annonces."
+L.Settings_General_UseDisplayName                   = "Utilise le Nom D'Utilisateur"
+L.Settings_General_UseDisplayName_TT                = "Utilise le nom d'utilisateur dans les annonces au lieu du nom de personnage."
+L.Settings_General_Unlock_Status_Icon               = "Déverouille l'Icone de Statut"
+L.Settings_General_Unlock_Status_Icon_TT            = "Quand activé, l'icone de statut sera affiché à l'écran et pourra être déplacé."
+L.Settings_General_Default_Sound                    = "Son par Défaut"
+L.Settings_General_Default_Sound_TT                 = "Le son par défaut à utiliser pour les notifications."
 -- Choices
 L.Settings_General_Choices_Off                      = "Non"
 L.Settings_General_Choices_Full                     = "Complet"
@@ -28,9 +34,15 @@ L.Settings_General_Choices_All                      = "Tous"
 L.Settings_General_Choices_Always                   = "Toujours"
 L.Settings_General_Choices_Other                    = "Autre"
 L.Settings_General_Choices_Inverted                 = "Inversé"
+L.Settings_General_Choices_Small                    = "Petit"
+L.Settings_General_Choices_Large                    = "Grand"
+L.Settings_General_Choices_Major                    = "Majeur"
+L.Settings_General_Choices_Custom                   = "Personnalisé"
 -- Alerts
 L.Alerts_General_No_Bufffood                        = "Vous n'avez pas de Nourriture!"
 L.Alerts_General_Bufffood_Minutes                   = "Votre '<<1>>' nourriture se termine dans |cbd0000<<2>>|r minutes!"
+-- Bindings
+L.Binding_ToggleUltimateExchange                    = "Bascule l'Ultime"
 
 
 --------------------------------
@@ -44,7 +56,7 @@ L.Settings_Ultimate_Enabled_TT                       = "Permet le partage et la 
 L.Settings_Ultimate_Hidden                           = "Masqué"
 L.Settings_Ultimate_Hidden_TT                        = "Masque la fenêtre d'affichage d'ultime mais ne désactive pas la fonction elle-même."
 L.Settings_Ultimate_UseColor                         = "Utilise des Couleurs"
-L.Settings_Ultimate_UseColor_TT                      = "Affiche une couleur sur l'ultime de quelqu'un en fonction des seuils à 80 et 100 pourcent."
+L.Settings_Ultimate_UseColor_TT                      = "Affiche une couleur sur les ultimes en fonction des seuils à 80 et 100 pourcent."
 L.Settings_Ultimate_UseDisplayName                   = "Affiche le Nom d'Utilisateur"
 L.Settings_Ultimate_UseDisplayName_TT                = "Affiche le nom d'utilisateur dans la fenêtre d'ultime au lieu du nom de personnage."
 L.Settings_Ultimate_ShowHealers                      = "Montre les Soigneurs"
@@ -63,7 +75,7 @@ L.Settings_Ultimate_OverrideCost_TT                  = "Utilise cette valeur lor
 ----        Profiles        ----
 --------------------------------
 L.Settings_Profile_Header                            = "Profils"
-L.Settings_Profile_Description                       = "Les paramètres de profils peuvent-être gérés ici, y compris l'option permettant d'activer un profil global de compte qui appliquera les mêmes paramètres à TOUS les personnages\"s sur ce compte. En raison de la permanence de ces options, la gestion doit d'abord être activée à l'aide de l'option en bas du panel."
+L.Settings_Profile_Description                       = "Les paramètres de profils peuvent-être gérés ici, y compris l'option permettant d'activer un profil global de compte qui appliquera les mêmes paramètres à TOUS les personnages sur ce compte. En raison de la permanence de ces options, la gestion doit d'abord être activée à l'aide de l'option en bas du panel."
 L.Settings_Profile_UseGlobal                         = "Utiliser un Profil Global de Compte"
 L.Settings_Profile_UseGlobal_Warning                 = "Changer entre les profils locaux et globaux rechargera l'interface."
 L.Settings_Profile_Copy                              = "Choisir un Profil à Copier"
@@ -78,10 +90,23 @@ L.Settings_Profile_Guard                             = "Active la Gestion du Pro
 
 
 --------------------------------
+----       Countdowns       ----
+--------------------------------
+L.Settings_Countdown_Header                          = "Comptes à Rebours"
+L.Settings_Countdown_Description                     = "Change l'apparence et le comportement des comptes à rebours."
+L.Settings_Countdown_TimerScale                      = "Taille du Compteur"
+L.Settings_Countdown_TimerScale_TT                   = "Change la taille de l'affichage du compteur."
+L.Settings_Countdown_TextScale                       = "Taille du Texte"
+L.Settings_Countdown_TextScale_TT                    = "Change la taille de l'affichage du texte."
+L.Settings_Countdown_UseColors                       = "Utilise les Couleurs"
+L.Settings_Countdown_UseColors_TT                    = "Quand activé, affichera les couleurs jaune / orange / rouge pour le compteur jusqu'à atteindre zéro."
+
+
+--------------------------------
 ----          Trials        ----
---------------------------------	
+--------------------------------
 L.Settings_Trials_Header                            = "Épreuves"
-L.Settings_Trials_Description                       = "Ici, vous pouvez configurer les notifications pour chaque épreuve. Vous pouvez simplement basculer de On à Off, jusqu'à spécifier un son unique ou le montrer aussi à vos coéquipiers."
+L.Settings_Trials_Description                       = "Ici, vous pouvez configurer les notifications pour chaque épreuve. Vous pouvez simplement basculer de On à Off, jusqu'à spécifier un son unique, ou même voir celles de vos coéquipiers."
 
 
 --------------------------------
@@ -89,11 +114,11 @@ L.Settings_Trials_Description                       = "Ici, vous pouvez configur
 --------------------------------
 L.Settings_HelRa_Header                             = "La Citadelle d'Hel Ra"
 -- Settings
-L.Settings_HelRa_Yokeda_Meteor                      = "Yokeda : Météores"
+L.Settings_HelRa_Yokeda_Meteor                      = "Yokeda: Météores"
 L.Settings_HelRa_Yokeda_Meteor_TT                   = "Vous avertit lorsque le Yokeda est sur le point de vous envoyer une météore."
-L.Settings_HelRa_Warrior_StoneForm                  = "Guerrier : Forme de Pierre"
+L.Settings_HelRa_Warrior_StoneForm                  = "Guerrier: Forme de Pierre"
 L.Settings_HelRa_Warrior_StoneForm_TT               = "Vous avertit lorsque vous et/ou vos coéquipiers sont sur le point d'être transformé en pierre par Le Guerrier."
-L.Settings_HelRa_Warrior_ShieldThrow                = "Guerrier : Lancé de Bouclier"
+L.Settings_HelRa_Warrior_ShieldThrow                = "Guerrier: Lancé de Bouclier"
 L.Settings_HelRa_Warrior_ShieldThrow_TT             = "Vous avertit lorsque Le Guerrier va lancer son bouclier."
 --Alerts
 L.Alerts_HelRa_Yokeda_Meteor                        = "En Approche |cFF0000Météore|r sur vous. Bloquez!"
@@ -108,17 +133,17 @@ L.Alerts_HelRa_Warrior_ShieldThrow                  = "En Approche |cFF0000Lanc�
 --------------------------------
 L.Settings_Archive_Header                           = "L'Archive Aethérienne"
 -- Settings
-L.Settings_Archive_StormAtro_ImpendingStorm         = "Atro de Foudre : Tempête de Foudre"
+L.Settings_Archive_StormAtro_ImpendingStorm         = "Atro de Foudre: Tempête de Foudre"
 L.Settings_Archive_StormAtro_ImpendingStorm_TT      = "Vous avertit quand l'Atronach de Foudre est sur le point de faire sa grand AoE de Foudre."
-L.Settings_Archive_StormAtro_LightningStorm         = "Atro de Foudre : Orage"
+L.Settings_Archive_StormAtro_LightningStorm         = "Atro de Foudre: Orage"
 L.Settings_Archive_StormAtro_LightningStorm_TT      = "Vous avertit lorsque l'Atronach de Foudre appelle la foudre du ciel dont vous devez vous abriter."
-L.Settings_Archive_StoneAtro_BoulderStorm           = "Atro de Pierre : Pluie de Rochers"
+L.Settings_Archive_StoneAtro_BoulderStorm           = "Atro de Pierre: Pluie de Rochers"
 L.Settings_Archive_StoneAtro_BoulderStorm_TT        = "Vous avertit quand l'Atronach de Pierre commence à lancer de multiples rochers sur les gens."
-L.Settings_Archive_StoneAtro_BigQuake               = "Atro de Pierre : Tremblement de Terre"
+L.Settings_Archive_StoneAtro_BigQuake               = "Atro de Pierre: Tremblement de Terre"
 L.Settings_Archive_StoneAtro_BigQuake_TT            = "Vous avertit lorsque l'Atronach de Pierre commence à marteler le sol de coups."
-L.Settings_Archive_Overcharge                       = "Mobs : Surcharge"
+L.Settings_Archive_Overcharge                       = "Mobs: Surcharge"
 L.Settings_Archive_Overcharge_TT                    = "Vous avertit quand un Surchargeur vous cible avec sa capacité Surcharge (grande AoE)"
-L.Settings_Archive_Call_Lightning                   = "Mobs : Appel de la Foudre"
+L.Settings_Archive_Call_Lightning                   = "Mobs: Appel de la Foudre"
 L.Settings_Archive_Call_Lightning_TT                = "Vous avertit quand un Surchargeur vous cible avec sa capacité Appel de la Foudre (petites AoEs)"
 -- Alerts 
 L.Alerts_Archive_StormAtro_ImpendingStorm           = "En Approche |cFF0000Tempête de Foudre|r!"
@@ -136,23 +161,23 @@ L.Alerts_Archive_Call_Lightning_Other               = "En Approche |c46edffAppel
 --------------------------------
 L.Settings_Sanctum_Header                           = "Sanctum Ophidia"
 -- Settings
-L.Settings_Sanctum_Magicka_Detonation               = "Serpent : Détonation Magique"
+L.Settings_Sanctum_Magicka_Detonation               = "Serpent: Détonation Magique"
 L.Settings_Sanctum_Magicka_Detonation_TT            = "Vous avertit lorsque vous avez la Détonation Magique pendant le combat contre le Serpent."
-L.Settings_Sanctum_Serpent_Poison                   = "Serpent : Phase de Poison"
+L.Settings_Sanctum_Serpent_Poison                   = "Serpent: Phase de Poison"
 L.Settings_Sanctum_Serpent_Poison_TT                = "Vous avertit quand le Serpent va entrer en Phase de Poison."
-L.Settings_Sanctum_Serpent_World_Shaper             = "Serpent : Façonne Monde (Mode Difficile)"
+L.Settings_Sanctum_Serpent_World_Shaper             = "Serpent: Façonne Monde (Mode Difficile)"
 L.Settings_Sanctum_Serpent_World_Shaper_TT          = "Vous avertit quand le Serpent commence son attaque Façonne Monde, en comptant jusqu'à ce qu'il soit déchaîné."
-L.Settings_Sanctum_Mantikora_Spear                  = "Mantikora : Lance"
+L.Settings_Sanctum_Mantikora_Spear                  = "Mantikora: Lance"
 L.Settings_Sanctum_Mantikora_Spear_TT               = "Vous avertit lorsque vous êtes ciblé par une lance de la Mantikora."
-L.Settings_Sanctum_Mantikora_Quake                  = "Mantikora : Séisme"
+L.Settings_Sanctum_Mantikora_Quake                  = "Mantikora: Séisme"
 L.Settings_Sanctum_Mantikora_Quake_TT               = "Vous avertit lorsque vous êtes ciblé par la série de trois Temblements de Terre de la Mantikora."
 L.Settings_Sanctum_Troll_Boulder                    = "Mobs: Troll Jeté de Pierre"
 L.Settings_Sanctum_Troll_Boulder_TT                 = "Vous avertit quand le Troll va vous lancer une pierre."
 L.Settings_Sanctum_Troll_Poison                     = "Mobs: Troll Poison"
 L.Settings_Sanctum_Troll_Poison_TT                  = "Vous avertit quand le Troll va vous jeter du poison."
-L.Settings_Sanctum_Overcharge                       = "Mobs : Surcharge"
+L.Settings_Sanctum_Overcharge                       = "Mobs: Surcharge"
 L.Settings_Sanctum_Overcharge_TT                    = "Vous avertit quand un Surchargeur vous cible avec sa capacité Surcharge (grande AoE)"
-L.Settings_Sanctum_Call_Lightning                   = "Mobs : Appel de la Foudre"
+L.Settings_Sanctum_Call_Lightning                   = "Mobs: Appel de la Foudre"
 L.Settings_Sanctum_Call_Lightning_TT                = "Vous avertit quand un Surchargeur vous cible avec sa capacité Appel de la Foudre (petites AoEs)"
 -- Alerts
 L.Alerts_Sanctum_Serpent_Poison0                    = "En Approche |c39942ePhase de Poison|r! Rassemblez vous!"
@@ -181,9 +206,9 @@ L.Alerts_Sanctum_Call_Lightning_Other               = "En Approche |c46edffAppel
 --------------------------------
 L.Settings_Maelstrom_Header                         = "Arène de Maelström"
 -- Settings
-L.Settings_Maelstrom_Stage7_Poison                  = "Arène 7 : Poison"
+L.Settings_Maelstrom_Stage7_Poison                  = "Arène 7: Poison"
 L.Settings_Maelstrom_Stage7_Poison_TT               = "Vous avertit quand vous avez été empoisonné dans l'Arène 7 (Crypte de l'Ombrage)."
-L.Settings_Maelstrom_Stage9_Synergy                 = "Arène 9 : Explosion Spectrale (Synergie)"
+L.Settings_Maelstrom_Stage9_Synergy                 = "Arène 9: Explosion Spectrale (Synergie)"
 L.Settings_Maelstrom_Stage9_Synergy_TT              = "Vous avertit quand vous avez obtenu la synergie de l'Arène 9 (Théâtre du Désespoir) après avoir récupéré 3 fantômes dorés."
 -- Alerts
 L.Alerts_Maelstrom_Stage7_Poison                    = "|c39942eEmpoisonné|r! Utilisez l'une des deux zones pour vous purger!"
@@ -195,26 +220,32 @@ L.Alerts_Maelstrom_Stage9_Synergy                   = "|c23afe7Explosion Spectra
 --------------------------------
 L.Settings_MawLorkhaj_Header                        = "Gueule de Lorkhaj"
 -- Settings
-L.Settings_MawLorkhaj_Zhaj_GripOfLorkhaj            = "Zhaj'hassa : Prise de Lorkhaj"
+L.Settings_MawLorkhaj_Zhaj_GripOfLorkhaj            = "Zhaj'hassa: Prise de Lorkhaj"
 L.Settings_MawLorkhaj_Zhaj_GripOfLorkhaj_TT         = "Vous avertit lorsque la Prise de Lorkhaj (malédiction) commence à vous affecter."
-L.Settings_MawLorkhaj_Zhaj_Glyphs                   = "Zhaj'hassa : Plateformes de Purge (beta)"
+L.Settings_MawLorkhaj_Zhaj_Glyphs                   = "Zhaj'hassa: Plateformes de Purge (beta)"
 L.Settings_MawLorkhaj_Zhaj_Glyphs_TT                = "Affiche une fenêtre montrant toutes les Plateformes de Purge avec leur état et le temps restant à leur réapparition."
 L.Settings_MawLorkhaj_Zhaj_Glyphs_Invert            = "       - Vue Inversée"
 L.Settings_MawLorkhaj_Zhaj_Glyphs_Invert_TT         = "Inverse l'affichage les Plateformes de Purge."
 L.Settings_MawLorkhaj_Twin_Aspects                  = "Jumeaux de la Fausse Lune : Aspects"
 L.Settings_MawLorkhaj_Twin_Aspects_TT               = "Vous avertit lorsque vous obtenez l'Aspect Lunaire ou Ombre sur les Jumeaux de la Fausse Lune.\n\n    Complet affiche lorsque vous obtenez un aspect, lorsque vous commencez à changer d'aspect, et lorsque la conversion est terminée.\n    Normal vous avertit lorsque vous obtenez un aspect et lorsque vous convertissez d'aspect.\n    Minimal vous avertit seulement des conversions."
+L.Settings_MawLorkhaj_Twin_Aspects_Status           = "       - Affiche le Statut"
+L.Settings_MawLorkhaj_Twin_Aspects_Status_TT        = "Affiche le statut en cours dans la fenetre de statut durant le combat du boss."
 L.Settings_MawLorkhaj_Rakkhat_Unstable_Void         = "Rakkhat : Vide Instable"
 L.Settings_MawLorkhaj_Rakkhat_Unstable_Void_TT      = "Vous avertit lorsque vous avez l'effet Vide Instable (AoE qui explose) de Rakkhat sur vous."
-L.Settings_MawLorkhaj_Rakkhat_ThreshingWings        = "Rakkhat : Ailes Tranchantes"
+L.Settings_MawLorkhaj_Rakkhat_Unstable_Void_Countdown = "       - Compte à Rebours"
+L.Settings_MawLorkhaj_Rakkhat_Unstable_Void_Countdown_TT = "Quand activé, affiche un compte à rebours au lieu d'une simple annonce pour l'effet Vide Instable."
+L.Settings_MawLorkhaj_Rakkhat_ThreshingWings        = "Rakkhat: Ailes Tranchantes"
 L.Settings_MawLorkhaj_Rakkhat_ThreshingWings_TT     = "Vous avertit quand Rakkhat utilise sa capacité Ailes Tranchantes qui vous projette."
-L.Settings_MawLorkhaj_Rakkhat_DarknessFalls         = "Rakkhat : Chute des Ténèbres"
+L.Settings_MawLorkhaj_Rakkhat_DarknessFalls         = "Rakkhat: Chute des Ténèbres"
 L.Settings_MawLorkhaj_Rakkhat_DarknessFalls_TT      = "Vous avertit lorsque Rakkhat commence sa capacité Chute des Ténèbres, où il fait tomber des météores dans la salle."
-L.Settings_MawLorkhaj_Rakkhat_DarkBarrage           = "Rakkhat : Barrage Sombre"
+L.Settings_MawLorkhaj_Rakkhat_DarkBarrage           = "Rakkhat: Barrage Sombre"
 L.Settings_MawLorkhaj_Rakkhat_DarkBarrage_TT        = "Vous avertit quand Rakkhat commence le Barrage Sombre (mitraillette) sur le tank."
-L.Settings_MawLorkhaj_Rakkhat_LunarBastion1         = "Rakkhat : Gain du Bastion Lunaire"
+L.Settings_MawLorkhaj_Rakkhat_LunarBastion1         = "Rakkhat: Gain du Bastion Lunaire"
 L.Settings_MawLorkhaj_Rakkhat_LunarBastion1_TT      = "Affiche quand un joueur obtient la bénédiction de la plateforme dorée."
-L.Settings_MawLorkhaj_Rakkhat_LunarBastion2         = "Rakkhat : Perte du Bastion Lunaire"
+L.Settings_MawLorkhaj_Rakkhat_LunarBastion2         = "Rakkhat: Perte du Bastion Lunaire"
 L.Settings_MawLorkhaj_Rakkhat_LunarBastion2_TT      = "Affiche quand un joueur perd la bénédiction de la plateforme dorée."
+L.Settings_MawLorkhaj_ShatteringStrike              = "Mobs: Frappe Écrasante"
+L.Settings_MawLorkhaj_ShatteringStrike_TT           = "Avertissement loursqu'un sauvage Dro-m'Athra va lancer sa Frappe Écrasante qui brisera votre armure."
 L.Settings_MawLorkhaj_Shattered                     = "Mobs: Armure Brisée"
 L.Settings_MawLorkhaj_Shattered_TT                  = "Avertissement lorsque votre armure est brisée."
 L.Settings_MawLorkhaj_MarkedForDeath                = "Mobs: Marqué pour la Mort (Panthères)"
@@ -238,6 +269,8 @@ L.Alerts_MawLorkhaj_Rakkhat_LunarBastion2           = "Vous avez perdu le |cFEFF
 L.Alerts_MawLorkhaj_Rakkhat_LunarBastion2_Other     = "|cFF0000<<!aC:1>>|r a perdu le |cFEFF7FBastion Lunaire|r"
 L.Alerts_MawLorkhaj_Suneater_Eclipse                = "En Approche |cFF0000Champ d'Éclipse|r sur vous."
 L.Alerts_MawLorkhaj_Suneater_Eclipse_Other          = "En Approche |cFF0000Champ d'Éclipse|r sur |cFF0000<<!aC:1>>|r!"
+L.Alerts_MawLorkhaj_ShatteringStrike                = "En Approche |c000055Frappe Écrasante|r sur vous."
+L.Alerts_MawLorkhaj_ShatteringStrike_Other          = "En Approche |c000055Frappe Écrasante|r sur |cFF0000<<!aC:1>>|r!"
 L.Alerts_MawLorkhaj_Shattered                       = "Votre |c595959Armure|r a été |cff0000Brisée|r."
 L.Alerts_MawLorkhaj_MarkedForDeath                  = "Attention! Une |c000055Panthère|r te poursuit!"
 
@@ -247,19 +280,19 @@ L.Alerts_MawLorkhaj_MarkedForDeath                  = "Attention! Une |c000055Pa
 --------------------------------
 L.Settings_Dragonstar_Header                        = "Arène de l'Étoile du Dragon"
 -- Settings
-L.Settings_Dragonstar_General_Taking_Aim            = "Général : Visée Précise"
+L.Settings_Dragonstar_General_Taking_Aim            = "Général: Visée Précise"
 L.Settings_Dragonstar_General_Taking_Aim_TT         = "Vous avertit lorsque vous êtes ciblé par une compétence Visée Précise."
-L.Settings_Dragonstar_General_Crystal_Blast         = "General : Cristal Explosif"
+L.Settings_Dragonstar_General_Crystal_Blast         = "General: Cristal Explosif"
 L.Settings_Dragonstar_General_Crystal_Blast_TT      = "Vous avertit lorsque vous êtes ciblé par une compétence Cristal Explosif."
-L.Settings_Dragonstar_Arena2_Crushing_Shock         = "Arène 2 : Onde Écrasante"
+L.Settings_Dragonstar_Arena2_Crushing_Shock         = "Arène 2: Onde Écrasante"
 L.Settings_Dragonstar_Arena2_Crushing_Shock_TT      = "Vous avertit lorsque vous êtes ciblé par une compétence Onde Écrasante dans l'Arène de Glace."
-L.Settings_Dragonstar_Arena6_Drain_Resource         = "Arène 6 : Drain de Ressources"
+L.Settings_Dragonstar_Arena6_Drain_Resource         = "Arène 6: Drain de Ressources"
 L.Settings_Dragonstar_Arena6_Drain_Resource_TT      = "Vous avertit lorsque vous êtes ciblé par une compétence Drain de Ressources dans l'Arène des Bosmers."
-L.Settings_Dragonstar_Arena7_Unstable_Core          = "Arène 7 : Noyau Instable (Eclipse)"
+L.Settings_Dragonstar_Arena7_Unstable_Core          = "Arène 7: Noyau Instable (Eclipse)"
 L.Settings_Dragonstar_Arena7_Unstable_Core_TT       = "Vous avertit quand le Noyau Instable (Eclipse) a été placé sur vous par le boss Templier dans l'Arène des Sacrifiés."
-L.Settings_Dragonstar_Arena8_Ice_Charge             = "Arène 8 : Charge de Glace"
+L.Settings_Dragonstar_Arena8_Ice_Charge             = "Arène 8: Charge de Glace"
 L.Settings_Dragonstar_Arena8_Ice_Charge_TT          = "Vous avertit quand le Centurion de Glace va lancer son attaque de glace."
-L.Settings_Dragonstar_Arena8_Fire_Charge            = "Arène 8 : Charge de Feu"
+L.Settings_Dragonstar_Arena8_Fire_Charge            = "Arène 8: Charge de Feu"
 L.Settings_Dragonstar_Arena8_Fire_Charge_TT         = "Vous avertit quand le Centurion de Feu va lancer son attaque de feu."
 -- Alerts
 L.Alerts_Dragonstar_General_Taking_Aim              = "|cFF6600Visée Précise|r ciblée sur vous!"
@@ -271,7 +304,7 @@ L.Alerts_Dragonstar_Arena7_Unstable_Core            = "Vous avez le |cDDDD33Noya
 L.Alerts_Dragonstar_Arena8_Ice_Charge               = "En Approche |c6699FFCharge de Glace|r sur vous! Interrompez ou Esquivez!"
 L.Alerts_Dragonstar_Arena8_Ice_Charge_Other         = "|c6699FFCharge de Glace|r est lancé sur |cFF0000<<!aC:1>>|r. Interrompez!"
 L.Alerts_Dragonstar_Arena8_Fire_Charge              = "En Approche |cFF3113Charge de Feu|r sur vous! Interrompez or Esquivez!"
-L.Alerts_Dragonstar_Arena8_Fire_Charge_Other        = "|c6699FCharge de Feu|r est lancé sur |cFF0000<<!aC:1>>|r. Interrompez!"
+L.Alerts_Dragonstar_Arena8_Fire_Charge_Other        = "|c6699FFCharge de Feu|r est lancé sur |cFF0000<<!aC:1>>|r. Interrompez!"
 
 
 
@@ -280,35 +313,44 @@ L.Alerts_Dragonstar_Arena8_Fire_Charge_Other        = "|c6699FCharge de Feu|r es
 --------------------------------
 L.Settings_HallsFab_Header                          = "Salles de la Fabrication"
 -- Settings
-L.Settings_HallsFab_Taking_Aim                      = "Général : Visée Précise"
+L.Settings_HallsFab_Taking_Aim                      = "Général: Visée Précise"
 L.Settings_HallsFab_Taking_Aim_TT                   = "Vous avertit lorsque vous êtes ciblé par une compétence Visée Précise."
-L.Settings_HallsFab_Draining_Ballista               = "Général : Balliste Drainante"
+L.Settings_HallsFab_Taking_Aim_Dynamic              = "       - Compte à Rebours"
+L.Settings_HallsFab_Taking_Aim_Dynamic_TT           = "Quand activé, affiche un compte à rebours au lieu d'une simple annonce pour l'attaque Visée Précise."
+L.Settings_HallsFab_Taking_Aim_Duration             = "       - Durée du Compte à Rebours"
+L.Settings_HallsFab_Taking_Aim_Duration_TT          = "La durée du compte à rebours en millisecondes."
+L.Settings_HallsFab_Draining_Ballista               = "Général: Balliste Drainante"
 L.Settings_HallsFab_Draining_Ballista_TT            = "Vous avertit quand une Sphère doit être interrompue."
-L.Settings_HallsFab_Conduit_Strike                  = "Général : Coupure de Conduit"
+L.Settings_HallsFab_Conduit_Strike                  = "Général: Coupure de Conduit"
 L.Settings_HallsFab_Conduit_Strike_TT               = "Vous avertit quand une Coupure de Conduit (AoE qui explose et étourdi) arrive proche de vous."
-L.Settings_HallsFab_Power_Leech                     = "Général : Drain de Puissance"
+L.Settings_HallsFab_Power_Leech                     = "Général: Drain de Puissance"
 L.Settings_HallsFab_Power_Leech_TT                  = "Vous avertit quand vous êtes étourdi par une Coupure de Courant et que vous devez vous libérer."
-L.Settings_HallsFab_Conduit_Spawn                   = "Pinacle : Apparition de Lance"
+L.Settings_HallsFab_Venom_Injection                 = "Chasseurs: Injection de Venin"
+L.Settings_HallsFab_Venom_Injection_TT              = "Affiche dans la fenetre d'état lorsque vous êtes atteint par l'Injection de Venin pendant le combat des boss."
+L.Settings_HallsFab_Conduit_Spawn                   = "Pinacle: Apparition de Lance"
 L.Settings_HallsFab_Conduit_Spawn_TT                = "Vous avertit quand une lance va apparaître sur le boss Factotum du Pinacle."
-L.Settings_HallsFab_Conduit_Drain                   = "Pinacle : Drain des Lances"
+L.Settings_HallsFab_Conduit_Drain                   = "Pinacle: Drain des Lances"
 L.Settings_HallsFab_Conduit_Drain_TT                = "Vous avertit quand une lance draîne vos ressources sur le boss Factotum du Pinacle."
-L.Settings_HallsFab_Scalded_Debuff                  = "Pinacle : Debuff Brûlant"
+L.Settings_HallsFab_Scalded_Debuff                  = "Pinacle: Debuff Brûlant"
 L.Settings_HallsFab_Scalded_Debuff_TT               = "Affiche une petite icône montrant le temps restant pour que le debuff disparaisse, et de combien il affecte le heal reçu."
-L.Settings_HallsFab_Overcharge_Aura                 = "Commitée : Aura Surchargée"
+L.Settings_HallsFab_Overcharge_Aura                 = "Commitée: Aura Surchargée"
 L.Settings_HallsFab_Overcharge_Aura_TT              = "Vous avertit quand le boss Récupérateur commence son Aura Surchargée."
-L.Settings_HallsFab_Overpower_Auras                 = "Commitée : Auras Surchargées"
+L.Settings_HallsFab_Overpower_Auras                 = "Commitée: Auras Surchargées"
 L.Settings_HallsFab_Overpower_Auras_TT              = "Vous avertit quand les tanks doivent échanger leurs boss (Réacteur et Réducteur)." 
+L.Settings_HallsFab_Overpower_Auras_Duration        = "       - Durée du Compte à Rebours"
+L.Settings_HallsFab_Overpower_Auras_Duration_TT     = "La durée du compte à rebours en millisecondes."
 L.Settings_HallsFab_Overpower_Auras_Dynamic         = "       - Compte à Rebours Dynamique"
 L.Settings_HallsFab_Overpower_Auras_Dynamic_TT      = "Lorsque l'option est activée, elle essaiera d'arrêter le compte à rebours lorsque les tanks ont fini leur échange."
-L.Settings_HallsFab_Fabricant_Spawn                 = "Commitée : Apparition de Factotums Ruinés"
+L.Settings_HallsFab_Fabricant_Spawn                 = "Commitée: Apparition de Factotums Ruinés"
 L.Settings_HallsFab_Fabricant_Spawn_TT              = "Vous avertit lorsque des Factotums Ruinés sont sur le point d'apparaître."
-L.Settings_HallsFab_Catastrophic_Discharge          = "Commitée : Décharge Catastrophique"
+L.Settings_HallsFab_Catastrophic_Discharge          = "Commitée: Décharge Catastrophique"
 L.Settings_HallsFab_Catastrophic_Discharge_TT       = "Vous avertit lorsqu'un Factotum Ruiné va vous charger."
-L.Settings_HallsFab_Reclaim_Achieve                 = "Commitée : Échec [Obsolescence Planifiée]"
+L.Settings_HallsFab_Reclaim_Achieve                 = "Commitée: Échec [Obsolescence Planifiée]"
 L.Settings_HallsFab_Reclaim_Achieve_TT              = "Vous avertit lorsqu'un Factotum Ruiné a atteind le Récupérateur et que vous n'avez donc pas réussi le succés Obsolescence Planifiée."
 -- Alerts
 L.Alerts_HallsFab_Taking_Aim                        = "|cFF6600Visée Précise|r ciblée sur vous!"
 L.Alerts_HallsFab_Taking_Aim_Other                  = "|cFF6600Visée Précise|r ciblée sur |cFF0000<<!aC:1>>|r!"
+L.Alerts_HallsFab_Taking_Aim_Simple                 = "|cFF6600Visée Précise|r"
 L.Alerts_HallsFab_Conduit_Spawn                     = "Une Lance va apparaître"
 L.Alerts_HallsFab_Conduit_Drain                     = "Une Lance draîne vos ressources!"
 L.Alerts_HallsFab_Conduit_Drain_Other               = "Une Lance draîne les ressources de |cFF0000<<!aC:1>>|r!"
@@ -321,6 +363,113 @@ L.Alerts_HallsFab_Overpower_Auras                   = "|cFF0000Compte à Rebours
 L.Alerts_HallsFab_Catastrophic_Discharge            = "|cFF0000Décharge Catastrophique|r sur vous! Bloquez!"
 L.Alerts_HallsFab_Fabricant_Spawn                   = "|cFFC000Apparition de Factotums Ruinés|r"
 L.Alerts_HallsFab_Reclaim_Achieve                   = "|cDCD822[Obsolescence Planifiée]|r, le succés a |cFF0000Échoué|r"
+
+
+
+--------------------------------
+----   Asylum Sanctorium    ----
+--------------------------------
+L.Settings_Asylum_Header                         = "Asile Sanctuaire"
+-- Settings
+L.Settings_Asylum_Defiling_Blast                 = "Saint Llothis: Détonation Profanée"
+L.Settings_Asylum_Defiling_Blast_TT              = "Vous avertit quand Saint Llothis cible un joueur du groupe avec son attaque conique."
+L.Settings_Asylum_Soul_Stained_Corruption        = "Saint Llothis: Rayons Oppresseurs"
+L.Settings_Asylum_Soul_Stained_Corruption_TT     = "Vous avertit quand Saint Llothis cible tous les joueurs avec son attaque qui devrait être interrompue."
+L.Settings_Asylum_Teleport_Strike                = "Saint Felms: Téléportation"
+L.Settings_Asylum_Teleport_Strike_TT             = "Vous avertit quand Saint Felms va se téléporter sur vous."
+L.Settings_Asylum_Exhaustive_Charges             = "Saint Olms: Charges Épuisantes"
+L.Settings_Asylum_Exhaustive_Charges_TT          = "Vous avertit quand Saint Olms est sur le point de lancer sont attaque qui envoie tois grandes AoEs de foudre."
+L.Settings_Asylum_Storm_The_Heavens              = "Saint Olms: Assaillir les Cieux"
+L.Settings_Asylum_Storm_The_Heavens_TT           = "Vous avertit quand Saint Olms est sur le point de s'envoler et d'envoyer une grande quantité de petites AoEs de foudre."
+L.Settings_Asylum_Gusts_Of_Steam                 = "Saint Olms: Nuages de Vapeur"
+L.Settings_Asylum_Gusts_Of_Steam_TT              = "Vous avertit quand Saint Olms est sur le point de sauter d'avant en arrière, signalant la prochaine phase du combat."
+L.Settings_Asylum_Gusts_Of_Steam_Slider          = "       - Poucentage avant Saut"
+L.Settings_Asylum_Gusts_Of_Steam_Slider_TT       = "Affiche une notification quelques pourcents de la santé du boss avant qu'il ne commence à sauter."
+L.Settings_Asylum_Protector_Spawn                = "Saint Olms: Apparition d'un Protecteur"
+L.Settings_Asylum_Protector_Spawn_TT             = "Vous avertit quand une sphère est sur le point d'apparaitre."
+L.Settings_Asylum_Trial_By_Fire                  = "Saint Olms: Épreuve du Feu"
+L.Settings_Asylum_Trial_By_Fire_TT               = "Vous avertit quand Saint Olms va lancer du feu durant la phase finale."
+-- Alerts
+L.Alerts_Asylum_Defiling_Blast                   = "Attention! |c00cc00Détonation Profanée|r sur vous"
+L.Alerts_Asylum_Defiling_Blast_Other             = "Attention! |c00cc00Détonation Profanée|r sur |cFF0000<<!aC:1>>|r"
+L.Alerts_Asylum_Soul_Stained_Corruption          = "En Approche |c3366EERayons Oppresseurs|r. Interrompez!"
+L.Alerts_Asylum_Teleport_Strike                  = "|cFF3366Téléportation|r sur vous"
+L.Alerts_Asylum_Teleport_Strike_Other            = "|cFF3366Téléportation|r sur |cFF0000<<!aC:1>>|r"
+L.Alerts_Asylum_Exhaustive_Charges               = "En Approche |cFF0000Charges Épuisantes|r"
+L.Alerts_Asylum_Storm_The_Heavens                = "En Approche |cFF0000Assaillir les Cieux|r! Courez!"
+L.Alerts_Asylum_Gusts_Of_Steam                   = "En Approche |cFF9900Nuages de Vapeur|r! Cachez vous!"
+L.Alerts_Asylum_Pre_Gusts_Of_Steam               = "<<1>>% avant |cFF0000Saut|r! Préparez vous!"
+L.Alerts_Asylum_Trial_By_Fire                    = "En Approche |cFF5500Feu|r!"
+L.Alerts_Asylum_Protector_Spawn                  = "Apparition d'un |c0000FFProtecteur|r!"
+L.Alerts_Asylum_Protector_Active                 = "|c0000FFProtecteur|r actif!"
+
+
+
+--------------------------------
+------   CLOUDREST         -----
+--------------------------------
+L.Settings_Cloudrest_Header			= "Le Pas-des-Nuées"
+-- Settings
+L.Settings_Cloudrest_Olorime_Spears             = "General: Lance d'Olorime"
+L.Settings_Cloudrest_Olorime_Spears_TT          = "Vous avertit quand une Lance apparait et que quelqu'un doit la ramasser."
+L.Settings_Cloudrest_Shadow_Realm_Cast          = "General: Apparition de Portail"
+L.Settings_Cloudrest_Shadow_Realm_Cast_TT       = "Vous avertit lorsque  le portail apparait et que le groupe doit aller dans la Dimension d'Ombre. "
+L.Settings_Cloudrest_Hoarfrost                  = "Faralielle: Verglas"
+L.Settings_Cloudrest_Hoarfrost_TT               = "Vous avertit quand vous avez le debuff de Verglas sur vous qui doit être synergisé pour être supprimé."
+L.Settings_Cloudrest_Hoarfrost_Countdown        = "       - Compte à Rebours"
+L.Settings_Cloudrest_Hoarfrost_Countdown_TT     = "Affiche un compte à rebours qui vous avertit quand vous pourrez lacher le debuff."
+L.Settings_Cloudrest_Hoarfrost_Shed             = "Faralielle: Rejet de Verglas"
+L.Settings_Cloudrest_Hoarfrost_Shed_TT          = "Vous avertit quand le debuff de Verglas à été laché par un autre joueur et doit être récupéré."
+L.Settings_Cloudrest_Heavy_Attack               = "Mini Boss: Attaque Lourde"
+L.Settings_Cloudrest_Heavy_Attack_TT            = "Vous avertit quand l'un des 3 Mini Boss va faire son Attaque Lourde."
+L.Settings_Cloudrest_Chilling_Comet             = "Faralielle: Comètes de Glace"
+L.Settings_Cloudrest_Chilling_Comet_TT          = "Vous avertit quand la Comète de Glace est sur vous. Vous devez bloquer et vous ne devez pas vous chevaucher avec un autre joueur ayant le même debuff avant l'explosion."
+L.Settings_Cloudrest_Roaring_Flare              = "Siroria: Signal Rugissant"
+L.Settings_Cloudrest_Roaring_Flare_TT           = "Vous avertit lorsque l'un des membres du groupe à le debuff Signal Rugissant qui nécessite un minimum de 3 personnes regroupées pour ne pas se faire one shot."
+L.Settings_Cloudrest_Track_Roaring_Flare        = "       - Traque Signal Rugissant"
+L.Settings_Cloudrest_Track_Roaring_Flare_TT     = ""
+L.Settings_Cloudrest_Voltaic_Overload           = "Belanaril: Surchage Voltaïque"
+L.Settings_Cloudrest_Voltaic_Overload_TT        = "Vous avertit quand vous allez avoir le debuff Surchage Voltaïque qui vous empêchera de changer de barres pendant 10 secondes."
+L.Settings_Cloudrest_Nocturnals_Favor	        = "Z'Maja: Faveur de Nocturne"
+L.Settings_Cloudrest_Nocturnals_Favor_TT        = "Vous avertit quand Z'Maja vous cible avec son attaque lourde."
+L.Settings_Cloudrest_Baneful_Barb               = "Monstruosité Yaghra: Barbe Funeste"
+L.Settings_Cloudrest_Baneful_Barb_TT            = "Vous avertit quand une Monstruosité Yaghra vous cible et fera son attaque Barbe Funeste."
+L.Settings_Cloudrest_Break_Amulet               = "Z'Maja: Seulement Important en Execute"
+L.Settings_Cloudrest_Break_Amulet_TT            = "Désactive les annonces de Spheres et de Rampant en execute."
+L.Settings_Cloudrest_Sum_Shadow_Beads           = "Z'Maja: Sphères"
+L.Settings_Cloudrest_Sum_Shadow_Beads_TT        = "Vous avertit quand les Sphères vont apparaitres."
+L.Settings_Cloudrest_Tentacle_Spawn             = "Z'Maja: Apparition de Rampant"
+L.Settings_Cloudrest_Tentacle_Spawn_TT          = "Vous avertit quand un Rampant de Nocturne va apparaitre."
+L.Settings_Cloudrest_Crushing_Darkness          = "Z'Maja: Ténèbres Écrasantes"
+L.Settings_Cloudrest_Crushing_Darkness_TT       = "Vous avertit quand une AoE vous suit et doit être gardée à distance."
+
+-- Alerts
+L.Alerts_Cloudrest_Olorime_Spears               = "Une |cffd000Lance|r apparaît!"
+L.Alerts_Cloudrest_Hoarfrost0                   = "|c00ddffVerglas|r sur vous!"
+L.Alerts_Cloudrest_Hoarfrost1                   = "|cff0000Dernier|r |c00ddffVerglas|r sur vous!"
+L.Alerts_Cloudrest_Hoarfrost_Other0             = "|c00ddffVerglas|r sur |cff0000<<!aC:1>>|r."
+L.Alerts_Cloudrest_Hoarfrost_Other1             = "|cff0000Dernier|r |c00ddffVerglas|r sur |cff0000<<!aC:1>>|r."
+L.Alerts_Cloudrest_Hoarfrost_Countdown0         = "Lachez le |c00ddffVerglas|r dans..."
+L.Alerts_Cloudrest_Hoarfrost_Countdown1         = "Lachez le |cff0000Dernier|r |c00ddffVerglas|r dans..."
+L.Alerts_Cloudrest_Hoarfrost_Syn                = "|cff0000Synergie|r pour lacher le Verglas!"
+L.Alerts_Cloudrest_Hoarfrost_Shed               = "|c00ddffVerglas|r laché."
+L.Alerts_Cloudrest_Hoarfrost_Shed_Other         = "|c00ddffVerglas|r laché par |cff0000<<!aC:1>>|r."
+L.Alerts_Cloudrest_Heavy_Attack                 = "|c0bf29eAttaque Lourde|r sur vous!"
+L.Alerts_Cloudrest_Heavy_Attack_Other           = "|c0bf29eAttaque Lourde|r sur |cff0000<<!aC:1>>|r."
+L.Alerts_Cloudrest_Baneful_Barb                 = "|cff0000Barbe Funeste|r. Esquivez!"
+L.Alerts_Cloudrest_Baneful_Barb_Other           = "|cff0000Barbe Funeste|r sur |cff0000<<!aC:1>>|r."
+L.Alerts_Cloudrest_Chilling_Comet               = "|cff0000Comète de Glace|r sur vous. Bloquez!"
+L.Alerts_Cloudrest_Roaring_Flare                = "|cff7700Signal Rugissant|r sur vous."
+L.Alerts_Cloudrest_Roaring_Flare_2              = "|cff7700Signal Rugissant|r sur |cff0000<<!aC:1>>|r et |cff0000<<!aC:2>>|r. Regroupez vous!"
+L.Alerts_Cloudrest_Roaring_Flare_Other          = "|cff7700Signal Rugissant|r sur |cff0000<<!aC:1>>|r. Regroupez vous!"
+L.Alerts_Cloudrest_Voltaic_Current              = "En Approche |c55b4d4Surchage Voltaïque|r sur vous dans"
+L.Alerts_Cloudrest_Voltaic_Overload             = "|c4d61c1Surchage Voltaïque|r sur vous! Changez de barre!"
+L.Alerts_Cloudrest_Voltaic_Overload_Cd          = "|c4d61c1Surchage Voltaïque|r. Ne changez pas de barre!"
+L.Alerts_Cloudrest_Shadow_Realm_Cast            = "Apparition du |cab82ffPortail|r"
+L.Alerts_Cloudrest_Tentacle_Spawn               = "Apparition d'un |c00a86bRampant|r"
+L.Alerts_Cloudrest_Sum_Shadow_Beads             = "Apparition des |cab82ffSphères|r"
+L.Alerts_Cloudrest_Nocturnals_Favor             = "|cff0000Faveur de Nocturne|r sur vous!"
+L.Alerts_Cloudrest_Crushing_Darkness            = "|cfc0c66Ténèbres Écrasantes|r sur vous. Courez!"
 
 
 
@@ -350,20 +499,24 @@ for k, v in pairs(L) do
     ZO_CreateStringId(string, v)
 end
 
-if (GetCVar('language.2') == 'fr') then 
-	local MissingL = {}
-	for k, v in pairs(RaidNotifier:GetLocale()) do
-		if (not L[k]) then
-			table.insert(MissingL, k)
-			L[k] = v
-		end
-	end
-	function RaidNotifier:GetLocale() 
-		return L
-	end
-	-- for debugging 
-	function RaidNotifier:MissingLocale()
-		df("Missing strings for '%s'", GetCVar('language.2'))
-		d(MissingL)
-	end
+function RaidNotifier:GetLocale()
+	return L
 end
+
+--if (GetCVar('language.2') == 'de') then 
+--	local MissingL = {}
+--	for k, v in pairs(RaidNotifier:GetLocale()) do
+--		if (not L[k]) then
+--			table.insert(MissingL, k)
+--			L[k] = v
+--		end
+--	end
+--	function RaidNotifier:GetLocale() 
+--		return L
+--	end
+--	-- for debugging 
+--	function RaidNotifier:MissingLocale()
+--		df("Missing strings for '%s'", GetCVar('language.2'))
+--		d(MissingL)
+--	end
+--end
