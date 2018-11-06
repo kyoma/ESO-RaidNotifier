@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name           = "RaidNotifier"
 RaidNotifier.DisplayName    = "Raid Notifier"
-RaidNotifier.Version        = "2.7.6"
+RaidNotifier.Version        = "2.7.7"
 RaidNotifier.Author         = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name        = "RNVars"
 RaidNotifier.SV_Version     = 4
@@ -20,6 +20,7 @@ RAID_MAELSTROM_ARENA        = 6
 RAID_HALLS_OF_FABRICATION   = 7
 RAID_ASYLUM_SANCTORIUM      = 8
 RAID_CLOUDREST              = 9
+RAID_BLACKROSE_PRISON       = 10
 
 -- Debugging
 local function p() end
@@ -581,6 +582,7 @@ do ----------------------
 		[RAID_HALLS_OF_FABRICATION]  = 975,
 		[RAID_ASYLUM_SANCTORIUM]     = 1000,
 		[RAID_CLOUDREST]             = 1051,
+		[RAID_BLACKROSE_PRISON]      = 1082,
 	}
 
 	local RaidZones = {}
@@ -679,9 +681,13 @@ do ----------------------
 			end
 			dbg("----------------------------------------------")
 
-			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_EFFECT_CHANGED, self.OnEffectChanged)
-			EVENT_MANAGER:AddFilterForEvent(self.Name, EVENT_EFFECT_CHANGED, REGISTER_FILTER_UNIT_TAG, "player")
-			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_BOSSES_CHANGED, self.OnBossesChanged)
+			if (effectChangedCallback) then
+				EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_EFFECT_CHANGED, effectChangedCallback)
+				EVENT_MANAGER:AddFilterForEvent(self.Name, EVENT_EFFECT_CHANGED, REGISTER_FILTER_UNIT_TAG, "player")
+			end
+			if (bossesChangedCallback) then
+				EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_BOSSES_CHANGED, bossesChangedCallback)
+			end
 
 			-- Toggle assistants off when combat starts
 			local function OnCombatStateChanged(_, inCombat)

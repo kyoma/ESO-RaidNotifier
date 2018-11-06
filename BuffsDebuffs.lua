@@ -484,3 +484,8 @@ cloudrest.interest_list = {}
 
 RaidNotifier.BuffsDebuffs[RAID_CLOUDREST] = cloudrest
 
+-- ------------------------------------------------------
+-- -- Cloudrest  ----------------------------------------
+-- -- ---------------------------------------------------
+local blackrose = {}
+RaidNotifier.BuffsDebuffs[RAID_BLACKROSE_PRISON] = blackrose
