@@ -13,6 +13,14 @@
 				<AlphaAnimation duration="500" startAlpha="0" endAlpha="1" />
 			</Animations>
 		</AnimationTimeline>
+		<AnimationTimeline name="CenterAnnounceCountdownLoop">
+			<Animations>
+				<ScaleAnimation duration="100" startScale="0.8" endScale="1.2"/>
+				<ScaleAnimation duration="75" delay="100" startScale="1.2" endScale="1.0"/>
+				<AlphaAnimation duration="50" startAlpha="0.0" endAlpha="1.0"/>
+				<AlphaAnimation duration="50" delay="950" startAlpha="1.0" endAlpha="0"/>
+			</Animations>
+		</AnimationTimeline>
 	</Animations>
 	<Controls>
 		<Control name="RaidNotifierGlyphTemplate" virtual="true">

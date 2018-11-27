@@ -223,7 +223,7 @@ do ---------------------------------
 		end
 	end
 
-	function RaidNotifier:StartCountdown(timer, text, category, setting, interval)
+	function RaidNotifier:StartCountdown(timer, text, category, setting, important, interval)
 		local soundId = self:GetSoundValue(category, setting)
 		if soundId == DEFAULT_SOUND then --
 			soundId = self.Vars.general.default_sound
@@ -241,33 +241,27 @@ do ---------------------------------
 			self:SetLastNotify(category, setting, currentTime)
 		end
 		
+		important = important and important or important == nil -- default countdown
+		
 		local countdownId = 0
---[[		if (self:IsDevMode()) then
-			local pool = RaidNotifier.NotificationsPool.GetInstance()
-			countdownId = pool:Add(text, duration, true)
-			if soundId ~= nil then PlaySound(soundId) end			
-		else]]
+		if not self:IsDevMode() or self.Vars.general.use_center_screen_announce > 0 or important then
 			countdownId = LCSA:CreateCountdown(timer, soundId, nil, text, nil, SetupCallback, CountdownCallback)
---		end
+		else
+			local pool = RaidNotifier.NotificationsPool.GetInstance()
+			countdownId = pool:Add(text, timer, true)
+			if soundId ~= nil then PlaySound(soundId) end		
+		end
 		if countdownId > 0 then
 			countdownInProgress = true
 		end
 		return countdownId
 	end
+	
 	function RaidNotifier:StopCountdown(countdownIndex)
 		LCSA:EndCountdown(countdownIndex)
 		countdownInProgress = false
 	end
 	
-	function RNTestCountdown(timer, text)
-		return LCSA:CreateCountdown(timer, "", nil, text, nil, SetupCallback, CountdownCallback)
-	end
-	
-	function RNTestAlert(alert)
-		RaidNotifier:AddAnnouncement(alert, "Dummy", "Dummy")
-	end
-	
-
 end
 
 
@@ -718,7 +712,9 @@ do ----------------------
 			ToggleVanityPets(true)
 
 			-- In case of initializing while already at a boss
-			bossesChangedCallback()
+			if (bossesChangedCallback) then
+				bossesChangedCallback()
+			end
 		end
 	end
 
@@ -1118,7 +1114,7 @@ do ---------------------------
 			elseif (abilityId == buffsDebuffs.serpent_world_shaper) then
 				 --per start of eclipse tear, just add countdown and use interval to limit it to the first
 				if (settings.serpent_world_shaper == true) then
-					self:StartCountdown(buffsDebuffs.serpent_world_shaper_delay, GetString(RAIDNOTIFIER_ALERTS_SANCTUM_SERPENT_WORLD_SHAPER), "sanctumOphidia", "serpent_world_shaper", 10)
+					self:StartCountdown(buffsDebuffs.serpent_world_shaper_delay, GetString(RAIDNOTIFIER_ALERTS_SANCTUM_SERPENT_WORLD_SHAPER), "sanctumOphidia", "serpent_world_shaper", nil, 10)
 				end
 
 			-- Trolls, Spreading Poison
@@ -1865,6 +1861,11 @@ do ---------------------------
 		end
 	end
 
+	-- TODO: remove after new countdown is ready
+	local function IsCustomCountdown()
+		return RaidNotifier:IsDevMode() and RaidNotifier.Vars.general.use_center_screen_announce == 0
+	end
+	
 	function RaidNotifier.OnCombatEvent_CR(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
 		local raidId = RaidNotifier.raidId
 		local self   = RaidNotifier
@@ -1887,8 +1888,9 @@ do ---------------------------
 				if (settings.hoarfrost >= 1) then
 					local tmp = 0
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						if settings.hoarfrost_countdown and not self:IsCountdownInProgress() then
-							self:StartCountdown(buffsDebuffs.hoarfrost_countdown + hitValue, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
+						-- TODO remove setting hoarfrost_countdown
+						if settings.hoarfrost_countdown and (IsCustomCountdown() or not self:IsCountdownInProgress()) then
+							self:StartCountdown(buffsDebuffs.hoarfrost_countdown + hitValue, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost", false)
 						else
 							self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
 						end
@@ -1904,7 +1906,7 @@ do ---------------------------
 			elseif abilityId == buffsDebuffs.nocturnals_favor then
 				if (settings.nocturnals_favor > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_NOCTURNALS_FAVOR), "cloudrest", "nocturnals_favor")
+						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_NOCTURNALS_FAVOR), "cloudrest", "nocturnals_favor", false)
 					end
 				end
 			elseif buffsDebuffs.heavy_attack[abilityId] == true then
@@ -1927,10 +1929,10 @@ do ---------------------------
 				self.olorimeSpears = {}
 				self.lastOlorimeSpearMs = 0
 				if (settings.shadow_realm_cast) then
-					if (self:IsCountdownInProgress()) then
+					if (not IsCustomCountdown() and self:IsCountdownInProgress()) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SHADOW_REALM_CAST), "cloudrest", "shadow_realm_cast")
 					else
-						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SHADOW_REALM_CAST), "cloudrest", "shadow_realm_cast")
+						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SHADOW_REALM_CAST), "cloudrest", "shadow_realm_cast", false)
 					end
 				end
 			elseif abilityId == buffsDebuffs.sum_shadow_beads then
@@ -2002,8 +2004,8 @@ do ---------------------------
 						if (settings.hoarfrost >= 1) then
 							local tmp = data.count >= 3 and 1 or 0
 							if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-								if settings.hoarfrost_countdown and not self:IsCountdownInProgress() then
-									self:StartCountdown(buffsDebuffs.hoarfrost_countdown, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost")
+								if settings.hoarfrost_countdown and (IsCustomCountdown() or not self:IsCountdownInProgress()) then
+									self:StartCountdown(buffsDebuffs.hoarfrost_countdown, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost", false)
 								else
 									self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
 								end
@@ -2066,14 +2068,14 @@ do ---------------------------
 			elseif abilityId == buffsDebuffs.voltaic_overload then
 				if (settings.voltaic_overload > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_overload")
+						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_OVERLOAD_CD), "cloudrest", "voltaic_overload", true)
 					end
 				end
 			elseif buffsDebuffs.voltaic_current[abilityId] == true then
 				if (settings.voltaic_overload > 0) then
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						--self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_CURRENT), "cloudrest", "voltaic_current")
-						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_CURRENT), "cloudrest", "voltaic_overload")
+						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_VOLTAIC_CURRENT), "cloudrest", "voltaic_overload", true)
 					end
 				end
 			end
@@ -2288,13 +2290,17 @@ end
 			end
 		elseif (args[1] == "notifications") then
 			if (args[2] ~= nil) then
-				self:StartCountdown(10000, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM_SIMPLE), "hallsFab", "taking_aim")
+				self:StartCountdown(10000, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM_SIMPLE), "hallsFab", "taking_aim", not self:IsCountdownInProgress())
 			end
 			self:AddAnnouncement("Next Notification", "cloudrest", "olorime_spears2")
 			zo_callLater(function()
 				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_CHILLING_COMET), "cloudrest", "chilling_comet")
 				zo_callLater(function()
-					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_OLORIME_SPEARS), "cloudrest", "olorime_spears")
+					if (args[2] ~= nil) then
+						self:StartCountdown(6000, "Test countdown", "hallsFab", "test", false)
+					else
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_OLORIME_SPEARS), "cloudrest", "olorime_spears")
+					end
 					zo_callLater(function()
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_TENTACLE_SPAWN), "cloudrest", "tentacle_spawn")
 						zo_callLater(function()
