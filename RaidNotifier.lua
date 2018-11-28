@@ -244,7 +244,7 @@ do ---------------------------------
 		important = important and important or important == nil -- default countdown
 		
 		local countdownId = 0
-		if not self:IsDevMode() or self.Vars.general.use_center_screen_announce > 0 or important then
+		if not self:IsCountdownInProgress() and self.Vars.general.use_center_screen_announce > 0 or important then
 			countdownId = LCSA:CreateCountdown(timer, soundId, nil, text, nil, SetupCallback, CountdownCallback)
 		else
 			local pool = RaidNotifier.NotificationsPool.GetInstance()
