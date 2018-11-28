@@ -1,4 +1,6 @@
 
+local dbg = nil
+
 local AbstractNotification = ZO_Object:Subclass()
 
 AbstractNotification.NOTIFY = 0
@@ -63,7 +65,7 @@ function AbstractNotification:_runTimer(ms, f)
 			self:SetHidden(true)
 			self.freeToUse = true
 			EVENT_MANAGER:UnregisterForUpdate("RNNotification_" .. self.id)
-			d("Hiding: "..self.id)
+			dbg("Hiding: "..self.id)
 		end		
 	end)
 end
@@ -123,7 +125,7 @@ function Notification:Show(text)
 --	zo_callLater(function()
 --		self:SetHidden(true)
 --		self.freeToUse = true
---		d("Hiding: "..self.id)
+--		dbg("Hiding: "..self.id)
 --	end, self.displayTime)
 	
 	self:runTimer(1000)
@@ -198,6 +200,8 @@ function NotificationsPool:Initialize(displayTime, parent)
 		self.parent = parent
 	end
 	
+	dbg = RaidNotifier.dbg
+	
 --	self.bg = WINDOW_MANAGER:CreateControl(nil, self.parent, CT_BACKDROP)
 --	self.bg:SetAnchorFill(self.parent)
 --	self.bg:SetEdgeTexture(nil, 1, 1, 0.5, 0.5)	
@@ -221,7 +225,7 @@ function NotificationsPool:Add(text, displayTime, isCountdown)
 	for i = 1, #self.pool, 1 do
 		if (self.pool[i]:IsFreeToUse()) then
 			if ((self.pool[i]:GetType() == AbstractNotification.COUNTDOWN and isCountdown) or (self.pool[i]:GetType() == AbstractNotification.COUNTDOWN and not isCountdown)) then
-				d("Used already created notification "..self.pool[i]:GetId())
+				dbg("Used already created notification "..self.pool[i]:GetId())
 				notify = self.pool[i]
 				break;
 			end
@@ -237,7 +241,7 @@ function NotificationsPool:Add(text, displayTime, isCountdown)
 		end
 		notify:SetText("X") -- we need anything to get text height
 		self.pool[id] = notify
-		d("Created new notification "..id)
+		dbg("Created new notification "..id)
 	end
 	
 	notify:SetDisplayTime(displayTime and displayTime or self.displayTime)
