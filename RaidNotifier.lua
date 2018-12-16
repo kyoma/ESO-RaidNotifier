@@ -1846,11 +1846,6 @@ do ---------------------------
 
 		end
 	end
-
-	-- TODO: remove after new countdown is ready
-	local function IsCustomCountdown()
-		return RaidNotifier:IsDevMode() and RaidNotifier.Vars.general.use_center_screen_announce == 0
-	end
 	
 	function RaidNotifier.OnCombatEvent_CR(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
 		local raidId = RaidNotifier.raidId
@@ -1875,7 +1870,7 @@ do ---------------------------
 					local tmp = 0
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						-- TODO remove setting hoarfrost_countdown
-						if settings.hoarfrost_countdown and (IsCustomCountdown() or not self:IsCountdownInProgress()) then
+						if settings.hoarfrost_countdown then
 							self:StartCountdown(buffsDebuffs.hoarfrost_countdown + hitValue, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost", false)
 						else
 							self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
@@ -1915,11 +1910,8 @@ do ---------------------------
 				self.olorimeSpears = {}
 				self.lastOlorimeSpearMs = 0
 				if (settings.shadow_realm_cast) then
-					if (not IsCustomCountdown() and self:IsCountdownInProgress()) then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SHADOW_REALM_CAST), "cloudrest", "shadow_realm_cast")
-					else
-						self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SHADOW_REALM_CAST), "cloudrest", "shadow_realm_cast", false)
-					end
+					--self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SHADOW_REALM_CAST), "cloudrest", "shadow_realm_cast")
+					self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SHADOW_REALM_CAST), "cloudrest", "shadow_realm_cast", false)
 				end
 			elseif abilityId == buffsDebuffs.sum_shadow_beads then
 				if (settings.sum_shadow_beads == true and not (self.break_amulet and settings.break_amulet)) then
@@ -1993,7 +1985,7 @@ do ---------------------------
 						if (settings.hoarfrost >= 1) then
 							local tmp = data.count >= 3 and 1 or 0
 							if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-								if settings.hoarfrost_countdown and (IsCustomCountdown() or not self:IsCountdownInProgress()) then
+								if settings.hoarfrost_countdown then
 									self:StartCountdown(buffsDebuffs.hoarfrost_countdown, GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST_COUNTDOWN", tmp), "cloudrest", "hoarfrost", false)
 								else
 									self:AddAnnouncement(GetString("RAIDNOTIFIER_ALERTS_CLOUDREST_HOARFROST", tmp), "cloudrest", "hoarfrost")
