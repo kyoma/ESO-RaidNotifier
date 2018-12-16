@@ -1,5 +1,5 @@
 local MY_MODULE_NAME = "Memus"
-local MY_MODULE_VERSION = 10
+local MY_MODULE_VERSION = 11
 
 local LCC = LibStub('LibCustomTitlesRN')
 if not LCC then return end
@@ -18,12 +18,11 @@ MY_MODULE:RegisterTitle("@iN_Lancast", nil, 92, {en = "|cE70000Un|r|cFF8C00de|r|
 MY_MODULE:RegisterTitle("@FKNSTEVO", nil, 92, {en = "Take My Heal"}, {color={"#3ef245", "#42d9f4"}})
 MY_MODULE:RegisterTitle("@FKNSTEVO", nil, 93, {en = "The Nightflame"}, {color={"#F5C514", "#D20F08"}})
 MY_MODULE:RegisterTitle("@Tekalke1234", nil, 92, {en = "Idę bandą, lecę łukiem"}, {color={"#FFFFFF", "#FF0000"}})
-MY_MODULE:RegisterTitle("@Carlos2300", nil, 92, {en = "The Legend"}, {color={"FF0090", "#FF0000"}})
+MY_MODULE:RegisterTitle("@Carlos2300", nil, 92, {en = "TheOneAndOnlyRP"}, {color={"FF0090", "#FF0000"}})
 MY_MODULE:RegisterTitle("@ZoM_Head", nil, 51, {en = "Top Pirate"})
 MY_MODULE:RegisterTitle("@Heelie", nil, 92, {en = "The Snake"}, {color="#00FF00"})
 MY_MODULE:RegisterTitle("@Heelie", nil, 1391, {en = "The Snake"}, {color="#FF0000"})
 MY_MODULE:RegisterTitle("@kilnerdyne", nil, 92, {en = "Late Night Master"}, {color={"#2277BB", "#005599"}})
 MY_MODULE:RegisterTitle("@LiofaTR", nil, 92, {en = "The Tonk"}, {color={"#F2726E", "#C40808"}})
-MY_MODULE:RegisterTitle("@XiaoWeiXiao", nil, 92, {en = "|cE70000To|r|cFF8C00ma|r|cFFEF00to|r|c00811F|sh|r|c0044FFar|r|c760089k|r"})
 MY_MODULE:RegisterTitle("@WHoitsma", nil, 92, {en = "|cE70000The|r |cFF8C00God|r |cFFEF00of|r |c00811F|Fem|r|c0044FFini|r|c760089sts|r"})
 MY_MODULE:RegisterTitle("@getemshauna", nil, 1838, {en = "Grand Master Impaler"}, {color="#00FF00"})
