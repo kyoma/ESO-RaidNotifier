@@ -1965,17 +1965,20 @@ do ---------------------------
 						local targetedByFire_1 = tType == COMBAT_UNIT_TYPE_PLAYER and "you" or tName;
 						dbg("Roaring Flare diff between both fires %d ms", self.targetedByFireTime_2 - GetGameTimeMilliseconds());
 						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE_2), self.targetedByFire_2, targetedByFire_1), "cloudrest", "roaring_flare")
+						--self:StartCountdown(6500, zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE_2), self.targetedByFire_2, targetedByFire_1), "cloudrest", "roaring_flare", false)
 						self.targetedByFire_2 = nil
 						self.targetedByFireTime_2 = 0
 					elseif (tType == COMBAT_UNIT_TYPE_PLAYER) then
-						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE), "cloudrest", "roaring_flare")
+						--self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE), "cloudrest", "roaring_flare")
+						self:StartCountdown(6500, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE), "cloudrest", "roaring_flare", false)
 					elseif (tName ~= "" and settings.roaring_flare > 1) then
 						if (settings.track_roaring_flare and not self.break_amulet) then
 							local tUnitTag = LUNIT:GetUnitTagForUnitId(tUnitId)
 							dbg("Tracking UnitTag: %s (%d)", tUnitTag, tUnitId)
 							self:TrackPlayer(tUnitTag, buffsDebuffs.roaring_flare_countdown)
 						end
-						self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE_OTHER), tName), "cloudrest", "roaring_flare")
+						--self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE_OTHER), tName), "cloudrest", "roaring_flare")
+						self:StartCountdown(6500, zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE_OTHER), tName), "cloudrest", "roaring_flare", false)
 					end
 				end
 			end

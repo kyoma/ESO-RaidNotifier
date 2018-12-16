@@ -436,12 +436,15 @@ cloudrest.hoarfrost_countdown = 6000 -- hardcoded for now
 cloudrest.hoarfrost_syn = 103697
 cloudrest.hoarfrost_shed = 103714
 cloudrest.chilling_comet = 106374
+cloudrest.icy_teleport = 106682
+cloudrest.flux_burst = 105796 -- 80% first jump
 
 -- Shade of Siroria
 cloudrest.roaring_flare = {}
 cloudrest.roaring_flare[103531] = true
 cloudrest.roaring_flare[110431] = true -- additional fire on execute
 cloudrest.roaring_flare_countdown = 6000 -- hardcoded for now
+cloudrest.fiery_crash = 106601 -- jump
 
 -- Shade of Relequen and Belanaril
 -- [2200] hitValue 3000 (noone)
@@ -471,6 +474,7 @@ cloudrest.voltaic_overload_progress[109066] = true
 cloudrest.start_cd_of_srealm = 105890
 cloudrest.nocturnals_favor = 104535 -- 2200 and 2250
 cloudrest.crushing_darkness = 105239 -- 2240
+--cloudrest.crushing_darkness = 105173 -- 2245
 cloudrest.sotDead_proj_to_corpse = 105120 -- [2250] T event after shadow is dead
 cloudrest.sum_shadow_beads = 105291
 cloudrest.tentacle_spawn = 105016
@@ -478,6 +482,7 @@ cloudrest.break_amulet = 106023
 cloudrest.baneful_barb = 105975
 cloudrest.shade_baneful_mark = 107196
 cloudrest.player_exit_srealm = 105218
+cloudrest.malicious_strike = 110242
 
 cloudrest.interest_list = {}
 

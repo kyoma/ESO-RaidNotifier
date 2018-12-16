@@ -97,7 +97,7 @@ end
 local Notification = AbstractNotification:Subclass()
 
 function Notification:New(...)
-	local obj = AbstractNotification.New(self, NOTIFY, ...)
+	local obj = AbstractNotification.New(self, AbstractNotification.NOTIFY, ...)
 	obj:Initialize(...)
 	return obj
 end
@@ -136,7 +136,7 @@ end
 local CountdownNotification = AbstractNotification:Subclass()
 
 function CountdownNotification:New(...)
-	local obj = AbstractNotification.New(self, COUNTDOWN, ...)
+	local obj = AbstractNotification.New(self, AbstractNotification.COUNTDOWN, ...)
 	obj:Initialize(...)
 	return obj
 end
@@ -224,7 +224,8 @@ function NotificationsPool:Add(text, displayTime, isCountdown)
 	local notify = nil
 	for i = 1, #self.pool, 1 do
 		if (self.pool[i]:IsFreeToUse()) then
-			if ((self.pool[i]:GetType() == AbstractNotification.COUNTDOWN and isCountdown) or (self.pool[i]:GetType() == AbstractNotification.COUNTDOWN and not isCountdown)) then
+			if ((self.pool[i]:GetType() == AbstractNotification.COUNTDOWN and isCountdown) 
+			or  (self.pool[i]:GetType() == AbstractNotification.NOTIFY and not isCountdown)) then
 				dbg("Used already created notification "..self.pool[i]:GetId())
 				notify = self.pool[i]
 				break;
