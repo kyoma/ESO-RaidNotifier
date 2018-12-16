@@ -155,23 +155,9 @@ do ---------------------------------
 			params:SetLifespanMS(duration)
 			CSA:AddMessageWithParams(params)
 			CSA.nextUpdateTimeSeconds = 0
-		elseif (self:IsDevMode()) then
+		else
 			local pool = RaidNotifier.NotificationsPool.GetInstance()
 			pool:Add(text, duration)
-			if soundId ~= nil then PlaySound(soundId) end
-		else
-			lastAnnounceIndex = lastAnnounceIndex + 1
-			RaidNotifierUICenterAnnounceOld:SetHidden(false)
-			RaidNotifierUICenterAnnounceOld:SetText(text)
-		
-			local index = lastAnnounceIndex
-			zo_callLater(function()
-				--only hide it if we are the last/most recent announcement
-				if index == lastAnnounceIndex then
-					RaidNotifierUICenterAnnounceOld:SetHidden(true)
-				end
-			end, duration)
-		
 			if soundId ~= nil then PlaySound(soundId) end
 		end
 	end

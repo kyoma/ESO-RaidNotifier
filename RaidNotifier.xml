@@ -79,9 +79,6 @@
 		<TopLevelControl name="RaidNotifierUI" hidden="true" mouseEnabled="true">
 			<Anchor point="TOPLEFT" relativeTo="GuiRoot" relativePoint="TOPLEFT" />
 			<Controls>
-				<Label name="$(parent)CenterAnnounceOld" font="ZoFontCenterScreenAnnounceLarge" hidden="true">
-					<Anchor point="CENTER" relativeTo="GuiRoot" relativePoint="CENTER" offsetY="-100"/>
-				</Label>				
 				<Control name="$(parent)CenterAnnounce" resizeToFitDescendents="false" mouseEnabled="false" movable="false" clampedToScreen="true" hidden="false">
 					<Anchor point="CENTER" relativeTo="GuiRoot" relativePoint="CENTER" offsetY="-120"/>
 					<Dimensions x="250" y="150" />
