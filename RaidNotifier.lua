@@ -125,7 +125,7 @@ do ---------------------------------
 
 	local CSA  = CENTER_SCREEN_ANNOUNCE
 	local LCSA = LibStub:GetLibrary("LibCSA")
-	-- TODO: Overhaul this completely and make a better alternative, gonna take a while
+
 	function RaidNotifier:AddAnnouncement(text, category, setting, interval)
 
 		local duration = 3000
