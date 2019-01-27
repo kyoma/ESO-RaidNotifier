@@ -777,6 +777,9 @@ do ----------------------
 		self:InitializeStatusDisplay("StatusDisplay")
 		self:InitializeGlyphWindow("GlyphWindow", self.Vars.mawLorkhaj.zhaj_glyphs_invert)
 		self:InitializeArrowDisplay("ArrowDisplay")
+		if (self.Vars.general.notifications_scale ~= 100) then
+			RaidNotifier.NotificationsPool.GetInstance():SetScale(self.Vars.general.notifications_scale / 100);
+		end
 		
 		-- Bindings
 		ZO_CreateStringId("SI_BINDING_NAME_RAIDNOTIFIER_TOGGLE_ULTI", L.Binding_ToggleUltimateExchange)
@@ -1974,6 +1977,12 @@ do ---------------------------
 					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_CHILLING_COMET), "cloudrest", "chilling_comet")
 					end
+				end		
+			elseif (buffsDebuffs.malicious_strike[abilityId]) then
+				if (settings.malicious_strike == true) then
+					if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+						self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_MALICIOUS_STRIKE), "cloudrest", "malicious_strike", 1)
+					end				
 				end
 			elseif buffsDebuffs.hoarfrost_new[abilityId] then
 				if hitValue == 1 then 

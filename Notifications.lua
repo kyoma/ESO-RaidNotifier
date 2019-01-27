@@ -110,6 +110,10 @@ function Notification:SetText(str)
 	self.ctrl:SetText(str)
 end
 
+function Notification:SetScale(scale)
+	self.ctrl:SetScale(scale)
+end
+
 function Notification:Initialize(id, parent)
 	self.ctrl = WINDOW_MANAGER:CreateControl("RNotification"..id, self.parent, CT_LABEL)
 	self.fadeInAnimation = GetAnimationManager():CreateTimelineFromVirtual("CenterAnnounceFadeIn", self.ctrl)
@@ -164,6 +168,25 @@ function CountdownNotification:SetText(str)
 	self.ctrl.label:SetText(str)
 end
 
+function CountdownNotification:SetScale(scale)
+	self.ctrl.label:SetScale(scale)
+	self.ctrl.counter:SetScale(scale)
+	self.scale = scale;
+	local firstAnimation = self.countdownAnimation:GetAnimation(1)
+	local startScale = firstAnimation:GetStartScale()
+	local endScale = firstAnimation:GetEndScale()
+	firstAnimation:SetScaleValues(0.8 * self.scale, 1.2 * self.scale) -- TODO Get base scale from xml
+	
+	local secondAnimation = self.countdownAnimation:GetAnimation(2)
+	local startScale = secondAnimation:GetStartScale()
+	local endScale = secondAnimation:GetEndScale()
+	secondAnimation:SetScaleValues(1.2 * self.scale, 0.8 * self.scale) -- TODO Get base scale from xml
+end
+
+function CountdownNotification:GetScale()
+	return self.scale and self.scale or 1;
+end
+
 function CountdownNotification:Show(text)
 	self.text = text
 	self.fadeInAnimation:PlayFromStart()
@@ -173,6 +196,9 @@ function CountdownNotification:Show(text)
 	local txt
 	self:runTimer(1000, function()
 		self.countdownAnimation:PlayFromStart()
+		if (self.scale) then
+			self.ctrl.counter:SetScale(self.scale)
+		end
 		if (self.displayTime < 4000) then
 			txt = "|cff0000" .. self.displayTime/1000 .."|r"
 		else
@@ -219,6 +245,10 @@ function NotificationsPool.GetInstance(displayTime)
 	return pool
 end
 
+function NotificationsPool:SetScale(scale)
+	self.scale = scale;
+end
+
 function NotificationsPool:Add(text, displayTime, isCountdown)
 	isCountdown = isCountdown and isCountdown or false
 	local notify = nil
@@ -240,11 +270,16 @@ function NotificationsPool:Add(text, displayTime, isCountdown)
 		else
 			notify = Notification:New(id, self.parent)
 		end
+		
 		notify:SetText("X") -- we need anything to get text height
 		self.pool[id] = notify
 		dbg("Created new notification "..id)
 	end
 	
+	if (self.scale) then
+		notify:SetScale(self.scale)
+	end	
+		
 	notify:SetDisplayTime(displayTime and displayTime or self.displayTime)
 	
 	table.sort(self.pool, function(a,b) 

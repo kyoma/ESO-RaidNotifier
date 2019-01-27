@@ -17,6 +17,8 @@ L.Settings_General_No_Assistants                    = "Turn off assistants when 
 L.Settings_General_No_Assistants_TT                 = "Only applies during trials and does NOT prevent them from being summoned."
 L.Settings_General_Center_Screen_Announce           = "Announcement Type"
 L.Settings_General_Center_Screen_Announce_TT        = "The type of announcement to use."
+L.Settings_General_NotificationsScale               = "Notifications Scale"
+L.Settings_General_NotificationsScale_TT            = "The scale of the notifications and minor countdowns display"
 L.Settings_General_UseDisplayName                   = "Use Dislay Name"
 L.Settings_General_UseDisplayName_TT                = "Use a player's display name in the notifications instead of his character name."
 L.Settings_General_Unlock_Status_Icon               = "Unlock Status Icon"
@@ -442,6 +444,8 @@ L.Settings_Cloudrest_Tentacle_Spawn             = "Z'Maja: Creeper Spawn"
 L.Settings_Cloudrest_Tentacle_Spawn_TT          = "Alerts when Nocturnal Creeper is about to spawn."
 L.Settings_Cloudrest_Crushing_Darkness          = "Z'Maja: Crushing Darkness"
 L.Settings_Cloudrest_Crushing_Darkness_TT       = "Alerts you when Tether AoE is following you and needs to be kited."
+L.Settings_Cloudrest_Malicious_Strike           = "Z'Maja: Malicious Strike"
+L.Settings_Cloudrest_Malicious_Strike_TT        = "Alerts when spheres are destroyed and need to block or rolldodge."
 
 -- Alerts
 L.Alerts_Cloudrest_Olorime_Spears               = "|cffd000Spear|r is up!"
@@ -470,6 +474,7 @@ L.Alerts_Cloudrest_Tentacle_Spawn               = "|c00a86bCreeper|r Spawn"
 L.Alerts_Cloudrest_Sum_Shadow_Beads             = "|cab82ffSpheres|r are about to spawn"
 L.Alerts_Cloudrest_Nocturnals_Favor             = "|cff0000Nocturnal's Favor|r at you!"
 L.Alerts_Cloudrest_Crushing_Darkness            = "|cfc0c66Crushing Darkness|r at you. Kite!"
+L.Alerts_Cloudrest_Malicious_Strike             = "|cff0000Malicious Strike|r at you. Block!"
 
 
 

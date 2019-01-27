@@ -1,5 +1,6 @@
 local RaidNotifier = RaidNotifier
 local Util = RaidNotifier.Util
+local NotificationsPool = RaidNotifier.NotificationsPool
 
 local tinsert	 			= table.insert
 local tremove				= table.remove
@@ -140,6 +141,7 @@ do ------------------
 			buffFood_reminder = true,
 			buffFood_reminder_interval = 60,
 			use_center_screen_announce = CSA_CATEGORY_SMALL_TEXT,
+			notifications_scale = 100,
 			vanity_pets = true,
 			no_assistants = true,
 			useDisplayName = false,
@@ -254,6 +256,7 @@ do ------------------
 			olorime_spears = false,
 			sum_shadow_beads = false,
 			shadow_realm_cast = false,
+			malicious_strike = false,
 			hoarfrost = 0, -- "Off"
 			hoarfrost_shed = true,
             hoarfrost_countdown = true,
@@ -606,6 +609,19 @@ function RaidNotifier:CreateSettingsMenu()
 		}, 
 		noAlert = true,
 	}, "general", "use_center_screen_announce")
+	MakeControlEntry({
+		type = "slider",
+		name = L.Settings_General_NotificationsScale,
+		tooltip = L.Settings_General_NotificationsScale_TT,
+		getFunc = function() return savedVars.general.notifications_scale end,
+		setFunc = function(value)
+			NotificationsPool.GetInstance():SetScale(value/100)
+			savedVars.general.notifications_scale = value
+		end,
+		min = 70, max = 150, step = 5,
+		noAlert = true,
+		disabled = function() return savedVars.general.use_center_screen_announce ~= 0 end,
+	}, "general", "notifications_scale")	
 	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_General_Bufffood_Reminder,
@@ -1339,6 +1355,11 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_Cloudrest_Voltaic_Overload_TT,
 		choices = choices.cloudrest.voltaic_overload,
 	}, "cloudrest", "voltaic_overload")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Cloudrest_Malicious_Strike,
+		tooltip = L.Settings_Cloudrest_Malicious_Strike_TT,
+	}, "cloudrest", "malicious_strike")		
 	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_Cloudrest_Heavy_Attack,

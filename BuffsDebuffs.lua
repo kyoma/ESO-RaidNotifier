@@ -482,7 +482,9 @@ cloudrest.break_amulet = 106023
 cloudrest.baneful_barb = 105975
 cloudrest.shade_baneful_mark = 107196
 cloudrest.player_exit_srealm = 105218
-cloudrest.malicious_strike = 110242
+cloudrest.malicious_strike = {}
+cloudrest.malicious_strike[110242] = true -- veteran
+cloudrest.malicious_strike[105363] = true -- normal
 
 cloudrest.interest_list = {}
 
