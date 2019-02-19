@@ -442,6 +442,8 @@ L.Settings_Cloudrest_Tentacle_Spawn             = "Z'Maja: Apparition de Rampant
 L.Settings_Cloudrest_Tentacle_Spawn_TT          = "Vous avertit quand un Rampant de Nocturne va apparaitre."
 L.Settings_Cloudrest_Crushing_Darkness          = "Z'Maja: Ténèbres Écrasantes"
 L.Settings_Cloudrest_Crushing_Darkness_TT       = "Vous avertit quand une AoE vous suit et doit être gardée à distance."
+L.Settings_Cloudrest_Malicious_Strike           = "Z'Maja: Frappe Malveillante"
+L.Settings_Cloudrest_Malicious_Strike_TT        = "Vous avertit quand une sphère a été détruite et que pour éviter le debuff vous devez rouler ou bloquer."
 
 -- Alerts
 L.Alerts_Cloudrest_Olorime_Spears               = "Une |cffd000Lance|r apparaît!"
@@ -460,7 +462,7 @@ L.Alerts_Cloudrest_Baneful_Barb                 = "|cff0000Barbe Funeste|r. Esqu
 L.Alerts_Cloudrest_Baneful_Barb_Other           = "|cff0000Barbe Funeste|r sur |cff0000<<!aC:1>>|r."
 L.Alerts_Cloudrest_Chilling_Comet               = "|cff0000Comète de Glace|r sur vous. Bloquez!"
 L.Alerts_Cloudrest_Roaring_Flare                = "|cff7700Signal Rugissant|r sur vous."
-L.Alerts_Cloudrest_Roaring_Flare_2              = "|cff7700Signal Rugissant|r sur |cff0000<<!aC:1>>|r et |cff0000<<!aC:2>>|r. Regroupez vous!"
+L.Alerts_Cloudrest_Roaring_Flare_2              = "|cff0000<<!aC:1>>|r |t100%:100%:Esoui/Art/Buttons/large_leftarrow_up.dds|t |cff7700Roaring Flare|r |t100%:100%:Esoui/Art/Buttons/large_rightarrow_up.dds|t |cff0000<<!aC:2>>|r"
 L.Alerts_Cloudrest_Roaring_Flare_Other          = "|cff7700Signal Rugissant|r sur |cff0000<<!aC:1>>|r. Regroupez vous!"
 L.Alerts_Cloudrest_Voltaic_Current              = "En Approche |c55b4d4Surchage Voltaïque|r sur vous dans"
 L.Alerts_Cloudrest_Voltaic_Overload             = "|c4d61c1Surchage Voltaïque|r sur vous! Changez de barre!"
@@ -470,6 +472,7 @@ L.Alerts_Cloudrest_Tentacle_Spawn               = "Apparition d'un |c00a86bRampa
 L.Alerts_Cloudrest_Sum_Shadow_Beads             = "Apparition des |cab82ffSphères|r"
 L.Alerts_Cloudrest_Nocturnals_Favor             = "|cff0000Faveur de Nocturne|r sur vous!"
 L.Alerts_Cloudrest_Crushing_Darkness            = "|cfc0c66Ténèbres Écrasantes|r sur vous. Courez!"
+L.Alerts_Cloudrest_Malicious_Strike             = "|cff0000Frappe Malveillante|r sur vous. Bloquez!"
 
 
 
