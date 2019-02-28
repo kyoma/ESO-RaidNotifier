@@ -506,20 +506,20 @@ function RaidNotifier:GetLocale()
 	return L
 end
 
---if (GetCVar('language.2') == 'de') then 
---	local MissingL = {}
---	for k, v in pairs(RaidNotifier:GetLocale()) do
---		if (not L[k]) then
---			table.insert(MissingL, k)
---			L[k] = v
---		end
---	end
---	function RaidNotifier:GetLocale() 
---		return L
---	end
---	-- for debugging 
---	function RaidNotifier:MissingLocale()
---		df("Missing strings for '%s'", GetCVar('language.2'))
---		d(MissingL)
---	end
---end
+if (GetCVar('language.2') == 'de') then 
+	local MissingL = {}
+	for k, v in pairs(RaidNotifier:GetLocale()) do
+		if (not L[k]) then
+			table.insert(MissingL, k)
+			L[k] = v
+		end
+	end
+	function RaidNotifier:GetLocale() 
+		return L
+	end
+	-- for debugging 
+	function RaidNotifier:MissingLocale()
+		df("Missing strings for '%s'", GetCVar('language.2'))
+		d(MissingL)
+	end
+end
