@@ -35,12 +35,23 @@ libs/LibGroupSocket/handlers/UltimateHandler.lua
 libs/LibCSA/LibCSA.lua
 libs/LibUnits/LibUnits.lua
 
+TrialAetherianArchive.lua
+TrialAsylumSanctorium.lua
+TrialDragonStarArena.lua
+TrialHallsOfFabrication.lua
+TrialHelRaCitadel.lua
+TrialMaelstormArena.lua
+TrialMawOfLorkhaj.lua
+TrialSanctumOphidia.lua
+TrialCloudrest.lua
+
 Notifications.lua
 RaidNotifier.lua
 Util.lua
 BuffsDebuffs.lua
 Settings.lua
 UI.lua
+
 RaidNotifier.xml
 Bindings.xml
 
