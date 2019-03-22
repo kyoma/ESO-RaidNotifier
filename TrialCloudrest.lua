@@ -21,7 +21,7 @@ function RaidNotifier.CR.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 	local self   = RaidNotifier
 	local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.cloudrest
 	if (tName == nil or tName == "") then
-		tName = UnitIdToString(tUnitId)
+		tName = self.UnitIdToString(tUnitId)
 	end
 
 	if result == ACTION_RESULT_BEGIN then

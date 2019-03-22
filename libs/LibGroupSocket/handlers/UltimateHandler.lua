@@ -75,7 +75,9 @@ local function OnData(unitTag, data, isSelf)
     local isFullUpdate, index, bitIndex = LGS:ReadBit(data, index, bitIndex)
     local requestsFullUpdate, index, bitIndex = LGS:ReadBit(data, index, bitIndex)
 
-    --	Log("OnData %s (%d byte): is full: %s, needs full: %s", GetUnitName(unitTag), #data, tostring(isFullUpdate), tostring(requestsFullUpdate))
+	if (handler.debug == 1) then
+		Log("OnData %s (%d byte): is full: %s, needs full: %s", GetUnitName(unitTag), #data, tostring(isFullUpdate), tostring(requestsFullUpdate))
+	end
     index = index + 1
     if(not isSelf and requestsFullUpdate) then
         sendFullUpdate = true
@@ -132,9 +134,9 @@ function handler:Send()
     local now = GetTimeStamp()
     local timeout = IsUnitInCombat("player") and MIN_COMBAT_SEND_TIMEOUT or MIN_SEND_TIMEOUT
     if(now - lastSendTime < timeout) then
-	if (handler.debug == 2) then
+		if (handler.debug == 2) then
             d("now("..now..") - lastSendTime("..lastSendTime..") < timeout("..timeout..")")
-	end
+		end
         return 
     end
 
@@ -155,9 +157,9 @@ function handler:Send()
 			index = LGS:WriteUint8(data, index, ultimateCost)
 		end
 
-	if (handler.debug == 1) then
-		Log("Send %d byte: is full: %s, needs full: %s, ultimate: %s, cost: %s", #data, tostring(sendFullUpdate), tostring(needFullUpdate), tostring(ultimateCurrent), tostring(ultimateCost))
-	end
+		if (handler.debug == 1) then
+			Log("Send %d byte: is full: %s, needs full: %s, ultimate: %s, cost: %s", #data, tostring(sendFullUpdate), tostring(needFullUpdate), tostring(ultimateCurrent), tostring(ultimateCost))
+		end
         if(LGS:Send(type, data)) then
 			--	Log("Send Complete")
             lastSendTime = now
