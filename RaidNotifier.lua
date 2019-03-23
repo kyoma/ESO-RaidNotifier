@@ -390,6 +390,7 @@ do ----------------------
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_GROUP_MEMBER_LEFT)
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_GROUP_UPDATE)
 		--EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_UNIT_FRAME_UPDATE)
+		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_GROUP_MEMBER_CONNECTED_STATUS)
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_GROUP_MEMBER_ROLES_CHANGED)
 	end
 
@@ -424,10 +425,10 @@ do ----------------------
 			settings.enabled = true
 			settings.hidden = false
 			self:RegisterForUltimateChanges()
+			self:UpdateUltimates()			
 		elseif (args[1] == "disable" or args[1] == "off" or args[1] == "0") then
 			p("Disable Ultimate Exchange")
 			settings.enabled = false
-			settings.hidden = true
 			self:UnregisterForUltimateChanges()
 		elseif (args[1] == "refresh") then
 			ultimates = {}
@@ -456,8 +457,6 @@ do ----------------------
 		else
 			p("Unknown subcommand (%s)", args[1])
 		end
-		self:SetElementHidden("ultimate", "ulti_window", settings.hidden)
-		self:UpdateUltimates()
 	end
 
 end
@@ -612,9 +611,6 @@ do ----------------------
 			
 			local trial = self.Trial[self.raidId]
 			trial.Initialize()
-		dbg("----")
-		d(trial)
-		dbg("----")					
 			local combatEventCallback = trial.OnCombatEvent
 			local bossesChangedCallback = trial.OnBossesChanged
 			local effectChangedCallback = trial.OnEffectChanged

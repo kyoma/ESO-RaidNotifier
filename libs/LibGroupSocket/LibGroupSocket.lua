@@ -501,13 +501,13 @@ local function HandleDataPing(pingType, pingTag, x, y, isPingOwner)
 		if(packet:IsValid()) then
 			lib.cm:FireCallbacks(packet.messageType, pingTag, packet.data, isPingOwner)
 		else
-			lib.incoming[pingTag] = nil
 			Log("received invalid packet from %s", GetUnitName(pingTag))
 			return false
 		end
 	end
 	if(isPingOwner) then
 		if(lib.hasMore) then
+			if(not saveData.enabled) then return false end
 			DoSend()
 		else
 			lib.isSending = false
