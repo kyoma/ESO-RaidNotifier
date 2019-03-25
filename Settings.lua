@@ -806,20 +806,20 @@ function RaidNotifier:CreateSettingsMenu()
 		choices = {
 			L.Settings_General_Choices_1s,
 --			L.Settings_General_Choices_500ms,
---			L.Settings_General_Choices_200ms,
-			L.Settings_General_Choices_100ms
+			L.Settings_General_Choices_200ms,
+--			L.Settings_General_Choices_100ms
 		}, choicesValues = {
 			10,
 --			5,
---			2,
-			1
+			2,
+--			1
 		}, 
 		getFunc = function()
 			return savedVars.countdown.timerPrecise
 		end,
 		setFunc = function(value)
 			savedVars.countdown.timerPrecise = value
-			NotificationsPool.GetInstance():SetPrecise(value == 1)
+			NotificationsPool.GetInstance():SetPrecise(value == 2)
 			ReloadUI()
 		end,
 		noAlert = true,

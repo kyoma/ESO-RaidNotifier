@@ -454,7 +454,7 @@ L.Settings_Cloudrest_Malicious_Strike           = "Z'Maja: Malicious Strike"
 L.Settings_Cloudrest_Malicious_Strike_TT        = "Alerts when spheres are destroyed and need to block or rolldodge."
 
 -- Alerts
-L.Alerts_Cloudrest_Olorime_Spears               = "|cffd000Spear|r is up!"
+L.Alerts_Cloudrest_Olorime_Spears               = "|cffd000Spear|r is up! (<<1>>)"
 L.Alerts_Cloudrest_Hoarfrost0                   = "|c00ddffHoarfrost|r on you!"
 L.Alerts_Cloudrest_Hoarfrost1                   = "|cff0000Last|r |c00ddffHoarfrost|r on you!"
 L.Alerts_Cloudrest_Hoarfrost_Other0             = "|c00ddffHoarfrost|r on |cff0000<<!aC:1>>|r."
@@ -475,7 +475,7 @@ L.Alerts_Cloudrest_Roaring_Flare_Other          = "|cff7700Roaring Flare|r at |c
 L.Alerts_Cloudrest_Voltaic_Current              = "Incoming |c55b4d4Voltaic Overload|r at you in"
 L.Alerts_Cloudrest_Voltaic_Overload             = "|c4d61c1Voltaic Overload|r at you! Swap Bar!"
 L.Alerts_Cloudrest_Voltaic_Overload_Cd          = "|c4d61c1Voltaic Overload|r. Don't swap!"
-L.Alerts_Cloudrest_Shadow_Realm_Cast            = "|cab82ffPortal|r Spawn"
+L.Alerts_Cloudrest_Shadow_Realm_Cast            = "|cab82ffPortal|r Spawn (<<1>>)"
 L.Alerts_Cloudrest_Tentacle_Spawn               = "|c00a86bCreeper|r Spawn"
 L.Alerts_Cloudrest_Sum_Shadow_Beads             = "|cab82ffSpheres|r are about to spawn"
 L.Alerts_Cloudrest_Nocturnals_Favor             = "|cff0000Nocturnal's Favor|r at you!"

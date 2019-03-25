@@ -14,6 +14,16 @@ function RaidNotifier.CR.Initialize()
 	dbg = RaidNotifier.dbg
 	
 	data = {}
+	data.spearCounter = 0
+	data.portalCounter = 0
+end
+
+function RaidNotifier.CR.OnCombatStateChanged(inCombat)
+	if (not inCombat) then
+		data = {}
+		data.spearCounter = 0
+		data.portalCounter = 0
+	end
 end
 
 function RaidNotifier.CR.OnCombatEvent(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
@@ -34,7 +44,7 @@ function RaidNotifier.CR.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 				unitId = tUnitId,
 				ms = GetGameTimeMilliseconds(),
 			}
-			dbg("Begin hoarfrost track #%d for %s(%s)", track, tName, tostring(tUnitId))
+			dbg("Begin hoarfrost(%d) track #%d for %s %d", abilityId, track, tName, hitValue)
 			if (settings.hoarfrost >= 1) then
 				local tmp = 0
 				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
@@ -75,19 +85,20 @@ function RaidNotifier.CR.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 				end
 			end
 		elseif abilityId == buffsDebuffs.shadow_realm_cast then
-			data.olorimeSpears = {}
-			data.lastOlorimeSpearMs = 0
+			--data.lastOlorimeSpearMs = 0
+			data.spearCounter = 0
 			if (settings.shadow_realm_cast) then
 				--self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SHADOW_REALM_CAST), "cloudrest", "shadow_realm_cast")
-				self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SHADOW_REALM_CAST), "cloudrest", "shadow_realm_cast", false)
+				self:StartCountdown(hitValue, zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SHADOW_REALM_CAST), (data.portalCounter % 2) + 1), "cloudrest", "shadow_realm_cast", false)
 			end
+			data.portalCounter = data.portalCounter + 1			
 		elseif abilityId == buffsDebuffs.sum_shadow_beads then
 			if (settings.sum_shadow_beads == true and not (data.break_amulet and settings.break_amulet)) then
 				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_SUM_SHADOW_BEADS), "cloudrest", "sum_shadow_beads")
 			end
 		elseif buffsDebuffs.roaring_flare[abilityId] then
 			--if data.break_amulet then
-			--	dbg("roaring flare [%d] -> %s", abilityId, tName or "nil")
+			dbg("roaring flare [%d] -> %s %d", abilityId, tName or "nil", hitValue)
 			--end
 			if (settings.roaring_flare >= 1) then
 				if (data.break_amulet and not data.targetedByFire_2) then -- first fire on execute
@@ -119,7 +130,7 @@ function RaidNotifier.CR.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 					self:StartCountdown(6500, GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE), "cloudrest", "roaring_flare", false)
 				elseif (tName ~= "" and settings.roaring_flare > 1) then
 					if (settings.track_roaring_flare and not data.break_amulet) then
-						local tUnitTag = LUNIT:GetUnitTagForUnitId(tUnitId)
+						local tUnitTag = self.UnitToTag(tUnitId)
 						dbg("Tracking UnitTag: %s (%d)", tUnitTag, tUnitId)
 						self:TrackPlayer(tUnitTag, buffsDebuffs.roaring_flare_countdown)
 					end
@@ -191,10 +202,10 @@ function RaidNotifier.CR.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 				end
 			end
 		elseif abilityId == buffsDebuffs.olorime_spears then
+			data.spearCounter = data.spearCounter + 1
 			if (settings.olorime_spears == true) then
-				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_OLORIME_SPEARS), "cloudrest", "olorime_spears")
+				self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_OLORIME_SPEARS), data.spearCounter), "cloudrest", "olorime_spears")
 			end
-			
 		elseif abilityId == buffsDebuffs.olorime_spears_synergized then
 			--dbg("Spear Synergized ")
 			

@@ -781,7 +781,7 @@ do ----------------------
 		--if (self.Vars.general.notifications_scale ~= 100) then
 			RaidNotifier.NotificationsPool.GetInstance():SetScale(self.Vars.general.notifications_scale / 100);
 		--end
-		RaidNotifier.NotificationsPool.GetInstance():SetPrecise(self.Vars.countdown.timerPrecise == 1)
+		RaidNotifier.NotificationsPool.GetInstance():SetPrecise(self.Vars.countdown.timerPrecise == 2)
 		
 		-- Bindings
 		ZO_CreateStringId("SI_BINDING_NAME_RAIDNOTIFIER_TOGGLE_ULTI", L.Binding_ToggleUltimateExchange)
@@ -865,6 +865,10 @@ do ---------------------------
 			name = "#"..id
 		end
 		return name
+	end
+	
+	function RaidNotifier.UnitToTag(id)
+		return LUNIT:GetUnitTagForUnitId(tUnitId)
 	end
 
 	RaidNotifier.AA = RaidNotifier.AA and RaidNotifier.AA or {}
