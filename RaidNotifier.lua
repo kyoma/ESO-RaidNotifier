@@ -778,9 +778,10 @@ do ----------------------
 		self:InitializeStatusDisplay("StatusDisplay")
 		self:InitializeGlyphWindow("GlyphWindow", self.Vars.mawLorkhaj.zhaj_glyphs_invert)
 		self:InitializeArrowDisplay("ArrowDisplay")
-		if (self.Vars.general.notifications_scale ~= 100) then
+		--if (self.Vars.general.notifications_scale ~= 100) then
 			RaidNotifier.NotificationsPool.GetInstance():SetScale(self.Vars.general.notifications_scale / 100);
-		end
+		--end
+		RaidNotifier.NotificationsPool.GetInstance():SetPrecise(self.Vars.countdown.timerPrecise == 1)
 		
 		-- Bindings
 		ZO_CreateStringId("SI_BINDING_NAME_RAIDNOTIFIER_TOGGLE_ULTI", L.Binding_ToggleUltimateExchange)

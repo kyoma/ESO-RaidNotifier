@@ -48,7 +48,7 @@ function AbstractNotification:GetLastUpdateTime()
 	return self.lastUpdateTime
 end
 
-function AbstractNotification:_runTimer(ms, f)
+function AbstractNotification:_runTimer(ms, endTime, f)
 	local lastTime = GetGameTimeMilliseconds()
 	if (f) then
 		f()
@@ -57,24 +57,29 @@ function AbstractNotification:_runTimer(ms, f)
 		local currTime = GetGameTimeMilliseconds()
 		local diff = currTime - lastTime
 		lastTime = currTime
-		self.displayTime = self.displayTime - math.floor(diff/ms + 0.5) * 1000
+		if (ms < 1000) then
+			ms = 100
+		end
+		self.displayTime = self.displayTime - math.floor(diff/ms + 0.5) * ms
 		if (f) then
 			f()
 		end
-		if (self.displayTime < 0) then
-			self:SetHidden(true)
-			self.freeToUse = true
+		if (self.displayTime < endTime) then
+			if (endTime == 0) then
+				self:SetHidden(true)
+				self.freeToUse = true
+				dbg("Hiding: "..self.id)				
+			end
 			EVENT_MANAGER:UnregisterForUpdate("RNNotification_" .. self.id)
-			dbg("Hiding: "..self.id)
-		end		
+		end			
 	end)
 end
 
-function AbstractNotification:runTimer(ms, f)
-	local mod = self.displayTime % 1000
+function AbstractNotification:runTimer(ms, endTime, f)
+	local mod = self.displayTime % ms
 	self.displayTime = self.displayTime - mod
 	zo_callLater(function()
-		self:_runTimer(ms, f)
+		self:_runTimer(ms, endTime, f)
 	end, mod)
 end
 
@@ -126,13 +131,8 @@ function Notification:Show(text)
 	self:SetHidden(false)
 	self:SetText(text)
 	self.freeToUse = false
---	zo_callLater(function()
---		self:SetHidden(true)
---		self.freeToUse = true
---		dbg("Hiding: "..self.id)
---	end, self.displayTime)
 	
-	self:runTimer(1000)
+	self:runTimer(1000, 0)
 	
 	return self.id
 end
@@ -153,7 +153,7 @@ function CountdownNotification:Initialize(id, parent)
 	self.ctrl.label:SetFont('ZoFontCenterScreenAnnounceSmall')
 	
 	self.ctrl.counter = WINDOW_MANAGER:CreateControl("RNotification"..id.."Counter", self.ctrl, CT_LABEL)
-	self.ctrl.counter:SetAnchor(RIGHT, self.ctrl.label, RIGHT, 40, 0)
+	self.ctrl.counter:SetAnchor(LEFT, self.ctrl.label, RIGHT, 20, 0)
 	self.ctrl.counter:SetFont('ZoFontCenterScreenAnnounceLarge')
 	
 	self.fadeInAnimation = GetAnimationManager():CreateTimelineFromVirtual("CenterAnnounceFadeIn", self.ctrl)
@@ -170,42 +170,49 @@ end
 
 function CountdownNotification:SetScale(scale)
 	self.ctrl.label:SetScale(scale)
-	self.ctrl.counter:SetScale(scale)
+	self.ctrl.counter:SetScale(scale * 1.3)
 	self.scale = scale;
 	local firstAnimation = self.countdownAnimation:GetAnimation(1)
 	local startScale = firstAnimation:GetStartScale()
 	local endScale = firstAnimation:GetEndScale()
-	firstAnimation:SetScaleValues(0.8 * self.scale, 1.2 * self.scale) -- TODO Get base scale from xml
+	firstAnimation:SetScaleValues(1.1 * self.scale, 1.5 * self.scale) -- TODO Get base scale from xml
 	
 	local secondAnimation = self.countdownAnimation:GetAnimation(2)
 	local startScale = secondAnimation:GetStartScale()
 	local endScale = secondAnimation:GetEndScale()
-	secondAnimation:SetScaleValues(1.2 * self.scale, 0.8 * self.scale) -- TODO Get base scale from xml
+	secondAnimation:SetScaleValues(1.5 * self.scale, 1.1 * self.scale) -- TODO Get base scale from xml
 end
 
 function CountdownNotification:GetScale()
 	return self.scale and self.scale or 1;
 end
 
-function CountdownNotification:Show(text)
+local function OnCountdown(self, isPrecise)
+		if (self.scale) then
+			self.ctrl.counter:SetScale(self.scale)
+		end
+		if (isPrecise) then
+			txt = string.format("%0.1f", self.displayTime/1000)
+		else
+			self.countdownAnimation:PlayFromStart()
+			txt = self.displayTime/1000
+		end
+		if (self.displayTime <= 3000) then
+			txt = "|cff0000" .. txt .."|r"
+		end
+		self.ctrl.counter:SetText(txt)
+end
+
+function CountdownNotification:Show(text, isPrecise)
 	self.text = text
-	self.fadeInAnimation:PlayFromStart()
+	if (not isPrecise) then
+		self.fadeInAnimation:PlayFromStart()
+	end
 	self:SetHidden(false)
 	self.freeToUse = false
 	self:SetText(text)
 	local txt
-	self:runTimer(1000, function()
-		self.countdownAnimation:PlayFromStart()
-		if (self.scale) then
-			self.ctrl.counter:SetScale(self.scale)
-		end
-		if (self.displayTime < 4000) then
-			txt = "|cff0000" .. self.displayTime/1000 .."|r"
-		else
-			txt = self.displayTime/1000
-		end
-		self.ctrl.counter:SetText(txt)
-	end)
+	self:runTimer(isPrecise and 100 or 1000, 0, function() OnCountdown(self, isPrecise) end)
 	return self.id
 end
 
@@ -247,6 +254,10 @@ end
 
 function NotificationsPool:SetScale(scale)
 	self.scale = scale;
+end
+
+function NotificationsPool:SetPrecise(ok)
+	self.isPrecise = ok
 end
 
 function NotificationsPool:Add(text, displayTime, isCountdown)
@@ -298,7 +309,7 @@ function NotificationsPool:Add(text, displayTime, isCountdown)
 			height = height + self.pool[i]:GetHeight()
 		end
 	end
-	return notify:Show(text)
+	return notify:Show(text, self.isPrecise)
 end
 
 RaidNotifier = RaidNotifier or {}

@@ -164,6 +164,7 @@ do ------------------
 		countdown = {
 			timerScale      = 100,
 			textScale       = 100,
+			timerPrecise	= 10, -- 1sec
 			useColor        = false,
 		},
 		sounds = {
@@ -798,6 +799,31 @@ function RaidNotifier:CreateSettingsMenu()
 		min = 80, max = 150, step = 5,
 		noAlert = true,
 	}, "countdown", "textScale")
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_Countdown_TimerPrecise,
+		tooltip = L.Settings_Countdown_TimerPrecise_TT,
+		choices = {
+			L.Settings_General_Choices_1s,
+--			L.Settings_General_Choices_500ms,
+--			L.Settings_General_Choices_200ms,
+			L.Settings_General_Choices_100ms
+		}, choicesValues = {
+			10,
+--			5,
+--			2,
+			1
+		}, 
+		getFunc = function()
+			return savedVars.countdown.timerPrecise
+		end,
+		setFunc = function(value)
+			savedVars.countdown.timerPrecise = value
+			NotificationsPool.GetInstance():SetPrecise(value == 1)
+			ReloadUI()
+		end,
+		noAlert = true,
+	}, "countdown", "timerPrecise")	
 	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_Countdown_UseColors,
