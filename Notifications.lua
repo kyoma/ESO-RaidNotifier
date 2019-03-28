@@ -57,8 +57,10 @@ function AbstractNotification:_runTimer(ms, endTime, f)
 		local currTime = GetGameTimeMilliseconds()
 		local diff = currTime - lastTime
 		lastTime = currTime
-		if (ms < 1000) then
-			ms = 100
+		if (ms < 500) then
+			ms = 200
+		elseif (ms < 1000) then
+			ms = 500
 		end
 		self.displayTime = self.displayTime - math.floor(diff/ms + 0.5) * ms
 		if (f) then

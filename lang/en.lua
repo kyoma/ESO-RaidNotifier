@@ -42,7 +42,6 @@ L.Settings_General_Choices_Major                    = "Major (obsolete)"
 L.Settings_General_Choices_1s                       = "1.0s"
 L.Settings_General_Choices_500ms                    = "0.5s"
 L.Settings_General_Choices_200ms                    = "0.2s"
-L.Settings_General_Choices_100ms                    = "0.1s"
 L.Settings_General_Choices_Custom                   = "Custom"
 -- Alerts
 L.Alerts_General_No_Bufffood                        = "You have no bufffood!"

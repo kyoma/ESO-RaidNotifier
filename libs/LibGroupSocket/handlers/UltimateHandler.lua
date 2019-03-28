@@ -150,7 +150,7 @@ function handler:Send()
             lastSendTime = now
             ultimate.current = ultimateCurrent
             if sendFullUpdate then
-                utimate.cost = ultimateCost
+                ultimate.cost = ultimateCost
             end
             sendFullUpdate = false
             needFullUpdate = false

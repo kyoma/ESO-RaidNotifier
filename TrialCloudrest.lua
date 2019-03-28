@@ -44,7 +44,7 @@ function RaidNotifier.CR.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 				unitId = tUnitId,
 				ms = GetGameTimeMilliseconds(),
 			}
-			dbg("Begin hoarfrost(%d) track #%d for %s %d", abilityId, track, tName, hitValue)
+			dbg("Begin hoarfrost(%d) track #%d for %s(%s) %d", abilityId, track, tName, tostring(tUnitId), hitValue)
 			if (settings.hoarfrost >= 1) then
 				local tmp = 0
 				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
@@ -121,7 +121,7 @@ function RaidNotifier.CR.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 				elseif (data.targetedByFire_2) then -- second fire on execute
 					local targetedByFire_1 = tType == COMBAT_UNIT_TYPE_PLAYER and "you" or tName;
 					dbg("Roaring Flare diff between both fires %d ms", data.targetedByFireTime_2 - GetGameTimeMilliseconds());
-					data:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE_2), data.targetedByFire_2, targetedByFire_1), "cloudrest", "roaring_flare")
+					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE_2), data.targetedByFire_2, targetedByFire_1), "cloudrest", "roaring_flare")
 					--self:StartCountdown(6500, zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_ROARING_FLARE_2), data.targetedByFire_2, targetedByFire_1), "cloudrest", "roaring_flare", false)
 					data.targetedByFire_2 = nil
 					data.targetedByFireTime_2 = 0
@@ -165,7 +165,7 @@ function RaidNotifier.CR.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 				local d = data.hoarfrost[track]
 				d.count = d.count + 1
 				dbg("Increment hoarfrost track #%d to %d for %s(%s)", track, d.count, tName, tostring(tUnitId))
-				if d.unitId ~= tUnitId or (GetGameTimeMilliseconds() - data.ms) > 3000 then -- filter out the first one since we already showed the notification for it during ACTION_RESULT_BEGIN
+				if d.unitId ~= tUnitId or (GetGameTimeMilliseconds() - d.ms) > 3000 then -- filter out the first one since we already showed the notification for it during ACTION_RESULT_BEGIN
 					if (settings.hoarfrost >= 1) then
 						local tmp = d.count >= 3 and 1 or 0
 						if (tType == COMBAT_UNIT_TYPE_PLAYER) then

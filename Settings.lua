@@ -164,7 +164,7 @@ do ------------------
 		countdown = {
 			timerScale      = 100,
 			textScale       = 100,
-			timerPrecise	= 10, -- 1sec
+			timerPrecise	= 2, -- 0.2sec
 			useColor        = false,
 		},
 		sounds = {
@@ -807,12 +807,10 @@ function RaidNotifier:CreateSettingsMenu()
 			L.Settings_General_Choices_1s,
 --			L.Settings_General_Choices_500ms,
 			L.Settings_General_Choices_200ms,
---			L.Settings_General_Choices_100ms
 		}, choicesValues = {
 			10,
 --			5,
 			2,
---			1
 		}, 
 		getFunc = function()
 			return savedVars.countdown.timerPrecise
