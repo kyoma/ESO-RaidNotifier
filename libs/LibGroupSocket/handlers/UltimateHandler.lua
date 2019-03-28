@@ -42,7 +42,7 @@ local function GetCachedUnitResources(unitTag, skipCreate)
 end
 
 function handler:SetDebug(dbg)
-	handler.debug = dbg
+    handler.debug = dbg
 end
 
 function handler:ResetResources()
@@ -56,9 +56,9 @@ function handler:GetLastUpdateTime(unitTag)
 end
 
 function handler:SetUltimateCost(cost)
-	if cost > 0 and cost <= 255 then
-		ultimateCost = cost
-	end
+    if cost > 0 and cost <= 255 then
+        ultimateCost = cost
+    end
 end
 
 local function OnData(unitTag, data, isSelf)
@@ -75,9 +75,9 @@ local function OnData(unitTag, data, isSelf)
     local isFullUpdate, index, bitIndex = LGS:ReadBit(data, index, bitIndex)
     local requestsFullUpdate, index, bitIndex = LGS:ReadBit(data, index, bitIndex)
 
-	if (handler.debug == 1) then
-		Log("OnData %s (%d byte): is full: %s, needs full: %s", GetUnitName(unitTag), #data, tostring(isFullUpdate), tostring(requestsFullUpdate))
-	end
+    if (handler.debug == 1) then
+        Log("OnData %s (%d byte): is full: %s, needs full: %s", GetUnitName(unitTag), #data, tostring(isFullUpdate), tostring(requestsFullUpdate))
+    end
     index = index + 1
     if(not isSelf and requestsFullUpdate) then
         sendFullUpdate = true
@@ -90,8 +90,8 @@ local function OnData(unitTag, data, isSelf)
     local ultimate = unitResources[POWERTYPE_ULTIMATE]
     ultimate.current, index = LGS:ReadUint8(data, index)
     if(isFullUpdate) then
-		ultimate.cost, index = LGS:ReadUint8(data, index)
-	end
+        ultimate.cost, index = LGS:ReadUint8(data, index)
+    end
 
     unitResources.lastUpdate = GetTimeStamp()
 
@@ -100,8 +100,8 @@ local function OnData(unitTag, data, isSelf)
 end
 
 local function NumCallbacks()
-	local registry = LGS.cm.callbackRegistry[ON_ULTIMATE_CHANGED]
-	handler.callbacks = registry and #registry or 0
+    local registry = LGS.cm.callbackRegistry[ON_ULTIMATE_CHANGED]
+    handler.callbacks = registry and #registry or 0
 end
 
 local function GetPowerValues(unitResources, powerType)
@@ -121,52 +121,50 @@ function handler:Send()
     local now = GetTimeStamp()
     local timeout = IsUnitInCombat("player") and MIN_COMBAT_SEND_TIMEOUT or MIN_SEND_TIMEOUT
     if(now - lastSendTime < timeout) then
-		if (handler.debug == 2) then
+        if (handler.debug == 2) then
             d("now("..now..") - lastSendTime("..lastSendTime..") < timeout("..timeout..")")
-		end
+	end
         return 
     end
 
     local unitResources = GetCachedUnitResources("player")
     local ultimate, ultimateCurrent, ultimateMaximum = GetPowerValues(unitResources, POWERTYPE_ULTIMATE)
-	ultimateCurrent = zo_min(ultimateCurrent, ultimateMaximum)
+    ultimateCurrent = zo_min(ultimateCurrent, ultimateMaximum)
 
     sendFullUpdate = sendFullUpdate or ultimate.cost ~= ultimateCost
     if(ultimate.current ~= ultimateCurrent or sendFullUpdate) then
-
         local data = {}
         local index, bitIndex = 1, 1
         index, bitIndex = LGS:WriteBit(data, index, bitIndex, sendFullUpdate)
         index, bitIndex = LGS:WriteBit(data, index, bitIndex, needFullUpdate)
         index = index + 1
         index = LGS:WriteUint8(data, index, ultimateCurrent)
-		if sendFullUpdate then
-			index = LGS:WriteUint8(data, index, ultimateCost)
-		end
-
-		if (handler.debug == 1) then
-			Log("Send %d byte: is full: %s, needs full: %s, ultimate: %s, cost: %s", #data, tostring(sendFullUpdate), tostring(needFullUpdate), tostring(ultimateCurrent), tostring(ultimateCost))
-		end
+        if sendFullUpdate then
+            index = LGS:WriteUint8(data, index, ultimateCost)
+        end
+        if (handler.debug == 1) then
+            Log("Send %d byte: is full: %s, needs full: %s, ultimate: %s, cost: %s", #data, tostring(sendFullUpdate), tostring(needFullUpdate), tostring(ultimateCurrent), tostring(ultimateCost))
+        end
         if(LGS:Send(type, data)) then
 			--	Log("Send Complete")
             lastSendTime = now
             ultimate.current = ultimateCurrent
-			if sendFullUpdate then
-				ultimate.cost = ultimateCost
-			end
+            if sendFullUpdate then
+                utimate.cost = ultimateCost
+            end
             sendFullUpdate = false
             needFullUpdate = false
-		else
-			if (handler.debug == 2) then
-    	        Log("Send failed")
-			end
+        else
+            if (handler.debug == 2) then
+                Log("Send failed")
+            end
         end
     end
 end
 
 function handler:Refresh()
-	sendFullUpdate = true
-	needFullUpdate = true
+    sendFullUpdate = true
+    needFullUpdate = true
 end
 
 local function OnUpdate()
@@ -177,7 +175,7 @@ local isActive = false
 
 local function StartSending()
     if(not isActive and saveData.enabled and IsUnitGrouped("player")) then
-		if (handler.debug > 0) then
+        if (handler.debug > 0) then
             Log("StartSending .. isActive")
         end		
         EVENT_MANAGER:RegisterForUpdate("LibGroupSocketUltimateHandlerUpdate", 1000, OnUpdate)
@@ -199,10 +197,10 @@ local function OnUnitCreated(_, unitTag)
     if (handler.debug == 2) then	
         Log("OnUnitCreated: %s", unitTag)
     end
-	if (not isActive and handler.callbacks) then
-		sendFullUpdate = true
-		StartSending()
-	end
+    if (not isActive and handler.callbacks) then
+        sendFullUpdate = true
+        StartSending()
+    end
 end
 
 local function OnUnitDestroyed(_, unitTag)
@@ -219,28 +217,28 @@ function handler:RegisterForUltimateChanges(callback)
     if (handler.debug == 1) then
         Log("RegisterForUltimateChanges %s", tostring(isActive))
     end
-	if (not handler.callback) then
-		LGS.cm:RegisterCallback(ON_ULTIMATE_CHANGED, callback)
-		NumCallbacks()	
-		LGS.cm:RegisterCallback(type, OnData)		
-	end
-	if (not isActive) then
-		StartSending()		
-	end
+    if (not handler.callback) then
+        LGS.cm:RegisterCallback(ON_ULTIMATE_CHANGED, callback)
+        NumCallbacks()	
+        LGS.cm:RegisterCallback(type, OnData)		
+    end
+    if (not isActive) then
+        StartSending()		
+    end
 end
 
 function handler:UnregisterForUltimateChanges(callback)
     if (handler.debug == 1) then
-		Log ("UnregisterForUltimateChanges %s", tostring(isActive))
-	end
-	if (handler.callback) then
-		LGS.cm:UnregisterCallback(type, handler.dataHandler)	
-		LGS.cm:UnregisterCallback(ON_ULTIMATE_CHANGED, callback)
-		NumCallbacks()
-	end
-	if (isActive) then
-		StopSending()
-	end
+        Log ("UnregisterForUltimateChanges %s", tostring(isActive))
+    end
+    if (handler.callback) then
+        LGS.cm:UnregisterCallback(type, handler.dataHandler)	
+	LGS.cm:UnregisterCallback(ON_ULTIMATE_CHANGED, callback)
+	NumCallbacks()
+    end
+    if (isActive) then
+        StopSending()
+    end
 end
 
 function handler:InitializeSettings(optionsData, IsSendingDisabled) -- TODO: localization
@@ -277,10 +275,10 @@ end
 
 local function Unload()
     LGS.cm:UnregisterCallback("savedata-ready", InitializeSaveData)
-	EVENT_MANAGER:UnregisterForEvent("LibGroupSocketUltimateHandler", EVENT_PLAYER_ACTIVATED)
-	EVENT_MANAGER:UnregisterForEvent("LibGroupSocketUltimateHandler", EVENT_UNIT_CREATED)
-	EVENT_MANAGER:UnregisterForEvent("LibGroupSocketUltimateHandler", EVENT_UNIT_DESTROYED)	
-	StopSending();
+    EVENT_MANAGER:UnregisterForEvent("LibGroupSocketUltimateHandler", EVENT_PLAYER_ACTIVATED)
+    EVENT_MANAGER:UnregisterForEvent("LibGroupSocketUltimateHandler", EVENT_UNIT_CREATED)
+    EVENT_MANAGER:UnregisterForEvent("LibGroupSocketUltimateHandler", EVENT_UNIT_DESTROYED)	
+    StopSending();
 end
 
 local function Load()
@@ -291,14 +289,14 @@ local function Load()
 
     handler.dataHandler = OnData
     handler.Unload = Unload
-	EVENT_MANAGER:RegisterForEvent("LibGroupSocketUltimateHandler", EVENT_UNIT_CREATED, OnUnitCreated)
-	EVENT_MANAGER:AddFilterForEvent("LibGroupSocketUltimateHandler",EVENT_UNIT_CREATED, REGISTER_FILTER_UNIT_TAG_PREFIX, "group")
-	EVENT_MANAGER:RegisterForEvent("LibGroupSocketUltimateHandler", EVENT_UNIT_DESTROYED, OnUnitDestroyed)
-	EVENT_MANAGER:AddFilterForEvent("LibGroupSocketUltimateHandler",EVENT_UNIT_DESTROYED, REGISTER_FILTER_UNIT_TAG_PREFIX, "group")				
+    EVENT_MANAGER:RegisterForEvent("LibGroupSocketUltimateHandler", EVENT_UNIT_CREATED, OnUnitCreated)
+    EVENT_MANAGER:AddFilterForEvent("LibGroupSocketUltimateHandler",EVENT_UNIT_CREATED, REGISTER_FILTER_UNIT_TAG_PREFIX, "group")
+    EVENT_MANAGER:RegisterForEvent("LibGroupSocketUltimateHandler", EVENT_UNIT_DESTROYED, OnUnitDestroyed)
+    EVENT_MANAGER:AddFilterForEvent("LibGroupSocketUltimateHandler",EVENT_UNIT_DESTROYED, REGISTER_FILTER_UNIT_TAG_PREFIX, "group")				
 	
-	EVENT_MANAGER:RegisterForEvent("LibGroupSocketUltimateHandler", EVENT_PLAYER_ACTIVATED, function()
-		StartSending()
-	end)
+    EVENT_MANAGER:RegisterForEvent("LibGroupSocketUltimateHandler", EVENT_PLAYER_ACTIVATED, function()
+        StartSending()
+    end)
 end
 
 if(handler.Unload) then handler.Unload() end
