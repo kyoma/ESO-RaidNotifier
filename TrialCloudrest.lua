@@ -34,7 +34,7 @@ function RaidNotifier.CR.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 				unitId = tUnitId,
 				ms = GetGameTimeMilliseconds(),
 			}
-			dbg("Begin hoarfrost track #%d for %s", track, tName)
+			dbg("Begin hoarfrost track #%d for %s(%s)", track, tName, tostring(tUnitId))
 			if (settings.hoarfrost >= 1) then
 				local tmp = 0
 				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
@@ -153,7 +153,7 @@ function RaidNotifier.CR.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 				local track = buffsDebuffs.hoarfrost_new[abilityId]
 				local d = data.hoarfrost[track]
 				d.count = d.count + 1
-				dbg("Increment hoarfrost track #%d to %d for %s", track, d.count, tName)
+				dbg("Increment hoarfrost track #%d to %d for %s(%s)", track, d.count, tName, tostring(tUnitId))
 				if data.unitId ~= tUnitId or (GetGameTimeMilliseconds() - data.ms) > 3000 then -- filter out the first one since we already showed the notification for it during ACTION_RESULT_BEGIN
 					if (settings.hoarfrost >= 1) then
 						local tmp = d.count >= 3 and 1 or 0

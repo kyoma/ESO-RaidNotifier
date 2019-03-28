@@ -28,10 +28,6 @@ function RaidNotifier.HOF.OnEffectChanged(eventCode, changeType, eSlot, eName, u
 	local raidId = RaidNotifier.raidId
 	local self   = RaidNotifier
 	
-	if (tName == nil or tName == "") then
-		tName = self.UnitIdToString(tUnitId)
-	end	
-	
 --	dbg("==>%s --> %d -> %d (%d)", uName, beginTime, endTime, stackCount)
 
 	local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.hallsFab
@@ -54,6 +50,10 @@ function RaidNotifier.HOF.OnCombatEvent(_, result, isError, aName, aGraphic, aAc
 	local raidId = RaidNotifier.raidId
 	local self   = RaidNotifier
 	local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.hallsFab
+
+	if (tName == nil or tName == "") then
+		tName = self.UnitIdToString(tUnitId)
+	end
 	
 	if (result == ACTION_RESULT_BEGIN) then
 		if (abilityId == buffsDebuffs.taking_aim) then
