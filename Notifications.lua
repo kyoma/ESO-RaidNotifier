@@ -189,11 +189,11 @@ function CountdownNotification:GetScale()
 	return self.scale and self.scale or 1;
 end
 
-local function OnCountdown(self, isPrecise)
+local function OnCountdown(self, precise)
 		if (self.scale) then
 			self.ctrl.counter:SetScale(self.scale)
 		end
-		if (isPrecise) then
+		if (precise < 1000) then
 			txt = string.format("%0.1f", self.displayTime/1000)
 		else
 			self.countdownAnimation:PlayFromStart()
@@ -205,16 +205,16 @@ local function OnCountdown(self, isPrecise)
 		self.ctrl.counter:SetText(txt)
 end
 
-function CountdownNotification:Show(text, isPrecise)
+function CountdownNotification:Show(text, precise)
 	self.text = text
-	if (not isPrecise) then
+	if (precise == 1000) then
 		self.fadeInAnimation:PlayFromStart()
 	end
 	self:SetHidden(false)
 	self.freeToUse = false
 	self:SetText(text)
 	local txt
-	self:runTimer(isPrecise and 100 or 1000, 0, function() OnCountdown(self, isPrecise) end)
+	self:runTimer(precise == nil and 1000 or precise, 0, function() OnCountdown(self, precise) end)
 	return self.id
 end
 
@@ -258,8 +258,9 @@ function NotificationsPool:SetScale(scale)
 	self.scale = scale;
 end
 
-function NotificationsPool:SetPrecise(ok)
-	self.isPrecise = ok
+-- 10 - 1s, 5 - 0.5s, 2 - 0.2s
+function NotificationsPool:SetPrecise(precise)
+	self.precise = precise * 100
 end
 
 function NotificationsPool:Add(text, displayTime, isCountdown)
@@ -311,7 +312,7 @@ function NotificationsPool:Add(text, displayTime, isCountdown)
 			height = height + self.pool[i]:GetHeight()
 		end
 	end
-	return notify:Show(text, self.isPrecise)
+	return notify:Show(text, self.precise)
 end
 
 RaidNotifier = RaidNotifier or {}

@@ -781,7 +781,7 @@ do ----------------------
 		--if (self.Vars.general.notifications_scale ~= 100) then
 			RaidNotifier.NotificationsPool.GetInstance():SetScale(self.Vars.general.notifications_scale / 100);
 		--end
-		RaidNotifier.NotificationsPool.GetInstance():SetPrecise(self.Vars.countdown.timerPrecise == 2)
+		RaidNotifier.NotificationsPool.GetInstance():SetPrecise(self.Vars.countdown.timerPrecise)
 		
 		-- Bindings
 		ZO_CreateStringId("SI_BINDING_NAME_RAIDNOTIFIER_TOGGLE_ULTI", L.Binding_ToggleUltimateExchange)
@@ -1003,8 +1003,9 @@ do ---------------------------
 			end
 		elseif (args[1] == "notifications") then
 			if (args[2] ~= nil) then
-				self:StartCountdown(10000, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM_SIMPLE), "hallsFab", "taking_aim", not self:IsCountdownInProgress())
+				self:StartCountdown(8500, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM_SIMPLE), "hallsFab", "taking_aim", not self:IsCountdownInProgress())
 			end
+			self:StartCountdown(8500, GetString(RAIDNOTIFIER_ALERTS_HALLSFAB_TAKING_AIM_SIMPLE), "hallsFab", "taking_aim", false)
 			self:AddAnnouncement("Next Notification", "cloudrest", "olorime_spears2")
 			zo_callLater(function()
 				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_CHILLING_COMET), "cloudrest", "chilling_comet")

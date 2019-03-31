@@ -164,7 +164,7 @@ do ------------------
 		countdown = {
 			timerScale      = 100,
 			textScale       = 100,
-			timerPrecise	= 2, -- 0.2sec
+			timerPrecise	= 10, -- 1sec
 			useColor        = false,
 		},
 		sounds = {
@@ -805,11 +805,11 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_Countdown_TimerPrecise_TT,
 		choices = {
 			L.Settings_General_Choices_1s,
---			L.Settings_General_Choices_500ms,
+			L.Settings_General_Choices_500ms,
 			L.Settings_General_Choices_200ms,
 		}, choicesValues = {
 			10,
---			5,
+			5,
 			2,
 		}, 
 		getFunc = function()
@@ -817,7 +817,7 @@ function RaidNotifier:CreateSettingsMenu()
 		end,
 		setFunc = function(value)
 			savedVars.countdown.timerPrecise = value
-			NotificationsPool.GetInstance():SetPrecise(value == 2)
+			NotificationsPool.GetInstance():SetPrecise(value)
 			ReloadUI()
 		end,
 		noAlert = true,
