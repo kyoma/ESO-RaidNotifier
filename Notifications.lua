@@ -37,51 +37,42 @@ end
 
 function AbstractNotification:SetDisplayTime(displayTime)
 	self.displayTime = displayTime
-	self.lastUpdateTime = GetGameTimeMilliseconds()
+	self.endTime = GetGameTimeMilliseconds() + displayTime
 end
 
-function AbstractNotification:GetDisplayTime()
-	return self.displayTime
+function AbstractNotification:GetEndTime()
+	return self.endTime
 end
 
-function AbstractNotification:GetLastUpdateTime()
-	return self.lastUpdateTime
-end
-
-function AbstractNotification:_runTimer(ms, endTime, f)
-	local lastTime = GetGameTimeMilliseconds()
+function AbstractNotification:_runTimer(ms, f)
+	self.displayTime = self.endTime - GetGameTimeMilliseconds()
 	if (f) then
 		f()
 	end
 	EVENT_MANAGER:RegisterForUpdate("RNNotification_" .. self.id, ms, function()
-		local currTime = GetGameTimeMilliseconds()
-		local diff = currTime - lastTime
-		lastTime = currTime
 		if (ms < 500) then
 			ms = 200
 		elseif (ms < 1000) then
 			ms = 500
 		end
-		self.displayTime = self.displayTime - math.floor(diff/ms + 0.5) * ms
+		self.displayTime = math.floor((self.endTime - GetGameTimeMilliseconds())/ms + 0.5) * ms
 		if (f) then
 			f()
 		end
-		if (self.displayTime < endTime) then
-			if (endTime == 0) then
-				self:SetHidden(true)
-				self.freeToUse = true
-				dbg("Hiding: "..self.id)				
-			end
+		if (self.displayTime <= 0) then
+			self:SetHidden(true)
+			self.freeToUse = true
+			dbg("Hiding: "..self.id)				
 			EVENT_MANAGER:UnregisterForUpdate("RNNotification_" .. self.id)
 		end			
 	end)
 end
 
-function AbstractNotification:runTimer(ms, endTime, f)
-	local mod = self.displayTime % ms
-	self.displayTime = self.displayTime - mod
+function AbstractNotification:runTimer(ms, f)
+	local timer = self.endTime - GetGameTimeMilliseconds()
+	local mod = timer % ms
 	zo_callLater(function()
-		self:_runTimer(ms, endTime, f)
+		self:_runTimer(ms, f)
 	end, mod)
 end
 
@@ -134,7 +125,7 @@ function Notification:Show(text)
 	self:SetText(text)
 	self.freeToUse = false
 	
-	self:runTimer(1000, 0)
+	self:runTimer(1000)
 	
 	return self.id
 end
@@ -214,7 +205,7 @@ function CountdownNotification:Show(text, precise)
 	self.freeToUse = false
 	self:SetText(text)
 	local txt
-	self:runTimer(precise == nil and 1000 or precise, 0, function() OnCountdown(self, precise) end)
+	self:runTimer(precise == nil and 1000 or precise, function() OnCountdown(self, precise) end)
 	return self.id
 end
 
@@ -297,12 +288,13 @@ function NotificationsPool:Add(text, displayTime, isCountdown)
 	notify:SetDisplayTime(displayTime and displayTime or self.displayTime)
 	
 	table.sort(self.pool, function(a,b) 
-		if (a:GetDisplayTime() < b:GetDisplayTime()) then
+		if (a:GetEndTime() < b:GetEndTime()) then
 			return true
-		elseif (a:GetDisplayTime() > b:GetDisplayTime()) then
-			return false
+--		elseif (a:GetEndTime() > b:GetEndTime()) then
+--			return false
 		end
-		return a:GetLastUpdateTime() < b:GetLastUpdateTime()
+--		return a:GetLastUpdateTime() < b:GetLastUpdateTime()
+		return false
 	end)
 
 	local height = 0
