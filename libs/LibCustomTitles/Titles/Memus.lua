@@ -21,7 +21,7 @@ MY_MODULE:RegisterTitle("@Heelie", nil, 92, {en = "The Snake"}, {color="#00FF00"
 MY_MODULE:RegisterTitle("@Heelie", nil, 1391, {en = "The Snake"}, {color="#FF0000"})
 MY_MODULE:RegisterTitle("@kilnerdyne", nil, 92, {en = "Late Night Master"}, {color={"#2277BB", "#005599"}})
 MY_MODULE:RegisterTitle("@LiofaTR", nil, 92, {en = "The Tonk"}, {color={"#F2726E", "#C40808"}})
-MY_MODULE:RegisterTitle("@WHoitsma", nil, 92, {en = "|cE70000The|r |cFF8C00God|r |cFFEF00of|r |c00811F|Fem|r|c0044FFini|r|c760089sts|r"})
+MY_MODULE:RegisterTitle("@WHoitsma", nil, true, {en = "The One"}, {color={"#170CCF","EC0412"}})
 MY_MODULE:RegisterTitle("@getemshauna", nil, 1330, {en = "Grand Master Impaler"}, {color="#E0000B"})
 MY_MODULE:RegisterTitle("@getemshauna", nil, 1838, {en = "Grand Master Impaler"}, {color="#00FF00"})
 MY_MODULE:RegisterTitle("@Razall731", nil, 92, {en = "|cff0000K|r|cff2a00r|r|cff5500e|r|cff7f00m|r|cffbf00ó|r|cffff00w|r|caaff00k|r|c55ff00o|r|c00ff00w|r|c00ff80y|r|c00ffff|r |c00aaffB|r|c0055ffa|r|c0000ffr|r|c4600ffo|r|c8b00ffn|r"})
