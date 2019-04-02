@@ -1,8 +1,9 @@
 RaidNotifier = RaidNotifier or {}
-RaidNotifier.Util = {}
+RaidNotifier.Util = RaidNotifier.Util or {}
 RaidNotifier.MOL = {}
 
 local RaidNotifier = RaidNotifier
+local Util = RaidNotifier.Util
 
 local function p() end
 local function dbg() end
