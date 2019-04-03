@@ -1,5 +1,4 @@
 RaidNotifier = RaidNotifier or {}
-RaidNotifier.Util = {}
 RaidNotifier.CR = {}
 
 local RaidNotifier = RaidNotifier
@@ -18,13 +17,28 @@ function RaidNotifier.CR.Initialize()
 	data.portalCounter = 0
 end
 
-function RaidNotifier.CR.OnCombatStateChanged(inCombat)
-	if (not inCombat) then
+function RaidNotifier.CR.OnBossesChanged()
+	local bossCount, bossAlive, bossFull = RaidNotifier:GetNumBosses(true)
+
+	-- reset if: 	
+	--	1) there are no bosses	
+	--	2) all bosses are dead	
+	--	3) all bosses are at full health
+	if bossCount == 0 or bossAlive == 0 or bossFull == bossCount then
 		data = {}
 		data.spearCounter = 0
 		data.portalCounter = 0
 	end
 end
+
+--function RaidNotifier.CR.OnCombatStateChanged(inCombat)
+--	if (not inCombat) then
+--		data = {}
+--		data.hoarfrost = {}
+--		data.spearCounter = 0
+--		data.portalCounter = 0
+--	end
+--end
 
 function RaidNotifier.CR.OnCombatEvent(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
 	local raidId = RaidNotifier.raidId

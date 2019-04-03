@@ -1,9 +1,7 @@
 RaidNotifier = RaidNotifier or {}
-RaidNotifier.Util = RaidNotifier.Util or {}
 RaidNotifier.MOL = {}
 
 local RaidNotifier = RaidNotifier
-local Util = RaidNotifier.Util
 
 local function p() end
 local function dbg() end
@@ -25,7 +23,7 @@ local function FindGlyph(glyphId, glyphs, knownGlyphs, allowNew)
 					local pX, pY = GetMapPlayerPosition("group"..p)
 					if (knownGlyphs[index] == nil) then --only check unknown glyphs
 						-- we dont care about scale/factor or how much it is in actual meters
-						local distance = Util.GetRawDistance(pX,pY, data.x,data.y) * 1000 
+						local distance = RaidNotifier.Util.GetRawDistance(pX,pY, data.x,data.y) * 1000 
 						if (distance < lowestDistance) then
 							lowestDistance=distance
 							lowestIndex=index
@@ -76,7 +74,9 @@ function RaidNotifier.MOL.OnCombatEvent(_, result, isError, aName, aGraphic, aAc
 	local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.mawLorkhaj
 	if (tName == nil or tName == "") then
 		tName = self.UnitIdToString(tUnitId)
-	end	
+	end
+
+	dbg(Util)
 
 	--Zhaj'hassa the Forgotten 
 	-- Glyphs & Curse (UI elements only, notification code is further down below)
