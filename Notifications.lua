@@ -62,7 +62,7 @@ function AbstractNotification:_runTimer(ms, f)
 		if (self.displayTime <= 0) then
 			self:SetHidden(true)
 			self.freeToUse = true
-			dbg("Hiding: "..self.id)				
+			--dbg("Hiding: "..self.id)				
 			EVENT_MANAGER:UnregisterForUpdate("RNNotification_" .. self.id)
 		end			
 	end)
@@ -261,7 +261,7 @@ function NotificationsPool:Add(text, displayTime, isCountdown)
 		if (self.pool[i]:IsFreeToUse()) then
 			if ((self.pool[i]:GetType() == AbstractNotification.COUNTDOWN and isCountdown) 
 			or  (self.pool[i]:GetType() == AbstractNotification.NOTIFY and not isCountdown)) then
-				dbg("Used already created notification "..self.pool[i]:GetId())
+				--dbg("Used already created notification "..self.pool[i]:GetId())
 				notify = self.pool[i]
 				break;
 			end
@@ -278,7 +278,7 @@ function NotificationsPool:Add(text, displayTime, isCountdown)
 		
 		notify:SetText("X") -- we need anything to get text height
 		self.pool[id] = notify
-		dbg("Created new notification "..id)
+		--dbg("Created new notification "..id)
 	end
 	
 	if (self.scale) then

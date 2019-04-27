@@ -906,19 +906,15 @@ do ---------------------------
 	local trackedUnits = {}
 	local trackedAbilities = {}
 	
-	local blacklist = {
-		[90618] = true,
-		[90619] = true,
-		[90624] = true,
-	}
 	local function OnCombatDebugEvent(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
 
 		local self   = RaidNotifier
-
 		
-		if abilityId < 80000 then
-			return 
-		elseif blacklist[abilityId] then
+--		if abilityId < 80000 then
+--			return 
+		if sType == COMBAT_UNIT_TYPE_PLAYER then
+			return
+		elseif self.blacklist and self.blacklist[abilityId] then
 			return 
 		end
 		
@@ -937,8 +933,13 @@ do ---------------------------
 			end
 			CheckUnit(tUnitId, tName, tType)
 		end
+	
+		--self.Vars.dbg.blacklist = self.Vars.dbg.blacklist or {}
+		--self.Vars.dbg.blacklist[abilityId] = true
 
-		if (self.Vars.dbg.tracker and debugList[result] ~= nil) then
+		--if (self.Vars.dbg.tracker and debugList[result] ~= nil) then
+		debugList[result] = debugList[result] or {}
+		if (self.Vars.dbg.tracker) then
 			local function FormatUnit(prefix, uType, uName, uId)
 				if uId == 0 then
 					return ""
@@ -954,14 +955,12 @@ do ---------------------------
 
 			if (not debugList[result][abilityId]) or (not self.Vars.dbg.spamControl) then
 				if (tType == COMBAT_UNIT_TYPE_PLAYER and (sType == COMBAT_UNIT_TYPE_OTHER or sType == COMBAT_UNIT_TYPE_NONE) or (not self.Vars.dbg.myEnemyOnly)) then
-			
 					local source = FormatUnit(", [S] ", sType, sName, sUnitId)
 					local target = FormatUnit(", [T] ", tType, tName, tUnitId)
 					local ability = (aName ~= "" and aName ~= nil) and aName or GetAbilityName(abilityId)
 
 					debugList[result][abilityId] = self.Vars.dbg.spamControl
-					dlog(debugMsg, result, ability, abilityId, source, target, hitValue)
-				
+					dlog(debugMsg, result, ability, abilityId, source, target, hitValue)	
 				end
 			end
 		end
