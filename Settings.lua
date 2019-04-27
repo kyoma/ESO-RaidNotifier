@@ -7,13 +7,17 @@ local tremove				= table.remove
 local tsort				= table.sort
 
 -- Constants for easy reading
-local RAID_HEL_RA_CITADEL        = 1
-local RAID_AETHERIAN_ARCHIVE     = 2
-local RAID_SANCTUM_OPHIDIA       = 3
-local RAID_DRAGONSTAR_ARENA      = 4
-local RAID_MAW_OF_LORKHAJ        = 5
-local RAID_MAELSTROM_ARENA       = 6
-local RAID_HALLS_OF_FABRICATION  = 7
+RAID_HEL_RA_CITADEL         = 1
+RAID_AETHERIAN_ARCHIVE      = 2
+RAID_SANCTUM_OPHIDIA        = 3
+RAID_DRAGONSTAR_ARENA       = 4
+RAID_MAW_OF_LORKHAJ         = 5
+RAID_MAELSTROM_ARENA        = 6
+RAID_HALLS_OF_FABRICATION   = 7
+RAID_ASYLUM_SANCTORIUM      = 8
+RAID_CLOUDREST              = 9
+RAID_BLACKROSE_PRISON       = 10
+RAID_SUNSPIRE				= 11
 
 -- ------------------
 -- DEFAULT SETTINGS
@@ -272,6 +276,9 @@ do ------------------
 			crushing_darkness = 1, -- "Self"
 			tentacle_spawn = false,
 			break_amulet = false,
+		},
+		sunspire = {
+		
 		},
 		dbg = {
 			enable = false,
@@ -1277,7 +1284,7 @@ function RaidNotifier:CreateSettingsMenu()
 
 
 	-- Asylum Sanctorium
-	MakeSubmenu(L.Settings_Asylum_Header, RaidNotifier:GetRaidDescription(RAID_HALLS_OF_FABRICATION))
+	MakeSubmenu(L.Settings_Asylum_Header, RaidNotifier:GetRaidDescription(RAID_ASYLUM_SANCTORIUM))
 	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_Asylum_Defiling_Blast,
@@ -1329,7 +1336,7 @@ function RaidNotifier:CreateSettingsMenu()
 	}, "asylum", "olms_trial_by_fire")
 	subTable = nil --end submenu
 
-        -- Cloudrest
+	-- Cloudrest
 	MakeSubmenu(L.Settings_Cloudrest_Header, RaidNotifier:GetRaidDescription(RAID_CLOUDREST))
 	MakeControlEntry({
 		type = "checkbox",
@@ -1424,6 +1431,9 @@ function RaidNotifier:CreateSettingsMenu()
 		choices = choices.cloudrest.crushing_darkness,
 	}, "cloudrest", "crushing_darkness")
 	subTable = nil --end submenu
+	
+	MakeSubmenu(L.Settings_Sunspire_Header, RaidNotifier:GetRaidDescription(RAID_SUNSPIRE))
+	subTable = nil
 
 	MakeControlEntry({
 		type = "header",

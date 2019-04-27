@@ -488,11 +488,16 @@ cloudrest.malicious_strike[105363] = true -- normal
 
 cloudrest.interest_list = {}
 
-
 RaidNotifier.BuffsDebuffs[RAID_CLOUDREST] = cloudrest
 
 -- ------------------------------------------------------
--- -- Cloudrest  ----------------------------------------
+-- -- Blackrose  ----------------------------------------
 -- -- ---------------------------------------------------
 local blackrose = {}
 RaidNotifier.BuffsDebuffs[RAID_BLACKROSE_PRISON] = blackrose
+
+-- ------------------------------------------------------
+-- -- Sunspire  -----------------------------------------
+-- -- ---------------------------------------------------
+local sunspire = {}
+RaidNotifier.BuffsDebuffs[RAID_SUNSPIRE] = sunspire

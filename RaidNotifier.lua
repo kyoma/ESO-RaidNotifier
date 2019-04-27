@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name           = "RaidNotifier"
 RaidNotifier.DisplayName    = "Raid Notifier"
-RaidNotifier.Version        = "2.9.5"
+RaidNotifier.Version        = "2.10"
 RaidNotifier.Author         = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name        = "RNVars"
 RaidNotifier.SV_Version     = 4
@@ -21,6 +21,7 @@ RAID_HALLS_OF_FABRICATION   = 7
 RAID_ASYLUM_SANCTORIUM      = 8
 RAID_CLOUDREST              = 9
 RAID_BLACKROSE_PRISON       = 10
+RAID_SUNSPIRE				= 11
 
 -- Debugging
 local function p() end
@@ -562,6 +563,7 @@ do ----------------------
 		[RAID_ASYLUM_SANCTORIUM]     = 1000,
 		[RAID_CLOUDREST]             = 1051,
 		[RAID_BLACKROSE_PRISON]      = 1082,
+		[RAID_SUNSPIRE]		 		 = 1121,
 	}
 
 	local RaidZones = {}
@@ -644,7 +646,6 @@ do ----------------------
 						if type(l) == "number" and l > 10000 then
 							dbg("Found ability #%d (%s)", l, k)
 							RegisterForAbility(l)
-							--self:RegisterForCombatEvent(combatEventCallback, REGISTER_FILTER_ABILITY_ID, l)
 						else
 							dbg("Ignoring %s (%s)", l, k)
 						end
@@ -778,9 +779,7 @@ do ----------------------
 		self:InitializeStatusDisplay("StatusDisplay")
 		self:InitializeGlyphWindow("GlyphWindow", self.Vars.mawLorkhaj.zhaj_glyphs_invert)
 		self:InitializeArrowDisplay("ArrowDisplay")
-		--if (self.Vars.general.notifications_scale ~= 100) then
-			RaidNotifier.NotificationsPool.GetInstance():SetScale(self.Vars.general.notifications_scale / 100);
-		--end
+		RaidNotifier.NotificationsPool.GetInstance():SetScale(self.Vars.general.notifications_scale / 100);
 		RaidNotifier.NotificationsPool.GetInstance():SetPrecise(self.Vars.countdown.timerPrecise)
 		
 		-- Bindings
@@ -871,15 +870,16 @@ do ---------------------------
 		return LUNIT:GetUnitTagForUnitId(tUnitId)
 	end
 
-	RaidNotifier.AA = RaidNotifier.AA and RaidNotifier.AA or {}
-	RaidNotifier.HRC = RaidNotifier.HRC and RaidNotifier.HRC or {}		
-	RaidNotifier.SO = RaidNotifier.SO and RaidNotifier.SO or {}
-	RaidNotifier.DSA = RaidNotifier.DSA and RaidNotifier.DSA or {}		
-	RaidNotifier.MOL = RaidNotifier.MOL and RaidNotifier.MOL or {}
-	RaidNotifier.MA = RaidNotifier.MA and RaidNotifier.MA or {}
-	RaidNotifier.HOF = RaidNotifier.HOF and RaidNotifier.HOF or {}
-	RaidNotifier.AS = RaidNotifier.AS and RaidNotifier.AS or {}
-	RaidNotifier.CR = RaidNotifier.CR and RaidNotifier.CR or {}
+	RaidNotifier.AA = RaidNotifier.AA or {}
+	RaidNotifier.HRC = RaidNotifier.HRC or {}		
+	RaidNotifier.SO = RaidNotifier.SO or {}
+	RaidNotifier.DSA = RaidNotifier.DSA or {}		
+	RaidNotifier.MOL = RaidNotifier.MOL or {}
+	RaidNotifier.MA = RaidNotifier.MA or {}
+	RaidNotifier.HOF = RaidNotifier.HOF or {}
+	RaidNotifier.AS = RaidNotifier.AS or {}
+	RaidNotifier.CR = RaidNotifier.CR or {}
+	RaidNotifier.SS = RaidNotifier.SS or {}
 	
 	RaidNotifier.Trial = 
 	{
@@ -892,6 +892,7 @@ do ---------------------------
 		[RAID_HALLS_OF_FABRICATION]  = RaidNotifier.HOF,
 		[RAID_ASYLUM_SANCTORIUM]     = RaidNotifier.AS,
 		[RAID_CLOUDREST]             = RaidNotifier.CR,
+		[RAID_SUNSPIRE]				 = RaidNotifier.SS,
 	}
 	
 	-------------------

@@ -481,6 +481,12 @@ L.Alerts_Cloudrest_Nocturnals_Favor             = "|cff0000Nocturnal's Favor|r a
 L.Alerts_Cloudrest_Crushing_Darkness            = "|cfc0c66Crushing Darkness|r at you. Kite!"
 L.Alerts_Cloudrest_Malicious_Strike             = "|cff0000Malicious Strike|r at you. Block!"
 
+--------------------------------
+------   SUNSPIRE          -----
+--------------------------------
+L.Settings_Sunspire_Header			            = "Sunspire"
+-- Settings
+-- Alerts
 
 
 --------------------------------
