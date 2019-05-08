@@ -18,7 +18,10 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 	
 	if (tName == nil or tName == "") then
 		tName = self.UnitIdToString(tUnitId)
-	end		
+	end
+	
+	local time = string.format("%s:%03d ", GetTimeString(), GetGameTimeMilliseconds() % 1000)
+	d(string.format("%s [%d] %s(%d) %s => %s", time, result, GetAbilityName(abilityId), abilityId, tostring(hitValue), tName))
 
 	if (result == ACTION_RESULT_BEGIN) then
 	elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then

@@ -500,4 +500,55 @@ RaidNotifier.BuffsDebuffs[RAID_BLACKROSE_PRISON] = blackrose
 -- -- Sunspire  -----------------------------------------
 -- -- ---------------------------------------------------
 local sunspire = {}
+-- Yolnukrinn fire boss
+sunspire.focused_fire = { -- stack mechanic?
+	[121732] = true,
+	[121726] = true,
+}
+sunspire.scorched_earth = 123648 -- ??
+sunspire.bite = 122124 -- for tank?
+sunspire.fire_breath = 121751
+
+-- Lorkestis ice boss
+sunspire.frozen_tomb = 119632
+
+
+-- Nahvinaas gold boss
+sunspire.sweeping_breath = { -- 5 sec
+	[120188] = true, -- left -> right
+	[118743] = true, -- right -> left
+}
+sunspire.strafing_run = 122314
+-- strafing_run 122319
+sunspire.agony_totem = 118411
+sunspire.wing_trash = {
+	[115587] = true,
+	[119738] = true,
+}
+sunspire.molten_meteor = 117249 -- 2200
+sunspire.meteor = 117251
+sunspire.time_shift = {
+	[121676] = true,
+	[121500] = true,
+	[121502] = true,
+	[121508] = true,
+	[121510] = true,
+	[121676] = true,
+	[121765] = true,
+	--[121766] = true, spaming every 5 sec
+	[124280] = true,
+}
+
+sunspire.time_breach = {
+	[121210] = true,
+	[121216] = true,
+	[121220] = true,
+	[121221] = true,
+	[121223] = true,
+}
+
+-- ??
+sunspire.trash = 118562
+sunspire.negate = 121411
+
 RaidNotifier.BuffsDebuffs[RAID_SUNSPIRE] = sunspire
