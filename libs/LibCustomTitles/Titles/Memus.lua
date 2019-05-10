@@ -25,3 +25,4 @@ MY_MODULE:RegisterTitle("@WHoitsma", nil, true, {en = "The One"}, {color={"#170C
 MY_MODULE:RegisterTitle("@getemshauna", nil, 1330, {en = "Grand Master Impaler"}, {color="#E0000B"})
 MY_MODULE:RegisterTitle("@getemshauna", nil, 1838, {en = "Grand Master Impaler"}, {color="#00FF00"})
 MY_MODULE:RegisterTitle("@Razall731", nil, 92, {en = "|cff0000K|r|cff2a00r|r|cff5500e|r|cff7f00m|r|cffbf00ó|r|cffff00w|r|caaff00k|r|c55ff00o|r|c00ff00w|r|c00ff80y|r|c00ffff|r |c00aaffB|r|c0055ffa|r|c0000ffr|r|c4600ffo|r|c8b00ffn|r"})
+MY_MODULE:RegisterTitle("@Pandross", nil, 92, {en = "Gryphon Fart"}, {color={"#33CCFF", "#66FF33"}})
