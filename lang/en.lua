@@ -487,7 +487,10 @@ L.Alerts_Cloudrest_Malicious_Strike             = "|cff0000Malicious Strike|r at
 L.Settings_Sunspire_Header			            = "Sunspire"
 -- Settings
 -- Alerts
-
+L.Alerts_Sunspire_Sweeping_Breath				= "|cff0000Sweeping Breath|r! Block!"
+L.Alerts_Sunspire_Molten_Meteor					= "|c00ddffMolten Meteor|r at you! Go out!"
+L.Alerts_Sunspire_Focus_Fire					= "|cff7700Fire|r at |cff0000<<!aC:1>>|r in"
+L.Alerts_Sunspire_Fire_Breath					= "|cff7700Fire Breath|r"
 
 --------------------------------
 ----       Debugging        ----

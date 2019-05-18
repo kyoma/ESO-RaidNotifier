@@ -501,31 +501,60 @@ RaidNotifier.BuffsDebuffs[RAID_BLACKROSE_PRISON] = blackrose
 -- -- ---------------------------------------------------
 local sunspire = {}
 -- Yolnukrinn fire boss
-sunspire.focused_fire = { -- stack mechanic?
+sunspire.focus_fire_begin = 121722
+sunspire.focus_fire = { -- stack mechanic?
 	[121732] = true,
 	[121726] = true,
 }
-sunspire.scorched_earth = 123648 -- ??
-sunspire.bite = 122124 -- for tank?
 sunspire.fire_breath = 121751
 
--- Lorkestis ice boss
-sunspire.frozen_tomb = 119632
+sunspire.scorched_earth = 123648 -- ??
+sunspire.bite = 122124 -- for tank?
 
+-- Lorkestis ice boss
+sunspire.frozen_tomb = 119632 
+sunspire.fire_trail = 122727 -- lighting breath while flying mechanic
+sunspire.raid_mr3_conjuredReflection = 124051 -- dunno yet?
+sunspire.frozen_prison = 124335  
+sunspire.storm_fury  = { -- debuff breath?
+	[115871] = true,
+	[115702] = true,
+}
+sunspire.storm_breath = 123673 -- debuff breath?
 
 -- Nahvinaas gold boss
 sunspire.sweeping_breath = { -- 5 sec
 	[120188] = true, -- left -> right
 	[118743] = true, -- right -> left
 }
-sunspire.strafing_run = 122314
--- strafing_run 122319
+sunspire.strafing_run = { 
+	[122314] = true,
+	[122319] = true,
+ }
+ sunspire.fire_storm_protection = {
+	[119664] = true,
+	[118939] = true,
+ 
+ }
+sunspire.fire_storm = {
+	[118977] = true,
+	[118910] = true,
+	[118980] = true,
+	[118996] = true,
+	[119007] = true,
+	[119006] = true,
+}
+sunspire.staggerd = 118572 -- knockBack?
+sunspire.searing_breath = 121980
+
+sunspire.flame_split = 119485
 sunspire.agony_totem = 118411
 sunspire.wing_trash = {
 	[115587] = true,
 	[119738] = true,
 }
-sunspire.molten_meteor = 117249 -- 2200
+sunspire.molten_meteor_begin = 117249 -- 2200
+sunspire.molten_meteor = 117250
 sunspire.meteor = 117251
 sunspire.time_shift = {
 	[121676] = true,
