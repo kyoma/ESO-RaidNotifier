@@ -415,8 +415,6 @@ cloudrest.shadow_world[108045] = true
 cloudrest.shadow_world[104620] = true
 
 cloudrest.shadow_realm_cast = 103946
---cloudrest.olorime_spears = {} -- 2240
---cloudrest.olorime_spears[104021] = true
 cloudrest.olorime_spears = 104019
 cloudrest.olorime_spears_synergized = 104017
 
@@ -500,21 +498,39 @@ RaidNotifier.BuffsDebuffs[RAID_BLACKROSE_PRISON] = blackrose
 -- -- Sunspire  -----------------------------------------
 -- -- ---------------------------------------------------
 local sunspire = {}
+sunspire.breath = {
+	[121751] = true,	-- fire breath
+	[119283] = true,	-- frost breath
+	[121980] = true,	-- searing breath
+}
+
+-- Trash
+sunspire.chilling_comet = 116636
+sunspire.statue_emerge = {
+	[121930] = true,
+	[121932] = true,
+	[121928] = true,
+}
+
 -- Yolnukrinn fire boss
-sunspire.focus_fire_begin = 121722
-sunspire.focus_fire = { -- stack mechanic?
+sunspire.door_protection_fire = 118630
+sunspire.focus_fire = 121722
+sunspire.focus_fire_tick = { -- remove
 	[121732] = true,
 	[121726] = true,
 }
-sunspire.fire_breath = 121751
+sunspire.atronach_zap = 23428
+sunspire.atronach_zap_countdown = 6000
 
-sunspire.scorched_earth = 123648 -- ??
+sunspire.scorched_earth = 123648 -- targeted fire aoe on the ground
 sunspire.bite = 122124 -- for tank?
 
 -- Lorkestis ice boss
+sunspire.door_protection_ice = 120417 -- 2200
 sunspire.frozen_tomb = 119632 
+sunspire.frost_atronach = 114085
 sunspire.fire_trail = 122727 -- lighting breath while flying mechanic
-sunspire.raid_mr3_conjuredReflection = 124051 -- dunno yet?
+sunspire.raid_mr3_conjuredReflection = 124051
 sunspire.frozen_prison = 124335  
 sunspire.storm_fury  = { -- debuff breath?
 	[115871] = true,
@@ -544,8 +560,7 @@ sunspire.fire_storm = {
 	[119007] = true,
 	[119006] = true,
 }
-sunspire.staggerd = 118572 -- knockBack?
-sunspire.searing_breath = 121980
+sunspire.staggerd = 118572
 
 sunspire.flame_split = 119485
 sunspire.agony_totem = 118411
@@ -553,28 +568,9 @@ sunspire.wing_trash = {
 	[115587] = true,
 	[119738] = true,
 }
-sunspire.molten_meteor_begin = 117249 -- 2200
-sunspire.molten_meteor = 117250
+sunspire.molten_meteor = 117249 -- 2200
+--sunspire.molten_meteor = 117250
 sunspire.meteor = 117251
-sunspire.time_shift = {
-	[121676] = true,
-	[121500] = true,
-	[121502] = true,
-	[121508] = true,
-	[121510] = true,
-	[121676] = true,
-	[121765] = true,
-	--[121766] = true, spaming every 5 sec
-	[124280] = true,
-}
-
-sunspire.time_breach = {
-	[121210] = true,
-	[121216] = true,
-	[121220] = true,
-	[121221] = true,
-	[121223] = true,
-}
 
 -- ??
 sunspire.trash = 118562
