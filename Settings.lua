@@ -278,7 +278,15 @@ do ------------------
 			break_amulet = false,
 		},
 		sunspire = {
-		
+			chilling_comet = 1, -- "Self"
+			breath = 1, -- "Self"
+			frozen_tomb = true,
+			focus_fire = 1, -- "Self"
+			cataclism = true,
+			molten_meteor = 1, -- "Self"
+			sweeping_breath = true,
+			trash = true,
+			mark_for_death = 0, -- "Self"
 		},
 		dbg = {
 			enable = false,
@@ -508,6 +516,7 @@ function RaidNotifier:CreateSettingsMenu()
 			breath = off_self_all,
 			focus_fire = off_self_all,
 			molten_meteor = off_self_all,
+			mark_for_death = off_self_all,
 		},
 	}
 
@@ -1437,7 +1446,7 @@ function RaidNotifier:CreateSettingsMenu()
 		choices = choices.cloudrest.crushing_darkness,
 	}, "cloudrest", "crushing_darkness")
 	subTable = nil --end submenu
-	
+
 	MakeSubmenu(L.Settings_Sunspire_Header, RaidNotifier:GetRaidDescription(RAID_SUNSPIRE))
         MakeControlEntry({
 		type = "dropdown",
@@ -1478,6 +1487,17 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_Sunspire_Sweeping_Breath,
 		tooltip = L.Settings_Sunspire_Sweeping_Breath_TT,
 	}, "sunspire", "sweeping_breath")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Sunspire_Trash,
+		tooltip = L.Settings_Sunspire_Trash_TT,
+	}, "sunspire", "trash")	
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_Sunspire_Mark_For_Death,
+		tooltip = L.Settings_Sunspire_Mark_For_Death_TT,
+		choices = choices.sunspire.mark_for_death,
+	}, "sunspire", "mark_for_death")	
 	subTable = nil
 
 	MakeControlEntry({

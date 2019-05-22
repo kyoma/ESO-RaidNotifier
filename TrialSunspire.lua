@@ -11,6 +11,9 @@ local data = {}
 function RaidNotifier.SS.Initialize()
 	p = RaidNotifier.p
 	dbg = RaidNotifier.dbg
+	
+	data.frozen_tomb = 0
+	data.last_frozen_tomb = 0
 end
 
 function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
@@ -28,38 +31,56 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 
 	if (result == ACTION_RESULT_BEGIN) then
 		if (buffsDebuffs.door_protection_ice == abilityId) then
-			data.frozen_tomb = 0
-		elseif (buffsDebuffs.frozen_tomb == abilityId) then
-			data.frozen_tomb = data.frozen_tomb or 0
-			pool:Add(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_FROZEN_TOMB), data.frozen_tomb % 3 + 1), 3000)
-			PlaySound(self.Vars.general.default_sound)
-			data.frozen_tomb = data.frozen_tomb + 1
-		elseif (buffsDebuffs.molten_meteor == abilityId) then
-			if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-				pool:Add(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_MOLTEN_METEOR), 3000)
-				PlaySound(self.Vars.general.default_sound)
-			end			
-		elseif (buffsDebuffs.sweeping_breath[abilityId]) then
-			pool:Add(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_SWEEPING_BREATH), 3000)
-			PlaySound(self.Vars.general.default_sound)
-		elseif (buffsDebuffs.focus_fire == abilityId) then
---			data.focus_fire = 5
-			if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-				pool:Add(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_FOCUS_FIRE), 3000, true)
-			elseif (tName ~= "") then
-				pool:Add(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_FOCUS_FIRE_OTHER), tName), 3000, true)
+		elseif (buffsDebuffs.trash == abilityId) then
+			if (settings.trash == true) then
+				self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_TRASH), "sunspire", "trash", false)
 			end
-			PlaySound(self.Vars.general.default_sound)
+		elseif (buffsDebuffs.mark_for_death == abilityId) then
+			if (settings.mark_for_death == true) then
+				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_MARK_FOR_DEATH), "sunspire", "mark_for_death")
+			end
+		elseif (buffsDebuffs.frozen_tomb == abilityId) then
+			local wipe_time = data.last_frozen_tomb + buffsDebuffs.frozen_tomb_wipe_time
+			data.last_frozen_tomb = GetGameTimeMilliseconds()
+			if (wipe_time < data.last_frozen_tomb) then
+				data.frozen_tomb = 0
+			end
+			if (settings.frozen_tomb == true) then
+				self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_FROZEN_TOMB), data.frozen_tomb % 3 + 1), "sunspire", "frozen_tomb")
+			end
+			data.frozen_tomb = data.frozen_tomb + 1
+			
+		elseif (buffsDebuffs.molten_meteor == abilityId) then
+			if (settings.molten_meteor > 0) then
+				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_MOLTEN_METEOR), "sunspire", "molten_meteor")
+				elseif (tName ~= "" and settings.molten_meteor > 1) then
+					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_MOLTEN_METEOR_OTHER), tName), "sunspire", "molten_meteor")
+				end
+			end
+		elseif (buffsDebuffs.sweeping_breath[abilityId]) then
+			if (settings.sweeping_breath == true) then
+				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_SWEEPING_BREATH), "sunspire", "sweeping_breath")
+			end
+		elseif (buffsDebuffs.focus_fire == abilityId) then
+			if (settings.focus_fire > 0) then
+				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+					self:StartCountdown(2200, GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_FOCUS_FIRE), "sunspire", "focus_fire", false)
+				elseif (tName ~= "" and settings.focus_fire > 1) then
+					self:StartCountdown(2200, zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_FOCUS_FIRE_OTHER), tName), "sunspire", "focus_fire", false)
+				end
+			end
 --		elseif (buffsDebuffs.atronach_zap == abilityId) then
 --			pool:Add(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_ATRONACH_ZAP), buffsDebuffs.atronach_zap + hitValue, true)
 --			PlaySound(self.Vars.general.default_sound)
 		elseif (buffsDebuffs.breath[abilityId]) then
-			if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-				pool:Add(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_BREATH), 3000)
-			elseif (tName ~= "") then
-				pool:Add(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_BREATH_OTHER), tName), 3000)
+			if (settings.breath > 0) then
+				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+					self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_BREATH), "sunspire", "breath", false)
+				elseif (tName ~= "" and settings.breath > 1) then
+					self:StartCountdown(hitValue, zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_BREATH_OTHER), tName), "sunspire", "breath", false)
+				end
 			end
-			PlaySound(self.Vars.general.default_sound)
 		end
 	elseif (result == ACTION_RESULT_EFFECT_GAINED) then
 --		if (buffsDebuffs.frost_atronach == abilityId) then
@@ -68,13 +89,17 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 --		end
 	elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
 		if (buffsDebuffs.chilling_comet == abilityId) then
-			if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-				pool:Add(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_CHILLING_COMET), 3000)
-				PlaySound(self.Vars.general.default_sound)
+			if (settings.chilling_comet > 0) then
+				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_CHILLING_COMET), "sunspire", "chilling_comet")
+				elseif (tName ~= "" and settings.chilling_comet > 1) then
+					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_CHILLING_COMET_OTHER), tName), "sunspire", "chilling_comet")
+				end
 			end
 		elseif (buffsDebuffs.cataclism == abilityId) then
-			pool:Add(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_CATACLISM), hitvalue, true)
-			PlaySound(self.Vars.general.default_sound)
+			if (settings.cataclism == true) then
+				self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_CATACLISM), "sunspire", "cataclism", false)
+			end
 		end
 	elseif (result == ACTION_RESULT_EFFECT_FADED) then
 --[[		if (buffsDebuffs.fire_breath) then
