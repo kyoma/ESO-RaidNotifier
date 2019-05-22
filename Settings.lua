@@ -503,6 +503,12 @@ function RaidNotifier:CreateSettingsMenu()
 				 L.Settings_General_Choices_Self,
 			}
 		},
+		sunspire = {
+			chilling_comet = off_self_all,
+			breath = off_self_all,
+			focus_fire = off_self_all,
+			molten_meteor = off_self_all,
+		},
 	}
 
 	-- quick get/set value functions
@@ -1433,6 +1439,45 @@ function RaidNotifier:CreateSettingsMenu()
 	subTable = nil --end submenu
 	
 	MakeSubmenu(L.Settings_Sunspire_Header, RaidNotifier:GetRaidDescription(RAID_SUNSPIRE))
+        MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_Sunspire_Chilling_Comet,
+		tooltip = L.Settings_Sunspire_Chilling_Comet_TT,
+		choices = choices.sunspire.chilling_comet,
+	}, "sunspire", "chilling_comet")
+        MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_Sunspire_Breath,
+		tooltip = L.Settings_Sunspire_Breath_TT,
+		choices = choices.sunspire.breath,
+	}, "sunspire", "breath")
+        MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Sunspire_Frozen_Tomb,
+		tooltip = L.Settings_Sunspire_Frozen_Tomb_TT,
+	}, "sunspire", "frozen_tomb")
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_Sunspire_Focus_Fire,
+		tooltip = L.Settings_Sunspire_Focus_Fire_TT,
+		choices = choices.sunspire.focus_fire,
+	}, "sunspire", "focus_fire")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Sunspire_Cataclism,
+		tooltip = L.Settings_Sunspire_Cataclism_TT,
+	}, "sunspire", "cataclism")
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_Sunspire_Molten_Meteor,
+		tooltip = L.Settings_Sunspire_Molten_Meteor_TT,
+		choices = choices.sunspire.molten_meteor,
+	}, "sunspire", "molten_meteor")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Sunspire_Sweeping_Breath,
+		tooltip = L.Settings_Sunspire_Sweeping_Breath_TT,
+	}, "sunspire", "sweeping_breath")
 	subTable = nil
 
 	MakeControlEntry({
