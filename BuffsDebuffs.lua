@@ -520,17 +520,11 @@ sunspire.focus_fire_tick = { -- remove
 	[121732] = true,
 	[121726] = true,
 }
-sunspire.atronach_zap = 23428
-sunspire.atronach_zap_countdown = 6000
-sunspire.scorched_earth = 123648 -- targeted fire aoe on the ground
-sunspire.bite = 122124 -- for tank?
-
 -- Lorkestis ice boss
 sunspire.door_protection_ice = 120417 -- 2200
 sunspire.frozen_tomb = 119632 
 sunspire.frozen_tomb_wipe_time = 60000
 
-sunspire.frost_atronach = 114085
 sunspire.fire_trail = 122727 -- lighting breath while flying mechanic
 sunspire.raid_mr3_conjuredReflection = 124051
 sunspire.frozen_prison = 124335  
@@ -566,14 +560,9 @@ sunspire.fire_storm = {
 	[119007] = true,
 	[119006] = true,
 }
-sunspire.staggerd = 118572
 
 sunspire.flame_split = 119485
 sunspire.agony_totem = 118411
-sunspire.wing_trash = {
-	[115587] = true,
-	[119738] = true,
-}
 sunspire.molten_meteor = 117249 -- 2200
 --sunspire.molten_meteor = 117250
 sunspire.meteor = 117251

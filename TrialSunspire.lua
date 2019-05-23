@@ -26,8 +26,8 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 		tName = self.UnitIdToString(tUnitId)
 	end
 	
-	local time = string.format("%s:%03d ", GetTimeString(), GetGameTimeMilliseconds() % 1000)
-	d(string.format("%s [%d] %s(%d) %s => %s", time, result, GetAbilityName(abilityId), abilityId, tostring(hitValue), tName))
+	--local time = string.format("%s:%03d ", GetTimeString(), GetGameTimeMilliseconds() % 1000)
+	--d(string.format("%s [%d] %s(%d) %s => %s", time, result, GetAbilityName(abilityId), abilityId, tostring(hitValue), tName))
 
 	if (result == ACTION_RESULT_BEGIN) then
 		if (buffsDebuffs.door_protection_ice == abilityId) then
@@ -42,7 +42,7 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 		elseif (buffsDebuffs.frozen_tomb == abilityId) then
 			local deadline_time = data.last_frozen_tomb + buffsDebuffs.frozen_tomb_wipe_time
 			local now = GetGameTimeMilliseconds()
-			if (deadline_time < now) then
+			if (deadline_time <= now) then
 				data.frozen_tomb = 0
 			end
 			if (settings.frozen_tomb == true) then
@@ -71,23 +71,17 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 					self:StartCountdown(2200, zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_FOCUS_FIRE_OTHER), tName), "sunspire", "focus_fire", false)
 				end
 			end
---		elseif (buffsDebuffs.atronach_zap == abilityId) then
---			pool:Add(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_ATRONACH_ZAP), buffsDebuffs.atronach_zap + hitValue, true)
---			PlaySound(self.Vars.general.default_sound)
 		elseif (buffsDebuffs.breath[abilityId]) then
 			if (settings.breath > 0) then
+				local abilityName = GetAbilityName(abilityId)
 				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-					self:AddAnnouncement(hitValue, GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_BREATH), "sunspire", "breath", false)
+					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_BREATH), abilityName), "sunspire", "breath")
 				elseif (tName ~= "" and settings.breath > 1) then
-					self:AddAnnouncement(hitValue, zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_BREATH_OTHER), tName), "sunspire", "breath", false)
+					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_BREATH_OTHER), abilityName, tName), "sunspire", "breath")
 				end
 			end
 		end
 	elseif (result == ACTION_RESULT_EFFECT_GAINED) then
---		if (buffsDebuffs.frost_atronach == abilityId) then
---			pool:Add(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_FROST_ATRONACH), 3000)
---			PlaySound(self.Vars.general.default_sound)
---		end
 	elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
 		if (buffsDebuffs.chilling_comet == abilityId) then
 			if (settings.chilling_comet > 0) then

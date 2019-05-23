@@ -1454,13 +1454,13 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_Sunspire_Chilling_Comet_TT,
 		choices = choices.sunspire.chilling_comet,
 	}, "sunspire", "chilling_comet")
-        MakeControlEntry({
+    MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_Sunspire_Breath,
 		tooltip = L.Settings_Sunspire_Breath_TT,
 		choices = choices.sunspire.breath,
 	}, "sunspire", "breath")
-        MakeControlEntry({
+    MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_Sunspire_Frozen_Tomb,
 		tooltip = L.Settings_Sunspire_Frozen_Tomb_TT,
