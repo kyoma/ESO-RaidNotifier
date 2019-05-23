@@ -40,15 +40,16 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_MARK_FOR_DEATH), "sunspire", "mark_for_death")
 			end
 		elseif (buffsDebuffs.frozen_tomb == abilityId) then
-			local wipe_time = data.last_frozen_tomb + buffsDebuffs.frozen_tomb_wipe_time
-			data.last_frozen_tomb = GetGameTimeMilliseconds()
-			if (wipe_time < data.last_frozen_tomb) then
+			local deadline_time = data.last_frozen_tomb + buffsDebuffs.frozen_tomb_wipe_time
+			local now = GetGameTimeMilliseconds()
+			if (deadline_time < now) then
 				data.frozen_tomb = 0
 			end
 			if (settings.frozen_tomb == true) then
 				self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_FROZEN_TOMB), data.frozen_tomb % 3 + 1), "sunspire", "frozen_tomb")
 			end
 			data.frozen_tomb = data.frozen_tomb + 1
+			data.last_frozen_tomb = now
 			
 		elseif (buffsDebuffs.molten_meteor == abilityId) then
 			if (settings.molten_meteor > 0) then
@@ -76,9 +77,9 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 		elseif (buffsDebuffs.breath[abilityId]) then
 			if (settings.breath > 0) then
 				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-					self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_BREATH), "sunspire", "breath", false)
+					self:AddAnnouncement(hitValue, GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_BREATH), "sunspire", "breath", false)
 				elseif (tName ~= "" and settings.breath > 1) then
-					self:StartCountdown(hitValue, zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_BREATH_OTHER), tName), "sunspire", "breath", false)
+					self:AddAnnouncement(hitValue, zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_BREATH_OTHER), tName), "sunspire", "breath", false)
 				end
 			end
 		end
