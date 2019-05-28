@@ -12,6 +12,7 @@ function RaidNotifier.SS.Initialize()
 	p = RaidNotifier.p
 	dbg = RaidNotifier.dbg
 	
+	data = {}
 	data.frozen_tomb = 0
 	data.last_frozen_tomb = 0
 end
@@ -31,6 +32,8 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 
 	if (result == ACTION_RESULT_BEGIN) then
 		if (buffsDebuffs.door_protection_ice == abilityId) then
+			data.frozen_tomb = 0
+			data.last_frozen_tomb = 0
 		elseif (buffsDebuffs.trash == abilityId) then
 			if (settings.trash == true) then
 				self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_TRASH), "sunspire", "trash", false)
@@ -46,22 +49,14 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 				data.frozen_tomb = 0
 			end
 			if (settings.frozen_tomb == true) then
-				self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_FROZEN_TOMB), data.frozen_tomb % 3 + 1), "sunspire", "frozen_tomb")
+				self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_FROZEN_TOMB), data.frozen_tomb % 3 + 1), "sunspire", "frozen_tomb", 5)
 			end
 			data.frozen_tomb = data.frozen_tomb + 1
 			data.last_frozen_tomb = now
 			
-		elseif (buffsDebuffs.molten_meteor == abilityId) then
-			if (settings.molten_meteor > 0) then
-				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_MOLTEN_METEOR), "sunspire", "molten_meteor")
-				elseif (tName ~= "" and settings.molten_meteor > 1) then
-					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_MOLTEN_METEOR_OTHER), tName), "sunspire", "molten_meteor")
-				end
-			end
 		elseif (buffsDebuffs.sweeping_breath[abilityId]) then
 			if (settings.sweeping_breath == true) then
-				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_SWEEPING_BREATH), "sunspire", "sweeping_breath")
+				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_SWEEPING_BREATH), "sunspire", "sweeping_breath", 5)	
 			end
 		elseif (buffsDebuffs.focus_fire == abilityId) then
 			if (settings.focus_fire > 0) then
@@ -75,9 +70,9 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 			if (settings.breath > 0) then
 				local abilityName = GetAbilityName(abilityId)
 				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_BREATH), abilityName), "sunspire", "breath")
+					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_BREATH), abilityName), "sunspire", "breath", 5)
 				elseif (tName ~= "" and settings.breath > 1) then
-					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_BREATH_OTHER), abilityName, tName), "sunspire", "breath")
+					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_BREATH_OTHER), abilityName, tName), "sunspire", "breath", 5)
 				end
 			end
 		end
@@ -91,6 +86,14 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_CHILLING_COMET_OTHER), tName), "sunspire", "chilling_comet")
 				end
 			end
+		elseif (buffsDebuffs.molten_meteor == abilityId) then
+			if (settings.molten_meteor > 0) then
+				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+					self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_MOLTEN_METEOR), "sunspire", "molten_meteor", false)
+				elseif (tName ~= "" and settings.molten_meteor > 1) then
+					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_MOLTEN_METEOR_OTHER), tName), "sunspire", "molten_meteor")
+				end
+			end			
 		elseif (buffsDebuffs.cataclism == abilityId) then
 			if (settings.cataclism == true) then
 				self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_CATACLISM), "sunspire", "cataclism", false)

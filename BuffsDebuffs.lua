@@ -520,7 +520,7 @@ sunspire.focus_fire_tick = { -- remove
 	[121732] = true,
 	[121726] = true,
 }
--- Lorkestis ice boss
+-- Lokkestiiz ice boss
 sunspire.door_protection_ice = 120417 -- 2200
 sunspire.frozen_tomb = 119632 
 sunspire.frozen_tomb_wipe_time = 60000
@@ -563,8 +563,8 @@ sunspire.fire_storm = {
 
 sunspire.flame_split = 119485
 sunspire.agony_totem = 118411
-sunspire.molten_meteor = 117249 -- 2200
---sunspire.molten_meteor = 117250
+--sunspire.molten_meteor = 117249 -- 2200
+sunspire.molten_meteor = 117251
 sunspire.meteor = 117251
 
 sunspire.negate = 121411
