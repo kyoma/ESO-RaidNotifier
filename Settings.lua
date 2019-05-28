@@ -1489,9 +1489,9 @@ function RaidNotifier:CreateSettingsMenu()
 	}, "sunspire", "sweeping_breath")
 	MakeControlEntry({
 		type = "checkbox",
-		name = L.Settings_Sunspire_Trash,
-		tooltip = L.Settings_Sunspire_Trash_TT,
-	}, "sunspire", "trash")	
+		name = L.Settings_Sunspire_Thrash,
+		tooltip = L.Settings_Sunspire_Thrash_TT,
+	}, "sunspire", "thrash")	
 	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_Sunspire_Mark_For_Death,

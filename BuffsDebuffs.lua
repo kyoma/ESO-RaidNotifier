@@ -564,7 +564,10 @@ sunspire.fire_storm = {
 sunspire.flame_split = 119485
 sunspire.agony_totem = 118411
 --sunspire.molten_meteor = 117249 -- 2200
-sunspire.molten_meteor = 117251
+sunspire.molten_meteor = {
+	[117251] = true, -- veteran
+	[123067] = true -- normal
+}
 sunspire.meteor = 117251
 
 sunspire.negate = 121411
