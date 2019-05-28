@@ -45,7 +45,7 @@ function AbstractNotification:GetEndTime()
 end
 
 function AbstractNotification:_runTimer(ms, f)
-	self.displayTime = self.endTime - GetGameTimeMilliseconds()
+	self.displayTime = math.floor((self.endTime - GetGameTimeMilliseconds())/ms + 0.5) * ms
 	if (f) then
 		f()
 	end
@@ -71,12 +71,9 @@ end
 function AbstractNotification:runTimer(ms, f)
 	local timer = self.endTime - GetGameTimeMilliseconds()
 	local mod = timer % ms
-	--EVENT_MANAGER:RegisterForUpdate("RNDelay_" .. self.id, mod, function()
 	zo_callLater(function()
 		self:_runTimer(ms, f)
 	end, mod)
-	--	EVENT_MANAGER:UnregisterForUpdate("RNDelay_" .. self.id)
-	--end)
 end
 
 function AbstractNotification:SetAnchor(width, height)
