@@ -506,7 +506,7 @@ function RaidNotifier:GetLocale()
 	return L
 end
 
-if (GetCVar('language.2') == 'de') then 
+if (GetCVar('language.2') == 'fr') then 
 	local MissingL = {}
 	for k, v in pairs(RaidNotifier:GetLocale()) do
 		if (not L[k]) then
