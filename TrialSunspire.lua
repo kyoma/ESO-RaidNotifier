@@ -67,7 +67,7 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 			end
 		elseif (buffsDebuffs.breath[abilityId]) then
 			if (settings.breath > 0) then
-				local abilityName = GetAbilityName(abilityId)
+				local abilityName = zo_strformat(SI_ABILITY_NAME, GetAbilityName(abilityId))
 				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_BREATH), abilityName), "sunspire", "breath", 5)
 				elseif (tName ~= "" and settings.breath > 1) then
