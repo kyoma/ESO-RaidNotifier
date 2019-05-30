@@ -563,7 +563,7 @@ do ----------------------
 		[RAID_ASYLUM_SANCTORIUM]     = 1000,
 		[RAID_CLOUDREST]             = 1051,
 		[RAID_BLACKROSE_PRISON]      = 1082,
-		[RAID_SUNSPIRE]		 		 = 1121,
+		[RAID_SUNSPIRE]              = 1121,
 	}
 
 	local RaidZones = {}
@@ -612,57 +612,63 @@ do ----------------------
 			dbg("Register for %s (%s)", GetRaidZoneName(self.raidId), GetString("SI_DUNGEONDIFFICULTY", self.raidDifficulty))
 			
 			local trial = self.Trial[self.raidId]
-			trial.Initialize()
-			local combatEventCallback = trial.OnCombatEvent
-			local bossesChangedCallback = trial.OnBossesChanged
-			local effectChangedCallback = trial.OnEffectChanged
-			local combatStateChangedCallback = trial.OnCombatStateChanged
+			if (trial) then
+				trial.Initialize()
+				local combatEventCallback = trial.OnCombatEvent
+				local bossesChangedCallback = trial.OnBossesChanged
+				local effectChangedCallback = trial.OnEffectChanged
+				local combatStateChangedCallback = trial.OnCombatStateChanged
 			
-			local abilityList = {}
-			local function RegisterForAbility(abId)
-				if not abilityList[abId] then
-					abilityList[abId] = true
-					self:RegisterForCombatEvent(combatEventCallback, REGISTER_FILTER_ABILITY_ID, abId)
+				local abilityList = {}
+				local function RegisterForAbility(abId)
+					if not abilityList[abId] then
+						abilityList[abId] = true
+						self:RegisterForCombatEvent(combatEventCallback, REGISTER_FILTER_ABILITY_ID, abId)
+					end
 				end
-			end
 
-			-- The main juicy events we want, registered seperately for better performance
-			-- TODO: Remove (some of) this debugging when releasing it
-			-- TODO: Also add filter for action result but will require re-organizing BuffsDebuffs.lua 
---
-			dbg("----------------------------------------------")
-			dbg(" Gathering Abilities for Raid")
-			local raidData = self.BuffsDebuffs[self.raidId]
-			for k,v in pairs(raidData) do
-				if type(v) == "number" then 
-					if v > 10000 then
-						dbg("Found ability #%d (%s)", v, k)
-						RegisterForAbility(v)
+				-- The main juicy events we want, registered seperately for better performance
+				-- TODO: Remove (some of) this debugging when releasing it
+				-- TODO: Also add filter for action result but will require re-organizing BuffsDebuffs.lua 
+				dbg("----------------------------------------------")
+				dbg(" Gathering Abilities for Raid")
+				local raidData = self.BuffsDebuffs[self.raidId]
+				for k,v in pairs(raidData) do
+					if type(v) == "number" then 
+						if v > 10000 then
+							dbg("Found ability #%d (%s)", v, k)
+							RegisterForAbility(v)
+						else
+							dbg("Ignoring %s (%s)", tostring(v), k)
+						end
+					elseif type(v) == "table" then
+						for l,w in pairs(v) do
+							if type(l) == "number" and l > 10000 then
+								dbg("Found ability #%d (%s)", l, k)
+								RegisterForAbility(l)
+							else
+								dbg("Ignoring %s (%s)", l, k)
+							end
+						end
 					else
 						dbg("Ignoring %s (%s)", tostring(v), k)
 					end
-				elseif type(v) == "table" then
-					for l,w in pairs(v) do
-						if type(l) == "number" and l > 10000 then
-							dbg("Found ability #%d (%s)", l, k)
-							RegisterForAbility(l)
-						else
-							dbg("Ignoring %s (%s)", l, k)
-						end
-					end
-				else
-					dbg("Ignoring %s (%s)", tostring(v), k)
+				end
+				dbg("----------------------------------------------")
+
+				if (effectChangedCallback) then
+					EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_EFFECT_CHANGED, effectChangedCallback)
+					EVENT_MANAGER:AddFilterForEvent(self.Name, EVENT_EFFECT_CHANGED, REGISTER_FILTER_UNIT_TAG, "player")
+				end
+				if (bossesChangedCallback) then
+					EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_BOSSES_CHANGED, bossesChangedCallback)
+				end	
+
+				-- In case of initializing while already at a boss
+				if (bossesChangedCallback) then
+					bossesChangedCallback()
 				end
 			end
-			dbg("----------------------------------------------")
-
-			if (effectChangedCallback) then
-				EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_EFFECT_CHANGED, effectChangedCallback)
-				EVENT_MANAGER:AddFilterForEvent(self.Name, EVENT_EFFECT_CHANGED, REGISTER_FILTER_UNIT_TAG, "player")
-			end
-			if (bossesChangedCallback) then
-				EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_BOSSES_CHANGED, bossesChangedCallback)
-			end	
 
 			local function OnCombatStateChanged(_, inCombat)
 				local settings = self.Vars.general
@@ -684,7 +690,8 @@ do ----------------------
 						end, 3000);
 					end
 				end
-			end		
+			end
+
 			EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_PLAYER_COMBAT_STATE, OnCombatStateChanged)
 
 			--self:AddFragment()
@@ -698,11 +705,6 @@ do ----------------------
 
 			-- Disable pets if that setting is set
 			ToggleVanityPets(true)
-
-			-- In case of initializing while already at a boss
-			if (bossesChangedCallback) then
-				bossesChangedCallback()
-			end
 		end
 	end
 
@@ -892,7 +894,7 @@ do ---------------------------
 		[RAID_HALLS_OF_FABRICATION]  = RaidNotifier.HOF,
 		[RAID_ASYLUM_SANCTORIUM]     = RaidNotifier.AS,
 		[RAID_CLOUDREST]             = RaidNotifier.CR,
-		[RAID_SUNSPIRE]				 = RaidNotifier.SS,
+		[RAID_SUNSPIRE]	             = RaidNotifier.SS,
 	}
 	
 	-------------------
