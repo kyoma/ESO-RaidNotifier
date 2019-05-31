@@ -264,7 +264,7 @@ do ------------------
 			malicious_strike = false,
 			hoarfrost = 0, -- "Off"
 			hoarfrost_shed = true,
-            hoarfrost_countdown = true,
+			hoarfrost_countdown = true,
 			heavy_attack = 0, -- "Off"			
 			chilling_comet = true,
 			baneful_barb = 0, -- "Off"
@@ -285,7 +285,7 @@ do ------------------
 			cataclism = true,
 			molten_meteor = 1, -- "Self"
 			sweeping_breath = true,
-			trash = true,
+			thrash = true,
 			mark_for_death = 0, -- "Self"
 		},
 		dbg = {

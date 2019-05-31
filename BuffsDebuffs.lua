@@ -539,7 +539,7 @@ sunspire.sweeping_breath = { -- 5 sec
 	[120188] = true, -- left -> right
 	[118743] = true, -- right -> left
 }
-sunspire.trash = 118562
+sunspire.thrash = 118562
 sunspire.mark_for_death = 117938
 sunspire.mark_for_death_defile = 120864 -- 2245
 
