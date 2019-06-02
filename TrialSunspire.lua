@@ -15,6 +15,7 @@ function RaidNotifier.SS.Initialize()
 	data = {}
 	data.frozen_tomb = 0
 	data.last_frozen_tomb = 0
+	data.time_breach_used = false
 end
 
 function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
@@ -41,6 +42,16 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 		elseif (buffsDebuffs.mark_for_death == abilityId) then
 			if (settings.mark_for_death == true) then
 				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_MARK_FOR_DEATH), "sunspire", "mark_for_death")
+			end
+		elseif (buffsDebuffs.time_shift == abilityId) then
+			if (settings.time_breach == true) then
+				self:StartCountdown(buffsDebuffs.time_breach_time, GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_TIME_BREACH_COUNTDOWN), "sunspire", "time_breach", false)
+			end
+		elseif (buffsDebuffs.negate_field == abilityId) then
+			if (settings.negate_field > 0) then
+				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_NEGATE_FIELD), "sunspire", "negate_field")
+				end
 			end
 		elseif (buffsDebuffs.frozen_tomb == abilityId) then
 			local deadline_time = data.last_frozen_tomb + buffsDebuffs.frozen_tomb_wipe_time
@@ -84,6 +95,20 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 				elseif (tName ~= "" and settings.chilling_comet > 1) then
 					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_CHILLING_COMET_OTHER), tName), "sunspire", "chilling_comet")
 				end
+			end
+		elseif (buffsDebuffs.time_breach == abilityId) then
+			if (settings.time_breach_time == true) then
+				
+			end
+		elseif (buffsDebuffs.time_breach_use == abilityId) then
+			if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+				dbg("Use Time Breach")
+				data.time_breach_used = true
+			end
+		elseif (buffsDebuffs.return_to_reality == abilityId) then
+			if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+				dbg("Return to reality")
+				data.time_breach_used = false
 			end
 		elseif (buffsDebuffs.molten_meteor[abilityId]) then
 			if (settings.molten_meteor > 0) then

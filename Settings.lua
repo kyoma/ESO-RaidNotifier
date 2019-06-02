@@ -287,6 +287,8 @@ do ------------------
 			sweeping_breath = true,
 			thrash = true,
 			mark_for_death = 0, -- "Self"
+			time_breach = false,
+			negate_field = 1, -- "Self"
 		},
 		dbg = {
 			enable = false,
@@ -517,6 +519,10 @@ function RaidNotifier:CreateSettingsMenu()
 			focus_fire = off_self_all,
 			molten_meteor = off_self_all,
 			mark_for_death = off_self_all,
+			negate = {
+				 L.Settings_General_Choices_Off,
+				 L.Settings_General_Choices_Self,
+			}			
 		},
 	}
 
@@ -1498,6 +1504,17 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_Sunspire_Mark_For_Death_TT,
 		choices = choices.sunspire.mark_for_death,
 	}, "sunspire", "mark_for_death")	
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Sunspire_Time_Breach,
+		tooltip = L.Settings_Sunspire_Time_Breach_TT,
+	}, "sunspire", "time_breach")
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_Sunspire_Negate_Field,
+		tooltip = L.Settings_Sunspire_Negate_Field_TT,
+		choices = choices.sunspire.negate_field,
+	}, "sunspire", "negate_field")
 	subTable = nil
 
 	MakeControlEntry({

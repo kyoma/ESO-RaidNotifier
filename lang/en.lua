@@ -504,6 +504,11 @@ L.Settings_Sunspire_Thrash                = "Nahviintaas: Thrash"
 L.Settings_Sunspire_Thrash_TT             = "Alerts you when boss is about swing his head through the group, knocking everyone back. This must be blocked or dodge rolled."
 L.Settings_Sunspire_Mark_For_Death        = "Nahviintaas: Mark For Death"
 L.Settings_Sunspire_Mark_For_Death_TT     = "Alerts you when you are marked for death. Dealing heavy damage over time, and completely removing all your resisstances."
+L.Settings_Sunspire_Time_Breach           = "Nahviintaas: Time Breach"
+L.Settings_Sunspire_Time_Breach_TT        = ""
+L.Settings_Sunspire_Negate_Field          = "Eternal Servant: Negate Field"
+L.Settings_Sunspire_Negate_Field_TT       = ""
+
 
 -- Alerts
 L.Alerts_Sunspire_Chilling_Comet          = "|c00ddffChilling Comet|r at you. Block!"
@@ -522,6 +527,9 @@ L.Alerts_Sunspire_Frozen_Tomb             = "|c00ddffFrozen Tomb|r (<<1>>)"
 L.Alerts_Sunspire_Thrash                  = "Incoming |cff0000Thrash|r! Block!"
 L.Alerts_Sunspire_Mark_For_Death          = "Mark for Death at you"
 L.Alerts_Sunspire_Mark_For_Death_Other    = "Mark for Death at |cff0000<<!aC:1>>|r"
+L.Alerts_Sunspire_Time_Breach_Countdown   = "|c81cc00Time Breach|r in "
+L.Alerts_Sunspire_Negate_Field            = "|c53c4c9Negate Field|r at you!"
+L.Alerts_Sunspire_Negate_Field_Others     = "|c53c4c9Negate Field|r at <<!aC:1>>!"
 
 --------------------------------
 ----       Debugging        ----

@@ -542,6 +542,27 @@ sunspire.sweeping_breath = { -- 5 sec
 sunspire.thrash = 118562
 sunspire.mark_for_death = 117938
 sunspire.mark_for_death_defile = 120864 -- 2245
+--sunspire.molten_meteor = 117249 -- 2200
+sunspire.molten_meteor = {
+	[117251] = true, -- veteran
+	[123067] = true -- normal
+}
+sunspire.time_shift = 121676 -- 2200
+sunspire.time_breach_time = 3000
+sunspire.time_breach = 121210
+sunspire.time_breach_use = 121213 -- 2240 T
+sunspire.return_to_reality = 121254 -- 2245 T
+--[[
+	2240 time shift 121500
+	2245 time breach 121210 hitvalue 15000??
+	2240 time shift 124280
+	laduje portal na prawo (od startu okolo 3 sek)
+	2245 time shift 121502
+	
+]]
+
+sunspire.negate_field = 121411 -- 2200 hitvalue
+sunspire.lightening_storm  = 121271 -- 2245
 
 sunspire.strafing_run = { 
 	[122314] = true,
@@ -563,13 +584,5 @@ sunspire.fire_storm = {
 
 sunspire.flame_split = 119485
 sunspire.agony_totem = 118411
---sunspire.molten_meteor = 117249 -- 2200
-sunspire.molten_meteor = {
-	[117251] = true, -- veteran
-	[123067] = true -- normal
-}
-sunspire.meteor = 117251
-
-sunspire.negate = 121411
 
 RaidNotifier.BuffsDebuffs[RAID_SUNSPIRE] = sunspire
