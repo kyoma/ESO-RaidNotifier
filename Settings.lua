@@ -519,7 +519,7 @@ function RaidNotifier:CreateSettingsMenu()
 			focus_fire = off_self_all,
 			molten_meteor = off_self_all,
 			mark_for_death = off_self_all,
-			negate = {
+			negate_field = {
 				 L.Settings_General_Choices_Off,
 				 L.Settings_General_Choices_Self,
 			}			
