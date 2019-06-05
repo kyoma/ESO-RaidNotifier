@@ -505,9 +505,9 @@ L.Settings_Sunspire_Thrash_TT             = "Alerts you when boss is about swing
 L.Settings_Sunspire_Mark_For_Death        = "Nahviintaas: Mark For Death"
 L.Settings_Sunspire_Mark_For_Death_TT     = "Alerts you when you are marked for death. Dealing heavy damage over time, and completely removing all your resisstances."
 L.Settings_Sunspire_Time_Breach           = "Nahviintaas: Time Breach"
-L.Settings_Sunspire_Time_Breach_TT        = ""
+L.Settings_Sunspire_Time_Breach_TT        = "Alerts you when portal for time shift is open."
 L.Settings_Sunspire_Negate_Field          = "Eternal Servant: Negate Field"
-L.Settings_Sunspire_Negate_Field_TT       = ""
+L.Settings_Sunspire_Negate_Field_TT       = "Get a warning if the Negate Field targets you in time shift."
 
 
 -- Alerts
