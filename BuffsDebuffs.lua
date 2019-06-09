@@ -505,7 +505,10 @@ sunspire.breath = {
 }
 
 -- Trash
-sunspire.chilling_comet = 116636
+sunspire.chilling_comet = {
+	[116636] = true,
+	[121075] = true,	-- in timeshift
+}
 sunspire.statue_emerge = {
 	[121930] = true,
 	[121932] = true,
@@ -552,6 +555,9 @@ sunspire.time_breach_time = 3000
 sunspire.time_breach = 121210
 sunspire.time_breach_use = 121213 -- 2240 T
 sunspire.return_to_reality = 121254 -- 2245 T
+sunspire.find_the_enemy = 121275 -- 2250 T
+sunspire.shocking_bolt = 121443 -- 2245 T
+sunspire.translation_apocalypse = 121436 -- 2200
 --[[
 	2240 time shift 121500
 	2245 time breach 121210 hitvalue 15000??
@@ -563,24 +569,6 @@ sunspire.return_to_reality = 121254 -- 2245 T
 
 sunspire.negate_field = 121411 -- 2200 hitvalue
 sunspire.lightening_storm  = 121271 -- 2245
-
-sunspire.strafing_run = { 
-	[122314] = true,
-	[122319] = true,
- }
- sunspire.fire_storm_protection = {
-	[119664] = true,
-	[118939] = true,
- 
- }
-sunspire.fire_storm = {
-	[118977] = true,
-	[118910] = true,
-	[118980] = true,
-	[118996] = true,
-	[119007] = true,
-	[119006] = true,
-}
 
 sunspire.flame_split = 119485
 sunspire.agony_totem = 118411

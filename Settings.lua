@@ -289,6 +289,7 @@ do ------------------
 			mark_for_death = 0, -- "Self"
 			time_breach = false,
 			negate_field = 1, -- "Self"
+			shock_bolt = true,
 		},
 		dbg = {
 			enable = false,
@@ -1509,6 +1510,16 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_Sunspire_Time_Breach,
 		tooltip = L.Settings_Sunspire_Time_Breach_TT,
 	}, "sunspire", "time_breach")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Sunspire_Shock_Bolt,
+		tooltip = L.Settings_Sunspire_Shock_Bolt_TT,
+	}, "sunspire", "shock_bolt")	
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Sunspire_Apocalypse,
+		tooltip = L.Settings_Sunspire_Apocalypse_TT,
+	}, "sunspire", "translation_apocalypse")
 	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_Sunspire_Negate_Field,

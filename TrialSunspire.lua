@@ -85,10 +85,14 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_BREATH_OTHER), abilityName, tName), "sunspire", "breath", 5)
 				end
 			end
+		elseif (buffsDebuffs.translation_apocalypse == abilityId) then
+			if (settings.translation_apocalypse == true) then
+				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_APOCALYPSE), "sunspire", "translation_apocalypse")
+			end
 		end
 	elseif (result == ACTION_RESULT_EFFECT_GAINED) then
 	elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
-		if (buffsDebuffs.chilling_comet == abilityId) then
+		if (buffsDebuffs.chilling_comet[abilityId]) then
 			if (settings.chilling_comet > 0) then
 				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_CHILLING_COMET), "sunspire", "chilling_comet")
@@ -124,12 +128,14 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 			end
 		end
 	elseif (result == ACTION_RESULT_EFFECT_FADED) then
---[[		if (buffsDebuffs.fire_breath) then
-			if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-				pool:Add(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_FOCUS_FIRE_TICK, data.focus_fire), 1000)
+		if (buffsDebuffs.find_the_enemy == abilityId) then
+			if (settings.shock_bolt == true and data.time_breach_used == true)
+				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_SHOCK_BOLT), "sunspire", "shock_bolt")
+				elseif (tName ~= "") then
+					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_SHOCK_BOLT_OTHER), tName), "sunspire", "shock_bolt")
+				end
 			end
-			data.focus_fire = data.focus_fire - 1
 		end
---]]
 	end
 end
