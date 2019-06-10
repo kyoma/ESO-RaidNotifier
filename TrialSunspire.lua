@@ -129,7 +129,7 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 		end
 	elseif (result == ACTION_RESULT_EFFECT_FADED) then
 		if (buffsDebuffs.find_the_enemy == abilityId) then
-			if (settings.shock_bolt == true and data.time_breach_used == true)
+			if (settings.shock_bolt == true and data.time_breach_used == true) then
 				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_SHOCK_BOLT), "sunspire", "shock_bolt")
 				elseif (tName ~= "") then
