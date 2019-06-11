@@ -109,6 +109,14 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 				dbg("Use Time Breach")
 				data.time_breach_used = true
 			end
+		elseif (buffsDebuffs.shocking_bolt == abilityId) then
+			if (settings.shock_bolt == true) then
+				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_SHOCK_BOLT), "sunspire", "shock_bolt")
+				elseif (tName ~= "") then
+					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_SHOCK_BOLT_OTHER), tName), "sunspire", "shock_bolt")
+				end
+			end			
 		elseif (buffsDebuffs.return_to_reality == abilityId) then
 			if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 				dbg("Return to reality")
@@ -129,13 +137,10 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 		end
 	elseif (result == ACTION_RESULT_EFFECT_FADED) then
 		if (buffsDebuffs.find_the_enemy == abilityId) then
-			if (settings.shock_bolt == true and data.time_breach_used == true) then
-				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_SHOCK_BOLT), "sunspire", "shock_bolt")
-				elseif (tName ~= "") then
-					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_SHOCK_BOLT_OTHER), tName), "sunspire", "shock_bolt")
-				end
-			end
+			if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+				dbg("Find The Enemy on me")
+			elseif (tName != "") then
+				dbg("Find The Enemy: %s", tName) then
 		end
 	end
 end
