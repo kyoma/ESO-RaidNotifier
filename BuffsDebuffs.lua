@@ -557,7 +557,7 @@ sunspire.time_breach_use = 121213 -- 2240 T
 sunspire.return_to_reality = 121254 -- 2245 T
 sunspire.find_the_enemy = 121275 -- 2250 T
 sunspire.shocking_bolt = 121443 -- 2245 T
-sunspire.translation_apocalypse = 121436 -- 2200
+sunspire.translation_apocalypse = 121436
 --[[
 	2240 time shift 121500
 	2245 time breach 121210 hitvalue 15000??

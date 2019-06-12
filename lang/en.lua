@@ -537,6 +537,7 @@ L.Alerts_Sunspire_Negate_Field_Others     = "|c53c4c9Negate Field|r at <<!aC:1>>
 L.Alerts_Sunspire_Shock_Bolt              = "Incoming |c00ddffShock Bolt|r at you!"
 L.Alerts_Sunspire_Shock_Bolt_Others       = "Incoming |c00ddffShock Bolt|r at <<!aC:1>>!"
 L.Alerts_Sunspire_Apocalypse              = "Incoming |cffff00Translation Apocalypse|r!"
+L.Alerts_Sunspire_Apocalypse_Ends         = "|cffff00Translation Apocalypse|r ends in"
 
 --------------------------------
 ----       Debugging        ----

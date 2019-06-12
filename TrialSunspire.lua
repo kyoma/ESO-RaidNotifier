@@ -117,6 +117,10 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_SHOCK_BOLT_OTHER), tName), "sunspire", "shock_bolt")
 				end
 			end			
+		elseif (buffsDebuffs.translation_apocalypse == abilityId) then
+			if (settings.translation_apocalypse == true) then
+				self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_APOCALYPSE_ENDS), "sunspire", "translation_apocalypse", false)
+			end			
 		elseif (buffsDebuffs.return_to_reality == abilityId) then
 			if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 				dbg("Return to reality")
