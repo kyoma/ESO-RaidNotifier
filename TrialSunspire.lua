@@ -143,8 +143,9 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 		if (buffsDebuffs.find_the_enemy == abilityId) then
 			if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 				dbg("Find The Enemy on me")
-			elseif (tName != "") then
-				dbg("Find The Enemy: %s", tName) then
+			elseif (tName ~= "") then
+				dbg("Find The Enemy: %s", tName)
+			end
 		end
 	end
 end
