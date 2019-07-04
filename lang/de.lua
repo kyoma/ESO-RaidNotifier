@@ -486,9 +486,9 @@ L.Alerts_Cloudrest_Malicious_Strike             = "|cff0000Boshafter Schlag|r au
 --------------------------------
 L.Settings_Sunspire_Header          = "Sonnspitz"
 -- Settings
-L.Settings_Sunspire_Chilling_Comet        = "General: Unterkühlender Komet"
+L.Settings_Sunspire_Chilling_Comet        = "Allgemein: Unterkühlender Komet"
 L.Settings_Sunspire_Chilling_Comet_TT     = "Warnt dich, wenn der Unterkühlende Komet auf dich zielt. Verlasse die Gruppe, block und überlappe ihn nicht mit einem anderen Spieler, der ebenfalls einen Unterkühlender Komet hat. Er zielt auf 2 Spieler gleichzeitig ab."
-L.Settings_Sunspire_Sweeping_Breath   = "Nahviintaas: Mitreißender Odem"
+L.Settings_Sunspire_Sweeping_Breath       = "Nahviintaas: Mitreißender Odem"
 L.Settings_Sunspire_Sweeping_Breath_TT    = "Warnt dich vor Nahviintass Feueratem. Der Atem geht von einer Seite der Arena aus und geht auf die andere Seite über, wobei jeder Spieler in der Arena Schaden nimmt. Jeder Spieler muss diesen Angriff blocken oder ausweichen."
 L.Settings_Sunspire_Molten_Meteor         = "Nahviintaas: Geschmolzener Meteor"
 L.Settings_Sunspire_Molten_Meteor_TT      = "Warnt dich, wenn der geschmolzene Meteor auf dich zielt. Gehe an den Rand der Arena, blocke und überlappe nicht mit einem anderen Spieler, der ebenfalls einen geschmolzenen Meteor hat. Geschmolzener Meteor Greift 3 Spieler gleichzeitig an."
