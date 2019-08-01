@@ -26,3 +26,6 @@ MY_MODULE:RegisterTitle("@getemshauna", nil, 1838, {en = "Grand Master Impaler"}
 MY_MODULE:RegisterTitle("@Razall731", nil, 92, {en = "|cff0000K|r|cff2a00r|r|cff5500e|r|cff7f00m|r|cffbf00ó|r |cffff00w|r|caaff00k|r|c55ff00o|r|c00ff00w|r|c00ff80y|r|c00ffff|r |c00aaffB|r|c0055ffa|r|c0000ffr|r|c4600ffo|r|c8b00ffn|r"})
 MY_MODULE:RegisterTitle("@Pandross", nil, 92, {en = "Gryphon Fart"}, {color={"#33CCFF", "#66FF33"}})
 MY_MODULE:RegisterTitle("@Targets", nil, true, {en = "|cff0000N|r|cff2a00on|r|cff5500-|r|cff7f00E|r|cffbf00xi|r|cffff00s|r|caaff00t|r|c55ff00i|r|c00ff00n|r|c00ff80g|r |c00ffffP|r|c00aaffa|r|c0055ffr|r|c0000ffs|r|c4600ffe|r|c8b00ffs|r"})
+MY_MODULE:RegisterTitle("@qwertzuiop0815", nil, 92, {en = "savage"}, {color={"#791B49", "#355549"}})
+
+

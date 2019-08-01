@@ -44,6 +44,13 @@ function AbstractNotification:GetEndTime()
 	return self.endTime
 end
 
+function AbstractNotification:Stop()
+	EVENT_MANAGER:UnregisterForUpdate("RNNotification_" .. self.id)
+--	dbg("Stopped: %d %s", self.id, self.text)
+	self:SetHidden(true)
+	self.freeToUse = true
+end
+
 function AbstractNotification:_runTimer(ms, f)
 	self.displayTime = math.floor((self.endTime - GetGameTimeMilliseconds())/ms + 0.5) * ms
 	if (f) then
@@ -181,19 +188,19 @@ function CountdownNotification:GetScale()
 end
 
 local function OnCountdown(self, precise)
-		if (self.scale) then
-			self.ctrl.counter:SetScale(self.scale)
-		end
-		if (precise < 1000) then
-			txt = string.format("%0.1f", self.displayTime/1000)
-		else
-			self.countdownAnimation:PlayFromStart()
-			txt = self.displayTime/1000
-		end
-		if (self.displayTime <= 3000) then
-			txt = "|cff0000" .. txt .."|r"
-		end
-		self.ctrl.counter:SetText(txt)
+	if (self.scale) then
+		self.ctrl.counter:SetScale(self.scale)
+	end
+	if (precise < 1000) then
+		txt = string.format("%0.1f", self.displayTime/1000)
+	else
+		self.countdownAnimation:PlayFromStart()
+		txt = self.displayTime/1000
+	end
+	if (self.displayTime <= 3000) then
+		txt = "|cff0000" .. txt .."|r"
+	end
+	self.ctrl.counter:SetText(txt)
 end
 
 function CountdownNotification:Show(text, precise)
@@ -306,6 +313,16 @@ function NotificationsPool:Add(text, displayTime, isCountdown)
 		end
 	end
 	return notify:Show(text, self.precise)
+end
+
+function NotificationsPool:Stop(id) 
+	if (id <= #self.pool and id > 0) then
+		for i = 1, #self.pool, 1 do
+			if (self.pool[i]:GetId() == id) then
+				self.pool[i]:Stop()
+			end
+		end
+	end
 end
 
 RaidNotifier = RaidNotifier or {}

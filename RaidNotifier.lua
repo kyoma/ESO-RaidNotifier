@@ -246,6 +246,10 @@ do ---------------------------------
 	
 	function RaidNotifier:StopCountdown(countdownIndex)
 		LCSA:EndCountdown(countdownIndex)
+--		if self.Vars.general.use_center_screen_announce == 0 and not important then
+			local pool = RaidNotifier.NotificationsPool.GetInstance()
+			pool:Stop(countdownIndex)
+--		end
 		countdownInProgress = false
 	end
 	

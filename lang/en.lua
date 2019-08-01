@@ -508,10 +508,10 @@ L.Settings_Sunspire_Time_Breach           = "Nahviintaas: Time Breach"
 L.Settings_Sunspire_Time_Breach_TT        = "Alerts you when portal for time shift is open."
 L.Settings_Sunspire_Negate_Field          = "Eternal Servant: Negate Field"
 L.Settings_Sunspire_Negate_Field_TT       = "Get a warning if the Negate Field targets you in time shift."
-L.Settings_Sunspire_Shock_Bolt            = "Nahviintaas: Shock Bolt"
-L.Settings_Sunspire_Shock_Bolt_TT         = ""
-L.Settings_Sunspire_Apocalypse            = "Nahviintaas: Translation Apocalypse"
-L.Settings_Sunspire_Apocalypse_TT         = ""
+L.Settings_Sunspire_Shock_Bolt            = "Eternal Servant: Shock Bolt"
+L.Settings_Sunspire_Shock_Bolt_TT         = "Shock Bolt countdown that inform the group when to stack to unpin another player."
+L.Settings_Sunspire_Apocalypse            = "Eternal Servant: Translation Apocalypse"
+L.Settings_Sunspire_Apocalypse_TT         = "Alerts you when the eternal servant is channeling his attack to the upstairs group. It gives you a countdown until you can bash the channeling and it shows you a countdown until he completes the channeling attack"
 
 
 -- Alerts
@@ -534,9 +534,8 @@ L.Alerts_Sunspire_Mark_For_Death_Other    = "Mark for Death at |cff0000<<!aC:1>>
 L.Alerts_Sunspire_Time_Breach_Countdown   = "|c81cc00Time Breach|r in "
 L.Alerts_Sunspire_Negate_Field            = "|c53c4c9Negate Field|r at you!"
 L.Alerts_Sunspire_Negate_Field_Others     = "|c53c4c9Negate Field|r at <<!aC:1>>!"
-L.Alerts_Sunspire_Shock_Bolt              = "Incoming |c00ddffShock Bolt|r at you!"
-L.Alerts_Sunspire_Shock_Bolt_Others       = "Incoming |c00ddffShock Bolt|r at <<!aC:1>>!"
-L.Alerts_Sunspire_Apocalypse              = "Incoming |cffff00Translation Apocalypse|r!"
+L.Alerts_Sunspire_Shock_Bolt              = "Incoming |c00ddffShock Bolt|r! Stack to unpin in"
+L.Alerts_Sunspire_Apocalypse              = "Incoming |cffff00Translation Apocalypse|r! Bash in"
 L.Alerts_Sunspire_Apocalypse_Ends         = "|cffff00Translation Apocalypse|r ends in"
 
 --------------------------------

@@ -13,6 +13,7 @@ function RaidNotifier.SS.Initialize()
 	dbg = RaidNotifier.dbg
 	
 	data = {}
+	data.translation_apocalypse_id = 0
 	data.frozen_tomb = 0
 	data.last_frozen_tomb = 0
 	data.time_breach_used = false
@@ -86,8 +87,9 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 				end
 			end
 		elseif (buffsDebuffs.translation_apocalypse == abilityId) then
-			if (settings.translation_apocalypse == true) then
-				self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_APOCALYPSE), "sunspire", "translation_apocalypse")
+			dbg("Translation apocalypse %d", hitValue)
+			if (settings.translation_apocalypse == true and hitValue < 3000) then
+				self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_APOCALYPSE), "sunspire", "translation_apocalypse", false)
 			end
 		end
 	elseif (result == ACTION_RESULT_EFFECT_GAINED) then
@@ -110,17 +112,26 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 				data.time_breach_used = true
 			end
 		elseif (buffsDebuffs.shocking_bolt == abilityId) then
-			if (settings.shock_bolt == true) then
-				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_SHOCK_BOLT), "sunspire", "shock_bolt")
-				elseif (tName ~= "") then
-					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_SHOCK_BOLT_OTHER), tName), "sunspire", "shock_bolt")
-				end
-			end			
+			dbg("Shocking bolt: %s %d", tName, hitValue)
+--			if (settings.shock_bolt == true) then
+--				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+--					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_SHOCK_BOLT), "sunspire", "shock_bolt")
+--				elseif (tName ~= "") then
+--					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_SHOCK_BOLT_OTHER), tName), "sunspire", "shock_bolt")
+--				end
+--			end			
 		elseif (buffsDebuffs.translation_apocalypse == abilityId) then
 			if (settings.translation_apocalypse == true) then
-				self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_APOCALYPSE_ENDS), "sunspire", "translation_apocalypse", false)
-			end			
+				data.translation_apocalypse_id = self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_APOCALYPSE_ENDS), "sunspire", "translation_apocalypse", false)
+			end	
+			dbg("Translation apocalypse ends in %d id: %d", hitValue, data.translation_apocalypse_id)
+		elseif (buffsDebuffs.find_the_enemy == abilityId) then
+			dbg("Find the enemy %d", hitValue)
+			if (settings.shock_bolt == true) then
+				if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+					self:StartCountdown(hitValue + buffsDebuffs.shocking_bolt_delay, GetString(RAIDNOTIFIER_ALERTS_SUNSPIRE_SHOCK_BOLT), "sunspire", "shock_bolt", false)
+				end
+			end	
 		elseif (buffsDebuffs.return_to_reality == abilityId) then
 			if (tType == COMBAT_UNIT_TYPE_PLAYER) then
 				dbg("Return to reality")
@@ -140,12 +151,10 @@ function RaidNotifier.SS.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
 			end
 		end
 	elseif (result == ACTION_RESULT_EFFECT_FADED) then
-		if (buffsDebuffs.find_the_enemy == abilityId) then
-			if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-				dbg("Find The Enemy on me")
-			elseif (tName ~= "") then
-				dbg("Find The Enemy: %s", tName)
-			end
+		if (buffsDebuffs.translation_apocalypse == abilityId) then
+			dbg("Translation apocalypse ends %d", data.translation_apocalypse_id)
+			self:StopCountdown(data.translation_apocalypse_id)
+			data.translation_apocalypse_id = 0
 		end
 	end
 end
