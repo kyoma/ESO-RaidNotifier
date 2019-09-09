@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name           = "RaidNotifier"
 RaidNotifier.DisplayName    = "Raid Notifier"
-RaidNotifier.Version        = "2.11.6"
+RaidNotifier.Version        = "2.11.7"
 RaidNotifier.Author         = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name        = "RNVars"
 RaidNotifier.SV_Version     = 4
@@ -21,7 +21,7 @@ RAID_HALLS_OF_FABRICATION   = 7
 RAID_ASYLUM_SANCTORIUM      = 8
 RAID_CLOUDREST              = 9
 RAID_BLACKROSE_PRISON       = 10
-RAID_SUNSPIRE				= 11
+RAID_SUNSPIRE               = 11
 
 -- Debugging
 local function p() end
