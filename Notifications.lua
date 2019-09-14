@@ -316,9 +316,9 @@ function NotificationsPool:Add(text, displayTime, isCountdown)
 end
 
 function NotificationsPool:Stop(id) 
-	if (id <= #self.pool and id > 0) then
+	if (id == nil or (id <= #self.pool and id > 0)) then
 		for i = 1, #self.pool, 1 do
-			if (self.pool[i]:GetId() == id) then
+			if (self.pool[i]:GetId() == id or id == nil) then
 				self.pool[i]:Stop()
 			end
 		end
