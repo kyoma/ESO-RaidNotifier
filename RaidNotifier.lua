@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name           = "RaidNotifier"
 RaidNotifier.DisplayName    = "Raid Notifier"
-RaidNotifier.Version        = "2.14"
+RaidNotifier.Version        = "2.15"
 RaidNotifier.Author         = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name        = "RNVars"
 RaidNotifier.SV_Version     = 4
@@ -875,7 +875,7 @@ do ---------------------------
 	local Util  = RaidNotifier.Util
 	
 	function RaidNotifier.UnitIdToString(id)
-		local name = RaidNotifier.Vars.general.useDisplayName and LUNIT:GetDisplayNameForUnitId(id) or LUNIT:GetNameForUnitId(id)
+		local name = RaidNotifier.Vars.general.useDisplayName and LUNIT.GetDisplayNameForUnitId(id) or LUNIT.GetNameForUnitId(id)
 		if name == "" then
 			name = "#"..id
 		end
@@ -883,7 +883,7 @@ do ---------------------------
 	end
 	
 	function RaidNotifier.UnitToTag(id)
-		return LUNIT:GetUnitTagForUnitId(id)
+		return LUNIT.GetUnitTagForUnitId(id)
 	end
 
 	RaidNotifier.AA = RaidNotifier.AA or {}
@@ -941,7 +941,7 @@ do ---------------------------
 					trackedUnits[id] = true
 					local count = trackedAbilities[abilityId] or 0
 					if count < 10 then -- only report first few units from the same ability
-						if LUNIT:GetNameForUnitId(id) == "" then -- not a known unit like group members or bosses
+						if LUNIT.GetNameForUnitId(id) == "" then -- not a known unit like group members or bosses
 							trackedAbilities[abilityId] = (trackedAbilities[abilityId] or 0) + 1
 							df("Found new unit #%d, %s (%d, %s)", id, tName, abilityId, GetAbilityName(abilityId))
 						end
@@ -961,7 +961,7 @@ do ---------------------------
 				if uId == 0 then
 					return ""
 				else
-					uName = uName ~= "" and uName or LUNIT:GetNameForUnitId(uId)
+					uName = uName ~= "" and uName or LUNIT.GetNameForUnitId(uId)
 					if uName ~= "" then
 						return zo_strformat("<<1>><<t:2>>", prefix, uName)
 					else
