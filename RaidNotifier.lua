@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name           = "RaidNotifier"
 RaidNotifier.DisplayName    = "Raid Notifier"
-RaidNotifier.Version        = "2.11.11"
+RaidNotifier.Version        = "2.12"
 RaidNotifier.Author         = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name        = "RNVars"
 RaidNotifier.SV_Version     = 4
@@ -262,8 +262,8 @@ do ----------------------
 
 	local window = nil
 
-	local LGS = LibStub:GetLibrary("LibGroupSocket")
-	local ultimateHandler = LGS:GetHandler(LGS.MESSAGE_TYPE_ULTIMATE)
+	local LGS = LibStub("LibGroupSocket", true)
+	local ultimateHandler = LGS and LGS:GetHandler(LGS.MESSAGE_TYPE_ULTIMATE)
 	RNUltimateHandler = ultimateHandler -- debug
 	local ultimateAbilityId = 40223  -- Aggressive Warhorn Rank IV
 	local ultimateGroupId   = 29     -- hardcoded for now
@@ -315,6 +315,8 @@ do ----------------------
 	function RaidNotifier:RegisterForUltimateChanges()
 		local settings = self.Vars.ultimate
 		if not settings.enabled then return end
+		
+		if not ultimateHandler then return end
 		
 		if listening then return end
 		listening = true
@@ -381,6 +383,8 @@ do ----------------------
 	end
 
 	function RaidNotifier:UnregisterForUltimateChanges()
+		if not ultimateHandler then return end
+	
 		if not listening then return end
 		listening = false
 		dbg("UnregisterForUltimateChanges")
@@ -437,11 +441,17 @@ do ----------------------
 			self:UnregisterForUltimateChanges()
 		elseif (args[1] == "refresh") then
 			ultimates = {}
-			ultimateHandler:Refresh()
+			if ultimateHandler then
+				ultimateHandler:Refresh()
+			end
 		elseif (args[1] == "debug") then
-			ultimateHandler:SetDebug(tonumber(args[2]))
+			if ultimateHandler then 
+				ultimateHandler:SetDebug(tonumber(args[2]))
+			end
 		elseif (args[1] == "clear") then
-			ultimateHandler:ResetResources()
+			if ultimateHandler then
+				ultimateHandler:ResetResources()
+			end
 		elseif (args[1] == "cost") then
 			if (#args == 2) then
 				if (tonumber(args[2]) ~= nil) then
@@ -861,7 +871,7 @@ end
 
 do ---------------------------
 
-	local LUNIT = LibStub:GetLibrary("LibUnits")
+	local LUNIT = LibUnits2
 	local Util  = RaidNotifier.Util
 	
 	function RaidNotifier.UnitIdToString(id)
@@ -877,9 +887,9 @@ do ---------------------------
 	end
 
 	RaidNotifier.AA = RaidNotifier.AA or {}
-	RaidNotifier.HRC = RaidNotifier.HRC or {}		
+	RaidNotifier.HRC = RaidNotifier.HRC or {}
 	RaidNotifier.SO = RaidNotifier.SO or {}
-	RaidNotifier.DSA = RaidNotifier.DSA or {}		
+	RaidNotifier.DSA = RaidNotifier.DSA or {}
 	RaidNotifier.MOL = RaidNotifier.MOL or {}
 	RaidNotifier.MA = RaidNotifier.MA or {}
 	RaidNotifier.HOF = RaidNotifier.HOF or {}
