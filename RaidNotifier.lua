@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name           = "RaidNotifier"
 RaidNotifier.DisplayName    = "Raid Notifier"
-RaidNotifier.Version        = "2.11.10"
+RaidNotifier.Version        = "2.15"
 RaidNotifier.Author         = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name        = "RNVars"
 RaidNotifier.SV_Version     = 4
@@ -262,8 +262,8 @@ do ----------------------
 
 	local window = nil
 
-	local LGS = LibStub:GetLibrary("LibGroupSocket")
-	local ultimateHandler = LGS:GetHandler(LGS.MESSAGE_TYPE_ULTIMATE)
+	local LGS = LibStub("LibGroupSocket", true)
+	local ultimateHandler = LGS and LGS:GetHandler(LGS.MESSAGE_TYPE_ULTIMATE)
 	RNUltimateHandler = ultimateHandler -- debug
 	local ultimateAbilityId = 40223  -- Aggressive Warhorn Rank IV
 	local ultimateGroupId   = 29     -- hardcoded for now
@@ -315,6 +315,8 @@ do ----------------------
 	function RaidNotifier:RegisterForUltimateChanges()
 		local settings = self.Vars.ultimate
 		if not settings.enabled then return end
+		
+		if not ultimateHandler then return end
 		
 		if listening then return end
 		listening = true
@@ -381,6 +383,8 @@ do ----------------------
 	end
 
 	function RaidNotifier:UnregisterForUltimateChanges()
+		if not ultimateHandler then return end
+	
 		if not listening then return end
 		listening = false
 		dbg("UnregisterForUltimateChanges")
@@ -437,11 +441,17 @@ do ----------------------
 			self:UnregisterForUltimateChanges()
 		elseif (args[1] == "refresh") then
 			ultimates = {}
-			ultimateHandler:Refresh()
+			if ultimateHandler then
+				ultimateHandler:Refresh()
+			end
 		elseif (args[1] == "debug") then
-			ultimateHandler:SetDebug(tonumber(args[2]))
+			if ultimateHandler then 
+				ultimateHandler:SetDebug(tonumber(args[2]))
+			end
 		elseif (args[1] == "clear") then
-			ultimateHandler:ResetResources()
+			if ultimateHandler then
+				ultimateHandler:ResetResources()
+			end
 		elseif (args[1] == "cost") then
 			if (#args == 2) then
 				if (tonumber(args[2]) ~= nil) then
@@ -861,11 +871,11 @@ end
 
 do ---------------------------
 
-	local LUNIT = LibStub:GetLibrary("LibUnits")
+	local LUNIT = LibUnits2
 	local Util  = RaidNotifier.Util
 	
 	function RaidNotifier.UnitIdToString(id)
-		local name = RaidNotifier.Vars.general.useDisplayName and LUNIT:GetDisplayNameForUnitId(id) or LUNIT:GetNameForUnitId(id)
+		local name = RaidNotifier.Vars.general.useDisplayName and LUNIT.GetDisplayNameForUnitId(id) or LUNIT.GetNameForUnitId(id)
 		if name == "" then
 			name = "#"..id
 		end
@@ -873,13 +883,13 @@ do ---------------------------
 	end
 	
 	function RaidNotifier.UnitToTag(id)
-		return LUNIT:GetUnitTagForUnitId(tUnitId)
+		return LUNIT.GetUnitTagForUnitId(id)
 	end
 
 	RaidNotifier.AA = RaidNotifier.AA or {}
-	RaidNotifier.HRC = RaidNotifier.HRC or {}		
+	RaidNotifier.HRC = RaidNotifier.HRC or {}
 	RaidNotifier.SO = RaidNotifier.SO or {}
-	RaidNotifier.DSA = RaidNotifier.DSA or {}		
+	RaidNotifier.DSA = RaidNotifier.DSA or {}
 	RaidNotifier.MOL = RaidNotifier.MOL or {}
 	RaidNotifier.MA = RaidNotifier.MA or {}
 	RaidNotifier.HOF = RaidNotifier.HOF or {}
@@ -889,7 +899,7 @@ do ---------------------------
 	
 	RaidNotifier.Trial = 
 	{
-		[RAID_AETHERIAN_ARCHIVE]     = RaidNotifier.AA,	
+		[RAID_AETHERIAN_ARCHIVE]     = RaidNotifier.AA,
 		[RAID_HEL_RA_CITADEL]        = RaidNotifier.HRC,
 		[RAID_SANCTUM_OPHIDIA]       = RaidNotifier.SO,
 		[RAID_DRAGONSTAR_ARENA]      = RaidNotifier.DSA,
@@ -931,7 +941,7 @@ do ---------------------------
 					trackedUnits[id] = true
 					local count = trackedAbilities[abilityId] or 0
 					if count < 10 then -- only report first few units from the same ability
-						if LUNIT:GetNameForUnitId(id) == "" then -- not a known unit like group members or bosses
+						if LUNIT.GetNameForUnitId(id) == "" then -- not a known unit like group members or bosses
 							trackedAbilities[abilityId] = (trackedAbilities[abilityId] or 0) + 1
 							df("Found new unit #%d, %s (%d, %s)", id, tName, abilityId, GetAbilityName(abilityId))
 						end
@@ -951,7 +961,7 @@ do ---------------------------
 				if uId == 0 then
 					return ""
 				else
-					uName = uName ~= "" and uName or LUNIT:GetNameForUnitId(uId)
+					uName = uName ~= "" and uName or LUNIT.GetNameForUnitId(uId)
 					if uName ~= "" then
 						return zo_strformat("<<1>><<t:2>>", prefix, uName)
 					else
