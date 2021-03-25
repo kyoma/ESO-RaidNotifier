@@ -1004,7 +1004,7 @@ do ---------------------------
 				if (addMoreCountdowns) then
 					self:StartCountdown(6000, "Test countdown", "hallsFab", "test", false)
 				else
-					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_OLORIME_SPEARS), "cloudrest", "olorime_spears")
+					self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_OLORIME_SPEARS), 1), "cloudrest", "olorime_spears")
 				end
 				zo_callLater(function()
 					self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_CLOUDREST_TENTACLE_SPAWN), "cloudrest", "tentacle_spawn")
