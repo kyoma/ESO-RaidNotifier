@@ -1060,9 +1060,13 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_MawLorkhaj_Zhaj_Glyphs,
 		tooltip = L.Settings_MawLorkhaj_Zhaj_Glyphs_TT,
 		getFunc = function() return savedVars.mawLorkhaj.zhaj_glyphs end,
-		setFunc = function(value)   
-					savedVars.mawLorkhaj.zhaj_glyphs = value 
-					RaidNotifier.OnBossesChanged()
+		setFunc = function(value)
+					savedVars.mawLorkhaj.zhaj_glyphs = value
+
+					if self.raidId == RAID_MAW_OF_LORKHAJ then
+					    -- Updating glyph window visibility state
+					    self.MOL.OnBossesChanged()
+					end
 				end,
 		noAlert = true,
 	}, "mawLorkhaj", "zhaj_glyphs")
