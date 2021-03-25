@@ -589,5 +589,7 @@ kynes_aegis.tidebreaker_crashing_wall = 134196
 kynes_aegis.bitter_knight_sanguine_prison = 132473
 -- Bloodknight's Blood Fountain
 kynes_aegis.bloodknight_blood_fountain = 140294
+-- Chaurus Totem spawn at Yandir the Butcher boss
+kynes_aegis.yandir_chaurus_totem_spawn = 133516
 
 RaidNotifier.BuffsDebuffs[RAID_KYNES_AEGIS] = kynes_aegis

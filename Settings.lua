@@ -298,6 +298,7 @@ do ------------------
 			tidebreaker_crashing_wall = false,
 			bitter_knight_sanguine_prison = false,
 			bloodknight_blood_fountain = false,
+			yandir_chaurus_totem_spawn = false,
 		},
 		dbg = {
 			enable = false,
@@ -1587,6 +1588,11 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_KynesAegis_Blood_Fountain,
 		tooltip = L.Settings_KynesAegis_Blood_Fountain_TT,
 	}, "kynesAegis", "bloodknight_blood_fountain")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_KynesAegis_Chaurus_Totem,
+		tooltip = L.Settings_KynesAegis_Chaurus_Totem_TT,
+	}, "kynesAegis", "yandir_chaurus_totem_spawn")
 	subTable = nil --end submenu
 
 	MakeControlEntry({

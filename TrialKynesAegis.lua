@@ -46,5 +46,11 @@ function RaidNotifier.KA.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
                 end
             end
         end
+        -- Chaurus Totem spawn at Yandir the Butcher boss
+        if (abilityId == buffsDebuffs.yandir_chaurus_totem_spawn) then
+            if (settings.yandir_chaurus_totem_spawn == true) then
+                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_CHAURUS_TOTEM), "kynesAegis", "yandir_chaurus_totem_spawn")
+            end
+        end
     end
 end
