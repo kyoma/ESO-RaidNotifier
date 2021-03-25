@@ -582,4 +582,8 @@ RaidNotifier.BuffsDebuffs[RAID_SUNSPIRE] = sunspire
 -- -- Kyne's Aegis---------------------------------------
 -- -- ---------------------------------------------------
 local kynes_aegis = {}
+
+-- Half-Giant Tidebreaker's Crashing Wall
+kynes_aegis.tidebreaker_crashing_wall = 134196
+
 RaidNotifier.BuffsDebuffs[RAID_KYNES_AEGIS] = kynes_aegis

@@ -295,6 +295,7 @@ do ------------------
 			shock_bolt = true,
 		},
 		kynesAegis = {
+			tidebreaker_crashing_wall = false,
 		},
 		dbg = {
 			enable = false,
@@ -1569,6 +1570,11 @@ function RaidNotifier:CreateSettingsMenu()
 
 	-- Kyne's Aegis
 	MakeSubmenu(L.Settings_KynesAegis_Header, RaidNotifier:GetRaidDescription(RAID_KYNES_AEGIS))
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_KynesAegis_Crashing_Wall,
+		tooltip = L.Settings_KynesAegis_Crashing_Wall_TT,
+	}, "kynesAegis", "tidebreaker_crashing_wall")
 	subTable = nil --end submenu
 
 	MakeControlEntry({

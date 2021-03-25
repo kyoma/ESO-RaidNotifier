@@ -552,8 +552,11 @@ L.Alerts_Sunspire_Apocalypse_Ends         = "|cffff00Translation Apocalypse|r en
 --------------------------------
 L.Settings_KynesAegis_Header                        = "Kyne's Aegis"
 -- Settings
+L.Settings_KynesAegis_Crashing_Wall                 = "General: Crashing Wall"
+L.Settings_KynesAegis_Crashing_Wall_TT              = "Alerts you when the Half-Giant Tidebreaker starts his Crashing Wall attack, counting down until it is unleashed. Block or roll dodge it."
 
 -- Alerts
+L.Alerts_KynesAegis_Crashing_Wall                   = "|cd2a100Crashing Wall|r in"
 
 
 --------------------------------
