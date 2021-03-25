@@ -251,6 +251,8 @@ maw_lorkhaj.rakkhat_lunarbastion[74352] = true
 maw_lorkhaj.rakkhat_lunarbastion[74357] = true
 maw_lorkhaj.rakkhat_lunarbastion[74362] = true
 maw_lorkhaj.rakkhat_lunarbastion[74367] = true
+-- Armor Weakening provided by Hulk's Thunderous Smash
+maw_lorkhaj.rakkhat_hulk_armorweakening = 74672
 
 --Mobs
 -- Eclipse Field (Sun-Eater)

@@ -672,7 +672,11 @@ do ----------------------
 
 				if (effectChangedCallback) then
 					EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_EFFECT_CHANGED, effectChangedCallback)
-					EVENT_MANAGER:AddFilterForEvent(self.Name, EVENT_EFFECT_CHANGED, REGISTER_FILTER_UNIT_TAG, "player")
+
+					-- Better to introduce more flexible way of filtering EVENT_EFFECT_CHANGED, but let's start with this
+					if (self.raidId == RAID_HALLS_OF_FABRICATION) then
+						EVENT_MANAGER:AddFilterForEvent(self.Name, EVENT_EFFECT_CHANGED, REGISTER_FILTER_UNIT_TAG, "player")
+					end
 				end
 				if (bossesChangedCallback) then
 					EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_BOSSES_CHANGED, bossesChangedCallback)

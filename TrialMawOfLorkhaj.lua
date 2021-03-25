@@ -67,6 +67,34 @@ function RaidNotifier.MOL.OnBossesChanged()
 	end
 end
 
+function RaidNotifier.MOL.OnEffectChanged(eventCode, changeType, eSlot, eName, uTag, beginTime, endTime, stackCount, iconName, buffType, eType, aType, statusEffectType, uName, uId, abilityId, uType)
+    local raidId = RaidNotifier.raidId
+    local self   = RaidNotifier
+
+    local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.mawLorkhaj
+    if (abilityId == buffsDebuffs.rakkhat_hulk_armorweakening and string.sub(uTag, 1, 5) == "group") then
+        if (settings.hulk_thunderoussmash) then
+            if (changeType ~= EFFECT_RESULT_FADED) then
+                if (AreUnitsEqual(uTag, "player")) then
+                    if (stackCount == 1) then
+                        self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_HULK_THUNDEROUSSMASH1), "mawLorkhaj", "hulk_thunderoussmash")
+                    elseif (stackCount == 2) then
+                        self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_HULK_THUNDEROUSSMASH2), "mawLorkhaj", "hulk_thunderoussmash")
+                    end
+                else
+                    local targetPlayerName = self.UnitIdToString(uId)
+
+                    if (stackCount == 1) then
+                        self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_HULK_THUNDEROUSSMASH1_OTHER), targetPlayerName), "mawLorkhaj", "hulk_thunderoussmash")
+                    elseif (stackCount == 2) then
+                        self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_MAWLORKHAJ_HULK_THUNDEROUSSMASH2_OTHER), targetPlayerName), "mawLorkhaj", "hulk_thunderoussmash")
+                    end
+                end
+            end
+        end
+    end
+end
+
 function RaidNotifier.MOL.OnCombatEvent(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
 
 	local raidId = RaidNotifier.raidId
