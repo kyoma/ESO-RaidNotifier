@@ -18,6 +18,7 @@ RAID_ASYLUM_SANCTORIUM      = 8
 RAID_CLOUDREST              = 9
 RAID_BLACKROSE_PRISON       = 10
 RAID_SUNSPIRE				= 11
+RAID_KYNES_AEGIS			= 12
 
 -- ------------------
 -- DEFAULT SETTINGS
@@ -293,6 +294,8 @@ do ------------------
 			negate_field = 1, -- "Self"
 			shock_bolt = true,
 		},
+		kynesAegis = {
+		},
 		dbg = {
 			enable = false,
 			notify = false,
@@ -525,7 +528,9 @@ function RaidNotifier:CreateSettingsMenu()
 			negate_field = {
 				 L.Settings_General_Choices_Off,
 				 L.Settings_General_Choices_Self,
-			}			
+			}
+		},
+		kynesAegis = {
 		},
 	}
 
@@ -1561,6 +1566,10 @@ function RaidNotifier:CreateSettingsMenu()
 		choices = choices.sunspire.negate_field,
 	}, "sunspire", "negate_field")
 	subTable = nil
+
+	-- Kyne's Aegis
+	MakeSubmenu(L.Settings_KynesAegis_Header, RaidNotifier:GetRaidDescription(RAID_KYNES_AEGIS))
+	subTable = nil --end submenu
 
 	MakeControlEntry({
 		type = "header",

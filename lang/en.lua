@@ -546,6 +546,16 @@ L.Alerts_Sunspire_Shock_Bolt              = "Incoming |c00ddffShock Bolt|r! Stac
 L.Alerts_Sunspire_Apocalypse              = "Incoming |cffff00Translation Apocalypse|r! Bash in"
 L.Alerts_Sunspire_Apocalypse_Ends         = "|cffff00Translation Apocalypse|r ends in"
 
+
+--------------------------------
+------   KYNE'S AEGIS      -----
+--------------------------------
+L.Settings_KynesAegis_Header                        = "Kyne's Aegis"
+-- Settings
+
+-- Alerts
+
+
 --------------------------------
 ----       Debugging        ----
 --------------------------------

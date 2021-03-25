@@ -577,3 +577,9 @@ sunspire.flame_split = 119485
 sunspire.agony_totem = 118411
 
 RaidNotifier.BuffsDebuffs[RAID_SUNSPIRE] = sunspire
+
+-- ------------------------------------------------------
+-- -- Kyne's Aegis---------------------------------------
+-- -- ---------------------------------------------------
+local kynes_aegis = {}
+RaidNotifier.BuffsDebuffs[RAID_KYNES_AEGIS] = kynes_aegis

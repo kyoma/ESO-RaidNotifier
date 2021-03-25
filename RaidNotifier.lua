@@ -22,6 +22,7 @@ RAID_ASYLUM_SANCTORIUM      = 8
 RAID_CLOUDREST              = 9
 RAID_BLACKROSE_PRISON       = 10
 RAID_SUNSPIRE               = 11
+RAID_KYNES_AEGIS            = 12
 
 -- Debugging
 local function p() end
@@ -578,6 +579,7 @@ do ----------------------
 		[RAID_CLOUDREST]             = 1051,
 		[RAID_BLACKROSE_PRISON]      = 1082,
 		[RAID_SUNSPIRE]              = 1121,
+		[RAID_KYNES_AEGIS]           = 1196,
 	}
 
 	local RaidZones = {}
@@ -904,8 +906,9 @@ do ---------------------------
 	RaidNotifier.AS = RaidNotifier.AS or {}
 	RaidNotifier.CR = RaidNotifier.CR or {}
 	RaidNotifier.SS = RaidNotifier.SS or {}
-	
-	RaidNotifier.Trial = 
+	RaidNotifier.KA = RaidNotifier.KA or {}
+
+	RaidNotifier.Trial =
 	{
 		[RAID_AETHERIAN_ARCHIVE]     = RaidNotifier.AA,
 		[RAID_HEL_RA_CITADEL]        = RaidNotifier.HRC,
@@ -917,6 +920,7 @@ do ---------------------------
 		[RAID_ASYLUM_SANCTORIUM]     = RaidNotifier.AS,
 		[RAID_CLOUDREST]             = RaidNotifier.CR,
 		[RAID_SUNSPIRE]	             = RaidNotifier.SS,
+		[RAID_KYNES_AEGIS]           = RaidNotifier.KA,
 	}
 	
 	-------------------

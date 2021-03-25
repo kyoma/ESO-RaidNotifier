@@ -28,6 +28,7 @@ TrialMawOfLorkhaj.lua
 TrialSanctumOphidia.lua
 TrialCloudrest.lua
 TrialSunspire.lua
+TrialKynesAegis.lua
 
 Notifications.lua
 RaidNotifier.lua
