@@ -640,19 +640,18 @@ do ----------------------
 	function manager:SetupCSAState()
 		if not self.control then return end
 
+		-- This call has two effects: one obvious (hide all notifications) and one side-effect (setting countdown as inactive)
+		-- Latter matters here too since NotificationsPool countdown doesn't care about RaidNotifier:IsCountdownInProgress() state
+		-- If it'd be needed to keep notifications at the screen then you should call RaidNotifier:StopCountdown(0) here at least
+		RaidNotifier:StopCountdown()
 		self.control:SetMovable(false)
 		RaidNotifier:ResetElement(self.control)
-		-- That's some sort of hack to mark countdown as stopped (no any actual countdown will be stopped)
-		-- NotificationsPool doesn't change state which we can get by calling RaidNotifier:IsCountdownInProgress()
-		-- So it's like "there is always countdown" in case NotificationsPool is used once
-		-- So after switching from "custom" to "CSA" announcement type if countdown applied once it'd always use
-		-- NotificationsPool for countdown even if CSA is available; that's why we're marking countdowns as stopped
-		RaidNotifier:StopCountdown(0)
 	end
 
 	function manager:SetupCustomState()
 		if not self.control then return end
 
+		RaidNotifier:StopCountdown()
 		self.control:SetMovable(true)
 		RaidNotifier:RegisterElement(self.control)
 	end
