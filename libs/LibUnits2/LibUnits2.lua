@@ -99,7 +99,7 @@ local function Load()
 
 	-- During group invitation, we can receive a lot of event spam at once on a single invite when the
 	-- involved players are at the same location. Add a delay so we only refresh once in cases like this.
-	lib.delayedRebuildCounter = 0 
+	lib.delayedRebuildCounter = 0
     local function DelayedRefreshData()
         lib.delayedRebuildCounter = lib.delayedRebuildCounter - 1
         if lib.delayedRebuildCounter == 0 then
