@@ -558,6 +558,12 @@ L.Settings_KynesAegis_Sanguine_Prison               = "General: Sanguine Prison"
 L.Settings_KynesAegis_Sanguine_Prison_TT            = "Alerts you when your ally is trapped in Sanguine Prison casted by Bitter Knight. You need to free your ally by focusing down his prison."
 L.Settings_KynesAegis_Blood_Fountain                = "General: Blood Fountain"
 L.Settings_KynesAegis_Blood_Fountain_TT             = "Alerts you when Bloodknight starts his Blood Fountain attack, counting down until it is unleashed. It looks like cross-shaped AoE, and need to be avoided as it deals heavy damage."
+L.Settings_KynesAegis_Dragon_Totem                  = "Yandir: Dragon Totems"
+L.Settings_KynesAegis_Dragon_Totem_TT               = "Alerts you when Dragon Totems appeared during the battle with Yandir the Butcher boss. Always two Dragon Totems appears at the same time. Each one blows out fire along a straight line in two opposite directions."
+L.Settings_KynesAegis_Harpy_Totem                   = "Yandir: Harpy Totem"
+L.Settings_KynesAegis_Harpy_Totem_TT                = "Alerts you when Harpy Totem appeared during the battle with Yandir the Butcher boss. This totem spawns a lightning aura that will radiate out."
+L.Settings_KynesAegis_Gargoyle_Totem                = "Yandir: Gargoyle Totem"
+L.Settings_KynesAegis_Gargoyle_Totem_TT             = "Alerts you when Gargoyle Totem appeared during the battle with Yandir the Butcher boss. It encases random players into stone."
 L.Settings_KynesAegis_Chaurus_Totem                 = "Yandir: Chaurus Totem"
 L.Settings_KynesAegis_Chaurus_Totem_TT              = "Alerts you when Chaurus Totem appeared during the battle with Yandir the Butcher boss. It poisons several people, and this poison should not be spread to others, that's why you should not stack at this phase."
 
@@ -565,6 +571,9 @@ L.Settings_KynesAegis_Chaurus_Totem_TT              = "Alerts you when Chaurus T
 L.Alerts_KynesAegis_Crashing_Wall                   = "|cd2a100Crashing Wall|r in"
 L.Alerts_KynesAegis_Sanguine_Prison_Other           = "|cff0000<<!aC:1>>|r trapped in |cb00000Sanguine Prison|r. Free him!"
 L.Alerts_KynesAegis_Blood_Fountain                  = "|cb00000Blood Fountain|r in"
+L.Alerts_KynesAegis_Dragon_Totem                    = "Two |cffa500Dragon Totems|r spawned. Avoid the fire!"
+L.Alerts_KynesAegis_Harpy_Totem                     = "|c00bfffHarpy Totem|r spawned."
+L.Alerts_KynesAegis_Gargoyle_Totem                  = "|cf5f5dcGargoyle Totem|r spawned."
 L.Alerts_KynesAegis_Chaurus_Totem                   = "|c39942eChaurus Totem|r spawned. Don't stack!"
 
 

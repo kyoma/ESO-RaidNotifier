@@ -589,6 +589,12 @@ kynes_aegis.tidebreaker_crashing_wall = 134196
 kynes_aegis.bitter_knight_sanguine_prison = 132473
 -- Bloodknight's Blood Fountain
 kynes_aegis.bloodknight_blood_fountain = 140294
+-- Dragon Totem spawn at Yandir the Butcher boss
+kynes_aegis.yandir_dragon_totem_spawn = 133264
+-- Harpy Totem spawn at Yandir the Butcher boss
+kynes_aegis.yandir_harpy_totem_spawn = 133511
+-- Gargoyle Totem spawn at Yandir the Butcher boss
+kynes_aegis.yandir_gargoyle_totem_spawn = 133514
 -- Chaurus Totem spawn at Yandir the Butcher boss
 kynes_aegis.yandir_chaurus_totem_spawn = 133516
 
