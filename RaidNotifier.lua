@@ -677,6 +677,9 @@ do ----------------------
 					if (self.raidId == RAID_HALLS_OF_FABRICATION) then
 						EVENT_MANAGER:AddFilterForEvent(self.Name, EVENT_EFFECT_CHANGED, REGISTER_FILTER_UNIT_TAG, "player")
 					end
+					if (self.raidId == RAID_MAW_OF_LORKHAJ) then
+						EVENT_MANAGER:AddFilterForEvent(self.Name, EVENT_EFFECT_CHANGED, REGISTER_FILTER_ABILITY_ID, self.BuffsDebuffs[RAID_MAW_OF_LORKHAJ].rakkhat_hulk_armorweakening)
+					end
 				end
 				if (bossesChangedCallback) then
 					EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_BOSSES_CHANGED, bossesChangedCallback)
