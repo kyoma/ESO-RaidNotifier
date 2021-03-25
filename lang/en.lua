@@ -554,9 +554,12 @@ L.Settings_KynesAegis_Header                        = "Kyne's Aegis"
 -- Settings
 L.Settings_KynesAegis_Crashing_Wall                 = "General: Crashing Wall"
 L.Settings_KynesAegis_Crashing_Wall_TT              = "Alerts you when the Half-Giant Tidebreaker starts his Crashing Wall attack, counting down until it is unleashed. Block or roll dodge it."
+L.Settings_KynesAegis_Sanguine_Prison               = "General: Sanguine Prison"
+L.Settings_KynesAegis_Sanguine_Prison_TT            = "Alerts you when your ally is trapped in Sanguine Prison casted by Bitter Knight. You need to free your ally by focusing down his prison."
 
 -- Alerts
 L.Alerts_KynesAegis_Crashing_Wall                   = "|cd2a100Crashing Wall|r in"
+L.Alerts_KynesAegis_Sanguine_Prison_Other           = "|cff0000<<!aC:1>>|r trapped in |cb00000Sanguine Prison|r. Free him!"
 
 
 --------------------------------

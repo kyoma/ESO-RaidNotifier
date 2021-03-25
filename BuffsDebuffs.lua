@@ -585,5 +585,7 @@ local kynes_aegis = {}
 
 -- Half-Giant Tidebreaker's Crashing Wall
 kynes_aegis.tidebreaker_crashing_wall = 134196
+-- Bitter Knight's Sanguine Prison
+kynes_aegis.bitter_knight_sanguine_prison = 132473
 
 RaidNotifier.BuffsDebuffs[RAID_KYNES_AEGIS] = kynes_aegis

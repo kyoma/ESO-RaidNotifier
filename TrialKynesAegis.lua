@@ -31,5 +31,14 @@ function RaidNotifier.KA.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
                 self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_CRASHING_WALL), "kynesAegis", "tidebreaker_crashing_wall", false)
             end
         end
+    elseif (result == ACTION_RESULT_EFFECT_GAINED) then
+        -- Bitter Knight's Sanguine Prison
+        if (abilityId == buffsDebuffs.bitter_knight_sanguine_prison) then
+            if (settings.bitter_knight_sanguine_prison == true) then
+                if (tType ~= COMBAT_UNIT_TYPE_PLAYER and tName ~= "") then
+                    self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_SANGUINE_PRISON_OTHER), tName), "kynesAegis", "bitter_knight_sanguine_prison")
+                end
+            end
+        end
     end
 end
