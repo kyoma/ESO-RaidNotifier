@@ -637,10 +637,10 @@ function RaidNotifier:CreateSettingsMenu()
 			end
 		end,
 		choices = {
-			L.Settings_General_Choices_Small,
-			--L.Settings_General_Choices_Large,
-			L.Settings_General_Choices_Major,
-			L.Settings_General_Choices_Custom,
+			L.Settings_General_Choices_Small_Announcement,
+			--L.Settings_General_Choices_Large_Announcement,
+			L.Settings_General_Choices_Major_Announcement,
+			L.Settings_General_Choices_Custom_Announcement,
 		}, choicesValues = {
 			CSA_CATEGORY_SMALL_TEXT, 
 			--CSA_CATEGORY_LARGE_TEXT,
