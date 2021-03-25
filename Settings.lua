@@ -153,6 +153,7 @@ do ------------------
 			status_display  = {100, 400, CENTER},
 			unlock_status_icon = false,
 			default_sound   = SOUNDS.CHAMPION_POINTS_COMMITTED,
+			announcement_position = {0, -120, CENTER},
 		},
 		ultimate = {
 			enabled         = false,
@@ -626,6 +627,15 @@ function RaidNotifier:CreateSettingsMenu()
 		type = "dropdown",
 		name = L.Settings_General_Center_Screen_Announce,
 		tooltip = L.Settings_General_Center_Screen_Announce_TT,
+		setFunc = function(value)
+			savedVars.general.use_center_screen_announce = value
+
+			if (value == 0) then
+				self.AnnouncementUIManager:SetupCustomState()
+			else
+				self.AnnouncementUIManager:SetupCSAState()
+			end
+		end,
 		choices = {
 			L.Settings_General_Choices_Small,
 			--L.Settings_General_Choices_Large,

@@ -795,6 +795,7 @@ do ----------------------
 		self:InitializeStatusDisplay("StatusDisplay")
 		self:InitializeGlyphWindow("GlyphWindow", self.Vars.mawLorkhaj.zhaj_glyphs_invert)
 		self:InitializeArrowDisplay("ArrowDisplay")
+		self.AnnouncementUIManager:Initialize(RaidNotifierUICenterAnnounce)
 		RaidNotifier.NotificationsPool.GetInstance():SetScale(self.Vars.general.notifications_scale / 100);
 		RaidNotifier.NotificationsPool.GetInstance():SetPrecise(self.Vars.countdown.timerPrecise)
 		
