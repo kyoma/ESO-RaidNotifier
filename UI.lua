@@ -642,6 +642,12 @@ do ----------------------
 
 		self.control:SetMovable(false)
 		RaidNotifier:ResetElement(self.control)
+		-- That's some sort of hack to mark countdown as stopped (no any actual countdown will be stopped)
+		-- NotificationsPool doesn't change state which we can get by calling RaidNotifier:IsCountdownInProgress()
+		-- So it's like "there is always countdown" in case NotificationsPool is used once
+		-- So after switching from "custom" to "CSA" announcement type if countdown applied once it'd always use
+		-- NotificationsPool for countdown even if CSA is available; that's why we're marking countdowns as stopped
+		RaidNotifier:StopCountdown(0)
 	end
 
 	function manager:SetupCustomState()
