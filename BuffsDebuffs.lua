@@ -587,5 +587,7 @@ local kynes_aegis = {}
 kynes_aegis.tidebreaker_crashing_wall = 134196
 -- Bitter Knight's Sanguine Prison
 kynes_aegis.bitter_knight_sanguine_prison = 132473
+-- Bloodknight's Blood Fountain
+kynes_aegis.bloodknight_blood_fountain = 140294
 
 RaidNotifier.BuffsDebuffs[RAID_KYNES_AEGIS] = kynes_aegis

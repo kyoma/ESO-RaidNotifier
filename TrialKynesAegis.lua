@@ -31,6 +31,12 @@ function RaidNotifier.KA.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
                 self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_CRASHING_WALL), "kynesAegis", "tidebreaker_crashing_wall", false)
             end
         end
+        -- Bloodknight's Blood Fountain
+        if (abilityId == buffsDebuffs.bloodknight_blood_fountain) then
+            if (settings.bloodknight_blood_fountain == true) then
+                self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_BLOOD_FOUNTAIN), "kynesAegis", "bloodknight_blood_fountain", false)
+            end
+        end
     elseif (result == ACTION_RESULT_EFFECT_GAINED) then
         -- Bitter Knight's Sanguine Prison
         if (abilityId == buffsDebuffs.bitter_knight_sanguine_prison) then

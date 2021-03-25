@@ -297,6 +297,7 @@ do ------------------
 		kynesAegis = {
 			tidebreaker_crashing_wall = false,
 			bitter_knight_sanguine_prison = false,
+			bloodknight_blood_fountain = false,
 		},
 		dbg = {
 			enable = false,
@@ -1581,6 +1582,11 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_KynesAegis_Sanguine_Prison,
 		tooltip = L.Settings_KynesAegis_Sanguine_Prison_TT,
 	}, "kynesAegis", "bitter_knight_sanguine_prison")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_KynesAegis_Blood_Fountain,
+		tooltip = L.Settings_KynesAegis_Blood_Fountain_TT,
+	}, "kynesAegis", "bloodknight_blood_fountain")
 	subTable = nil --end submenu
 
 	MakeControlEntry({
