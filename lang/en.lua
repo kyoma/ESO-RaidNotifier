@@ -6,7 +6,8 @@ L.Description                            = "Displays on-screen notifications on 
 ----     General Stuff      ----
 --------------------------------
 L.Settings_General_Header                           = "General"
--- Settings 
+-- Settings
+L.Settings_General_Notifications_Showcase           = "Notifications showcase"
 L.Settings_General_Bufffood_Reminder                = "Buff Food Reminder"
 L.Settings_General_Bufffood_Reminder_TT             = "Alerts you when you have no buff food during trials or when it is about to expire (see below)"
 L.Settings_General_Bufffood_Reminder_Interval       = "Reminder Interval"
@@ -16,7 +17,7 @@ L.Settings_General_Vanity_Pets_TT                   = "Will turn off your vanity
 L.Settings_General_No_Assistants                    = "Turn off assistants when combat starts"
 L.Settings_General_No_Assistants_TT                 = "Only applies during trials and does NOT prevent them from being summoned."
 L.Settings_General_Center_Screen_Announce           = "Announcement Type"
-L.Settings_General_Center_Screen_Announce_TT        = "The type of announcement to use."
+L.Settings_General_Center_Screen_Announce_TT        = "The type of announcement to use.\n\nOnly announcements of custom format can be relocated on the screen."
 L.Settings_General_NotificationsScale               = "Notifications Scale"
 L.Settings_General_NotificationsScale_TT            = "The scale of the notifications and minor countdowns display"
 L.Settings_General_UseDisplayName                   = "Use Dislay Name"
@@ -36,13 +37,14 @@ L.Settings_General_Choices_All                      = "All"
 L.Settings_General_Choices_Always                   = "Always"
 L.Settings_General_Choices_Other                    = "Other"
 L.Settings_General_Choices_Inverted                 = "Inverted"
-L.Settings_General_Choices_Small                    = "Small (obsolete)"
-L.Settings_General_Choices_Large                    = "Large (obsolete)"
-L.Settings_General_Choices_Major                    = "Major (obsolete)"
+L.Settings_General_Choices_Small_Announcement       = "Small (static, obsolete)"
+L.Settings_General_Choices_Large_Announcement       = "Large (static, obsolete)"
+L.Settings_General_Choices_Major_Announcement       = "Major (static, obsolete)"
 L.Settings_General_Choices_1s                       = "1.0s"
 L.Settings_General_Choices_500ms                    = "0.5s"
 L.Settings_General_Choices_200ms                    = "0.2s"
 L.Settings_General_Choices_Custom                   = "Custom"
+L.Settings_General_Choices_Custom_Announcement      = "Custom (movable)"
 -- Alerts
 L.Alerts_General_No_Bufffood                        = "You have no bufffood!"
 L.Alerts_General_Bufffood_Minutes                   = "Your '<<1>>' bufffood runs out in |cbd0000<<2>>|r minutes!"

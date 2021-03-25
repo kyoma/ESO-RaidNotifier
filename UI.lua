@@ -34,6 +34,12 @@ do
 		HUD_UI_SCENE:RemoveFragment(UI_FRAGMENT)
 	end
 
+	local function SetElementPosition(ctrl, position)
+		local initial = ctrl.initialAnchor or {}
+		ctrl:ClearAnchors()
+		ctrl:SetAnchor(position[3] or TOPLEFT, initial.relativeTo or RaidNotifierUI, position[4] or TOPLEFT, position[1], position[2])
+	end
+
 	local function SaveElementPosition(ctrl)
 		local settings = GetSettingForControl(ctrl)
 		if settings and settings.position then -- move this to GetSettingForControl?
@@ -44,6 +50,9 @@ do
 		else
 			local anchor = settings[3] or TOPLEFT
 			settings[1], settings[2] = CUSTOM_ANCHORS[anchor](ctrl)
+			-- After moving UI element it's "relative point" and "point" may also be recalculated
+			-- Getting position by GetCenter() or GetLeft() / GetTop() will mind "relative point" = TOPLEFT it seems
+			-- That's why settings[4] doesn't saved here, thus default TOPLEFT will be loaded instead
 		end
 	end
 	
@@ -55,8 +64,7 @@ do
 		if not settings then
 			--df("Could not find saved position for '%s'", ctrl:GetName())
 		else
-			ctrl:ClearAnchors()
-			ctrl:SetAnchor(settings[3] or TOPLEFT, RaidNotifierUI, TOPLEFT, settings[1], settings[2])
+			SetElementPosition(ctrl, settings)
 		end
 	end
 	
@@ -69,6 +77,20 @@ do
 		ctrl:SetHandler("OnMoveStop", SaveElementPosition)
 		LoadElementPosition(ctrl)
 		return ctrl
+	end
+
+	function RaidNotifier:ResetElement(ctrl)
+		if type(ctrl) == "string" then
+			ctrl = RaidNotifierUI:GetNamedChild(ctrl)
+		end
+		if ctrl.initialAnchor then
+			SetElementPosition(ctrl, {
+				ctrl.initialAnchor.offsetX,
+				ctrl.initialAnchor.offsetY,
+				ctrl.initialAnchor.relativePoint,
+				ctrl.initialAnchor.point
+			})
+		end
 	end
 
 	function RaidNotifier:SetElementHidden(category, key, hidden)
@@ -606,4 +628,39 @@ do -----------------
 		end
 	end
 
+end
+-- ----------------------
+-- -- ANNOUNCEMENT WINDOW
+do ----------------------
+	local manager = {}
+	RaidNotifier.AnnouncementUIManager = manager
+
+	manager.control = nil
+
+	function manager:SetupCSAState()
+		if not self.control then return end
+
+		-- This call has two effects: one obvious (hide all notifications) and one side-effect (setting countdown as inactive)
+		-- Latter matters here too since NotificationsPool countdown doesn't care about RaidNotifier:IsCountdownInProgress() state
+		-- If it'd be needed to keep notifications at the screen then you should call RaidNotifier:StopCountdown(0) here at least
+		RaidNotifier:StopCountdown()
+		self.control:SetMovable(false)
+		RaidNotifier:ResetElement(self.control)
+	end
+
+	function manager:SetupCustomState()
+		if not self.control then return end
+
+		RaidNotifier:StopCountdown()
+		self.control:SetMovable(true)
+		RaidNotifier:RegisterElement(self.control)
+	end
+
+	function manager:Initialize(control)
+		self.control = control
+
+		if RaidNotifier.Vars.general.use_center_screen_announce == 0 then
+			self:SetupCustomState()
+		end
+	end
 end
