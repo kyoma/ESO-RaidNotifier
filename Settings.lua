@@ -298,10 +298,7 @@ do ------------------
 			tidebreaker_crashing_wall = false,
 			bitter_knight_sanguine_prison = false,
 			bloodknight_blood_fountain = false,
-			yandir_dragon_totem_spawn = false,
-			yandir_harpy_totem_spawn = false,
-			yandir_gargoyle_totem_spawn = false,
-			yandir_chaurus_totem_spawn = false,
+			yandir_totem_spawn = 0, -- "Off"
 		},
 		dbg = {
 			enable = false,
@@ -538,6 +535,11 @@ function RaidNotifier:CreateSettingsMenu()
 			}
 		},
 		kynesAegis = {
+			yandir_totem_spawn = {
+				L.Settings_General_Choices_Off,
+				L.Settings_General_Choices_OnlyChaurusTotem,
+				L.Settings_General_Choices_All,
+			},
 		},
 	}
 
@@ -1592,25 +1594,11 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_KynesAegis_Blood_Fountain_TT,
 	}, "kynesAegis", "bloodknight_blood_fountain")
 	MakeControlEntry({
-		type = "checkbox",
-		name = L.Settings_KynesAegis_Dragon_Totem,
-		tooltip = L.Settings_KynesAegis_Dragon_Totem_TT,
-	}, "kynesAegis", "yandir_dragon_totem_spawn")
-	MakeControlEntry({
-		type = "checkbox",
-		name = L.Settings_KynesAegis_Harpy_Totem,
-		tooltip = L.Settings_KynesAegis_Harpy_Totem_TT,
-	}, "kynesAegis", "yandir_harpy_totem_spawn")
-	MakeControlEntry({
-		type = "checkbox",
-		name = L.Settings_KynesAegis_Gargoyle_Totem,
-		tooltip = L.Settings_KynesAegis_Gargoyle_Totem_TT,
-	}, "kynesAegis", "yandir_gargoyle_totem_spawn")
-	MakeControlEntry({
-		type = "checkbox",
-		name = L.Settings_KynesAegis_Chaurus_Totem,
-		tooltip = L.Settings_KynesAegis_Chaurus_Totem_TT,
-	}, "kynesAegis", "yandir_chaurus_totem_spawn")
+		type = "dropdown",
+		name = L.Settings_KynesAegis_Totem,
+		tooltip = L.Settings_KynesAegis_Totem_TT,
+		choices = choices.kynesAegis.yandir_totem_spawn,
+	}, "kynesAegis", "yandir_totem_spawn")
 	subTable = nil --end submenu
 
 	MakeControlEntry({

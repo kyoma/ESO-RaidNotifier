@@ -48,27 +48,27 @@ function RaidNotifier.KA.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
         end
         -- Dragon Totems spawn at Yandir the Butcher boss
         if (abilityId == buffsDebuffs.yandir_dragon_totem_spawn) then
-            if (settings.yandir_dragon_totem_spawn == true) then
+            if (settings.yandir_totem_spawn == 2) then
                 -- Since two totems spawns at once we want to avoid extra announcements, so we're adding 2 sec alert suppression
-                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_DRAGON_TOTEM), "kynesAegis", "yandir_dragon_totem_spawn", 2)
+                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_DRAGON_TOTEM), "kynesAegis", "yandir_totem_spawn", 2)
             end
         end
         -- Harpy Totem spawn at Yandir the Butcher boss
         if (abilityId == buffsDebuffs.yandir_harpy_totem_spawn) then
-            if (settings.yandir_harpy_totem_spawn == true) then
-                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_HARPY_TOTEM), "kynesAegis", "yandir_harpy_totem_spawn")
+            if (settings.yandir_totem_spawn == 2) then
+                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_HARPY_TOTEM), "kynesAegis", "yandir_totem_spawn")
             end
         end
         -- Gargoyle Totem spawn at Yandir the Butcher boss
         if (abilityId == buffsDebuffs.yandir_gargoyle_totem_spawn) then
-            if (settings.yandir_gargoyle_totem_spawn == true) then
-                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_GARGOYLE_TOTEM), "kynesAegis", "yandir_gargoyle_totem_spawn")
+            if (settings.yandir_totem_spawn == 2) then
+                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_GARGOYLE_TOTEM), "kynesAegis", "yandir_totem_spawn")
             end
         end
         -- Chaurus Totem spawn at Yandir the Butcher boss
         if (abilityId == buffsDebuffs.yandir_chaurus_totem_spawn) then
-            if (settings.yandir_chaurus_totem_spawn == true) then
-                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_CHAURUS_TOTEM), "kynesAegis", "yandir_chaurus_totem_spawn")
+            if (settings.yandir_totem_spawn >= 1) then
+                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_CHAURUS_TOTEM), "kynesAegis", "yandir_totem_spawn")
             end
         end
     end
