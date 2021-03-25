@@ -6,7 +6,8 @@ L.Description                            = "Displays on-screen notifications on 
 ----     General Stuff      ----
 --------------------------------
 L.Settings_General_Header                           = "General"
--- Settings 
+-- Settings
+L.Settings_General_Notifications_Showcase           = "Notifications showcase"
 L.Settings_General_Bufffood_Reminder                = "Buff Food Reminder"
 L.Settings_General_Bufffood_Reminder_TT             = "Alerts you when you have no buff food during trials or when it is about to expire (see below)"
 L.Settings_General_Bufffood_Reminder_Interval       = "Reminder Interval"

@@ -663,6 +663,20 @@ function RaidNotifier:CreateSettingsMenu()
 		disabled = function() return savedVars.general.use_center_screen_announce ~= 0 end,
 	}, "general", "notifications_scale")	
 	MakeControlEntry({
+		type = "button",
+		name = L.Settings_General_Notifications_Showcase,
+		func = function(btn)
+			-- Clear all previous notifications to make a clean showcase
+			self:StopCountdown()
+			SCENE_MANAGER:Hide("gameMenuInGame")
+			-- This 1 sec delay is not only for nice experience, but also for preventing instant-casting notifications
+			-- to be overlapped
+			-- It seems that some time is needed after hiding settings before notifications will be counted as not hidden
+			-- by Control:IsHidden() (that's why they're stacking one atop another)
+			zo_callLater(function() self:InvokeNotificationsDebug(15500, false) end, 1000)
+		end,
+	})
+	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_General_Bufffood_Reminder,
 		tooltip = L.Settings_General_Bufffood_Reminder_TT,
