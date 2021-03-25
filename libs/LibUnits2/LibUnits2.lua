@@ -129,6 +129,9 @@ local function Load()
 	EVENT_MANAGER:RegisterForEvent("LibUnits2_EffectChangedBoss",  EVENT_EFFECT_CHANGED, OnBossEffectChanged)
 	EVENT_MANAGER:AddFilterForEvent("LibUnits2_EffectChangedBoss", EVENT_EFFECT_CHANGED, REGISTER_FILTER_UNIT_TAG_PREFIX, "boss")
 
+	-- We'd like to have relevant data after reloading UI or relogging
+	lib.RefreshUnits()
+
 	lib.Unload = Unload
 end
 
