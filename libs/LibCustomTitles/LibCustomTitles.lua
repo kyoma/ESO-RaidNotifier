@@ -55,9 +55,9 @@ Changes: Rewrote how custom titles are added and stored to help reduce conflict 
 
 
 local libLoaded
-local LIB_NAME, VERSION = "LibCustomTitlesRN", 20
-local LibCustomTitles, oldminor = LibStub:NewLibrary(LIB_NAME, VERSION)
-if not LibCustomTitles then return end
+local LIB_NAME = "LibCustomTitlesRN"
+local LibCustomTitles = {}
+LibCustomTitlesRN = LibCustomTitles
 
 local function RegisterTitle(module, ...)
 	table.insert(module.titles, {...})
@@ -310,10 +310,11 @@ function LibCustomTitles:Init()
 
 end
 
-local function OnAddonLoaded()
+local function OnAddonLoaded(_, addonName)
 	if not libLoaded then
+		-- TODO It's best to check addonName instead, but it requires to add manifest to this library
 		libLoaded = true
-		local LCC = LibStub('LibCustomTitlesRN')
+		local LCC = LibCustomTitlesRN
 		LCC:Init()
 		EVENT_MANAGER:UnregisterForEvent(LIB_NAME, EVENT_ADD_ON_LOADED)
 	end
