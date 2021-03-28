@@ -216,6 +216,7 @@ do ------------------
 			rakkhat_darkbarrage = false, 
 			rakkhat_lunarbastion1 = 0, -- "Off"
 			rakkhat_lunarbastion2 = 0, -- "Off"
+			hulk_armorweakened = false,
 			suneater_eclipse = 1, -- "Self"
 			shattering_strike = 0, -- "Off"
 			zhaj_gripoflorkhaj = true,
@@ -1142,6 +1143,11 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_MawLorkhaj_Rakkhat_DarkBarrage,
 		tooltip = L.Settings_MawLorkhaj_Rakkhat_DarkBarrage_TT,
 	}, "mawLorkhaj", "rakkhat_darkbarrage")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_MawLorkhaj_Hulk_ArmorWeakened,
+		tooltip = L.Settings_MawLorkhaj_Hulk_ArmorWeakened_TT,
+	}, "mawLorkhaj", "hulk_armorweakened")
 --	MakeControlEntry({
 --		type = "dropdown",
 --		name = L.Settings_MawLorkhaj_Rakkhat_LunarBastion1,
