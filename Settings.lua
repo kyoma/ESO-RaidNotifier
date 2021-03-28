@@ -18,6 +18,7 @@ RAID_ASYLUM_SANCTORIUM      = 8
 RAID_CLOUDREST              = 9
 RAID_BLACKROSE_PRISON       = 10
 RAID_SUNSPIRE				= 11
+RAID_KYNES_AEGIS			= 12
 
 -- ------------------
 -- DEFAULT SETTINGS
@@ -293,6 +294,12 @@ do ------------------
 			negate_field = 1, -- "Self"
 			shock_bolt = true,
 		},
+		kynesAegis = {
+			tidebreaker_crashing_wall = false,
+			bitter_knight_sanguine_prison = false,
+			bloodknight_blood_fountain = false,
+			yandir_totem_spawn = 0, -- "Off"
+		},
 		dbg = {
 			enable = false,
 			notify = false,
@@ -525,7 +532,14 @@ function RaidNotifier:CreateSettingsMenu()
 			negate_field = {
 				 L.Settings_General_Choices_Off,
 				 L.Settings_General_Choices_Self,
-			}			
+			}
+		},
+		kynesAegis = {
+			yandir_totem_spawn = {
+				L.Settings_General_Choices_Off,
+				L.Settings_General_Choices_OnlyChaurusTotem,
+				L.Settings_General_Choices_All,
+			},
 		},
 	}
 
@@ -1561,6 +1575,31 @@ function RaidNotifier:CreateSettingsMenu()
 		choices = choices.sunspire.negate_field,
 	}, "sunspire", "negate_field")
 	subTable = nil
+
+	-- Kyne's Aegis
+	MakeSubmenu(L.Settings_KynesAegis_Header, RaidNotifier:GetRaidDescription(RAID_KYNES_AEGIS))
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_KynesAegis_Crashing_Wall,
+		tooltip = L.Settings_KynesAegis_Crashing_Wall_TT,
+	}, "kynesAegis", "tidebreaker_crashing_wall")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_KynesAegis_Sanguine_Prison,
+		tooltip = L.Settings_KynesAegis_Sanguine_Prison_TT,
+	}, "kynesAegis", "bitter_knight_sanguine_prison")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_KynesAegis_Blood_Fountain,
+		tooltip = L.Settings_KynesAegis_Blood_Fountain_TT,
+	}, "kynesAegis", "bloodknight_blood_fountain")
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_KynesAegis_Totem,
+		tooltip = L.Settings_KynesAegis_Totem_TT,
+		choices = choices.kynesAegis.yandir_totem_spawn,
+	}, "kynesAegis", "yandir_totem_spawn")
+	subTable = nil --end submenu
 
 	MakeControlEntry({
 		type = "header",
