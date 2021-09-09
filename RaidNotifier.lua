@@ -23,6 +23,7 @@ RAID_CLOUDREST              = 9
 RAID_BLACKROSE_PRISON       = 10
 RAID_SUNSPIRE               = 11
 RAID_KYNES_AEGIS            = 12
+RAID_ROCKGROVE              = 13
 
 -- Debugging
 local function p() end
@@ -580,6 +581,7 @@ do ----------------------
 		[RAID_BLACKROSE_PRISON]      = 1082,
 		[RAID_SUNSPIRE]              = 1121,
 		[RAID_KYNES_AEGIS]           = 1196,
+		[RAID_ROCKGROVE]             = 1263,
 	}
 
 	local RaidZones = {}
@@ -907,6 +909,7 @@ do ---------------------------
 	RaidNotifier.CR = RaidNotifier.CR or {}
 	RaidNotifier.SS = RaidNotifier.SS or {}
 	RaidNotifier.KA = RaidNotifier.KA or {}
+	RaidNotifier.RG = RaidNotifier.RG or {}
 
 	RaidNotifier.Trial =
 	{
@@ -921,6 +924,7 @@ do ---------------------------
 		[RAID_CLOUDREST]             = RaidNotifier.CR,
 		[RAID_SUNSPIRE]	             = RaidNotifier.SS,
 		[RAID_KYNES_AEGIS]           = RaidNotifier.KA,
+		[RAID_ROCKGROVE]             = RaidNotifier.RG,
 	}
 
 	-------------------

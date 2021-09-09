@@ -19,6 +19,7 @@ RAID_CLOUDREST              = 9
 RAID_BLACKROSE_PRISON       = 10
 RAID_SUNSPIRE				= 11
 RAID_KYNES_AEGIS			= 12
+RAID_ROCKGROVE              = 13
 
 -- ------------------
 -- DEFAULT SETTINGS
@@ -300,6 +301,8 @@ do ------------------
 			bloodknight_blood_fountain = false,
 			yandir_totem_spawn = 0, -- "Off"
 		},
+		rockgrove = {
+		},
 		dbg = {
 			enable = false,
 			notify = false,
@@ -540,6 +543,8 @@ function RaidNotifier:CreateSettingsMenu()
 				L.Settings_General_Choices_OnlyChaurusTotem,
 				L.Settings_General_Choices_All,
 			},
+		},
+		rockgrove = {
 		},
 	}
 
@@ -1599,6 +1604,10 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_KynesAegis_Totem_TT,
 		choices = choices.kynesAegis.yandir_totem_spawn,
 	}, "kynesAegis", "yandir_totem_spawn")
+	subTable = nil --end submenu
+
+	-- Rockgrove
+	MakeSubmenu(L.Settings_Rockgrove_Header, RaidNotifier:GetRaidDescription(RAID_ROCKGROVE))
 	subTable = nil --end submenu
 
 	MakeControlEntry({

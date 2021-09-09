@@ -599,3 +599,9 @@ kynes_aegis.yandir_gargoyle_totem_spawn = 133514
 kynes_aegis.yandir_chaurus_totem_spawn = 133516
 
 RaidNotifier.BuffsDebuffs[RAID_KYNES_AEGIS] = kynes_aegis
+
+-- ------------------------------------------------------
+-- -- Rockgrove------------------------------------------
+-- -- ---------------------------------------------------
+local rockgrove = {}
+RaidNotifier.BuffsDebuffs[RAID_ROCKGROVE] = rockgrove

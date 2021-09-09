@@ -573,6 +573,15 @@ L.Alerts_KynesAegis_Chaurus_Totem                   = "|c39942eChaurus Totem|r s
 
 
 --------------------------------
+------   ROCKGROVE         -----
+--------------------------------
+L.Settings_Rockgrove_Header                        = "Rockgrove"
+-- Settings
+
+-- Alerts
+
+
+--------------------------------
 ----       Debugging        ----
 --------------------------------
 L.Settings_Debug_Header                  = "Debug"
