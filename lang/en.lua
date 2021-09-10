@@ -581,6 +581,8 @@ L.Settings_Rockgrove_Sundering_Strike              = "General: Sundering Strike"
 L.Settings_Rockgrove_Sundering_Strike_TT           = "Alerts you when the Sul-Xan Reaper makes Sundering Strike attack. Roll dodge it."
 L.Settings_Rockgrove_Astral_Shield                 = "General: Astral Shield"
 L.Settings_Rockgrove_Astral_Shield_TT              = "Alerts you when the Sul-Xan Soulweaver casts his Astral Shield, and when Soul Remnants affect you."
+L.Settings_Rockgrove_Soul_Extraction               = "General: Soul Extraction"
+L.Settings_Rockgrove_Soul_Extraction_TT            = "Alerts you when the Sul-Xan Soulweaver casts Soul Extraction on you."
 
 -- Alerts
 L.Alerts_Rockgrove_Sundering_Strike                = "Incoming |cCDCDCDSundering Strike|r on you!"
@@ -588,6 +590,7 @@ L.Alerts_Rockgrove_Sundering_Strike_Other          = "Incoming |cCDCDCDSundering
 L.Alerts_Rockgrove_Astral_Shield_Cast              = "|cFFFF8FAstral Shield|r has been casted. Prepare to dodge or block!"
 L.Alerts_Rockgrove_Soul_Remnant_Heavy              = "|cFF0000Incoming|r |c8FF2FFSoul Remnant|r!"
 L.Alerts_Rockgrove_Soul_Remnant                    = "Incoming |c8FF2FFSoul Remnant|r!"
+L.Alerts_Rockgrove_Soul_Extraction                 = "Incoming Soul Extraction on you!"
 
 
 --------------------------------

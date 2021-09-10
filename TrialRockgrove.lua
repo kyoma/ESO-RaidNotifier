@@ -37,6 +37,18 @@ function RaidNotifier.RG.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
             if (settings.sulxan_soulweaver_astral_shield) then
                 self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_ASTRAL_SHIELD_CAST), "rockgrove", "sulxan_soulweaver_astral_shield")
             end
+        -- Sul-Xan Soulweaver's Soul Extraction
+        elseif (buffsDebuffs.sulxan_soulweaver_soul_extraction[abilityId]) then
+            if (settings.sulxan_soulweaver_soul_extraction and tType == COMBAT_UNIT_TYPE_PLAYER) then
+                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_SOUL_EXTRACTION), "rockgrove", "sulxan_soulweaver_soul_extraction")
+            end
+        end
+    elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
+        -- Sul-Xan Soulweaver's Soul Extraction (Debug purpose only!)
+        if (buffsDebuffs.sulxan_soulweaver_soul_extraction[abilityId]) then
+            if (settings.sulxan_soulweaver_soul_extraction and tType == COMBAT_UNIT_TYPE_PLAYER) then
+                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_SOUL_EXTRACTION) .. " (GainDur)", "rockgrove", "sulxan_soulweaver_soul_extraction")
+            end
         end
     elseif (result == ACTION_RESULT_EFFECT_FADED) then
         -- Sul-Xan Soulweaver's Soul Remnant attack (his Astral Shield is broken)

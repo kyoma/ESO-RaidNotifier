@@ -304,6 +304,7 @@ do ------------------
 		rockgrove = {
 			sulxan_reaver_sundering_strike = 0, -- "Off"
 			sulxan_soulweaver_astral_shield = false,
+			sulxan_soulweaver_soul_extraction = false,
 		},
 		dbg = {
 			enable = false,
@@ -1622,6 +1623,11 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_Rockgrove_Astral_Shield,
 		tooltip = L.Settings_Rockgrove_Astral_Shield_TT,
 	}, "rockgrove", "sulxan_soulweaver_astral_shield")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Rockgrove_Soul_Extraction,
+		tooltip = L.Settings_Rockgrove_Soul_Extraction_TT,
+	}, "rockgrove", "sulxan_soulweaver_soul_extraction")
 	subTable = nil --end submenu
 
 	MakeControlEntry({

@@ -613,5 +613,10 @@ rockgrove.sulxan_soulweaver_astral_shield_cast = 149089
 rockgrove.sulxan_soulweaver_astral_shield_self = 149099
 -- Sul-Xan Soulweaver's Astral Shield: gained shield by other adds
 rockgrove.sulxan_soulweaver_astral_shield_others = 157236
+-- Sul-Xan Soulweaver's Soul Extraction
+rockgrove.sulxan_soulweaver_soul_extraction = {
+	[158441] = true,
+	[158442] = true,
+}
 
 RaidNotifier.BuffsDebuffs[RAID_ROCKGROVE] = rockgrove
