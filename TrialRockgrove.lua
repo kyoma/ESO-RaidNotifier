@@ -32,6 +32,23 @@ function RaidNotifier.RG.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
             elseif (settings.sulxan_reaver_sundering_strike == 2 and tName ~= "") then
                 self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_SUNDERING_STRIKE_OTHER), tName), "rockgrove", "sulxan_reaver_sundering_strike")
             end
+        -- Sul-Xan Soulweaver's Astral Shield (cast)
+        elseif (abilityId == buffsDebuffs.sulxan_soulweaver_astral_shield_cast) then
+            if (settings.sulxan_soulweaver_astral_shield) then
+                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_ASTRAL_SHIELD_CAST), "rockgrove", "sulxan_soulweaver_astral_shield")
+            end
+        end
+    elseif (result == ACTION_RESULT_EFFECT_FADED) then
+        -- Sul-Xan Soulweaver's Soul Remnant attack (his Astral Shield is broken)
+        if (abilityId == buffsDebuffs.sulxan_soulweaver_astral_shield_self) then
+            if (settings.sulxan_soulweaver_astral_shield) then
+                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_SOUL_REMNANT_HEAVY), "rockgrove", "sulxan_soulweaver_astral_shield")
+            end
+        -- Other's Soul Remnant attack (Astral Shield gained from Soulweaver is broken)
+        elseif (abilityId == buffsDebuffs.sulxan_soulweaver_astral_shield_others) then
+            if (settings.sulxan_soulweaver_astral_shield) then
+                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_SOUL_REMNANT), "rockgrove", "sulxan_soulweaver_astral_shield")
+            end
         end
     end
 end
