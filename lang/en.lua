@@ -577,8 +577,12 @@ L.Alerts_KynesAegis_Chaurus_Totem                   = "|c39942eChaurus Totem|r s
 --------------------------------
 L.Settings_Rockgrove_Header                        = "Rockgrove"
 -- Settings
+L.Settings_Rockgrove_Sundering_Strike              = "General: Sundering Strike"
+L.Settings_Rockgrove_Sundering_Strike_TT           = "Alerts you when the Sul-Xan Reaper makes Sundering Strike attack. Roll dodge it."
 
 -- Alerts
+L.Alerts_Rockgrove_Sundering_Strike                = "Incoming |cCDCDCDSundering Strike|r on you!"
+L.Alerts_Rockgrove_Sundering_Strike_Other          = "Incoming |cCDCDCDSundering Strike|r on |cFF0000<<!aC:1>>|r!"
 
 
 --------------------------------

@@ -604,4 +604,8 @@ RaidNotifier.BuffsDebuffs[RAID_KYNES_AEGIS] = kynes_aegis
 -- -- Rockgrove------------------------------------------
 -- -- ---------------------------------------------------
 local rockgrove = {}
+
+-- Sul-Xan Reaver's Sundering Strike
+rockgrove.sulxan_reaver_sundering_strike = 149524
+
 RaidNotifier.BuffsDebuffs[RAID_ROCKGROVE] = rockgrove

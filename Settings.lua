@@ -302,6 +302,7 @@ do ------------------
 			yandir_totem_spawn = 0, -- "Off"
 		},
 		rockgrove = {
+			sulxan_reaver_sundering_strike = 0, -- "Off"
 		},
 		dbg = {
 			enable = false,
@@ -545,6 +546,7 @@ function RaidNotifier:CreateSettingsMenu()
 			},
 		},
 		rockgrove = {
+			sulxan_reaver_sundering_strike = off_self_all,
 		},
 	}
 
@@ -1608,6 +1610,12 @@ function RaidNotifier:CreateSettingsMenu()
 
 	-- Rockgrove
 	MakeSubmenu(L.Settings_Rockgrove_Header, RaidNotifier:GetRaidDescription(RAID_ROCKGROVE))
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_Rockgrove_Sundering_Strike,
+		tooltip = L.Settings_Rockgrove_Sundering_Strike_TT,
+		choices = choices.rockgrove.sulxan_reaver_sundering_strike,
+	}, "rockgrove", "sulxan_reaver_sundering_strike")
 	subTable = nil --end submenu
 
 	MakeControlEntry({
