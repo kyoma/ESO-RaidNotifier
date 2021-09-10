@@ -305,6 +305,7 @@ do ------------------
 			sulxan_reaver_sundering_strike = 0, -- "Off"
 			sulxan_soulweaver_astral_shield = false,
 			sulxan_soulweaver_soul_extraction = false,
+			havocrel_barbarian_hasted_assault = false,
 		},
 		dbg = {
 			enable = false,
@@ -1628,6 +1629,11 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_Rockgrove_Soul_Extraction,
 		tooltip = L.Settings_Rockgrove_Soul_Extraction_TT,
 	}, "rockgrove", "sulxan_soulweaver_soul_extraction")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Rockgrove_Hasted_Assault,
+		tooltip = L.Settings_Rockgrove_Hasted_Assault_TT,
+	}, "rockgrove", "havocrel_barbarian_hasted_assault")
 	subTable = nil --end submenu
 
 	MakeControlEntry({

@@ -583,6 +583,8 @@ L.Settings_Rockgrove_Astral_Shield                 = "General: Astral Shield"
 L.Settings_Rockgrove_Astral_Shield_TT              = "Alerts you when the Sul-Xan Soulweaver casts his Astral Shield, and when Soul Remnants affect you."
 L.Settings_Rockgrove_Soul_Extraction               = "General: Soul Extraction"
 L.Settings_Rockgrove_Soul_Extraction_TT            = "Alerts you when the Sul-Xan Soulweaver casts Soul Extraction on you."
+L.Settings_Rockgrove_Hasted_Assault                = "General: Hasted Assault"
+L.Settings_Rockgrove_Hasted_Assault_TT             = "Alerts you when the Havocrel Barbarian makes Hasted Assault attack. He teleports from player to player in random order and attacks them. This should be blocked."
 
 -- Alerts
 L.Alerts_Rockgrove_Sundering_Strike                = "Incoming |cCDCDCDSundering Strike|r on you!"
@@ -591,6 +593,7 @@ L.Alerts_Rockgrove_Astral_Shield_Cast              = "|cFFFF8FAstral Shield|r ha
 L.Alerts_Rockgrove_Soul_Remnant_Heavy              = "|cFF0000Incoming|r |c8FF2FFSoul Remnant|r!"
 L.Alerts_Rockgrove_Soul_Remnant                    = "Incoming |c8FF2FFSoul Remnant|r!"
 L.Alerts_Rockgrove_Soul_Extraction                 = "Incoming Soul Extraction on you!"
+L.Alerts_Rockgrove_Hasted_Assault                  = "Incoming |cFF0000Hasted Assault|r! Block!"
 
 
 --------------------------------

@@ -42,6 +42,11 @@ function RaidNotifier.RG.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
             if (settings.sulxan_soulweaver_soul_extraction and tType == COMBAT_UNIT_TYPE_PLAYER) then
                 self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_SOUL_EXTRACTION), "rockgrove", "sulxan_soulweaver_soul_extraction")
             end
+        -- Havocrel Barbarian's Hasted Assault
+        elseif (buffsDebuffs.havocrel_barbarian_hasted_assault[abilityId]) then
+            if (settings.havocrel_barbarian_hasted_assault) then
+                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_HASTED_ASSAULT), "rockgrove", "havocrel_barbarian_hasted_assault")
+            end
         end
     elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
         -- Sul-Xan Soulweaver's Soul Extraction (Debug purpose only!)

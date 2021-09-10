@@ -618,5 +618,10 @@ rockgrove.sulxan_soulweaver_soul_extraction = {
 	[158441] = true,
 	[158442] = true,
 }
+-- Havocrel Barbarian's Hasted Assault
+rockgrove.havocrel_barbarian_hasted_assault = {
+	[149261] = true,
+	[149268] = true,
+}
 
 RaidNotifier.BuffsDebuffs[RAID_ROCKGROVE] = rockgrove
