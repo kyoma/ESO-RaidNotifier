@@ -47,6 +47,11 @@ function RaidNotifier.RG.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
             if (settings.havocrel_barbarian_hasted_assault) then
                 self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_HASTED_ASSAULT), "rockgrove", "havocrel_barbarian_hasted_assault")
             end
+        -- Oaxiltso's Savage Blitz
+        elseif (buffsDebuffs.oaxiltso_savage_blitz[abilityId]) then
+            if (settings.oaxiltso_savage_blitz and tName ~= "") then
+                self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_SAVAGE_BLITZ), tName), "rockgrove", "oaxiltso_savage_blitz")
+            end
         end
     elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
         -- Sul-Xan Soulweaver's Soul Extraction (Debug purpose only!)

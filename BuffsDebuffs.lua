@@ -623,5 +623,10 @@ rockgrove.havocrel_barbarian_hasted_assault = {
 	[149261] = true,
 	[149268] = true,
 }
+-- Oaxiltso's Savage Blitz
+rockgrove.oaxiltso_savage_blitz = {
+	[149414] = true,
+	[157932] = true,
+}
 
 RaidNotifier.BuffsDebuffs[RAID_ROCKGROVE] = rockgrove

@@ -306,6 +306,7 @@ do ------------------
 			sulxan_soulweaver_astral_shield = false,
 			sulxan_soulweaver_soul_extraction = false,
 			havocrel_barbarian_hasted_assault = false,
+			oaxiltso_savage_blitz = false,
 		},
 		dbg = {
 			enable = false,
@@ -1634,6 +1635,11 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_Rockgrove_Hasted_Assault,
 		tooltip = L.Settings_Rockgrove_Hasted_Assault_TT,
 	}, "rockgrove", "havocrel_barbarian_hasted_assault")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Rockgrove_Savage_Blitz,
+		tooltip = L.Settings_Rockgrove_Savage_Blitz_TT,
+	}, "rockgrove", "oaxiltso_savage_blitz")
 	subTable = nil --end submenu
 
 	MakeControlEntry({
