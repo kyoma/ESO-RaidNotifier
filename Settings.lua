@@ -308,6 +308,7 @@ do ------------------
 			prime_meteor = false,
 			havocrel_barbarian_hasted_assault = false,
 			oaxiltso_savage_blitz = false,
+			oaxiltso_noxious_sludge = 0, -- "Off"
 			bahsei_embrace_of_death = 0, -- "Off"
 		},
 		dbg = {
@@ -553,6 +554,7 @@ function RaidNotifier:CreateSettingsMenu()
 		},
 		rockgrove = {
 			sulxan_reaver_sundering_strike = off_self_all,
+			oaxiltso_noxious_sludge = off_self_all,
 			bahsei_embrace_of_death = off_self_all,
 		},
 	}
@@ -1648,6 +1650,12 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_Rockgrove_Savage_Blitz,
 		tooltip = L.Settings_Rockgrove_Savage_Blitz_TT,
 	}, "rockgrove", "oaxiltso_savage_blitz")
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_Rockgrove_Noxious_Sludge,
+		tooltip = L.Settings_Rockgrove_Noxious_Sludge_TT,
+		choices = choices.rockgrove.oaxiltso_noxious_sludge,
+	}, "rockgrove", "oaxiltso_noxious_sludge")
 	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_Rockgrove_Embrace_Of_Death,

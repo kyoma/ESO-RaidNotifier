@@ -30,6 +30,17 @@ function RaidNotifier.RG.OnEffectChanged(eventCode, changeType, eSlot, eName, uT
                 end
             end
         end
+    -- Oaxiltso's Noxious Sludge
+    elseif (abilityId == buffsDebuffs.oaxiltso_noxious_sludge and string.sub(uTag, 1, 5) == "group") then
+        if (changeType == EFFECT_RESULT_GAINED) then
+            if (settings.oaxiltso_noxious_sludge >= 1 and AreUnitsEqual(uTag, "player")) then
+                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_NOXIOUS_SLUDGE), "rockgrove", "oaxiltso_noxious_sludge")
+            elseif (settings.oaxiltso_noxious_sludge == 2) then
+                local targetPlayerName = self.UnitIdToString(uId)
+
+                self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_NOXIOUS_SLUDGE_OTHER), targetPlayerName), "rockgrove", "oaxiltso_noxious_sludge")
+            end
+        end
     -- Flame-Herald Bahsei's Embrace of Death (Death Touch debuff)
     elseif (abilityId == buffsDebuffs.bahsei_death_touch and string.sub(uTag, 1, 5) == "group") then
         if (changeType == EFFECT_RESULT_GAINED) then

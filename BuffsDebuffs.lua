@@ -628,6 +628,8 @@ rockgrove.oaxiltso_savage_blitz = {
 	[149414] = true,
 	[157932] = true,
 }
+-- Oaxiltso's Noxious Sludge
+rockgrove.oaxiltso_noxious_sludge = 157860
 -- Radiating Heat (player gains this effect while Prime Meteor is present)
 rockgrove.meteor_radiating_heat = {
 	[152462] = true, -- on trash
