@@ -589,6 +589,8 @@ L.Settings_Rockgrove_Hasted_Assault                = "General: Hasted Assault"
 L.Settings_Rockgrove_Hasted_Assault_TT             = "Alerts you when the Havocrel Barbarian makes Hasted Assault attack. He teleports from player to player in random order and attacks them. This should be blocked."
 L.Settings_Rockgrove_Savage_Blitz                  = "Oaxiltso: Savage Blitz"
 L.Settings_Rockgrove_Savage_Blitz_TT               = "Alerts you when the Oaxiltso charges at the furthest player."
+L.Settings_Rockgrove_Embrace_Of_Death              = "Flame-Herald Bahsei: Embrace of Death"
+L.Settings_Rockgrove_Embrace_Of_Death_TT           = "Alerts you when someone got cursed by Flame-Herald Bahsei. That person will explode after 8 seconds, spreading the curse. It's important to keep cursed player separated from the group."
 
 -- Alerts
 L.Alerts_Rockgrove_Sundering_Strike                = "Incoming |cCDCDCDSundering Strike|r on you!"
@@ -600,6 +602,8 @@ L.Alerts_Rockgrove_Soul_Extraction                 = "Incoming Soul Extraction o
 L.Alerts_Rockgrove_Prime_Meteor                    = "|cFFD600Prime Meteor|r will explode in"
 L.Alerts_Rockgrove_Hasted_Assault                  = "Incoming |cFF0000Hasted Assault|r! Block!"
 L.Alerts_Rockgrove_Savage_Blitz                    = "Oaxiltso charges at |cFF0000<<!aC:1>>|r!"
+L.Alerts_Rockgrove_Embrace_Of_Death                = "You're cursed by |c370073Embrace of Death|r! Stay away! Explosion in"
+L.Alerts_Rockgrove_Embrace_Of_Death_Other          = "|cFF0000<<!aC:1>>|r cursed by |c370073Embrace of Death|r! Explosion in"
 
 
 --------------------------------

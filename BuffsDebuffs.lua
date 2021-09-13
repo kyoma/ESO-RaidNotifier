@@ -633,5 +633,7 @@ rockgrove.meteor_radiating_heat = {
 	[152462] = true, -- on trash
 	[157383] = true, -- on second boss
 }
+-- Flame-Herald Bahsei's Death Touch debuff (caused by Embrace of Death mech)
+rockgrove.bahsei_death_touch = 150078
 
 RaidNotifier.BuffsDebuffs[RAID_ROCKGROVE] = rockgrove

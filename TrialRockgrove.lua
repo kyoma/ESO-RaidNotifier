@@ -30,6 +30,17 @@ function RaidNotifier.RG.OnEffectChanged(eventCode, changeType, eSlot, eName, uT
                 end
             end
         end
+    -- Flame-Herald Bahsei's Embrace of Death (Death Touch debuff)
+    elseif (abilityId == buffsDebuffs.bahsei_death_touch and string.sub(uTag, 1, 5) == "group") then
+        if (changeType == EFFECT_RESULT_GAINED) then
+            if (settings.bahsei_embrace_of_death >= 1 and AreUnitsEqual(uTag, "player")) then
+                self:StartCountdown(8000, GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_EMBRACE_OF_DEATH), "rockgrove", "bahsei_embrace_of_death", true)
+            elseif (settings.bahsei_embrace_of_death == 2) then
+                local targetPlayerName = self.UnitIdToString(uId)
+
+                self:StartCountdown(8000, zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_EMBRACE_OF_DEATH_OTHER), targetPlayerName), "rockgrove", "bahsei_embrace_of_death", true)
+            end
+        end
     end
 end
 

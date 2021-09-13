@@ -308,6 +308,7 @@ do ------------------
 			prime_meteor = false,
 			havocrel_barbarian_hasted_assault = false,
 			oaxiltso_savage_blitz = false,
+			bahsei_embrace_of_death = 0, -- "Off"
 		},
 		dbg = {
 			enable = false,
@@ -552,6 +553,7 @@ function RaidNotifier:CreateSettingsMenu()
 		},
 		rockgrove = {
 			sulxan_reaver_sundering_strike = off_self_all,
+			bahsei_embrace_of_death = off_self_all,
 		},
 	}
 
@@ -1646,6 +1648,12 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_Rockgrove_Savage_Blitz,
 		tooltip = L.Settings_Rockgrove_Savage_Blitz_TT,
 	}, "rockgrove", "oaxiltso_savage_blitz")
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_Rockgrove_Embrace_Of_Death,
+		tooltip = L.Settings_Rockgrove_Embrace_Of_Death_TT,
+		choices = choices.rockgrove.bahsei_embrace_of_death,
+	}, "rockgrove", "bahsei_embrace_of_death")
 	subTable = nil --end submenu
 
 	MakeControlEntry({
