@@ -15,6 +15,13 @@ function RaidNotifier.RG.Initialize()
     data = {}
 end
 
+function RaidNotifier.RG.OnEffectChanged(eventCode, changeType, eSlot, eName, uTag, beginTime, endTime, stackCount, iconName, buffType, eType, aType, statusEffectType, uName, uId, abilityId, uType)
+    local raidId = RaidNotifier.raidId
+    local self   = RaidNotifier
+
+    local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.rockgrove
+end
+
 function RaidNotifier.RG.OnCombatEvent(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
     local raidId = RaidNotifier.raidId
     local self   = RaidNotifier
