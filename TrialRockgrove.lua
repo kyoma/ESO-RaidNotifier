@@ -20,6 +20,17 @@ function RaidNotifier.RG.OnEffectChanged(eventCode, changeType, eSlot, eName, uT
     local self   = RaidNotifier
 
     local buffsDebuffs, settings = self.BuffsDebuffs[raidId], self.Vars.rockgrove
+
+    -- Prime Meteor
+    if (buffsDebuffs.meteor_radiating_heat[abilityId] and string.sub(uTag, 1, 5) == "group") then
+        if (settings.prime_meteor) then
+            if (changeType == EFFECT_RESULT_GAINED) then
+                if (AreUnitsEqual(uTag, "player")) then
+                    self:StartCountdown(10000, GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_PRIME_METEOR), "rockgrove", "prime_meteor", true)
+                end
+            end
+        end
+    end
 end
 
 function RaidNotifier.RG.OnCombatEvent(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)

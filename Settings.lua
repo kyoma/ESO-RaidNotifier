@@ -305,6 +305,7 @@ do ------------------
 			sulxan_reaver_sundering_strike = 0, -- "Off"
 			sulxan_soulweaver_astral_shield = false,
 			sulxan_soulweaver_soul_extraction = false,
+			prime_meteor = false,
 			havocrel_barbarian_hasted_assault = false,
 			oaxiltso_savage_blitz = false,
 		},
@@ -1630,6 +1631,11 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_Rockgrove_Soul_Extraction,
 		tooltip = L.Settings_Rockgrove_Soul_Extraction_TT,
 	}, "rockgrove", "sulxan_soulweaver_soul_extraction")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Rockgrove_Prime_Meteor,
+		tooltip = L.Settings_Rockgrove_Prime_Meteor_TT,
+	}, "rockgrove", "prime_meteor")
 	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_Rockgrove_Hasted_Assault,

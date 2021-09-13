@@ -628,5 +628,10 @@ rockgrove.oaxiltso_savage_blitz = {
 	[149414] = true,
 	[157932] = true,
 }
+-- Radiating Heat (player gains this effect while Prime Meteor is present)
+rockgrove.meteor_radiating_heat = {
+	[152462] = true, -- on trash
+	[157383] = true, -- on second boss
+}
 
 RaidNotifier.BuffsDebuffs[RAID_ROCKGROVE] = rockgrove
