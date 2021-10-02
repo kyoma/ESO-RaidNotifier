@@ -599,6 +599,8 @@ kynes_aegis.yandir_gargoyle_totem_spawn = 133514
 kynes_aegis.yandir_chaurus_totem_spawn = 133516
 -- Chaurus Bile, projectile from Chaurus Totem at Yandir the Butcher boss
 kynes_aegis.yandir_chaurus_bile = 133559
+-- Effect which fires when Lord Falgravn starts his Ichor Eruption mechanic
+kynes_aegis.falgravn_ichor_eruption_timer = 136548
 
 RaidNotifier.BuffsDebuffs[RAID_KYNES_AEGIS] = kynes_aegis
 

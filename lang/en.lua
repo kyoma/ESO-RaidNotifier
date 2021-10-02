@@ -563,6 +563,10 @@ L.Settings_KynesAegis_Totem                         = "Yandir: Totems spawn"
 L.Settings_KynesAegis_Totem_TT                      = "Alerts you when certain totem appeared during the battle with Yandir the Butcher boss.\n\nDragon Totems: always two appears at the same time; each one blows out fire along a straight line in two opposite directions.\nHarpy Totem: spawns a lightning aura that will radiate out.\nGargoyle totem: encases random players into stone.\nChaurus Totem: poisons several people, and this poison should not be spread to others, that's why you should not stack at this phase."
 L.Settings_KynesAegis_Chaurus_Bile                  = "Yandir: Chaurus Bile"
 L.Settings_KynesAegis_Chaurus_Bile_TT               = "Alerts you when Chaurus Totem launch Chaurus Bile projectiles towards random group members. This projectile can be dodged."
+L.Settings_KynesAegis_Ichor_Eruption                = "Falgravn: Ichor Eruption"
+L.Settings_KynesAegis_Ichor_Eruption_TT             = "Shows countdown until Falgravn will release his Ichor Eruption."
+L.Settings_KynesAegis_Ichor_Eruption_CD_Time        = "       - Countdown time"
+L.Settings_KynesAegis_Ichor_Eruption_CD_Time_TT     = "Time before Ichor Eruption when countdown should pop up."
 
 -- Alerts
 L.Alerts_KynesAegis_Crashing_Wall                   = "|cd2a100Crashing Wall|r in"
@@ -574,6 +578,7 @@ L.Alerts_KynesAegis_Gargoyle_Totem                  = "|cf5f5dcGargoyle Totem|r 
 L.Alerts_KynesAegis_Chaurus_Totem                   = "|c39942eChaurus Totem|r spawned. Don't stack!"
 L.Alerts_KynesAegis_Chaurus_Bile_Self               = "|c39942eChaurus Bile|r incoming at you. Dodge!"
 L.Alerts_KynesAegis_Chaurus_Bile_Common             = "|c39942eChaurus Bile|r incoming!"
+L.Alerts_KynesAegis_Ichor_Eruption                  = "|cb00000Ichor Eruption|r in"
 
 
 --------------------------------

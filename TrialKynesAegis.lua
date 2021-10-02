@@ -81,5 +81,16 @@ function RaidNotifier.KA.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
                 end
             end
         end
+    elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
+        -- Lord Falgravn's timer before Ichor Eruption mechanic happens
+        if (abilityId == buffsDebuffs.falgravn_ichor_eruption_timer) then
+            if (settings.falgravn_ichor_eruption) then
+                local countdownTime = math.min(settings.falgravn_ichor_eruption_time_before * 1000, hitValue);
+
+                zo_callLater(function()
+                    self:StartCountdown(countdownTime, GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_ICHOR_ERUPTION), "kynesAegis", "falgravn_ichor_eruption", false)
+                end, hitValue - countdownTime)
+            end
+        end
     end
 end

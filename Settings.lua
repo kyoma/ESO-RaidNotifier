@@ -301,6 +301,8 @@ do ------------------
 			bloodknight_blood_fountain = false,
 			yandir_totem_spawn = 0, -- "Off"
 			yandir_chaurus_bile = 0, -- "Off"
+			falgravn_ichor_eruption = false,
+			falgravn_ichor_eruption_time_before = 3,
 		},
 		rockgrove = {
 			sulxan_reaver_sundering_strike = 0, -- "Off"
@@ -1623,6 +1625,23 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_KynesAegis_Chaurus_Bile_TT,
 		choices = choices.kynesAegis.yandir_chaurus_bile,
 	}, "kynesAegis", "yandir_chaurus_bile")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_KynesAegis_Ichor_Eruption,
+		tooltip = L.Settings_KynesAegis_Ichor_Eruption_TT,
+	}, "kynesAegis", "falgravn_ichor_eruption")
+	MakeControlEntry({
+		type = "slider",
+		name = L.Settings_KynesAegis_Ichor_Eruption_CD_Time,
+		tooltip = L.Settings_KynesAegis_Ichor_Eruption_CD_Time_TT,
+		min = 2,
+		max = 30,
+		step = 0.5,
+		disabled = function()
+			return savedVars.kynesAegis.falgravn_ichor_eruption == false;
+		end,
+		noAlert = true,
+	}, "kynesAegis", "falgravn_ichor_eruption_time_before")
 	subTable = nil --end submenu
 
 	-- Rockgrove
