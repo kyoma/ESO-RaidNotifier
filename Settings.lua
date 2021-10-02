@@ -300,6 +300,7 @@ do ------------------
 			bitter_knight_sanguine_prison = false,
 			bloodknight_blood_fountain = false,
 			yandir_totem_spawn = 0, -- "Off"
+			yandir_chaurus_bile = 0, -- "Off"
 		},
 		rockgrove = {
 			sulxan_reaver_sundering_strike = 0, -- "Off"
@@ -551,6 +552,7 @@ function RaidNotifier:CreateSettingsMenu()
 				L.Settings_General_Choices_OnlyChaurusTotem,
 				L.Settings_General_Choices_All,
 			},
+			yandir_chaurus_bile = off_self_all,
 		},
 		rockgrove = {
 			sulxan_reaver_sundering_strike = off_self_all,
@@ -1615,6 +1617,12 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_KynesAegis_Totem_TT,
 		choices = choices.kynesAegis.yandir_totem_spawn,
 	}, "kynesAegis", "yandir_totem_spawn")
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_KynesAegis_Chaurus_Bile,
+		tooltip = L.Settings_KynesAegis_Chaurus_Bile_TT,
+		choices = choices.kynesAegis.yandir_chaurus_bile,
+	}, "kynesAegis", "yandir_chaurus_bile")
 	subTable = nil --end submenu
 
 	-- Rockgrove

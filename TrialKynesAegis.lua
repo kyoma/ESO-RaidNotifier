@@ -71,5 +71,15 @@ function RaidNotifier.KA.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
                 self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_CHAURUS_TOTEM), "kynesAegis", "yandir_totem_spawn")
             end
         end
+        -- Chaurus Bile projectile from Chaurus Totem at Yandir the Butcher boss
+        if (abilityId == buffsDebuffs.yandir_chaurus_bile) then
+            if (settings.yandir_chaurus_bile >= 1) then
+                if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+                    self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_CHAURUS_BILE_SELF), "kynesAegis", "yandir_chaurus_bile")
+                elseif (settings.yandir_chaurus_bile == 2) then
+                    self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_CHAURUS_BILE_COMMON), "kynesAegis", "yandir_chaurus_bile", 2)
+                end
+            end
+        end
     end
 end

@@ -597,6 +597,8 @@ kynes_aegis.yandir_harpy_totem_spawn = 133511
 kynes_aegis.yandir_gargoyle_totem_spawn = 133514
 -- Chaurus Totem spawn at Yandir the Butcher boss
 kynes_aegis.yandir_chaurus_totem_spawn = 133516
+-- Chaurus Bile, projectile from Chaurus Totem at Yandir the Butcher boss
+kynes_aegis.yandir_chaurus_bile = 133559
 
 RaidNotifier.BuffsDebuffs[RAID_KYNES_AEGIS] = kynes_aegis
 
