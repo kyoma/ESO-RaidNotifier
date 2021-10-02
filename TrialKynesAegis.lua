@@ -81,6 +81,17 @@ function RaidNotifier.KA.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
                 end
             end
         end
+        -- Vrolsworn Fire Mage's meteors (3 meteors at once)
+        if (abilityId == buffsDebuffs.vrol_firemage_meteor) then
+            -- hitValue = 1 for casting or 2250 as the duration of meteor's reaching the targets
+            if (settings.vrol_firemage_meteor >= 1 and hitValue > 1) then
+                if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+                    self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_VROL_FIREMAGE_METEOR), "kynesAegis", "vrol_firemage_meteor", true, 2)
+                elseif (settings.vrol_firemage_meteor == 2) then
+                    self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_VROL_FIREMAGE_METEOR_OTHER), "kynesAegis", "vrol_firemage_meteor", false, 2)
+                end
+            end
+        end
     elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
         -- Lord Falgravn's timer before Ichor Eruption mechanic happens
         if (abilityId == buffsDebuffs.falgravn_ichor_eruption_timer) then
