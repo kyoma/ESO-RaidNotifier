@@ -300,7 +300,6 @@ do ------------------
 			bitter_knight_sanguine_prison = false,
 			bloodknight_blood_fountain = false,
 			yandir_totem_spawn = 0, -- "Off"
-			yandir_chaurus_bile = 0, -- "Off"
 			vrol_firemage_meteor = 0, -- "Off"
 			falgravn_ichor_eruption = false,
 			falgravn_ichor_eruption_time_before = 3,
@@ -555,7 +554,6 @@ function RaidNotifier:CreateSettingsMenu()
 				L.Settings_General_Choices_OnlyChaurusTotem,
 				L.Settings_General_Choices_All,
 			},
-			yandir_chaurus_bile = off_self_all,
 			vrol_firemage_meteor = off_self_all,
 		},
 		rockgrove = {
@@ -1621,12 +1619,6 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_KynesAegis_Totem_TT,
 		choices = choices.kynesAegis.yandir_totem_spawn,
 	}, "kynesAegis", "yandir_totem_spawn")
-	MakeControlEntry({
-		type = "dropdown",
-		name = L.Settings_KynesAegis_Chaurus_Bile,
-		tooltip = L.Settings_KynesAegis_Chaurus_Bile_TT,
-		choices = choices.kynesAegis.yandir_chaurus_bile,
-	}, "kynesAegis", "yandir_chaurus_bile")
 	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_KynesAegis_Vrol_FireMage_Meteor,
