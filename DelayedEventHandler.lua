@@ -22,6 +22,24 @@ function EventArgumentBag:ContainsArgumentWithValue(name, value)
     return false
 end
 
+function EventArgumentBag:GetEventCount()
+    return #self.allEventArgs
+end
+
+function EventArgumentBag:GetValues()
+    return self.allEventArgs
+end
+
+function EventArgumentBag:GetArgValues(name)
+    local values = {}
+
+    for _, arguments in ipairs(self.allEventArgs) do
+        table.insert(values, arguments[name])
+    end
+
+    return values
+end
+
 local Handler = {}
 
 local eventStorage = {}
