@@ -34,11 +34,24 @@ function RaidNotifier.RG.OnEffectChanged(eventCode, changeType, eSlot, eName, uT
     elseif (abilityId == buffsDebuffs.oaxiltso_noxious_sludge and string.sub(uTag, 1, 5) == "group") then
         if (changeType == EFFECT_RESULT_GAINED) then
             if (settings.oaxiltso_noxious_sludge >= 1 and AreUnitsEqual(uTag, "player")) then
-                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_NOXIOUS_SLUDGE), "rockgrove", "oaxiltso_noxious_sludge")
+                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_NOXIOUS_SLUDGE_SELF), "rockgrove", "oaxiltso_noxious_sludge")
             elseif (settings.oaxiltso_noxious_sludge == 2) then
                 local targetPlayerName = self.UnitIdToString(uId)
 
-                self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_NOXIOUS_SLUDGE_OTHER), targetPlayerName), "rockgrove", "oaxiltso_noxious_sludge")
+                self.DelayedEventHandler.Add(
+                    "oaxiltso_noxious_sludge",
+                    targetPlayerName,
+                    function (argsBag)
+                        if (argsBag:GetEventCount() >= 2) then
+                            self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_NOXIOUS_SLUDGE), unpack(argsBag:GetValues())), "rockgrove", "oaxiltso_noxious_sludge")
+                        else
+                            -- For some crazy people who'll go solo into the trial?
+                            self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_NOXIOUS_SLUDGE_SELF), "rockgrove", "oaxiltso_noxious_sludge")
+                        end
+
+                    end,
+                    50
+                )
             end
         end
     -- Flame-Herald Bahsei's Embrace of Death (Death Touch debuff)
