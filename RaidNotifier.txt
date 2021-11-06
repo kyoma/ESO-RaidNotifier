@@ -37,6 +37,7 @@ Util.lua
 BuffsDebuffs.lua
 Settings.lua
 UI.lua
+DelayedEventHandler.lua
 
 RaidNotifier.xml
 Bindings.xml
