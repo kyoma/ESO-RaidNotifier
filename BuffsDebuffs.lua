@@ -615,8 +615,6 @@ rockgrove.sulxan_reaver_sundering_strike = 149524
 rockgrove.sulxan_soulweaver_astral_shield_cast = 149089
 -- Sul-Xan Soulweaver's Astral Shield: gained shield by himself
 rockgrove.sulxan_soulweaver_astral_shield_self = 149099
--- Sul-Xan Soulweaver's Astral Shield: gained shield by other adds
-rockgrove.sulxan_soulweaver_astral_shield_others = 157236
 -- Havocrel Barbarian's Hasted Assault
 rockgrove.havocrel_barbarian_hasted_assault = {
 	[149261] = true,

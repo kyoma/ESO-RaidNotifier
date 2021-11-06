@@ -105,11 +105,6 @@ function RaidNotifier.RG.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
         -- Sul-Xan Soulweaver's Soul Remnant attack (his Astral Shield is broken)
         if (abilityId == buffsDebuffs.sulxan_soulweaver_astral_shield_self) then
             if (settings.sulxan_soulweaver_astral_shield) then
-                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_SOUL_REMNANT_HEAVY), "rockgrove", "sulxan_soulweaver_astral_shield")
-            end
-        -- Other's Soul Remnant attack (Astral Shield gained from Soulweaver is broken)
-        elseif (abilityId == buffsDebuffs.sulxan_soulweaver_astral_shield_others) then
-            if (settings.sulxan_soulweaver_astral_shield) then
                 self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_SOUL_REMNANT), "rockgrove", "sulxan_soulweaver_astral_shield")
             end
         end
