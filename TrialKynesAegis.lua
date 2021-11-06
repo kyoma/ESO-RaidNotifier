@@ -8,6 +8,12 @@ local function dbg() end
 
 local data = {}
 
+-- Storing Lord Falgravn's Ichor Eruption timers to be able to cancel them in case effect will fade out earlier
+local ichorEruption = {
+    callId = nil,
+    countdownId = nil,
+}
+
 function RaidNotifier.KA.Initialize()
     p = RaidNotifier.p
     dbg = RaidNotifier.dbg
@@ -101,9 +107,29 @@ function RaidNotifier.KA.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
             if (settings.falgravn_ichor_eruption) then
                 local countdownTime = math.min(settings.falgravn_ichor_eruption_time_before * 1000, hitValue);
 
-                zo_callLater(function()
-                    self:StartCountdown(countdownTime, GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_ICHOR_ERUPTION), "kynesAegis", "falgravn_ichor_eruption", false)
+                ichorEruption.callId = zo_callLater(function()
+                    -- Theoretically this function shouldn't be called if zo_callLater() was revoked by zo_removeCallLater()
+                    -- So there should be no need in checking callId
+                    -- But it's not 100% clear if that revoke works as intended at the present times
+                    if ichorEruption.callId then
+                        ichorEruption.callId = nil
+                        ichorEruption.countdownId = self:StartCountdown(countdownTime, GetString(RAIDNOTIFIER_ALERTS_KYNESAEGIS_ICHOR_ERUPTION), "kynesAegis", "falgravn_ichor_eruption", false)
+                    end
                 end, hitValue - countdownTime)
+            end
+        end
+    elseif (result == ACTION_RESULT_EFFECT_FADED) then
+        -- Lord Falgravn's Ichor Eruption timer cancelling
+        if (abilityId == buffsDebuffs.falgravn_ichor_eruption_timer) then
+            if (settings.falgravn_ichor_eruption) then
+                if (ichorEruption.callId ~= nil) then
+                    zo_removeCallLater(ichorEruption.callId)
+                    ichorEruption.callId = nil
+                end
+                if (ichorEruption.countdownId ~= nil) then
+                    self:StopCountdown(ichorEruption.countdownId)
+                    ichorEruption.countdownId = nil
+                end
             end
         end
     end
