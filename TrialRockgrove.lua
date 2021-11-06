@@ -49,7 +49,7 @@ function RaidNotifier.RG.OnEffectChanged(eventCode, changeType, eSlot, eName, uT
             elseif (settings.bahsei_embrace_of_death == 2) then
                 local targetPlayerName = self.UnitIdToString(uId)
 
-                self:StartCountdown(8000, zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_EMBRACE_OF_DEATH_OTHER), targetPlayerName), "rockgrove", "bahsei_embrace_of_death", true)
+                self:StartCountdown(8000, zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_EMBRACE_OF_DEATH_OTHER), targetPlayerName), "rockgrove", "bahsei_embrace_of_death", false)
             end
         end
     end
