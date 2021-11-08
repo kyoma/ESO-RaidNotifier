@@ -1688,6 +1688,7 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_Rockgrove_Embrace_Of_Death,
 		tooltip = L.Settings_Rockgrove_Embrace_Of_Death_TT,
 		choices = choices.rockgrove.bahsei_embrace_of_death,
+		choicesTooltips = { false, false, L.Settings_Rockgrove_Embrace_Of_Death_TT_All },
 	}, "rockgrove", "bahsei_embrace_of_death")
 	subTable = nil --end submenu
 
