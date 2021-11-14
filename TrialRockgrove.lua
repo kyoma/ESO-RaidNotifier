@@ -33,7 +33,7 @@ function RaidNotifier.RG.OnEffectChanged(eventCode, changeType, eSlot, eName, uT
     -- Oaxiltso's Noxious Sludge
     elseif (abilityId == buffsDebuffs.oaxiltso_noxious_sludge and string.sub(uTag, 1, 5) == "group") then
         if (changeType == EFFECT_RESULT_GAINED) then
-            if (settings.oaxiltso_noxious_sludge >= 1 and AreUnitsEqual(uTag, "player")) then
+            if (settings.oaxiltso_noxious_sludge == 1 and AreUnitsEqual(uTag, "player")) then
                 self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_NOXIOUS_SLUDGE_SELF), "rockgrove", "oaxiltso_noxious_sludge")
             elseif (settings.oaxiltso_noxious_sludge == 2) then
                 local targetPlayerName = self.UnitIdToString(uId)
@@ -42,13 +42,13 @@ function RaidNotifier.RG.OnEffectChanged(eventCode, changeType, eSlot, eName, uT
                     "oaxiltso_noxious_sludge",
                     targetPlayerName,
                     function (argsBag)
-                        if (argsBag:GetEventCount() >= 2) then
-                            self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_NOXIOUS_SLUDGE), unpack(argsBag:GetValues())), "rockgrove", "oaxiltso_noxious_sludge")
-                        else
-                            -- For some crazy people who'll go solo into the trial?
-                            self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_NOXIOUS_SLUDGE_SELF), "rockgrove", "oaxiltso_noxious_sludge")
+                        local alertMessage = RAIDNOTIFIER_ALERTS_ROCKGROVE_NOXIOUS_SLUDGE_OTHER2
+
+                        if (argsBag:GetEventCount() == 1) then
+                            alertMessage = RAIDNOTIFIER_ALERTS_ROCKGROVE_NOXIOUS_SLUDGE_OTHER1
                         end
 
+                        self:AddAnnouncement(zo_strformat(GetString(alertMessage), unpack(argsBag:GetValues())), "rockgrove", "oaxiltso_noxious_sludge")
                     end,
                     50
                 )
