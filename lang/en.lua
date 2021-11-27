@@ -619,8 +619,8 @@ L.Alerts_Rockgrove_Noxious_Sludge_Other1           = "|cFF0000<<!aC:1>>|r is poi
 L.Alerts_Rockgrove_Noxious_Sludge_Other2           = "|cFF0000<<!aC:1>>|r and |cFF0000<<!aC:2>>|r are poisoned by |c008C22Noxious Sludge|r."
 L.Alerts_Rockgrove_Cinder_Cleave                   = "|cD74700Cinder Cleave|r on you!"
 L.Alerts_Rockgrove_Cinder_Cleave_Other             = "|cD74700Cinder Cleave|r on |cFF0000<<!aC:1>>|r."
-L.Alerts_Rockgrove_Embrace_Of_Death                = "You're cursed by |c370073Embrace of Death|r! Stay away! Explosion in"
-L.Alerts_Rockgrove_Embrace_Of_Death_Other          = "|cFF0000<<!aC:1>>|r cursed by |c370073Embrace of Death|r! Explosion in"
+L.Alerts_Rockgrove_Embrace_Of_Death                = "You're cursed by |c0A929BEmbrace of Death|r! Stay away! Explosion in"
+L.Alerts_Rockgrove_Embrace_Of_Death_Other          = "|cFF0000<<!aC:1>>|r cursed by |c0A929BEmbrace of Death|r! Explosion in"
 
 
 --------------------------------
