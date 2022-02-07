@@ -570,7 +570,7 @@ L.Settings_KynesAegis_Ichor_Eruption_CD_Time_TT     = "Time before Ichor Eruptio
 
 -- Alerts
 L.Alerts_KynesAegis_Crashing_Wall                   = "|cd2a100Crashing Wall|r in"
-L.Alerts_KynesAegis_Sanguine_Prison_Other           = "|cff0000<<!aC:1>>|r trapped in |cb00000Sanguine Prison|r. Free him!"
+L.Alerts_KynesAegis_Sanguine_Prison_Other           = "|cff0000<<!aC:1>>|r trapped in |cb00000Sanguine Prison|r. Free them!"
 L.Alerts_KynesAegis_Blood_Fountain                  = "|cb00000Blood Fountain|r in"
 L.Alerts_KynesAegis_Dragon_Totem                    = "Two |cffa500Dragon Totems|r spawned. Avoid the fire!"
 L.Alerts_KynesAegis_Harpy_Totem                     = "|c00bfffHarpy Totem|r spawned."
