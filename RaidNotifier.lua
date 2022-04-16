@@ -750,7 +750,7 @@ do ----------------------
 		local trial = self.Trial[self.raidId]
 
 		-- Remove custom handlers which may have been assigned inside the trial "class"
-		if type(trial.Shutdown) == "function" then
+		if trial and type(trial.Shutdown) == "function" then
 			trial.Shutdown()
 		end
 
