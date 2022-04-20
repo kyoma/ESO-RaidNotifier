@@ -600,10 +600,6 @@ for k, v in pairs(L) do
     ZO_CreateStringId(string, v)
 end
 
-function RaidNotifier:GetLocale()
-    return L
-end
-
 if (GetCVar('language.2') == 'es') then
     local MissingL = {}
     for k, v in pairs(RaidNotifier:GetLocale()) do
