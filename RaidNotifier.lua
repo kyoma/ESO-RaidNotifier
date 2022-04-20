@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name           = "RaidNotifier"
 RaidNotifier.DisplayName    = "Raid Notifier"
-RaidNotifier.Version        = "2.20"
+RaidNotifier.Version        = "2.21"
 RaidNotifier.Author         = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name        = "RNVars"
 RaidNotifier.SV_Version     = 4
@@ -750,7 +750,7 @@ do ----------------------
 		local trial = self.Trial[self.raidId]
 
 		-- Remove custom handlers which may have been assigned inside the trial "class"
-		if type(trial.Shutdown) == "function" then
+		if trial and type(trial.Shutdown) == "function" then
 			trial.Shutdown()
 		end
 
