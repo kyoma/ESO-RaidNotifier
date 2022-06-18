@@ -318,6 +318,7 @@ do ------------------
 			bahsei_embrace_of_death = 0, -- "Off"
 		},
 		dreadsailReef = {
+			imminent_debuffs = false,
 		},
 		dbg = {
 			enable = false,
@@ -1715,6 +1716,11 @@ function RaidNotifier:CreateSettingsMenu()
 
 	-- Dreadsail Reef
 	MakeSubmenu(L.Settings_DreadsailReef_Header, RaidNotifier:GetRaidDescription(RAID_DREADSAIL_REEF))
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_DreadsailReef_Imminent_Debuffs,
+		tooltip = L.Settings_DreadsailReef_Imminent_Debuffs_TT,
+	}, "dreadsailReef", "imminent_debuffs")
 	subTable = nil --end submenu
 
 	MakeControlEntry({

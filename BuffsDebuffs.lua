@@ -647,4 +647,9 @@ RaidNotifier.BuffsDebuffs[RAID_ROCKGROVE] = rockgrove
 -- -- ---------------------------------------------------
 local dreadsail_reef = {}
 
+-- Lylanar's Imminent Blister debuff (will be followed by Blistering Fragility; attack ID = 166522)
+dreadsail_reef.lylanar_imminent_blister = 168525
+-- Turlassil's Imminent Chill debuff (will be followed by Chilling Fragility; attack ID = 166527)
+dreadsail_reef.turlassil_imminent_chill = 168526
+
 RaidNotifier.BuffsDebuffs[RAID_DREADSAIL_REEF] = dreadsail_reef
