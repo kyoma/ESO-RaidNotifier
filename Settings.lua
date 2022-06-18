@@ -319,6 +319,7 @@ do ------------------
 		},
 		dreadsailReef = {
 			imminent_debuffs = false,
+			brothers_heavy_attack = 0, -- "Off"
 			taleria_rapid_deluge = 0, -- "Off"
 		},
 		dbg = {
@@ -571,6 +572,7 @@ function RaidNotifier:CreateSettingsMenu()
 			bahsei_embrace_of_death = off_self_all,
 		},
 		dreadsailReef = {
+			brothers_heavy_attack = off_self_all,
 			taleria_rapid_deluge = off_self_all,
 		},
 	}
@@ -1723,6 +1725,12 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_DreadsailReef_Imminent_Debuffs,
 		tooltip = L.Settings_DreadsailReef_Imminent_Debuffs_TT,
 	}, "dreadsailReef", "imminent_debuffs")
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_DreadsailReef_Brothers_Heavy_Attack,
+		tooltip = L.Settings_DreadsailReef_Brothers_Heavy_Attack_TT,
+		choices = choices.dreadsailReef.brothers_heavy_attack,
+	}, "dreadsailReef", "brothers_heavy_attack")
 	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_DreadsailReef_Rapid_Deluge,

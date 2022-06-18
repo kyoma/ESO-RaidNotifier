@@ -24,7 +24,23 @@ function RaidNotifier.DSR.OnCombatEvent(_, result, isError, aName, aGraphic, aAc
         tName = self.UnitIdToString(tUnitId)
     end
 
-    if (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
+    if (result == ACTION_RESULT_BEGIN) then
+        -- Lylanar's Heavy Attack
+        if (abilityId == buffsDebuffs.lylanar_broiling_hew and settings.brothers_heavy_attack > 0) then
+            if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_DREADSAILREEF_BROILING_HEW), "dreadsailReef", "brothers_heavy_attack")
+            elseif (settings.brothers_heavy_attack == 2 and tName ~= "") then
+                self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_DREADSAILREEF_BROILING_HEW_OTHER), tName), "dreadsailReef", "brothers_heavy_attack")
+            end
+        -- Turlassil's Heavy Attack
+        elseif (abilityId == buffsDebuffs.turlassil_stinging_shear and settings.brothers_heavy_attack > 0) then
+            if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_DREADSAILREEF_STINGING_SHEAR), "dreadsailReef", "brothers_heavy_attack")
+            elseif (settings.brothers_heavy_attack == 2 and tName ~= "") then
+                self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_DREADSAILREEF_STINGING_SHEAR_OTHER), tName), "dreadsailReef", "brothers_heavy_attack")
+            end
+        end
+    elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
         -- Lylanar's Imminent Blister debuff
         if (abilityId == buffsDebuffs.lylanar_imminent_blister and settings.imminent_debuffs) then
             if (tType == COMBAT_UNIT_TYPE_PLAYER) then
