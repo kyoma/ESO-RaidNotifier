@@ -20,6 +20,7 @@ RAID_BLACKROSE_PRISON       = 10
 RAID_SUNSPIRE				= 11
 RAID_KYNES_AEGIS			= 12
 RAID_ROCKGROVE              = 13
+RAID_DREADSAIL_REEF         = 14
 
 -- ------------------
 -- DEFAULT SETTINGS
@@ -316,6 +317,8 @@ do ------------------
 			oaxiltso_annihilator_cinder_cleave = 0, -- "Off"
 			bahsei_embrace_of_death = 0, -- "Off"
 		},
+		dreadsailReef = {
+		},
 		dbg = {
 			enable = false,
 			notify = false,
@@ -564,6 +567,8 @@ function RaidNotifier:CreateSettingsMenu()
 			oaxiltso_noxious_sludge = off_self_all,
 			oaxiltso_annihilator_cinder_cleave = off_self_all,
 			bahsei_embrace_of_death = off_self_all,
+		},
+		dreadsailReef = {
 		},
 	}
 
@@ -1706,6 +1711,10 @@ function RaidNotifier:CreateSettingsMenu()
 		choices = choices.rockgrove.bahsei_embrace_of_death,
 		choicesTooltips = { false, false, L.Settings_Rockgrove_Embrace_Of_Death_TT_All },
 	}, "rockgrove", "bahsei_embrace_of_death")
+	subTable = nil --end submenu
+
+	-- Dreadsail Reef
+	MakeSubmenu(L.Settings_DreadsailReef_Header, RaidNotifier:GetRaidDescription(RAID_DREADSAIL_REEF))
 	subTable = nil --end submenu
 
 	MakeControlEntry({

@@ -30,6 +30,7 @@ TrialCloudrest.lua
 TrialSunspire.lua
 TrialKynesAegis.lua
 TrialRockgrove.lua
+TrialDreadsailReef.lua
 
 Notifications.lua
 RaidNotifier.lua

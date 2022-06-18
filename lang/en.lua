@@ -626,6 +626,15 @@ L.Alerts_Rockgrove_Embrace_Of_Death_Other          = "|cFF0000<<!aC:1>>|r cursed
 
 
 --------------------------------
+------   DREADSAIL REEF    -----
+--------------------------------
+L.Settings_DreadsailReef_Header                    = "Dreadsail Reef"
+-- Settings
+
+-- Alerts
+
+
+--------------------------------
 ----       Debugging        ----
 --------------------------------
 L.Settings_Debug_Header                  = "Debug"

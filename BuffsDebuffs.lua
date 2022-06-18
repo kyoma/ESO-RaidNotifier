@@ -641,3 +641,10 @@ rockgrove.meteor_radiating_heat = {
 rockgrove.bahsei_death_touch = 150078
 
 RaidNotifier.BuffsDebuffs[RAID_ROCKGROVE] = rockgrove
+
+-- ------------------------------------------------------
+-- -- Dreadsail Reef-------------------------------------
+-- -- ---------------------------------------------------
+local dreadsail_reef = {}
+
+RaidNotifier.BuffsDebuffs[RAID_DREADSAIL_REEF] = dreadsail_reef
