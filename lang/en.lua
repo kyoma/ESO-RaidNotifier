@@ -632,12 +632,16 @@ L.Settings_DreadsailReef_Header                    = "Dreadsail Reef"
 -- Settings
 L.Settings_DreadsailReef_Imminent_Debuffs          = "Lylanar & Turlassil: Imminent Blister/Chill"
 L.Settings_DreadsailReef_Imminent_Debuffs_TT       = "Alerts you when tank receives Imminent Blister debuff from Lylanar or Imminent Chill debuff from Turlassil. Tanks should swap in 10 seconds."
+L.Settings_DreadsailReef_Rapid_Deluge              = "Taleria: Rapid Deluge"
+L.Settings_DreadsailReef_Rapid_Deluge_TT           = "Alerts you when you or someone got Rapid Deluge debuff. They'll explode in 6 seconds, and the best option to handle the damage is to be swimming at that time."
 
 -- Alerts
 L.Alerts_DreadsailReef_Imminent_Blister            = "You're afflicted by |cF27D0CImminent Blister|r! Swap tanks until"
 L.Alerts_DreadsailReef_Imminent_Blister_Other      = "|cFF0000<<!aC:1>>|r afflicted by |cF27D0CImminent Blister|r! Swap tanks until"
 L.Alerts_DreadsailReef_Imminent_Chill              = "You're afflicted by |cB4CFFAImminent Chill|r! Swap tanks until"
 L.Alerts_DreadsailReef_Imminent_Chill_Other        = "|cFF0000<<!aC:1>>|r afflicted by |cB4CFFAImminent Chill|r! Swap tanks until"
+L.Alerts_DreadsailReef_Rapid_Deluge                = "You got |c1CA3ECRapid Deluge|r! You should be swimming in"
+L.Alerts_DreadsailReef_Rapid_Deluge_Other          = "|cFF0000<<!aC:1>>|r got |c1CA3ECRapid Deluge|r! Swim in"
 
 
 --------------------------------

@@ -651,5 +651,11 @@ local dreadsail_reef = {}
 dreadsail_reef.lylanar_imminent_blister = 168525
 -- Turlassil's Imminent Chill debuff (will be followed by Chilling Fragility; attack ID = 166527)
 dreadsail_reef.turlassil_imminent_chill = 168526
+-- Tideborn Taleria's Rapid Deluge
+dreadsail_reef.taleria_rapid_deluge = {
+	[174959] = true, -- Normal
+	[174960] = true, -- Veteran
+	[174961] = true, -- Hardmode
+}
 
 RaidNotifier.BuffsDebuffs[RAID_DREADSAIL_REEF] = dreadsail_reef

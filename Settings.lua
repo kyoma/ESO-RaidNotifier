@@ -319,6 +319,7 @@ do ------------------
 		},
 		dreadsailReef = {
 			imminent_debuffs = false,
+			taleria_rapid_deluge = 0, -- "Off"
 		},
 		dbg = {
 			enable = false,
@@ -570,6 +571,7 @@ function RaidNotifier:CreateSettingsMenu()
 			bahsei_embrace_of_death = off_self_all,
 		},
 		dreadsailReef = {
+			taleria_rapid_deluge = off_self_all,
 		},
 	}
 
@@ -1721,6 +1723,12 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_DreadsailReef_Imminent_Debuffs,
 		tooltip = L.Settings_DreadsailReef_Imminent_Debuffs_TT,
 	}, "dreadsailReef", "imminent_debuffs")
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_DreadsailReef_Rapid_Deluge,
+		tooltip = L.Settings_DreadsailReef_Rapid_Deluge_TT,
+		choices = choices.dreadsailReef.taleria_rapid_deluge,
+	}, "dreadsailReef", "taleria_rapid_deluge")
 	subTable = nil --end submenu
 
 	MakeControlEntry({

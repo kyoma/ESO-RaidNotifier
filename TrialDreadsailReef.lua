@@ -39,6 +39,13 @@ function RaidNotifier.DSR.OnCombatEvent(_, result, isError, aName, aGraphic, aAc
             elseif (tName ~= "") then
                 self:StartCountdown(hitValue, zo_strformat(GetString(RAIDNOTIFIER_ALERTS_DREADSAILREEF_IMMINENT_CHILL_OTHER), tName), "dreadsailReef", "imminent_debuffs", true)
             end
+        -- Tideborn Taleria's Rapid Deluge
+        elseif (buffsDebuffs.taleria_rapid_deluge[abilityId] and settings.taleria_rapid_deluge > 0) then
+            if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+                self:StartCountdown(hitValue, GetString(RAIDNOTIFIER_ALERTS_DREADSAILREEF_RAPID_DELUGE), "dreadsailReef", "taleria_rapid_deluge", true)
+            elseif (settings.taleria_rapid_deluge == 2 and tName ~= "") then
+                self:StartCountdown(hitValue, zo_strformat(GetString(RAIDNOTIFIER_ALERTS_DREADSAILREEF_RAPID_DELUGE_OTHER), tName), "dreadsailReef", "taleria_rapid_deluge", true)
+            end
         end
     end
 end
