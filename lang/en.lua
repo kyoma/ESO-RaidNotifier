@@ -634,6 +634,8 @@ L.Settings_DreadsailReef_Imminent_Debuffs          = "Lylanar & Turlassil: Immin
 L.Settings_DreadsailReef_Imminent_Debuffs_TT       = "Alerts you when tank receives Imminent Blister debuff from Lylanar or Imminent Chill debuff from Turlassil. Tanks should swap in 10 seconds."
 L.Settings_DreadsailReef_Brothers_Heavy_Attack     = "Lylanar & Turlassil: Heavy attack"
 L.Settings_DreadsailReef_Brothers_Heavy_Attack_TT  = "Alerts you when Lylanar or Turlassil makes their heavy attack (Broiling Hew / Stinging Shear)."
+L.Settings_DreadsailReef_ReefGuardian_ReefHeart    = "Reef Guardian: Reef Heart spawn"
+L.Settings_DreadsailReef_ReefGuardian_ReefHeart_TT = "Alerts you when Reef Heart appears. You have 60 seconds to kill it or it's a group wipe. There can be several Hearts active at the same time."
 L.Settings_DreadsailReef_Rapid_Deluge              = "Taleria: Rapid Deluge"
 L.Settings_DreadsailReef_Rapid_Deluge_TT           = "Alerts you when you or someone got Rapid Deluge debuff. They'll explode in 6 seconds, and the best option to handle the damage is to be swimming at that time."
 
@@ -646,6 +648,7 @@ L.Alerts_DreadsailReef_Broiling_Hew                = "Incoming |cCDCDCDBroiling 
 L.Alerts_DreadsailReef_Broiling_Hew_Other          = "Incoming |cCDCDCDBroiling Hew|r on |cFF0000<<!aC:1>>|r!"
 L.Alerts_DreadsailReef_Stinging_Shear              = "Incoming |cCDCDCDStinging Shear|r on you!"
 L.Alerts_DreadsailReef_Stinging_Shear_Other        = "Incoming |cCDCDCDStinging Shear|r on |cFF0000<<!aC:1>>|r!"
+L.Alerts_DreadsailReef_ReefGuardian_ReefHeart      = "Reef Heart #|cFF0000<<1>>|r spawned!"
 L.Alerts_DreadsailReef_Rapid_Deluge                = "You got |c1CA3ECRapid Deluge|r! You should be swimming in"
 L.Alerts_DreadsailReef_Rapid_Deluge_Other          = "|cFF0000<<!aC:1>>|r got |c1CA3ECRapid Deluge|r! Swim in"
 

@@ -655,6 +655,8 @@ dreadsail_reef.turlassil_imminent_chill = 168526
 dreadsail_reef.lylanar_broiling_hew = 167273
 -- Turlassil's Heavy Attack
 dreadsail_reef.turlassil_stinging_shear = 167280
+-- Reef Guardian's cast on Reef Heart
+dreadsail_reef.reef_guardian_heartburn = 163692
 -- Tideborn Taleria's Rapid Deluge
 dreadsail_reef.taleria_rapid_deluge = {
 	[174959] = true, -- Normal

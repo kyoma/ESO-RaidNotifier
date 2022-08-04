@@ -320,6 +320,7 @@ do ------------------
 		dreadsailReef = {
 			imminent_debuffs = false,
 			brothers_heavy_attack = 0, -- "Off"
+			reef_guardian_reef_heart = false,
 			taleria_rapid_deluge = 0, -- "Off"
 		},
 		dbg = {
@@ -1731,6 +1732,11 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_DreadsailReef_Brothers_Heavy_Attack_TT,
 		choices = choices.dreadsailReef.brothers_heavy_attack,
 	}, "dreadsailReef", "brothers_heavy_attack")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_DreadsailReef_ReefGuardian_ReefHeart,
+		tooltip = L.Settings_DreadsailReef_ReefGuardian_ReefHeart_TT,
+	}, "dreadsailReef", "reef_guardian_reef_heart")
 	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_DreadsailReef_Rapid_Deluge,

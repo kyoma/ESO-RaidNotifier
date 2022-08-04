@@ -13,6 +13,13 @@ function RaidNotifier.DSR.Initialize()
     dbg = RaidNotifier.dbg
 
     data = {}
+    data.reefHeartCounter = 0
+end
+
+function RaidNotifier.DSR.OnCombatStateChanged(inCombat)
+    if inCombat then
+        data.reefHeartCounter = 0
+    end
 end
 
 function RaidNotifier.DSR.OnCombatEvent(_, result, isError, aName, aGraphic, aActionSlotType, sName, sType, tName, tType, hitValue, pType, dType, log, sUnitId, tUnitId, abilityId)
@@ -39,6 +46,13 @@ function RaidNotifier.DSR.OnCombatEvent(_, result, isError, aName, aGraphic, aAc
             elseif (settings.brothers_heavy_attack == 2 and tName ~= "") then
                 self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_DREADSAILREEF_STINGING_SHEAR_OTHER), tName), "dreadsailReef", "brothers_heavy_attack")
             end
+        elseif (abilityId == buffsDebuffs.reef_guardian_heartburn and settings.reef_guardian_reef_heart) then
+            data.reefHeartCounter = data.reefHeartCounter + 1
+            self:AddAnnouncement(
+                zo_strformat(GetString(RAIDNOTIFIER_ALERTS_DREADSAILREEF_REEFGUARDIAN_REEFHEART), data.reefHeartCounter),
+                "dreadsailReef",
+                "reef_guardian_reef_heart"
+            )
         end
     elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
         -- Lylanar's Imminent Blister debuff
