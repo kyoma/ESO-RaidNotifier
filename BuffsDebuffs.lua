@@ -641,3 +641,27 @@ rockgrove.meteor_radiating_heat = {
 rockgrove.bahsei_death_touch = 150078
 
 RaidNotifier.BuffsDebuffs[RAID_ROCKGROVE] = rockgrove
+
+-- ------------------------------------------------------
+-- -- Dreadsail Reef-------------------------------------
+-- -- ---------------------------------------------------
+local dreadsail_reef = {}
+
+-- Lylanar's Imminent Blister debuff (will be followed by Blistering Fragility; attack ID = 166522)
+dreadsail_reef.lylanar_imminent_blister = 168525
+-- Turlassil's Imminent Chill debuff (will be followed by Chilling Fragility; attack ID = 166527)
+dreadsail_reef.turlassil_imminent_chill = 168526
+-- Lylanar's Heavy Attack
+dreadsail_reef.lylanar_broiling_hew = 167273
+-- Turlassil's Heavy Attack
+dreadsail_reef.turlassil_stinging_shear = 167280
+-- Reef Guardian's cast on Reef Heart
+dreadsail_reef.reef_guardian_heartburn = 163692
+-- Tideborn Taleria's Rapid Deluge
+dreadsail_reef.taleria_rapid_deluge = {
+	[174959] = true, -- Normal
+	[174960] = true, -- Veteran
+	[174961] = true, -- Hardmode
+}
+
+RaidNotifier.BuffsDebuffs[RAID_DREADSAIL_REEF] = dreadsail_reef
