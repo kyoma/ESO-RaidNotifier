@@ -50,6 +50,7 @@ function RaidNotifier.DSR.OnCombatEvent(_, result, isError, aName, aGraphic, aAc
             elseif (settings.brothers_heavy_attack == 2 and tName ~= "") then
                 self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_DREADSAILREEF_STINGING_SHEAR_OTHER), tName), "dreadsailReef", "brothers_heavy_attack")
             end
+        -- Reef Guardian's Heartburn cast on Reef Heart
         elseif (abilityId == buffsDebuffs.reef_guardian_heartburn and settings.reef_guardian_reef_heart) then
             data.reefHeartCounter = data.reefHeartCounter + 1
             self:AddAnnouncement(
