@@ -318,6 +318,7 @@ do ------------------
 			bahsei_embrace_of_death = 0, -- "Off"
 		},
 		dreadsailReef = {
+			dome_activation = false,
 			imminent_debuffs = false,
 			brothers_heavy_attack = 0, -- "Off"
 			reef_guardian_reef_heart = false,
@@ -1721,6 +1722,11 @@ function RaidNotifier:CreateSettingsMenu()
 
 	-- Dreadsail Reef
 	MakeSubmenu(L.Settings_DreadsailReef_Header, RaidNotifier:GetRaidDescription(RAID_DREADSAIL_REEF))
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_DreadsailReef_Dome_Activation,
+		tooltip = L.Settings_DreadsailReef_Dome_Activation_TT,
+	}, "dreadsailReef", "dome_activation")
 	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_DreadsailReef_Imminent_Debuffs,

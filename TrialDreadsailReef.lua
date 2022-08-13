@@ -82,5 +82,21 @@ function RaidNotifier.DSR.OnCombatEvent(_, result, isError, aName, aGraphic, aAc
                 self:StartCountdown(hitValue, zo_strformat(GetString(RAIDNOTIFIER_ALERTS_DREADSAILREEF_RAPID_DELUGE_OTHER), tName), "dreadsailReef", "taleria_rapid_deluge", true)
             end
         end
+    elseif (result == ACTION_RESULT_EFFECT_GAINED) then
+        -- Player activated Fire Dome at the Lylanar&Turlassil encounter
+        if (abilityId == buffsDebuffs.destructive_ember and settings.dome_activation and tName ~= "") then
+            self:AddAnnouncement(
+                zo_strformat(GetString(RAIDNOTIFIER_ALERTS_DREADSAILREEF_DESTRUCTIVE_EMBER), tName),
+                "dreadsailReef",
+                "dome_activation"
+            )
+        -- Player activated Ice Dome at the Lylanar&Turlassil encounter
+        elseif (abilityId == buffsDebuffs.piercing_hailstone and settings.dome_activation and tName ~= "") then
+            self:AddAnnouncement(
+                zo_strformat(GetString(RAIDNOTIFIER_ALERTS_DREADSAILREEF_PIERCING_HAILSTONE), tName),
+                "dreadsailReef",
+                "dome_activation"
+            )
+        end
     end
 end
