@@ -318,9 +318,11 @@ do ------------------
 			bahsei_embrace_of_death = 0, -- "Off"
 		},
 		dreadsailReef = {
+			dome_activation = false,
 			imminent_debuffs = false,
 			brothers_heavy_attack = 0, -- "Off"
 			reef_guardian_reef_heart = false,
+			reef_guardian_reef_heart_result = false,
 			taleria_rapid_deluge = 0, -- "Off"
 		},
 		dbg = {
@@ -1723,6 +1725,11 @@ function RaidNotifier:CreateSettingsMenu()
 	MakeSubmenu(L.Settings_DreadsailReef_Header, RaidNotifier:GetRaidDescription(RAID_DREADSAIL_REEF))
 	MakeControlEntry({
 		type = "checkbox",
+		name = L.Settings_DreadsailReef_Dome_Activation,
+		tooltip = L.Settings_DreadsailReef_Dome_Activation_TT,
+	}, "dreadsailReef", "dome_activation")
+	MakeControlEntry({
+		type = "checkbox",
 		name = L.Settings_DreadsailReef_Imminent_Debuffs,
 		tooltip = L.Settings_DreadsailReef_Imminent_Debuffs_TT,
 	}, "dreadsailReef", "imminent_debuffs")
@@ -1737,6 +1744,14 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_DreadsailReef_ReefGuardian_ReefHeart,
 		tooltip = L.Settings_DreadsailReef_ReefGuardian_ReefHeart_TT,
 	}, "dreadsailReef", "reef_guardian_reef_heart")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_DreadsailReef_ReefHeart_Result,
+		tooltip = L.Settings_DreadsailReef_ReefHeart_Result_TT,
+		disabled = function()
+			return savedVars.dreadsailReef.reef_guardian_reef_heart == false;
+		end,
+	}, "dreadsailReef", "reef_guardian_reef_heart_result")
 	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_DreadsailReef_Rapid_Deluge,

@@ -655,8 +655,18 @@ dreadsail_reef.turlassil_imminent_chill = 168526
 dreadsail_reef.lylanar_broiling_hew = 167273
 -- Turlassil's Heavy Attack
 dreadsail_reef.turlassil_stinging_shear = 167280
+-- Destructive Ember (Fire Dome)
+dreadsail_reef.destructive_ember = 166209
+-- Piercing Hailstone (Ice Dome)
+dreadsail_reef.piercing_hailstone = 166178
 -- Reef Guardian's cast on Reef Heart
 dreadsail_reef.reef_guardian_heartburn = 163692
+-- Reef Guardian's buff that Reef Heart receives (60s)
+dreadsail_reef.reef_guardian_heartburn_buff = 170481
+-- Vulnerability in case Heart was destroyed in time
+dreadsail_reef.reef_guardian_heartburn_vulnerability = 166031
+-- Empowerment in case Heart wasn't destroyed in time
+dreadsail_reef.reef_guardian_heartburn_empowerment = 166032
 -- Tideborn Taleria's Rapid Deluge
 dreadsail_reef.taleria_rapid_deluge = {
 	[174959] = true, -- Normal
