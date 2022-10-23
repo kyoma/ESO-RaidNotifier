@@ -539,7 +539,7 @@ L.Settings_Debug_Tracker_Header          = "Débogueur"
 L.Settings_Debug_Tracker_Description     = "Il s'agit d'une fonction de débogage destinée à suivre et à afficher les potentiels mécaniques au cours d'une épreuve en enregistrant les informations sur les évènements et les effets de combat. En raison de la quantité potentiellement importante d'informations, il existe quelques options pour éviter d'encombrer votre fenêtre de discussion."
 L.Settings_Debug_Tracker_Enabled         = "Activé"
 L.Settings_Debug_Tracker_SpamControl     = "Contrôle Anti-Spam"
-L.Settings_Debug_Tracker_SpamControl_TT  = "Avec cette option, chaque capacité / effet n'est enregistré qu'une fois par type d'action. La liste de ces capacités connues pour cette session peut être effacé avec :\n\n\ /rndebug clear"
+L.Settings_Debug_Tracker_SpamControl_TT  = "Avec cette option, chaque capacité / effet n'est enregistré qu'une fois par type d'action. La liste de ces capacités connues pour cette session peut être effacé avec :\n\n /rndebug clear"
 L.Settings_Debug_Tracker_MyEnemyOnly     = "Mon Ennemi Seulement"
 L.Settings_Debug_Tracker_MyEnemyOnly_TT  = "Lorsque l'option est activée, elle limitera TOUTE sortie de capacités / effets ciblés sur le joueur et qui ne proviennent pas du joueur ou du groupe. Utile lorsque vous cherchez une chose spécifique et que vous ne voulez pas que le Contrôle Anti-Spam s'active."
 
