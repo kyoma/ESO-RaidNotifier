@@ -36,6 +36,7 @@ L.Settings_General_Choices_Near                     = "Near"
 L.Settings_General_Choices_All                      = "All"
 L.Settings_General_Choices_Always                   = "Always"
 L.Settings_General_Choices_Other                    = "Other"
+L.Settings_General_Choices_Others                   = "Others"
 L.Settings_General_Choices_Inverted                 = "Inverted"
 L.Settings_General_Choices_Small_Announcement       = "Small (static, obsolete)"
 L.Settings_General_Choices_Large_Announcement       = "Large (static, obsolete)"
@@ -635,6 +636,8 @@ L.Alerts_Rockgrove_Embrace_Of_Death_Other          = "|cFF0000<<!aC:1>>|r cursed
 --------------------------------
 L.Settings_DreadsailReef_Header                    = "Dreadsail Reef"
 -- Settings
+L.Settings_DreadsailReef_Dome_Type                 = "Lylanar & Turlassil: Fire/Ice Dome filter"
+L.Settings_DreadsailReef_Dome_Type_TT              = "You can restrict notifications to some specific Dome."
 L.Settings_DreadsailReef_Dome_Activation           = "Lylanar & Turlassil: Fire/Ice Dome activation"
 L.Settings_DreadsailReef_Dome_Activation_TT        = "Alerts you when someone gets Fire or Ice Dome."
 L.Settings_DreadsailReef_Dome_Stack_Alert          = "Lylanar & Turlassil: Fire/Ice Dome stacks alert"
