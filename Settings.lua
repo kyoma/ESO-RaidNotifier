@@ -319,6 +319,7 @@ do ------------------
 			bahsei_embrace_of_death = 0, -- "Off"
 		},
 		dreadsailReef = {
+			dome_type = 3, -- "All"
 			dome_activation = false,
 			dome_stack_alert = 0, -- "Off"
 			dome_stack_threshold = 15,
@@ -578,10 +579,16 @@ function RaidNotifier:CreateSettingsMenu()
 			bahsei_embrace_of_death = off_self_all,
 		},
 		dreadsailReef = {
-			dome_stack_alert = {
+			dome_type = {
 				L.Settings_General_Choices_Off,
 				L.Settings_DreadsailReef_Choices_OnlyFireDome,
 				L.Settings_DreadsailReef_Choices_OnlyIceDome,
+				L.Settings_General_Choices_All,
+			},
+			dome_stack_alert = {
+				L.Settings_General_Choices_Off,
+				L.Settings_General_Choices_Self,
+				L.Settings_General_Choices_Others,
 				L.Settings_General_Choices_All,
 			},
 			brothers_heavy_attack = off_self_all,
@@ -1738,15 +1745,28 @@ function RaidNotifier:CreateSettingsMenu()
 	-- Dreadsail Reef
 	MakeSubmenu(L.Settings_DreadsailReef_Header, RaidNotifier:GetRaidDescription(RAID_DREADSAIL_REEF))
 	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_DreadsailReef_Dome_Type,
+		tooltip = L.Settings_DreadsailReef_Dome_Type_TT,
+		choices = choices.dreadsailReef.dome_type,
+		noAlert = true,
+	}, "dreadsailReef", "dome_type")
+	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_DreadsailReef_Dome_Activation,
 		tooltip = L.Settings_DreadsailReef_Dome_Activation_TT,
+		disabled = function()
+			return savedVars.dreadsailReef.dome_type == 0;
+		end,
 	}, "dreadsailReef", "dome_activation")
 	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_DreadsailReef_Dome_Stack_Alert,
 		tooltip = L.Settings_DreadsailReef_Dome_Stack_Alert_TT,
 		choices = choices.dreadsailReef.dome_stack_alert,
+		disabled = function()
+			return savedVars.dreadsailReef.dome_type == 0;
+		end,
 	}, "dreadsailReef", "dome_stack_alert")
 	MakeControlEntry({
 		type = "slider",
@@ -1756,7 +1776,7 @@ function RaidNotifier:CreateSettingsMenu()
 		max = 25,
 		step = 1,
 		disabled = function()
-			return savedVars.dreadsailReef.dome_stack_alert == 0;
+			return savedVars.dreadsailReef.dome_type == 0 or savedVars.dreadsailReef.dome_stack_alert == 0;
 		end,
 		noAlert = true,
 	}, "dreadsailReef", "dome_stack_threshold")
