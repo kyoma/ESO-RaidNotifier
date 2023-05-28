@@ -320,6 +320,8 @@ do ------------------
 		},
 		dreadsailReef = {
 			dome_activation = false,
+			dome_stack_alert = 0, -- "Off"
+			dome_stack_threshold = 15,
 			imminent_debuffs = false,
 			brothers_heavy_attack = 0, -- "Off"
 			reef_guardian_reef_heart = false,
@@ -576,6 +578,12 @@ function RaidNotifier:CreateSettingsMenu()
 			bahsei_embrace_of_death = off_self_all,
 		},
 		dreadsailReef = {
+			dome_stack_alert = {
+				L.Settings_General_Choices_Off,
+				L.Settings_DreadsailReef_Choices_OnlyFireDome,
+				L.Settings_DreadsailReef_Choices_OnlyIceDome,
+				L.Settings_General_Choices_All,
+			},
 			brothers_heavy_attack = off_self_all,
 			taleria_rapid_deluge = off_self_all,
 		},
@@ -1734,6 +1742,24 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_DreadsailReef_Dome_Activation,
 		tooltip = L.Settings_DreadsailReef_Dome_Activation_TT,
 	}, "dreadsailReef", "dome_activation")
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_DreadsailReef_Dome_Stack_Alert,
+		tooltip = L.Settings_DreadsailReef_Dome_Stack_Alert_TT,
+		choices = choices.dreadsailReef.dome_stack_alert,
+	}, "dreadsailReef", "dome_stack_alert")
+	MakeControlEntry({
+		type = "slider",
+		name = L.Settings_DreadsailReef_Dome_Stack_Threshold,
+		tooltip = L.Settings_DreadsailReef_Dome_Stack_Threshold_TT,
+		min = 5,
+		max = 25,
+		step = 1,
+		disabled = function()
+			return savedVars.dreadsailReef.dome_stack_alert == 0;
+		end,
+		noAlert = true,
+	}, "dreadsailReef", "dome_stack_threshold")
 	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_DreadsailReef_Imminent_Debuffs,
