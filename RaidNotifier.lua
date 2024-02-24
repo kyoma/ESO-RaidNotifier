@@ -639,6 +639,8 @@ do ----------------------
 				local combatEventCallback = trial.OnCombatEvent
 				local bossesChangedCallback = trial.OnBossesChanged
 				local effectChangedCallback = trial.OnEffectChanged
+				local effectChangedForGroupCallback = trial.OnEffectChangedForGroup
+				local effectChangedForPlayerCallback = trial.OnEffectChangedForPlayer
 				combatStateChangedCallback = trial.OnCombatStateChanged
 
 				local abilityList = {}
@@ -692,6 +694,17 @@ do ----------------------
 						EVENT_MANAGER:AddFilterForEvent(self.Name, EVENT_EFFECT_CHANGED, REGISTER_FILTER_UNIT_TAG_PREFIX, "group")
 					end
 				end
+
+				if (effectChangedForGroupCallback) then
+					EVENT_MANAGER:RegisterForEvent(self.Name.."_EffectChangedGroup", EVENT_EFFECT_CHANGED, effectChangedForGroupCallback)
+					EVENT_MANAGER:AddFilterForEvent(self.Name.."_EffectChangedGroup", EVENT_EFFECT_CHANGED, REGISTER_FILTER_UNIT_TAG_PREFIX, "group")
+				end
+
+				if (effectChangedForPlayerCallback) then
+					EVENT_MANAGER:RegisterForEvent(self.Name.."_EffectChangedPlayer", EVENT_EFFECT_CHANGED, effectChangedForPlayerCallback)
+					EVENT_MANAGER:AddFilterForEvent(self.Name.."_EffectChangedPlayer", EVENT_EFFECT_CHANGED, REGISTER_FILTER_UNIT_TAG, "player")
+				end
+
 				if (bossesChangedCallback) then
 					EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_BOSSES_CHANGED, bossesChangedCallback)
 				end
