@@ -759,6 +759,8 @@ do ----------------------
 		dbg("Unregister for %s (%s)", GetRaidZoneName(self.raidId), GetString("SI_DUNGEONDIFFICULTY", self.raidDifficulty))
 		self:UnregisterAllCombatEvents()
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_EFFECT_CHANGED)
+		EVENT_MANAGER:UnregisterForEvent(self.Name.."_EffectChangedGroup", EVENT_EFFECT_CHANGED)
+		EVENT_MANAGER:UnregisterForEvent(self.Name.."_EffectChangedPlayer", EVENT_EFFECT_CHANGED)
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_BOSSES_CHANGED)
 		EVENT_MANAGER:UnregisterForEvent(self.Name, EVENT_PLAYER_COMBAT_STATE)
 
