@@ -2,12 +2,23 @@ RaidNotifier = RaidNotifier or {}
 RaidNotifier.RG = {}
 
 local RaidNotifier = RaidNotifier
-local Util = RaidNotifier.Util
 
 local function p() end
 local function dbg() end
 
 local data = {}
+
+local function isUnitTank(unitTag)
+    local isTank = false
+
+    if GetGroupSize() > 0 then
+        isTank = GetGroupMemberSelectedRole(unitTag) == LFG_ROLE_TANK
+    elseif AreUnitsEqual(unitTag, "player") then
+        isTank = GetSelectedLFGRole() == LFG_ROLE_TANK
+    end
+
+    return isTank
+end
 
 function RaidNotifier.RG.Initialize()
     p = RaidNotifier.p
@@ -79,7 +90,7 @@ function RaidNotifier.RG.OnEffectChangedForGroup(eventCode, changeType, eSlot, e
         if (changeType == EFFECT_RESULT_GAINED) then
             if (settings.bahsei_embrace_of_death >= 1 and AreUnitsEqual(uTag, "player")) then
                 self:StartCountdown(8000, GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_EMBRACE_OF_DEATH), "rockgrove", "bahsei_embrace_of_death", true)
-            elseif (settings.bahsei_embrace_of_death == 2 or settings.bahsei_embrace_of_death == 3 and Util.isUnitTank(uTag)) then
+            elseif (settings.bahsei_embrace_of_death == 2 or settings.bahsei_embrace_of_death == 3 and isUnitTank(uTag)) then
                 local targetPlayerName = self.UnitIdToString(uId)
 
                 self:StartCountdown(8000, zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_EMBRACE_OF_DEATH_OTHER), targetPlayerName), "rockgrove", "bahsei_embrace_of_death", false)
