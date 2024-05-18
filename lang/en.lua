@@ -46,6 +46,7 @@ L.Settings_General_Choices_500ms                    = "0.5s"
 L.Settings_General_Choices_200ms                    = "0.2s"
 L.Settings_General_Choices_Custom                   = "Custom"
 L.Settings_General_Choices_Custom_Announcement      = "Custom (movable)"
+L.Settings_General_Choices_SelfAndTanks             = "Self and tanks"
 L.Settings_General_Choices_OnlyChaurusTotem         = "Only Chaurus" -- Specific for Kyne's Aegis
 L.Settings_DreadsailReef_Choices_OnlyFireDome       = "Only Fire Dome"
 L.Settings_DreadsailReef_Choices_OnlyIceDome        = "Only Ice Dome"
