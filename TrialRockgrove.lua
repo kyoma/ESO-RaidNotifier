@@ -13,6 +13,23 @@ function RaidNotifier.RG.Initialize()
     dbg = RaidNotifier.dbg
 
     data = {}
+    data.bahseiPortalCounter = 0
+end
+
+function RaidNotifier.RG.OnCombatStateChanged(inCombat)
+    if (inCombat and DoesUnitExist("boss1")) then
+        local currentHealth, maxHealth = GetUnitPower("boss1", POWERTYPE_HEALTH)
+
+        if currentHealth ~= nil and maxHealth ~= nil and currentHealth > 0 and maxHealth > 0 then
+            local healthPercent = currentHealth / maxHealth
+
+            if healthPercent <= 99 then
+                return
+            end
+        end
+    end
+
+    data.bahseiPortalCounter = 0
 end
 
 function RaidNotifier.RG.OnEffectChangedForGroup(eventCode, changeType, eSlot, eName, uTag, beginTime, endTime, stackCount, iconName, buffType, eType, aType, statusEffectType, uName, uId, abilityId, uType)
@@ -130,6 +147,12 @@ function RaidNotifier.RG.OnCombatEvent(_, result, isError, aName, aGraphic, aAct
         end
     elseif (result == ACTION_RESULT_EFFECT_GAINED) then
         if (abilityId == buffsDebuffs.bahsei_creeping_eye_clockwise or abilityId == buffsDebuffs.bahsei_creeping_eye_countercw) then
+            data.bahseiPortalCounter = data.bahseiPortalCounter % 2 + 1
+
+            if (settings.bahsei_portal_number) then
+                local text = zo_strformat(GetString(RAIDNOTIFIER_ALERTS_ROCKGROVE_BAHSEI_PORTAL_NUMBER), data.bahseiPortalCounter)
+                self:AddAnnouncement(text, "rockgrove", "bahsei_portal_number")
+            end
             if (settings.bahsei_cone_direction) then
                 local text
 

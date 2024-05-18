@@ -318,6 +318,7 @@ do ------------------
 			oaxiltso_annihilator_cinder_cleave = 0, -- "Off"
 			bahsei_embrace_of_death = 0, -- "Off"
 			bahsei_cone_direction = false,
+			bahsei_portal_number = false,
 			xalvakka_unstable_charge = false,
 		},
 		dreadsailReef = {
@@ -1747,6 +1748,11 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_Rockgrove_Bahsei_Cone_Direction,
 		tooltip = L.Settings_Rockgrove_Bahsei_Cone_Direction_TT,
 	}, "rockgrove", "bahsei_cone_direction")
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_Rockgrove_Bahsei_Portal_Number,
+		tooltip = L.Settings_Rockgrove_Bahsei_Portal_Number_TT,
+	}, "rockgrove", "bahsei_portal_number")
 	MakeControlEntry({
 		type = "checkbox",
 		name = L.Settings_Rockgrove_Xalvakka_Unstable_Charge,
