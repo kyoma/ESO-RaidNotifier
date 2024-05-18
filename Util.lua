@@ -194,3 +194,14 @@ function Util:GetDistance(pX, pY, tX, tY)
 	return dist
 end
 
+function Util:IsUnitTank(unitTag)
+	local isTank = false
+
+	if GetGroupSize() > 0 then
+		isTank = GetGroupMemberSelectedRole(unitTag) == LFG_ROLE_TANK
+	elseif AreUnitsEqual(unitTag, "player") then
+		isTank = GetSelectedLFGRole() == LFG_ROLE_TANK
+	end
+
+	return isTank
+end

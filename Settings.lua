@@ -579,7 +579,12 @@ function RaidNotifier:CreateSettingsMenu()
 			sulxan_reaver_sundering_strike = off_self_all,
 			oaxiltso_noxious_sludge = off_self_all,
 			oaxiltso_annihilator_cinder_cleave = off_self_all,
-			bahsei_embrace_of_death = off_self_all,
+			bahsei_embrace_of_death = {
+				L.Settings_General_Choices_Off,
+				L.Settings_General_Choices_Self,
+				L.Settings_General_Choices_All,
+				L.Settings_General_Choices_SelfAndTanks,
+			},
 		},
 		dreadsailReef = {
 			dome_type = {
@@ -1741,7 +1746,7 @@ function RaidNotifier:CreateSettingsMenu()
 		name = L.Settings_Rockgrove_Embrace_Of_Death,
 		tooltip = L.Settings_Rockgrove_Embrace_Of_Death_TT,
 		choices = choices.rockgrove.bahsei_embrace_of_death,
-		choicesTooltips = { false, false, L.Settings_Rockgrove_Embrace_Of_Death_TT_All },
+		choicesTooltips = { false, false, L.Settings_Rockgrove_Embrace_Of_Death_TT_All, false },
 	}, "rockgrove", "bahsei_embrace_of_death")
 	MakeControlEntry({
 		type = "checkbox",
