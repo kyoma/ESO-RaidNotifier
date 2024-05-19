@@ -4,8 +4,8 @@
 --   1: isFullUpdate - the user is sending cost in addition to percentages in this packet
 --   2: requestsFullUpdate - the user does not have all the necessary data and wants to have a full update from everyone (e.g. after reloading the ui)
 
-local LGS = LibStub("LibGroupSocket", true)
-if not LGS then return end
+local LGS = LibGroupSocket
+
 LGS.MESSAGE_TYPE_ULTIMATE = 21 -- aka, the code for 'u'
 local type, version = LGS.MESSAGE_TYPE_ULTIMATE, 2
 local handler, saveData = LGS:RegisterHandler(type, version)
@@ -48,7 +48,7 @@ end
 
 function handler:ResetResources()
     handler.resources = {}
-end	
+end
 
 function handler:GetLastUpdateTime(unitTag)
     local unitResources = GetCachedUnitResources(unitTag, SKIP_CREATE)
@@ -63,15 +63,15 @@ function handler:SetUltimateCost(cost)
 end
 
 local function OnData(unitTag, data, isSelf)
-    if (handler.callbacks == 0) then 
+    if (handler.callbacks == 0) then
         if (handler.debug > 0) then
 			Log("handler.callback == 0")
         end
-        return 
+        return
     end --dont do anything if nobody is using this handler
     if (handler.debug == 3) then
         Log("OnData")
-    end	
+    end
     local index, bitIndex = 1, 1
     local isFullUpdate, index, bitIndex = LGS:ReadBit(data, index, bitIndex)
     local requestsFullUpdate, index, bitIndex = LGS:ReadBit(data, index, bitIndex)
@@ -125,7 +125,7 @@ function handler:Send()
         if (handler.debug == 2) then
             d("now("..now..") - lastSendTime("..lastSendTime..") < timeout("..timeout..")")
 	end
-        return 
+        return
     end
 
     local unitResources = GetCachedUnitResources("player")
@@ -178,13 +178,13 @@ local function StartSending()
     if(not isActive and saveData.enabled and IsUnitGrouped("player")) then
         if (handler.debug > 0) then
             Log("StartSending .. isActive")
-        end		
+        end
         EVENT_MANAGER:RegisterForUpdate("LibGroupSocketUltimateHandlerUpdate", 1000, OnUpdate)
         isActive = true
     end
     if (handler.debug == 3) then
         Log("StartSending: isActive: %s", tostring(isActive))
-    end    	
+    end
 end
 
 local function StopSending()
@@ -195,7 +195,7 @@ local function StopSending()
 end
 
 local function OnUnitCreated(_, unitTag)
-    if (handler.debug == 2) then	
+    if (handler.debug == 2) then
         Log("OnUnitCreated: %s", unitTag)
     end
     if (not isActive and handler.callbacks) then
@@ -220,11 +220,11 @@ function handler:RegisterForUltimateChanges(callback)
     end
     if (not handler.callback) then
         LGS.cm:RegisterCallback(ON_ULTIMATE_CHANGED, callback)
-        NumCallbacks()	
-        LGS.cm:RegisterCallback(type, OnData)		
+        NumCallbacks()
+        LGS.cm:RegisterCallback(type, OnData)
     end
     if (not isActive) then
-        StartSending()		
+        StartSending()
     end
 end
 
@@ -233,7 +233,7 @@ function handler:UnregisterForUltimateChanges(callback)
         Log ("UnregisterForUltimateChanges %s", tostring(isActive))
     end
     if (handler.callback) then
-        LGS.cm:UnregisterCallback(type, handler.dataHandler)	
+        LGS.cm:UnregisterCallback(type, handler.dataHandler)
 	LGS.cm:UnregisterCallback(ON_ULTIMATE_CHANGED, callback)
 	NumCallbacks()
     end
@@ -278,7 +278,7 @@ local function Unload()
     LGS.cm:UnregisterCallback("savedata-ready", InitializeSaveData)
     EVENT_MANAGER:UnregisterForEvent("LibGroupSocketUltimateHandler", EVENT_PLAYER_ACTIVATED)
     EVENT_MANAGER:UnregisterForEvent("LibGroupSocketUltimateHandler", EVENT_UNIT_CREATED)
-    EVENT_MANAGER:UnregisterForEvent("LibGroupSocketUltimateHandler", EVENT_UNIT_DESTROYED)	
+    EVENT_MANAGER:UnregisterForEvent("LibGroupSocketUltimateHandler", EVENT_UNIT_DESTROYED)
     StopSending();
 end
 
@@ -293,8 +293,8 @@ local function Load()
     EVENT_MANAGER:RegisterForEvent("LibGroupSocketUltimateHandler", EVENT_UNIT_CREATED, OnUnitCreated)
     EVENT_MANAGER:AddFilterForEvent("LibGroupSocketUltimateHandler",EVENT_UNIT_CREATED, REGISTER_FILTER_UNIT_TAG_PREFIX, "group")
     EVENT_MANAGER:RegisterForEvent("LibGroupSocketUltimateHandler", EVENT_UNIT_DESTROYED, OnUnitDestroyed)
-    EVENT_MANAGER:AddFilterForEvent("LibGroupSocketUltimateHandler",EVENT_UNIT_DESTROYED, REGISTER_FILTER_UNIT_TAG_PREFIX, "group")				
-	
+    EVENT_MANAGER:AddFilterForEvent("LibGroupSocketUltimateHandler",EVENT_UNIT_DESTROYED, REGISTER_FILTER_UNIT_TAG_PREFIX, "group")
+
     EVENT_MANAGER:RegisterForEvent("LibGroupSocketUltimateHandler", EVENT_PLAYER_ACTIVATED, function()
         StartSending()
     end)
