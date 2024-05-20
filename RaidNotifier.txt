@@ -7,6 +7,13 @@
 ## SavedVariables: RNVars RN_DEBUG_LOG
 ## DependsOn: LibAddonMenu-2.0>=36 LibGroupSocket>=13 LibUnits2>=102 LibCSA>=210
 
+libs/LibCustomTitles/LibTitleLocale.lua
+libs/LibCustomTitles/LibCustomTitles.lua
+libs/LibCustomTitles/Titles/Kyoma.lua
+libs/LibCustomTitles/Titles/Woeler.lua
+libs/LibCustomTitles/Titles/Valve.lua
+libs/LibCustomTitles/Titles/Memus.lua
+
 UltimateHandler.lua
 TrialAetherianArchive.lua
 TrialAsylumSanctorium.lua
