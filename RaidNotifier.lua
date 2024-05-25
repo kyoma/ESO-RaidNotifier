@@ -1,11 +1,14 @@
 RaidNotifier = RaidNotifier or {}
 RaidNotifier.Util = RaidNotifier.Util or {}
+local LCSA = LibCSA
+local LGS = LibGroupSocket
+local LUNIT = LibUnits2
 
 local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name           = "RaidNotifier"
 RaidNotifier.DisplayName    = "Raid Notifier"
-RaidNotifier.Version        = "2.28.1"
+RaidNotifier.Version        = "2.29"
 RaidNotifier.Author         = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name        = "RNVars"
 RaidNotifier.SV_Version     = 4
@@ -128,7 +131,6 @@ do ---------------------------------
 	end
 
 	local CSA  = CENTER_SCREEN_ANNOUNCE
-	local LCSA = LibStub:GetLibrary("LibCSA")
 
 	function RaidNotifier:AddAnnouncement(text, category, setting, interval)
 
@@ -265,8 +267,7 @@ do ----------------------
 
 	local window = nil
 
-	local LGS = LibStub("LibGroupSocket", true)
-	local ultimateHandler = LGS and LGS:GetHandler(LGS.MESSAGE_TYPE_ULTIMATE)
+	local ultimateHandler = LGS:GetHandler(LGS.MESSAGE_TYPE_ULTIMATE)
 	RNUltimateHandler = ultimateHandler -- debug
 	local ultimateAbilityId = 40223  -- Aggressive Warhorn Rank IV
 	local ultimateGroupId   = 29     -- hardcoded for now
@@ -872,7 +873,6 @@ do ----------------------
 		CALLBACK_MANAGER:RegisterCallback("OnWorldMapChanged", OnZoneChanged) -- might as well listen to this since that code is executed anyways
 
 		-- Change vitality bonus announcement to not conflict with our own
-		local LCSA = LibStub:GetLibrary("LibCSA")
 		LCSA:HookHandler(EVENT_RAID_REVIVE_COUNTER_UPDATE, function(messageParams, currentCount, countDelta)
 			if messageParams then
 				messageParams:SetCategory(CSA_CATEGORY_SMALL_TEXT)
@@ -912,7 +912,6 @@ end
 
 do ---------------------------
 
-	local LUNIT = LibUnits2
 	local Util  = RaidNotifier.Util
 
 	function RaidNotifier.UnitIdToString(id)
