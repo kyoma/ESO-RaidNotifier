@@ -1,6 +1,7 @@
 local MY_MODULE_NAME = "Memus"
 local MY_MODULE_VERSION = 11
 
+if not LibStub then return end
 local LCC = LibStub('LibCustomTitlesRN')
 if not LCC then return end
 

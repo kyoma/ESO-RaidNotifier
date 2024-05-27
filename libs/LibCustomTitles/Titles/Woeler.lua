@@ -1,6 +1,7 @@
 local MY_MODULE_NAME = "Woeler"
 local MY_MODULE_VERSION = 7
 
+if not LibStub then return end
 local LCC = LibStub('LibCustomTitlesRN')
 if not LCC then return end
 

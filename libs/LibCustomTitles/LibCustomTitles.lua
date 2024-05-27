@@ -56,6 +56,7 @@ Changes: Rewrote how custom titles are added and stored to help reduce conflict 
 
 local libLoaded
 local LIB_NAME, VERSION = "LibCustomTitlesRN", 20
+if not LibStub then return end
 local LibCustomTitles, oldminor = LibStub:NewLibrary(LIB_NAME, VERSION)
 if not LibCustomTitles then return end
 

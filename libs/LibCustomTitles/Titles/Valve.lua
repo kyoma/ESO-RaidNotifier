@@ -1,6 +1,7 @@
 local MY_MODULE_NAME = "Valve"
 local MY_MODULE_VERSION = 8
 
+if not LibStub then return end
 local LCC = LibStub('LibCustomTitlesRN')
 if not LCC then return end
 

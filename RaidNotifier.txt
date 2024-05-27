@@ -5,18 +5,15 @@
 ## AddOnVersion: 229
 ## APIVersion: 101040 101041
 ## SavedVariables: RNVars RN_DEBUG_LOG
-## DependsOn: LibAddonMenu-2.0>=36 LibUnits2>=102
-## OptionalDependsOn: LibGroupSocket>=13
+## DependsOn: LibAddonMenu-2.0>=36 LibUnits2>=102 LibCSA>=210
+## OptionalDependsOn: LibGroupSocket>=13 LibStub>=7
 
-libs/LibStub/LibStub.lua
 libs/LibCustomTitles/LibTitleLocale.lua
 libs/LibCustomTitles/LibCustomTitles.lua
 libs/LibCustomTitles/Titles/Kyoma.lua
 libs/LibCustomTitles/Titles/Woeler.lua
 libs/LibCustomTitles/Titles/Valve.lua
 libs/LibCustomTitles/Titles/Memus.lua
-
-libs/LibCSA/LibCSA.lua
 
 UltimateHandler.lua
 TrialAetherianArchive.lua
