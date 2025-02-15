@@ -23,6 +23,7 @@ RAID_SUNSPIRE				= 11
 RAID_KYNES_AEGIS			= 12
 RAID_ROCKGROVE              = 13
 RAID_DREADSAIL_REEF         = 14
+RAID_SANITY_EDGE            = 15
 
 -- ------------------
 -- DEFAULT SETTINGS
@@ -334,6 +335,8 @@ do ------------------
 			reef_guardian_reef_heart_result = false,
 			taleria_rapid_deluge = 0, -- "Off"
 		},
+		sanityEdge = {
+		},
 		dbg = {
 			enable = false,
 			notify = false,
@@ -602,6 +605,8 @@ function RaidNotifier:CreateSettingsMenu()
 			},
 			brothers_heavy_attack = off_self_all,
 			taleria_rapid_deluge = off_self_all,
+		},
+		sanityEdge = {
 		},
 	}
 
@@ -1834,6 +1839,10 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_DreadsailReef_Rapid_Deluge_TT,
 		choices = choices.dreadsailReef.taleria_rapid_deluge,
 	}, "dreadsailReef", "taleria_rapid_deluge")
+	subTable = nil --end submenu
+
+	-- Sanity's Edge
+	MakeSubmenu(L.Settings_SanityEdge_Header, RaidNotifier:GetRaidDescription(RAID_SANITY_EDGE))
 	subTable = nil --end submenu
 
 	MakeControlEntry({

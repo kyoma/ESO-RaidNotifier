@@ -686,3 +686,10 @@ dreadsail_reef.taleria_rapid_deluge = {
 }
 
 RaidNotifier.BuffsDebuffs[RAID_DREADSAIL_REEF] = dreadsail_reef
+
+-- ------------------------------------------------------
+-- -- Sanity's Edge--------------------------------------
+-- -- ---------------------------------------------------
+local sanity_edge = {}
+
+RaidNotifier.BuffsDebuffs[RAID_SANITY_EDGE] = sanity_edge

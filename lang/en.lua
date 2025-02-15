@@ -691,6 +691,15 @@ L.Alerts_DreadsailReef_Rapid_Deluge_Other          = "|cFF0000<<!aC:1>>|r got |c
 
 
 --------------------------------
+------   SANITY'S EDGE     -----
+--------------------------------
+L.Settings_SanityEdge_Header                       = "Sanity's Edge"
+-- Settings
+
+-- Alerts
+
+
+--------------------------------
 ----       Debugging        ----
 --------------------------------
 L.Settings_Debug_Header                  = "Debug"
