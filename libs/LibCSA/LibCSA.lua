@@ -24,9 +24,8 @@ Description: This library serves to provide a global  enhancement of the center 
 ]]--
 
 local libLoaded
-local LIB_NAME, VERSION = "LibCSA", 2.1
-local lib, oldminor = LibStub:NewLibrary(LIB_NAME, VERSION)
-if not lib then return end
+local libName, libVersion = "LibCSA", 210
+local lib = {}
 
 local CSA = CENTER_SCREEN_ANNOUNCE
 local CSA_LINE_TYPE_COUNTDOWN = ZO_CenterScreenAnnouncementCountdownLine.GetLineType({}) -- we grab the local variable with this 'hack'
@@ -242,3 +241,5 @@ end
 
 if(lib.Unload) then lib.Unload() end
 Load()
+
+LibCSA = lib
