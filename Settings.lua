@@ -336,6 +336,7 @@ do ------------------
 			taleria_rapid_deluge = 0, -- "Off"
 		},
 		sanityEdge = {
+			chimera_sunburst = 0, -- "Off
 			ansuul_sunburst = 0, -- "Off"
 			ansuul_poisoned_mind = 0, -- "Off"
 		},
@@ -609,6 +610,7 @@ function RaidNotifier:CreateSettingsMenu()
 			taleria_rapid_deluge = off_self_all,
 		},
 		sanityEdge = {
+			chimera_sunburst = off_self_all,
 			ansuul_sunburst = off_self_all,
 			ansuul_poisoned_mind = off_self_all,
 		},
@@ -1847,6 +1849,12 @@ function RaidNotifier:CreateSettingsMenu()
 
 	-- Sanity's Edge
 	MakeSubmenu(L.Settings_SanityEdge_Header, RaidNotifier:GetRaidDescription(RAID_SANITY_EDGE))
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_SanityEdge_Chimera_Sunburst,
+		tooltip = L.Settings_SanityEdge_Chimera_Sunburst_TT,
+		choices = choices.sanityEdge.chimera_sunburst,
+	}, "sanityEdge", "chimera_sunburst")
 	MakeControlEntry({
 		type = "dropdown",
 		name = L.Settings_SanityEdge_Ansuul_Sunburst,
