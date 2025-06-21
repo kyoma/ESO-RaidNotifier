@@ -337,6 +337,7 @@ do ------------------
 		},
 		sanityEdge = {
 			ansuul_sunburst = 0, -- "Off"
+			ansuul_poisoned_mind = 0, -- "Off"
 		},
 		dbg = {
 			enable = false,
@@ -609,6 +610,7 @@ function RaidNotifier:CreateSettingsMenu()
 		},
 		sanityEdge = {
 			ansuul_sunburst = off_self_all,
+			ansuul_poisoned_mind = off_self_all,
 		},
 	}
 
@@ -1851,6 +1853,12 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_SanityEdge_Ansuul_Sunburst_TT,
 		choices = choices.sanityEdge.ansuul_sunburst,
 	}, "sanityEdge", "ansuul_sunburst")
+    MakeControlEntry({
+        type = "dropdown",
+        name = L.Settings_SanityEdge_Ansuul_Poisoned_Mind,
+        tooltip = L.Settings_SanityEdge_Ansuul_Poisoned_Mind_TT,
+        choices = choices.sanityEdge.ansuul_poisoned_mind,
+    }, "sanityEdge", "ansuul_poisoned_mind")
 	subTable = nil --end submenu
 
 	MakeControlEntry({

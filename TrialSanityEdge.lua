@@ -34,4 +34,15 @@ function RaidNotifier.SE.OnCombatEvent(_, result, _, _, _, _, _, _, tName, tType
             end
         end
     end
+
+    if (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
+        -- Ansuul's Poisoned Mind
+        if (abilityId == buffsDebuffs.ansuul_poisoned_mind and settings.ansuul_poisoned_mind > 0) then
+            if (tType == COMBAT_UNIT_TYPE_PLAYER) then
+                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANITYEDGE_ANSUUL_POISONED_MIND), "sanityEdge", "ansuul_poisoned_mind")
+            elseif (settings.ansuul_poisoned_mind == 2 and tName ~= "") then
+                self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANITYEDGE_ANSUUL_POISONED_MIND_OTHER), tName), "sanityEdge", "ansuul_poisoned_mind")
+            end
+        end
+    end
 end

@@ -697,10 +697,14 @@ L.Settings_SanityEdge_Header                       = "Sanity's Edge"
 -- Settings
 L.Settings_SanityEdge_Ansuul_Sunburst              = "Ansuul: Sunburst"
 L.Settings_SanityEdge_Ansuul_Sunburst_TT           = "Alerts you when Ansuul casts Sunburst on player. Target player should move away from the group. Keep moving, don't block or dodge it."
+L.Settings_SanityEdge_Ansuul_Poisoned_Mind         = "Ansuul: Poisoned Mind"
+L.Settings_SanityEdge_Ansuul_Poisoned_Mind_TT      = "Alerts you when Ansuul casts Poisoned Mind. Stay in group. HM: don't stack with other player who has this mechanic."
 
 -- Alerts
 L.Alerts_SanityEdge_Ansuul_Sunburst                = "|c00ddffSunburst|r at you!"
 L.Alerts_SanityEdge_Ansuul_Sunburst_Other          = "|c00ddffSunburst|r at <<!aC:1>>|r"
+L.Alerts_SanityEdge_Ansuul_Poisoned_Mind           = "|c008C22Poison|r at you!"
+L.Alerts_SanityEdge_Ansuul_Poisoned_Mind_Other     = "|c008C22Poison|r at <<!aC:1>>|r"
 
 
 --------------------------------
