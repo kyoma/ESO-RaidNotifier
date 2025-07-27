@@ -704,7 +704,6 @@ L.Settings_SanityEdge_Ansuul_Poisoned_Mind_TT      = "Alerts you when Ansuul cas
 
 -- Alerts
 L.Alerts_SanityEdge_Chimera_Sunburst               = "|cff9500Meteor|r at you!"
-L.Alerts_SanityEdge_Chimera_Sunburst_Other         = "|cff9500Meteor|r at <<!aC:1>>|r"
 L.Alerts_SanityEdge_Ansuul_Sunburst                = "|c00ddffSunburst|r at you!"
 L.Alerts_SanityEdge_Ansuul_Sunburst_Other          = "|c00ddffSunburst|r at <<!aC:1>>|r"
 L.Alerts_SanityEdge_Ansuul_Poisoned_Mind           = "|c008C22Poison|r at you!"

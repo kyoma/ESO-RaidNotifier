@@ -37,12 +37,8 @@ function RaidNotifier.SE.OnCombatEvent(_, result, _, _, _, _, _, _, tName, tType
 
     if (result == ACTION_RESULT_EFFECT_GAINED_DURATION) then
         -- Chimera's Sunburst
-        if (abilityId == buffsDebuffs.chimera_sunburst and settings.chimera_sunburst > 0) then
-            if (tType == COMBAT_UNIT_TYPE_PLAYER) then
-                self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANITYEDGE_CHIMERA_SUNBURST), "sanityEdge", "chimera_sunburst")
-            elseif (settings.chimera_sunburst == 2 and tName ~= "") then
-                self:AddAnnouncement(zo_strformat(GetString(RAIDNOTIFIER_ALERTS_SANITYEDGE_CHIMERA_SUNBURST_OTHER), tName), "sanityEdge", "chimera_sunburst")
-            end
+        if (abilityId == buffsDebuffs.chimera_sunburst and settings.chimera_sunburst and tType == COMBAT_UNIT_TYPE_PLAYER) then
+            self:AddAnnouncement(GetString(RAIDNOTIFIER_ALERTS_SANITYEDGE_CHIMERA_SUNBURST), "sanityEdge", "chimera_sunburst")
         -- Ansuul's Poisoned Mind
         elseif (abilityId == buffsDebuffs.ansuul_poisoned_mind and settings.ansuul_poisoned_mind > 0) then
             if (tType == COMBAT_UNIT_TYPE_PLAYER) then
