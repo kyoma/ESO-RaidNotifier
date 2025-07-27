@@ -23,6 +23,7 @@ RAID_SUNSPIRE				= 11
 RAID_KYNES_AEGIS			= 12
 RAID_ROCKGROVE              = 13
 RAID_DREADSAIL_REEF         = 14
+RAID_SANITY_EDGE            = 15
 
 -- ------------------
 -- DEFAULT SETTINGS
@@ -334,6 +335,11 @@ do ------------------
 			reef_guardian_reef_heart_result = false,
 			taleria_rapid_deluge = 0, -- "Off"
 		},
+		sanityEdge = {
+			chimera_sunburst = false,
+			ansuul_sunburst = 0, -- "Off"
+			ansuul_poisoned_mind = 0, -- "Off"
+		},
 		dbg = {
 			enable = false,
 			notify = false,
@@ -602,6 +608,10 @@ function RaidNotifier:CreateSettingsMenu()
 			},
 			brothers_heavy_attack = off_self_all,
 			taleria_rapid_deluge = off_self_all,
+		},
+		sanityEdge = {
+			ansuul_sunburst = off_self_all,
+			ansuul_poisoned_mind = off_self_all,
 		},
 	}
 
@@ -1834,6 +1844,27 @@ function RaidNotifier:CreateSettingsMenu()
 		tooltip = L.Settings_DreadsailReef_Rapid_Deluge_TT,
 		choices = choices.dreadsailReef.taleria_rapid_deluge,
 	}, "dreadsailReef", "taleria_rapid_deluge")
+	subTable = nil --end submenu
+
+	-- Sanity's Edge
+	MakeSubmenu(L.Settings_SanityEdge_Header, RaidNotifier:GetRaidDescription(RAID_SANITY_EDGE))
+	MakeControlEntry({
+		type = "checkbox",
+		name = L.Settings_SanityEdge_Chimera_Sunburst,
+		tooltip = L.Settings_SanityEdge_Chimera_Sunburst_TT,
+	}, "sanityEdge", "chimera_sunburst")
+	MakeControlEntry({
+		type = "dropdown",
+		name = L.Settings_SanityEdge_Ansuul_Sunburst,
+		tooltip = L.Settings_SanityEdge_Ansuul_Sunburst_TT,
+		choices = choices.sanityEdge.ansuul_sunburst,
+	}, "sanityEdge", "ansuul_sunburst")
+    MakeControlEntry({
+        type = "dropdown",
+        name = L.Settings_SanityEdge_Ansuul_Poisoned_Mind,
+        tooltip = L.Settings_SanityEdge_Ansuul_Poisoned_Mind_TT,
+        choices = choices.sanityEdge.ansuul_poisoned_mind,
+    }, "sanityEdge", "ansuul_poisoned_mind")
 	subTable = nil --end submenu
 
 	MakeControlEntry({

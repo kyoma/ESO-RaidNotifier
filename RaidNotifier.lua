@@ -8,7 +8,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name           = "RaidNotifier"
 RaidNotifier.DisplayName    = "Raid Notifier"
-RaidNotifier.Version        = "2.29"
+RaidNotifier.Version        = "2.30"
 RaidNotifier.Author         = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name        = "RNVars"
 RaidNotifier.SV_Version     = 4
@@ -28,6 +28,7 @@ RAID_SUNSPIRE               = 11
 RAID_KYNES_AEGIS            = 12
 RAID_ROCKGROVE              = 13
 RAID_DREADSAIL_REEF         = 14
+RAID_SANITY_EDGE            = 15
 
 -- Debugging
 local function p() end
@@ -588,6 +589,7 @@ do ----------------------
 		[RAID_KYNES_AEGIS]           = 1196,
 		[RAID_ROCKGROVE]             = 1263,
 		[RAID_DREADSAIL_REEF]        = 1344,
+		[RAID_SANITY_EDGE]           = 1427,
 	}
 
 	local RaidZones = {}
@@ -942,6 +944,7 @@ do ---------------------------
 	RaidNotifier.KA = RaidNotifier.KA or {}
 	RaidNotifier.RG = RaidNotifier.RG or {}
 	RaidNotifier.DSR = RaidNotifier.DSR or {}
+	RaidNotifier.SE = RaidNotifier.SE or {}
 
 	RaidNotifier.Trial =
 	{
@@ -958,6 +961,7 @@ do ---------------------------
 		[RAID_KYNES_AEGIS]           = RaidNotifier.KA,
 		[RAID_ROCKGROVE]             = RaidNotifier.RG,
 		[RAID_DREADSAIL_REEF]        = RaidNotifier.DSR,
+		[RAID_SANITY_EDGE]           = RaidNotifier.SE,
 	}
 
 	-------------------

@@ -686,3 +686,19 @@ dreadsail_reef.taleria_rapid_deluge = {
 }
 
 RaidNotifier.BuffsDebuffs[RAID_DREADSAIL_REEF] = dreadsail_reef
+
+-- ------------------------------------------------------
+-- -- Sanity's Edge--------------------------------------
+-- -- ---------------------------------------------------
+local sanity_edge = {}
+
+-- Sunburst (meteors) on Chimera's fight
+sanity_edge.chimera_sunburst = 198613
+
+-- Ansuul's Sunburst
+sanity_edge.ansuul_sunburst = 199344
+
+-- Poisoned Mind mechanic on Ansuul's fight
+sanity_edge.ansuul_poisoned_mind = 184710
+
+RaidNotifier.BuffsDebuffs[RAID_SANITY_EDGE] = sanity_edge
